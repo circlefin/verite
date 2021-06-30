@@ -5,6 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "lint": "next lint",
     "start": "next start",
     "type-check": "tsc --pretty --noEmit"
   },
@@ -15,7 +16,13 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
     "autoprefixer": "^10.2.6",
+    "eslint": "^7.29.0",
+    "eslint-config-next": "^11.0.1",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.4",
     "postcss": "^8.3.5",
     "tailwindcss": "^2.2.4",
     "tailwindcss-font-inter": "^3.0.0",

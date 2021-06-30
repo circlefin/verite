@@ -1,5 +1,5 @@
-import Head from "next/head";
 import { NextPage } from "next";
+import Head from "next/head";
 
 const Home: NextPage = () => {
   return (
@@ -8,7 +8,7 @@ const Home: NextPage = () => {
         <title>Verity Demo</title>
       </Head>
 
-      <main className="font-inter container mx-auto py-4">
+      <main className="container py-4 mx-auto font-inter">
         <h1 className="text-4xl font-extrabold tracking-tight text-center">
           Project Verity Demo
         </h1>
