@@ -7,10 +7,12 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "prettier",
     "next"
   ],
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "import"],
   rules: {
     "import/order": [
       "error",
