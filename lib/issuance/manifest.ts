@@ -100,21 +100,21 @@ export const generateIssuanceManifestForUser = (user: User): Manifest => {
       format: {
         jwt_vp: {
           alg: ["EdDSA", "ES256K"]
-        },
-        input_descriptors: [
-          {
-            id: "DID",
-            name: "DID",
-            purpose:
-              "The DID subject of the credential, and proof of current control over the DID.",
-            schema: [
-              {
-                uri: "https://www.w3.org/2018/credentials/v1"
-              }
-            ]
-          }
-        ]
-      }
+        }
+      },
+      input_descriptors: [
+        {
+          id: "DID",
+          name: "DID",
+          purpose:
+            "The DID subject of the credential, and proof of current control over the DID.",
+          schema: [
+            {
+              uri: "https://www.w3.org/2018/credentials/v1"
+            }
+          ]
+        }
+      ]
     }
   }
 }
