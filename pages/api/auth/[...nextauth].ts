@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import Providers from "next-auth/providers"
-import { authenticateUser } from "lib/database"
+import { authenticateUser, User } from "lib/database"
 
 type Credentials = {
   csrfToken: string
@@ -20,5 +20,20 @@ export default NextAuth({
         return authenticateUser(credentials.email, credentials.password)
       }
     })
-  ]
+  ],
+  session: { jwt: true },
+  callbacks: {
+    async session(session, jwtUser) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      session.user.id = jwtUser.uid
+      return Promise.resolve(session)
+    },
+    jwt: async (token, user: User) => {
+      if (user) {
+        token.uid = user.id
+      }
+      return Promise.resolve(token)
+    }
+  }
 })
