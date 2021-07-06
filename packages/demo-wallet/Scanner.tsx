@@ -13,7 +13,7 @@ export default function Scanner({navigation, route}) {
       const {status} = await BarCodeScanner.requestPermissionsAsync()
       setHasPermission(status === "granted")
     })()
-  }, [])
+  }, [hasPermission])
 
   const handleBarCodeScanned = ({type, data}) => {
     setScanned(true)
