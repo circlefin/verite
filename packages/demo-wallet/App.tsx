@@ -1,13 +1,13 @@
 import {NavigationContainer} from "@react-navigation/native"
 import {createStackNavigator} from "@react-navigation/stack"
 import React from "react"
-import Example from "./Example"
-import Scanner from "./Scanner"
+import Example from "./components/Example"
 import HomePage from "./components/HomePage"
+import Scanner from "./components/Scanner"
 
 const Stack = createStackNavigator()
 
-const App = (): Element => {
+const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
