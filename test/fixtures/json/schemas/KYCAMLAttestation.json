@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "KYCAML Attestation",
+  "type": "object",
+  "properties": {
+    "KYCAMLAttestation": {
+      "type": "object",
+      "properties": {
+        "authorityId": {
+          "type": "string"
+        },
+        "approvalDate": {
+          "type": "string"
+        },
+        "expirationDate": {
+          "type": "string"
+        },
+        "authorityName": {
+          "type": "string"
+        },
+        "authorityUrl": {
+          "type": "string"
+        },
+        "authorityCallbackUrl": {
+          "type": "string"
+        },
+        "serviceProviders": {
+          "type": "array",
+          "$ref": "#/definitions/KYCAMLProvider"
+        }
+      },
+      "required": ["authorityId", "approvalDate"],
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "KYCAMLProvider": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "completionDate": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["KYCAMLAttestation"],
+  "additionalProperties": false
+}
