@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import { generateVC } from "./vc"
 import { findUser, User } from "lib/database"
 import { Manifest, ManifestUrlObject } from "types/Manifest"
 
@@ -118,3 +119,11 @@ export const generateIssuanceManifestForUser = (user: User): Manifest => {
     }
   }
 }
+
+
+(async () => {
+  const vc = await generateVC();
+  console.log(vc);
+})().catch(e => {
+  console.error(e);
+});
