@@ -1,24 +1,17 @@
 import jwt from "jsonwebtoken"
 import { generateVC } from "./vc"
 import { findUser, User } from "lib/database"
-import { Manifest, ManifestUrlObject } from "types/Manifest"
+import { CredentialManifest } from "types"
 
 const JWT_ALGORITHM = "HS256"
 const JWT_EXPIRES_IN = "1h"
 
-export const issuanceManifestUrl = async (
-  user: User
-): Promise<ManifestUrlObject> => {
-  const token = await jwt.sign({}, process.env.JWT_SECRET, {
+export const inssuanceManifestToken = async (user: User): Promise<string> => {
+  return jwt.sign({}, process.env.JWT_SECRET, {
     subject: user.id,
     algorithm: JWT_ALGORITHM,
     expiresIn: JWT_EXPIRES_IN
   })
-
-  return {
-    manifestUrl: `${process.env.ROOT_URL}/api/issuance/manifest/${token}`,
-    version: "1"
-  }
 }
 
 export const findUserFromManfiestToken = async (
@@ -36,10 +29,13 @@ export const findUserFromManfiestToken = async (
   }
 }
 
-export const generateIssuanceManifestForUser = (user: User): Manifest => {
+export const generateIssuanceManifestForUser = (
+  user: User
+): CredentialManifest => {
   return {
     id: "Circle-KYCAMLAttestation",
     version: "0.1.0",
+    // callbackUrl: "",
     issuer: {
       id: "did:web:circle.com",
       comment: "JSON-LD definition at https://circle.com/.well_known/did.json",

@@ -17,11 +17,26 @@ export type InputDescriptorConstraintSubjectConstraint = {
   directive: "required" | "preferred"
 }
 
+export type InputDescriptorConstraintFilter = {
+  type: string
+  format?: string
+  pattern?: string
+  minimum?: string | number
+  minLength?: number
+  maxLength?: number
+  exclusiveMinimum?: string | number
+  exclusiveMaximum?: string | number
+  maximum?: string | number
+  const?: string | number
+  enum?: string[] | number[]
+  not?: InputDescriptorConstraintFilter
+}
+
 export type InputDescriptorConstraintField = {
   path: string[]
   id?: string
   purpose?: string
-  filter?: Record<string, unknown>
+  filter?: InputDescriptorConstraintFilter
   predicate?: "required" | "preferred"
 }
 

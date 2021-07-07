@@ -1,0 +1,72 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://identity.foundation/presentation-exchange/submission/v1"
+  ],
+  "type": ["VerifiablePresentation", "PresentationSubmission"],
+  "id": "cc41bc54-f203-4226-810d-1eb628cc685e",
+  "request_id": "e2556c17-b781-4490-8b0c-d31c42571c9d",
+  "presentation_submission": {
+    "id": "a30e3b91-fb77-4d22-95fa-871689c322e2",
+    "definition_id": "32f54163-7166-48f1-93d8-ff217bdb0653",
+    "descriptor_map": [
+      {
+        "id": "kycaml_input",
+        "format": "jwt_vc",
+        "path": "$.verifiableCredential[0]"
+      }
+    ]
+  },
+  "verifiableCredential": [
+    {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://centre.io/identity"
+      ],
+      "type": ["VerifiableCredential", "KYCAMLAttestation"],
+      "issuer": {
+        "id": "did:web:circle.com",
+        "name": "Circle"
+      },
+      "issuanceDate": "2021-05-05T17:23:31.000Z",
+      "credentialSubject": {
+        "id": "did:key:z6MktTGgFRVL5H4y5G9sKT2TszYsogRuFfZNvyj2en3RiXhP",
+        "KYCAMLAttestation": {
+          "authorityId": "did:web:circle.com",
+          "approvalDate": "2020-06-01T14:00:00",
+          "expirationDate": "2021-06-01T13:59:59",
+          "authortyName": "Circle",
+          "authortyUrl": "https://circle.com",
+          "authorityCallbackUrl": "https://identity.circle.com",
+          "serviceProviders": [
+            {
+              "name": "Jumio",
+              "score": 80
+            },
+            {
+              "name": "OFAC-SDN",
+              "score": 0
+            }
+          ]
+        }
+      },
+      "proof": {
+        "type": "Ed25519Signature2018",
+        "created": "2021-05-05T17:23:31Z",
+        "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..aCXQTU2MMSzNvVAoUDSRt1iK2fohyeHKgBuWwabmDGFI-X7UTncBqqpthSmZk3FAOIJ5_YIvjHluTp-Au8Z9Ag",
+        "proofPurpose": "assertionMethod",
+        "verificationMethod": "did:key:z6MkfXKC89FTQATwEQ1yzrPbWReLMsbWKPxfrvHG3Td1PD7s#z6MkfXKC89FTQATwEQ1yzrPbWReLMsbWKPxfrvHG3Td1PD7s"
+      }
+    }
+  ],
+  "holder": "did:key:z6MksMYtQSvQsfk3KZy7vxBzjcBJhx1i7TaLuvJePPPDEAjH",
+  "proof": {
+    "type": "Ed25519Signature2018",
+    "created": "2020-12-08T20:12:18Z",
+    "challenge": "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e61",
+    "domain": "id.centre.wallet",
+    "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..MfVEy102c4oZA_G98G6HUxEmfXFLEIWbX9C36zF_cA-D8EF8jRMQWc5eJpMn3hgLm2xhPw8GzTrnwPHa37L-DA",
+    "proofPurpose": "authentication",
+    "verificationMethod": "did:key:z6MksMYtQSvQsfk3KZy7vxBzjcBJhx1i7TaLuvJePPPDEAjH#z6MksMYtQSvQsfk3KZy7vxBzjcBJhx1i7TaLuvJePPPDEAjH"
+  }
+}
