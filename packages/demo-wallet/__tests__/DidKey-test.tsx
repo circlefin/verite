@@ -1,10 +1,10 @@
 import crypto from "crypto"
 import "react-native"
-import {generate} from "../src/lib/DidKey"
+import { generate } from "../src/lib/DidKey"
 
 it("generates a did:key with random bytes", async () => {
   const secureRandom = () => new Uint8Array(crypto.randomBytes(32))
-  await generate({secureRandom})
+  await generate({ secureRandom })
 })
 
 // Test Vectors
@@ -13,7 +13,7 @@ it("generates a did:key with a seed", async () => {
   const seed =
     "0000000000000000000000000000000000000000000000000000000000000000"
   const secureRandom = () => Buffer.from(seed, "hex")
-  const did = await generate({secureRandom})
+  const did = await generate({ secureRandom })
   expect(did.controller).toBe(
     "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp"
   )

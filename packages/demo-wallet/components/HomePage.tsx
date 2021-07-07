@@ -1,15 +1,15 @@
 import React from "react"
-import {View, StyleSheet, Button, Alert} from "react-native"
-import {CredentialManifest} from "../types"
+import { View, StyleSheet, Button, Alert } from "react-native"
+import { CredentialManifest } from "../types"
 
-export default function HomePage({navigation}) {
+export default function HomePage({ navigation }) {
   return (
     <View style={styles.container}>
       <Button
         title={"Scan QR Code"}
         onPress={() =>
           navigation.navigate("Scanner", {
-            onScan: async ({type, data}) => {
+            onScan: async ({ type, data }) => {
               // When scanning a QR code, it will encode a JSON object with a
               // manifestUrl property. We will subsequently fetch that value
               // to retrieve the full manifest document.
