@@ -5,7 +5,7 @@ import Authenticated, { SessionProps } from "components/Authenticated"
 import Layout from "components/Layout"
 import { User } from "lib/database"
 import { issuanceManifestUrl } from "lib/issuance/manifest"
-import { ManifestUrlObject } from "types/Manifest"
+import { ManifestUrlObject } from "types"
 
 type Props = SessionProps & {
   manifestUrl: ManifestUrlObject

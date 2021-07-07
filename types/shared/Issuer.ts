@@ -1,4 +1,4 @@
-import { EntityStyle } from "./EntityStyle"
+import { EntityStyle } from "../credential_manifest/EntityStyle"
 
 export type Issuer = {
   id: string

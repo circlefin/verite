@@ -41,6 +41,7 @@ export const generateIssuanceManifestForUser = (
   return {
     id: "Circle-KYCAMLAttestation",
     version: "0.1.0",
+    // callbackUrl: "",
     issuer: {
       id: "did:web:circle.com",
       comment: "JSON-LD definition at https://circle.com/.well_known/did.json",
