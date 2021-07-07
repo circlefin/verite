@@ -4,11 +4,15 @@ import QRCode from "qrcode.react"
 import Authenticated, { SessionProps } from "components/Authenticated"
 import Layout from "components/Layout"
 import { User } from "lib/database"
-import { issuanceManifestUrl } from "lib/issuance/manifest"
-import { ManifestUrlObject } from "types"
+import { inssuanceManifestToken } from "lib/issuance/manifest"
+
+export type ManifestUrlContainer = {
+  manifestUrl: string
+  version: string
+}
 
 type Props = SessionProps & {
-  manifestUrl: ManifestUrlObject
+  manifestUrlContainer: ManifestUrlContainer
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
@@ -25,15 +29,21 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     }
   }
 
+  const manifestToken = await inssuanceManifestToken(session.user as User)
+  const manifestUrlContainer: ManifestUrlContainer = {
+    manifestUrl: `${process.env.ROOT_URL}/api/issuance/manifest/${manifestToken}`,
+    version: "1"
+  }
+
   return {
     props: {
-      manifestUrl: await issuanceManifestUrl(session.user as User),
+      manifestUrlContainer,
       session
     }
   }
 }
 
-const Protected: NextPage<Props> = ({ manifestUrl }) => {
+const Protected: NextPage<Props> = ({ manifestUrlContainer }) => {
   return (
     <Authenticated>
       <Layout>
@@ -44,14 +54,14 @@ const Protected: NextPage<Props> = ({ manifestUrl }) => {
 
           <h2 className="pb-4 text-xl text-center">KYC Credential:</h2>
           <QRCode
-            value={JSON.stringify(manifestUrl)}
+            value={JSON.stringify(manifestUrlContainer)}
             className="mx-auto w-96 h-96"
             renderAs="svg"
           />
           <textarea
             className="container mx-auto my-2 font-mono border-2 h-36"
             readOnly
-            value={JSON.stringify(manifestUrl, null, 4)}
+            value={JSON.stringify(manifestUrlContainer, null, 4)}
           />
         </main>
       </Layout>

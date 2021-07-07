@@ -13,8 +13,3 @@ export type CredentialManifest = {
   format?: ClaimFormatDesignation
   presentation_definition?: PresentationDefinition
 }
-
-export type ManifestUrlObject = {
-  manifestUrl: string
-  version: string
-}

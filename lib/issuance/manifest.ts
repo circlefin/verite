@@ -1,23 +1,16 @@
 import jwt from "jsonwebtoken"
 import { findUser, User } from "lib/database"
-import { CredentialManifest, ManifestUrlObject } from "types"
+import { CredentialManifest } from "types"
 
 const JWT_ALGORITHM = "HS256"
 const JWT_EXPIRES_IN = "1h"
 
-export const issuanceManifestUrl = async (
-  user: User
-): Promise<ManifestUrlObject> => {
-  const token = await jwt.sign({}, process.env.JWT_SECRET, {
+export const inssuanceManifestToken = async (user: User): Promise<string> => {
+  return jwt.sign({}, process.env.JWT_SECRET, {
     subject: user.id,
     algorithm: JWT_ALGORITHM,
     expiresIn: JWT_EXPIRES_IN
   })
-
-  return {
-    manifestUrl: `${process.env.ROOT_URL}/api/issuance/manifest/${token}`,
-    version: "1"
-  }
 }
 
 export const findUserFromManfiestToken = async (
