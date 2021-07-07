@@ -5,7 +5,7 @@ import { Issuer } from "./Issuer"
 import { OutputDescriptor } from "./OutputDescriptor"
 import { PresentationDefinition } from "./PresentationDefinition"
 
-export type Manifest = {
+export type CredentialManifest = {
   id: string
   version: string
   issuer: Issuer

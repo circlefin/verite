@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 import { findUser, User } from "lib/database"
-import { Manifest, ManifestUrlObject } from "types/Manifest"
+import { CredentialManifest, ManifestUrlObject } from "types"
 
 const JWT_ALGORITHM = "HS256"
 const JWT_EXPIRES_IN = "1h"
@@ -35,7 +35,9 @@ export const findUserFromManfiestToken = async (
   }
 }
 
-export const generateIssuanceManifestForUser = (user: User): Manifest => {
+export const generateIssuanceManifestForUser = (
+  user: User
+): CredentialManifest => {
   return {
     id: "Circle-KYCAMLAttestation",
     version: "0.1.0",
