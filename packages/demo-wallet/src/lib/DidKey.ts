@@ -1,8 +1,9 @@
+import crypto from "crypto"
 import * as ed25519 from "@stablelib/ed25519"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
 
-export const generate = async ({
+export const generate = ({
   secureRandom
 }: {
   secureRandom: () => Uint8Array
@@ -28,4 +29,9 @@ export const generate = async ({
     publicKey: key.publicKey,
     privateKey: key.secretKey
   }
+}
+
+export const random = () => {
+  const secureRandom = () => new Uint8Array(crypto.randomBytes(32))
+  return generate({ secureRandom })
 }
