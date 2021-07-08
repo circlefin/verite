@@ -4,9 +4,10 @@ import { methodNotAllowed } from "lib/api-fns"
 import { generateFulfillment } from "lib/issuance/fulfillment"
 import { CredentialFulfillmentResponse } from "types"
 
-const SubmissionHandler: NextApiHandler<
-  CredentialFulfillmentResponse | ApiError
-> = (req, res) => {
+const handler: NextApiHandler<CredentialFulfillmentResponse | ApiError> = (
+  req,
+  res
+) => {
   if (req.method !== "POST") {
     return methodNotAllowed(res)
   }
@@ -18,4 +19,4 @@ const SubmissionHandler: NextApiHandler<
   res.json(fulfillment)
 }
 
-export default SubmissionHandler
+export default handler
