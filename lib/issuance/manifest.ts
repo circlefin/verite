@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken"
-import { generateVC } from "./vc"
 import { findUser, User } from "lib/database"
 import { CredentialManifest } from "types"
 
@@ -115,11 +114,3 @@ export const generateIssuanceManifestForUser = (
     }
   }
 }
-
-
-(async () => {
-  const vc = await generateVC();
-  console.log(vc);
-})().catch(e => {
-  console.error(e);
-});
