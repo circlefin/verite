@@ -8,6 +8,7 @@ import { inssuanceManifestToken } from "lib/issuance/manifest"
 
 export type ManifestUrlContainer = {
   manifestUrl: string
+  submissionUrl: string
   version: string
 }
 
@@ -31,7 +32,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   const manifestToken = await inssuanceManifestToken(session.user as User)
   const manifestUrlContainer: ManifestUrlContainer = {
-    manifestUrl: `${process.env.ROOT_URL}/api/issuance/manifest/${manifestToken}`,
+    manifestUrl: `${process.env.ROOT_URL}/api/issuance/manifest`,
+    submissionUrl: `${process.env.ROOT_URL}/api/issuance/submission/${manifestToken}`,
     version: "1"
   }
 
@@ -55,11 +57,11 @@ const Protected: NextPage<Props> = ({ manifestUrlContainer }) => {
           <h2 className="pb-4 text-xl text-center">KYC Credential:</h2>
           <QRCode
             value={JSON.stringify(manifestUrlContainer)}
-            className="mx-auto w-96 h-96"
+            className="w-48 h-48 mx-auto"
             renderAs="svg"
           />
           <textarea
-            className="container mx-auto my-2 font-mono border-2 h-36"
+            className="container mx-auto my-2 font-mono text-sm border-2 h-36"
             readOnly
             value={JSON.stringify(manifestUrlContainer, null, 4)}
           />
