@@ -12,6 +12,7 @@
     "postinstall": "rn-nodeify --install assert,buffer,events,process,crypto,stream,vm --hack"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
