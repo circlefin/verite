@@ -29,7 +29,6 @@ const onScan = async ({ _type, data }) => {
 
   // Prompt user to request the credentials or cancel
   const did = (await getOrCreateDidKey()).controller
-  console.log(did)
   const proof = "fakeproof"
   await promptRequestIssuance(name, description, submissionUrl, did, proof)
 }

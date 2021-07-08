@@ -8,7 +8,6 @@ export default function Scanner({ navigation, route }) {
   const [scanned, setScanned] = useState(false)
 
   useEffect(() => {
-    console.log(hasPermission)
     ;(async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync()
       setHasPermission(status === "granted")
