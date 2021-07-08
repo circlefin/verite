@@ -1,5 +1,6 @@
 import React from "react"
 import { View, StyleSheet, Button, Alert } from "react-native"
+import { random } from "../src/lib/DidKey"
 import { requestIssuance } from "../src/lib/issuance"
 import { CredentialManifest } from "../types"
 
@@ -27,7 +28,8 @@ const onScan = async ({ _type, data }) => {
   const description = outputDescriptor?.description
 
   // Prompt user to request the credentials or cancel
-  const did = "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp"
+  const did = random().controller
+  console.log(did)
   const proof = "fakeproof"
   await promptRequestIssuance(name, description, submissionUrl, did, proof)
 }
