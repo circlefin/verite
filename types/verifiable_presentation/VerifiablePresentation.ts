@@ -26,6 +26,7 @@ export type VerifiableCredentialProof = {
   jws: string
   proofPurpose: string
   verificationMethod: string
+  challenge?: string
 }
 
 export type VerifiableCredential = {
@@ -35,6 +36,12 @@ export type VerifiableCredential = {
   issuanceDate: string
   credentialSubject: CredentialSubject
   proof: VerifiableCredentialProof
+}
+
+export type VerifiableCredentialSubmission = {
+  "@context": string[]
+  type: string[]
+  credentialSubject: CredentialSubject
 }
 
 export type VerifiablePresentation = {

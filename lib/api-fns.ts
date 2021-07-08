@@ -5,10 +5,21 @@ export type ApiError = {
   message: string
 }
 
+export function apiError(res, status: number, message: string): void {
+  res.status(status).json({
+    status,
+    message
+  })
+}
+
 export function notFound(res: NextApiResponse): void {
-  res.status(404).json({ status: 404, message: "Not found" })
+  apiError(res, 404, "Not found")
 }
 
 export function methodNotAllowed(res: NextApiResponse): void {
-  res.status(405).json({ status: 405, message: "Method not allowed" })
+  apiError(res, 405, "Method not allowed")
+}
+
+export function validationError(res: NextApiResponse, error: Error): void {
+  apiError(res, 400, error.message)
 }
