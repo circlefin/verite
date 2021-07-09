@@ -14,6 +14,7 @@
 		78F0FD14D9FC34379FD786BB /* libPods-Verity-VerityTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4B9F53D6E3905996773F6F5 /* libPods-Verity-VerityTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8B87651EF11F70F53BFE4918 /* libPods-Verity.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7233608D1EDA4A850CE714EB /* libPods-Verity.a */; };
+		C90A35B426988DB300B7F786 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C90A35B326988DB300B7F786 /* libswiftWebKit.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		85A80DA554D2DB0892D4B373 /* Pods-Verity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Verity.debug.xcconfig"; path = "Target Support Files/Pods-Verity/Pods-Verity.debug.xcconfig"; sourceTree = "<group>"; };
 		B4B9F53D6E3905996773F6F5 /* libPods-Verity-VerityTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Verity-VerityTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C631DE341764EF6465C04E7B /* Pods-Verity-VerityTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Verity-VerityTests.release.xcconfig"; path = "Target Support Files/Pods-Verity-VerityTests/Pods-Verity-VerityTests.release.xcconfig"; sourceTree = "<group>"; };
+		C90A35B326988DB300B7F786 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FBFE5C13A4E76FDB35510C6C /* Pods-Verity-VerityTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Verity-VerityTests.debug.xcconfig"; path = "Target Support Files/Pods-Verity-VerityTests/Pods-Verity-VerityTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C90A35B426988DB300B7F786 /* libswiftWebKit.tbd in Frameworks */,
 				8B87651EF11F70F53BFE4918 /* libPods-Verity.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,6 +102,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C90A35B326988DB300B7F786 /* libswiftWebKit.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				7233608D1EDA4A850CE714EB /* libPods-Verity.a */,
 				B4B9F53D6E3905996773F6F5 /* libPods-Verity-VerityTests.a */,
@@ -491,6 +495,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -516,6 +524,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
