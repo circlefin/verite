@@ -32,8 +32,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   const manifestToken = await inssuanceManifestToken(session.user as User)
   const manifestUrlContainer: ManifestUrlContainer = {
-    manifestUrl: `${process.env.ROOT_URL}/api/issuance/manifest`,
-    submissionUrl: `${process.env.ROOT_URL}/api/issuance/submission/${manifestToken}`,
+    manifestUrl: `${process.env.HOST}/api/issuance/manifest`,
+    submissionUrl: `${process.env.HOST}/api/issuance/submission/${manifestToken}`,
     version: "1"
   }
 
