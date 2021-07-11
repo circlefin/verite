@@ -1,4 +1,3 @@
-import * as didJWT from "did-jwt"
 import { EdDSASigner } from "did-jwt"
 import {
   JwtCredentialPayload,

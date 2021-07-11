@@ -1,4 +1,5 @@
-import { decodeVp } from "lib/credentials"
+import { asyncMap } from "lib/async-fns"
+import { decodeVc } from "lib/credentials"
 import { randomDidKey } from "lib/didKey"
 import { createFullfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
@@ -9,7 +10,7 @@ describe("issuance", () => {
   it("just works", async () => {
     // 0. ISSUER: The issuer gets a DID
     expect(issuer.did).toEqual(
-      "did:key:z6MksAvYMrsEYJxb5SqKknaAKwu3PUKQ6xziK4uEtXXfUGiQ"
+      "did:key:z6Mki3hKaW5bPVjDSbhqqzrdcQpzcczC2XLPqAwkLhzziatV"
     )
     expect(issuer.alg).toEqual("EdDSA")
 
@@ -33,14 +34,16 @@ describe("issuance", () => {
       "Circle-KYCAMLAttestation"
     )
     expect(application.presentation_submission).toBeDefined()
-    const decodedVP = await decodeVp(application.presentation)
-    expect(decodedVP.verifiablePresentation.type).toEqual([
-      "VerifiablePresentation"
-    ])
-    decodedVP.verifiablePresentation.verifiableCredential.map((vc) => {
-      expect(vc.credentialSubject.id).toEqual(clientDidKey.controller)
-      expect(vc.type).toEqual(["VerifiableCredential"])
-      expect(vc.proof).toBeDefined()
+    const verifiableCredentials: any[] = await asyncMap(
+      application.verifiableCredential,
+      decodeVc
+    )
+    verifiableCredentials.map(({ verifiableCredential }) => {
+      expect(verifiableCredential.credentialSubject.id).toEqual(
+        clientDidKey.controller
+      )
+      expect(verifiableCredential.type).toEqual(["VerifiableCredential"])
+      expect(verifiableCredential.proof).toBeDefined()
     })
 
     // 4. ISSUER: Creating the VC
@@ -50,17 +53,17 @@ describe("issuance", () => {
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
       "Circle-KYCAMLAttestation"
     )
-    // TODO: How do we build an Issuer for Holder+Signer here?
-    //
-    // decodedVP = await decodeVp(fulfillment.presentation)
-    // expect(decodedVP.verifiablePresentation.type).toEqual([
-    //   "VerifiablePresentation"
-    // ])
-    // expect(decodedVP.verifiablePresentation).toBeDefined()
-    // decodedVP.verifiablePresentation.verifiableCredential.map((vc) => {
-    //   expect(vc.credentialSubject.id).toEqual(clientDidKey.controller)
-    //   expect(vc.type).toEqual(["VerifiableCredential", "KYCAMLAttestation"])
-    //   expect(vc.proof).toBeDefined()
-    // })
+
+    await asyncMap(fulfillment.verifiableCredential, async (vc) => {
+      const { verifiableCredential } = await decodeVc(vc)
+      expect(verifiableCredential.credentialSubject.id).toEqual(
+        clientDidKey.controller
+      )
+      expect(verifiableCredential.type).toEqual([
+        "VerifiableCredential",
+        "KYCAMLAttestation"
+      ])
+      expect(verifiableCredential.proof).toBeDefined()
+    })
   })
 })

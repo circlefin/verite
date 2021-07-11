@@ -1,7 +1,4 @@
-import {
-  createVerifiableCredentialJwt,
-  createVerifiablePresentationJwt
-} from "did-jwt-vc"
+import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { findManifestById } from "./manifest"
@@ -15,7 +12,7 @@ import { DescriptorMap } from "types/shared/DescriptorMap"
 export async function createCredentialApplication(
   did: DidKey,
   manifest: CredentialManifest
-): Promise<CredentialApplication> {
+): Promise<any> {
   const client = issuerFromDid(did)
 
   // create credential_submission block
@@ -49,15 +46,10 @@ export async function createCredentialApplication(
     }
   )) as JWT[]
 
-  const presentation = await createVerifiablePresentationJwt(
-    vpPayload(credentials),
-    client
-  )
-
   return {
     credential_submission: credentialSubmission,
     presentation_submission: presentationSubmission,
-    presentation: presentation
+    verifiableCredential: credentials
   }
 }
 
