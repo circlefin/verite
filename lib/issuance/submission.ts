@@ -1,9 +1,9 @@
-import { createVerifiableCredentialJwt } from "did-jwt-vc"
+import { createVerifiableCredentialJwt, createVerifiablePresentationJwt } from "did-jwt-vc"
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { findManifestById } from "./manifest"
 import { asyncMap } from "lib/async-fns"
-import { issuerFromDid, vcPayloadApplication, vpPayload } from "lib/credentials"
+import { issuerFromDid, vpPayloadApplication, vpPayload } from "lib/credentials"
 import { DidKey } from "lib/didKey"
 import { CredentialManifest } from "types"
 import { CredentialApplication } from "types/presentation_submission/PresentationSubmission"
@@ -15,8 +15,8 @@ export async function createCredentialApplication(
 ): Promise<any> {
   const client = issuerFromDid(did)
 
-  // create credential_submission block
-  const credentialSubmission = {
+  // create credential_application block
+  const credentialApplication = {
     id: uuidv4(),
     manifest_id: manifest.id,
     format: {
@@ -41,13 +41,13 @@ export async function createCredentialApplication(
   const credentials: JWT[] = (await asyncMap(
     manifest.presentation_definition.input_descriptors,
     async (d) => {
-      const payload = vcPayloadApplication(client)
-      return createVerifiableCredentialJwt(payload, client)
+      const payload = vpPayloadApplication(client)
+      return createVerifiablePresentationJwt(payload, client)
     }
   )) as JWT[]
 
   return {
-    credential_submission: credentialSubmission,
+    credential_application: credentialApplication,
     presentation_submission: presentationSubmission,
     verifiableCredential: credentials
   }
@@ -63,9 +63,9 @@ export function validateCredentialSubmission(
    */
   if (
     !hasPaths(application, [
-      "credential_submission",
+      "credential_application",
       "presentation_submission",
-      "presentation"
+      "vp"
     ])
   ) {
     throw new Error("Invalid JSON format")

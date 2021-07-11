@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 import { findUser, User } from "lib/database"
 import { CredentialManifest } from "types"
 
-const JWT_ALGORITHM = "HS256"
+const JWT_ALGORITHM = "EdDSA"
 const JWT_EXPIRES_IN = "1h"
 
 export const inssuanceManifestToken = async (user: User): Promise<string> => {
@@ -39,10 +39,10 @@ export const kycManifest: CredentialManifest = {
   },
   format: {
     jwt_vc: {
-      alg: ["EdDSA", "ES256K"]
+      alg: ["EdDSA"]
     },
     jwt_vp: {
-      alg: ["EdDSA", "ES256K"]
+      alg: ["EdDSA"]
     }
   },
   output_descriptors: [
@@ -91,18 +91,18 @@ export const kycManifest: CredentialManifest = {
     id: "32f54163-7166-48f1-93d8-ff217bdb0653",
     format: {
       jwt_vp: {
-        alg: ["EdDSA", "ES256K"]
+        alg: ["EdDSA"]
       }
     },
     input_descriptors: [
       {
-        id: "DID",
-        name: "DID",
+        id: "proofOfIdentifierControlVP",
+        name: "Proof of Control Verifiable Presentation",
         purpose:
-          "The DID subject of the credential, and proof of current control over the DID.",
+          "A Verifiable Presentation establishing proof of identifier control over the DID.",
         schema: [
           {
-            uri: "https://www.w3.org/2018/credentials/v1"
+            uri: "/.well-known/verifiablePresentationSchema.json"
           }
         ]
       }

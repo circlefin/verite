@@ -13,15 +13,13 @@ import {
 } from "did-jwt-vc/lib/types"
 import { DidKey, resolver } from "./didKey"
 
-export const vcPayloadApplication = (subject: Issuer): JwtCredentialPayload => {
+export const vpPayloadApplication = (subject: Issuer): JwtPresentationPayload => {
   return {
     sub: subject.did,
-    vc: {
+    vp: {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
-      type: ["VerifiableCredential"],
-      credentialSubject: {
-        id: subject.did
-      }
+      type: ["VerifiablePresentation"],
+      holder: subject.did
     }
   }
 }

@@ -4,7 +4,7 @@
     "manifest_id": "Circle-KYCAMLAttestation",
     "format": {
       "jwt_vp": {
-        "alg": ["EdDSA", "ES256K"]
+        "alg": ["EdDSA"]
       }
     }
   },
@@ -13,30 +13,21 @@
     "definition_id": "32f54163-7166-48f1-93d8-ff217bdb0653",
     "descriptor_map": [
       {
-        "id": "input_1",
+        "id": "proofOfIdentifierControlVP",
         "format": "jwt_vp",
         "path": "$.presentation"
       }
     ]
   },
   "presentation": {
-    "verifiableCredential": [
-      {
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
-        "type": ["VerifiableCredential"],
-        "credentialSubject": {
-          "id": "did:key:z6MkfxQU7dy8eKxyHpG267FV23agZQu9zmokd8BprepfHALi"
-        }
-      }
-    ],
-    "holder": "did:key:z6MkfxQU7dy8eKxyHpG267FV23agZQu9zmokd8BprepfHALi",
-    "proof": {
-      "type": "Ed25519Signature2018",
-      "created": "2020-12-08T20:12:18Z",
-      "challenge": "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e60",
-      "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..MfVEy102c4oZA_G98G6HUxEmfXFLEIWbX9C36zF_cA-D8EF8jRMQWc5eJpMn3hgLm2xhPw8GzTrnwPHa37L-DA",
-      "proofPurpose": "authentication",
-      "verificationMethod": "did:key:z6MksMYtQSvQsfk3KZy7vxBzjcBJhx1i7TaLuvJePPPDEAjH#z6MksMYtQSvQsfk3KZy7vxBzjcBJhx1i7TaLuvJePPPDEAjH"
-    }
+    "iss": "did:example:456",
+    "sub": "did:example:456",
+    "vp": {
+      "@context": [ "https://www.w3.org/2018/credentials/v1" ],
+      "type": [ "VerifiablePresentation" ],
+      "holder": "did:example:456"
+    },
+    "nonce": "7cec01f7-82ee-4474-a4e6-feaaa7351e48",
+    "aud": "verifier.com"
   }
 }
