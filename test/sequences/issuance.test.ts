@@ -1,10 +1,10 @@
 import { asyncMap } from "lib/async-fns"
-import { decodeVc } from "lib/credentials"
-import { randomDidKey } from "lib/didKey"
 import { createFullfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
 import { issuer } from "lib/sign-utils"
+import { decodeVc } from "lib/verity/credentials"
+import { randomDidKey } from "lib/verity/didKey"
 
 describe("issuance", () => {
   it("just works", async () => {

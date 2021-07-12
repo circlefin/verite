@@ -11,9 +11,9 @@ import {
   VerifiedCredential,
   VerifiedPresentation
 } from "did-jwt-vc/lib/types"
-import { DidKey, resolver } from "./didKey"
+import { DidKey, didKeyResolver } from "lib/verity"
 
-export const vcPayloadApplication = (subject: Issuer): JwtCredentialPayload => {
+export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
   return {
     sub: subject.did,
     vc: {
@@ -26,10 +26,10 @@ export const vcPayloadApplication = (subject: Issuer): JwtCredentialPayload => {
   }
 }
 
-export const vcPayloadKYCFulfillment = (
+export function vcPayloadKYCFulfillment(
   subject: string,
   kycAttestation: Record<string, unknown>
-): JwtCredentialPayload => {
+): JwtCredentialPayload {
   return {
     sub: subject,
     vc: {
@@ -49,8 +49,8 @@ export const vcPayloadKYCFulfillment = (
 /**
  * Decodes a JWT with a Verifiable Credential payload.
  */
-export const decodeVc = (vc: JWT): Promise<VerifiedCredential> => {
-  return verifyCredential(vc, resolver)
+export function decodeVc(vc: JWT): Promise<VerifiedCredential> {
+  return verifyCredential(vc, didKeyResolver)
 }
 
 export function vpPayload(vcJwt: JWT | JWT[]): JwtPresentationPayload {
@@ -66,8 +66,8 @@ export function vpPayload(vcJwt: JWT | JWT[]): JwtPresentationPayload {
 /**
  * Decode a JWT with a Verifiable Presentation payload.
  */
-export const decodeVp = async (vpJwt: JWT): Promise<VerifiedPresentation> => {
-  return verifyPresentation(vpJwt, resolver)
+export async function decodeVp(vpJwt: JWT): Promise<VerifiedPresentation> {
+  return verifyPresentation(vpJwt, didKeyResolver)
 }
 
 export function issuerFromDid(did: DidKey): Issuer {

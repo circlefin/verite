@@ -1,8 +1,8 @@
 import { createMocks } from "node-mocks-http"
 import { createUser } from "lib/database"
-import { randomDidKey } from "lib/didKey"
 import { findManifestById, inssuanceManifestToken } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
+import { randomDidKey } from "lib/verity/didKey"
 import handler from "pages/api/issuance/submission/[token]"
 
 describe("POST /issuance/submission/[token]", () => {
