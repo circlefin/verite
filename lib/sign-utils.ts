@@ -1,16 +1,20 @@
 import { EdDSASigner } from "did-jwt"
-import { Issuer, createVerifiableCredentialJwt } from "did-jwt-vc"
+import {
+  Issuer as DidJwtIssuer,
+  createVerifiableCredentialJwt
+} from "did-jwt-vc"
+import { JWT } from "did-jwt-vc/lib/types"
 
 const did = process.env.ISSUER_DID
-const secret = Buffer.from(process.env.ISSUER_SECRET, "hex")
+const secret = process.env.ISSUER_SECRET
 
-export const issuer: Issuer = {
+export const issuer: DidJwtIssuer = {
   did: did,
   alg: "EdDSA",
   signer: EdDSASigner(secret)
 }
 
 // TODO(kim): fix types
-export const signVc = async (vcPayload: any): Promise<any> => {
+export const signVc = async (vcPayload: any): Promise<JWT> => {
   return createVerifiableCredentialJwt(vcPayload, issuer)
 }
