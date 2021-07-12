@@ -68,9 +68,9 @@ export const resolver: Resolvable = {
     const result = await didKeyEd25519.resolve(didUrl)
 
     return {
-      didResolutionMetadata: result.didResolutionMetadata,
+      didResolutionMetadata: {},
       didDocument: result.didDocument,
-      didDocumentMetadata: result.didDocumentMetadata
+      didDocumentMetadata: {}
     }
   }
 }

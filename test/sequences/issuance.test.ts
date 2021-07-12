@@ -54,6 +54,7 @@ describe("issuance", () => {
     )
 
     await asyncMap(fulfillment.verifiableCredential, async (vc) => {
+      console.log(vc)
       const { verifiableCredential } = await decodeVc(vc)
       expect(verifiableCredential.credentialSubject.id).toEqual(
         clientDidKey.controller
