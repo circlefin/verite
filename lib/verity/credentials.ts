@@ -1,4 +1,7 @@
 import {
+  EdDSASigner
+} from "did-jwt"
+import {
   JwtCredentialPayload,
   verifyCredential,
   JwtPresentationPayload,
@@ -11,7 +14,7 @@ import {
 } from "did-jwt-vc/lib/types"
 
 import { verifyPresentation } from "lib/sign-utils"
-import { didKeyResolver } from "lib/verity"
+import { DidKey, didKeyResolver } from "lib/verity"
 
 export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
   return {
@@ -33,7 +36,8 @@ export function vpPayloadApplication(subject: Issuer): JwtPresentationPayload {
     vp: {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation"],
-      holder:  subject.did
+      holder:  subject.did,
+      verifiableCredential: [] // TODO!
     }
   }
 }

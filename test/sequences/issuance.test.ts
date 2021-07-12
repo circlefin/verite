@@ -28,8 +28,8 @@ describe("issuance", () => {
       clientDidKey,
       kycManifest
     )
-    expect(application.credential_submission).toBeDefined()
-    expect(application.credential_submission.manifest_id).toEqual(
+    expect(application.credential_application).toBeDefined()
+    expect(application.credential_application.manifest_id).toEqual(
       "KYCAMLAttestation"
     )
     expect(application.presentation_submission).toBeDefined()
@@ -53,7 +53,6 @@ describe("issuance", () => {
     )
 
     await asyncMap(fulfillment.verifiableCredential, async (vc) => {
-      console.log(vc)
       const { verifiableCredential } = await decodeVc(vc)
       expect(verifiableCredential.credentialSubject.id).toEqual(
         clientDidKey.controller

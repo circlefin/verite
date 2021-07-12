@@ -2,7 +2,7 @@ import { createVerifiableCredentialJwt, Issuer } from "did-jwt-vc"
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { asyncMap } from "lib/async-fns"
-import { decodeVc, vcPayloadKYCFulfillment } from "lib/verity"
+import { decodeVc, decodeVp, vcPayloadKYCFulfillment } from "lib/verity"
 import { DescriptorMap } from "types/shared/DescriptorMap"
 
 export async function createFullfillment(
@@ -16,8 +16,10 @@ export async function createFullfillment(
       (d, i) => {
         return {
           id: d.id,
-          format: "jwt_vc",
-          path: `$.presentation[${i}]`
+          format: "jwt_vp",
+          path: `$.presentation`
+          //format: "jwt_vc",
+          //path: `$.presentation.credential[${i}]`
         }
       }
     ) as DescriptorMap[]

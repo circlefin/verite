@@ -1,7 +1,7 @@
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
-import { findManifestById } from "./manifest"
 import { asyncMap } from "lib/async-fns"
+import { findManifestById } from "lib/issuance/manifest"
 import { createVerifiablePresentationJwt } from 'lib/sign-utils'
 import {
   vcPayloadApplication,

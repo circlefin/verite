@@ -1,8 +1,6 @@
 import jwt from "jsonwebtoken"
 import { findUser, User } from "lib/database"
-import { CredentialIssuer, generateKycAmlManifest } from "lib/verity"
-
-import { CredentialManifest } from "types"
+import { CredentialIssuer, CredentialManifest, generateKycAmlManifest } from "lib/verity"
 
 const JWT_ALGORITHM = "EdDSA"
 const JWT_EXPIRES_IN = "1h"
