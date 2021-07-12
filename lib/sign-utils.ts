@@ -2,7 +2,7 @@ import { EdDSASigner } from "did-jwt"
 import { Issuer, createVerifiableCredentialJwt } from "did-jwt-vc"
 
 const did = process.env.ISSUER_DID
-const secret = Buffer.from(process.env.ISSUER_SECRET, "utf8")
+const secret = Buffer.from(process.env.ISSUER_SECRET, "hex")
 
 export const issuer: Issuer = {
   did: did,

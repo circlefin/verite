@@ -10,7 +10,7 @@ describe("issuance", () => {
   it("just works", async () => {
     // 0. ISSUER: The issuer gets a DID
     expect(issuer.did).toEqual(
-      "did:key:z6Mki3hKaW5bPVjDSbhqqzrdcQpzcczC2XLPqAwkLhzziatV"
+      "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
     )
     expect(issuer.alg).toEqual("EdDSA")
 
@@ -20,6 +20,9 @@ describe("issuance", () => {
     expect(clientDidKey.privateKey).toBeDefined()
     expect(clientDidKey.controller.startsWith("did:key")).toBe(true)
     expect(clientDidKey.id.startsWith(clientDidKey.controller)).toBe(true)
+
+    console.log(clientDidKey)
+    console.log(Buffer.from(clientDidKey.privateKey).toString("hex"))
 
     // 2. ISSUER: Discovery of available credentials
     const kycManifest = findManifestById("Circle-KYCAMLAttestation")
