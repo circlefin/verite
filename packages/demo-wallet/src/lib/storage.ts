@@ -12,7 +12,10 @@ export const getOrCreateDidKey = async (): Promise<Did> => {
   const did = await AsyncStorage.getItem("did")
 
   if (did) {
-    return JSON.parse(did)
+    const parseDid = JSON.parse(did)
+    parseDid.privateKey = Uint8Array.from(Object.values(parseDid.privateKey))
+    parseDid.publicKey = Uint8Array.from(Object.values(parseDid.publicKey))
+    return parseDid
   }
 
   const newDid = random()
