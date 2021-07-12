@@ -1,10 +1,8 @@
 import jwt from "jsonwebtoken"
 import { findUser, User } from "lib/database"
-import { CredentialIssuer, generateKycAmlManifest } from "lib/verity"
+import { CredentialIssuer, CredentialManifest, generateKycAmlManifest } from "lib/verity"
 
-import { CredentialManifest } from "types"
-
-const JWT_ALGORITHM = "HS256"
+const JWT_ALGORITHM = "EdDSA"
 const JWT_EXPIRES_IN = "1h"
 
 export const inssuanceManifestToken = async (user: User): Promise<string> => {

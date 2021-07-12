@@ -2,8 +2,54 @@ import { createVerifiableCredentialJwt, Issuer } from "did-jwt-vc"
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { asyncMap } from "lib/async-fns"
-import { decodeVc, vcPayloadKYCFulfillment } from "lib/verity"
+import { decodeVc, decodeVp, vcPayloadKYCFulfillment } from "lib/verity"
 import { DescriptorMap } from "types/shared/DescriptorMap"
+
+export async function createFullfillmentFromVp(
+  issuer: Issuer,
+  application: any
+): Promise<any> {
+  const credentialFullfillment = {
+    id: uuidv4(),
+    manifest_id: application.credential_application.manifest_id,
+    descriptor_map: [{
+      id: "DID",
+      format: "jwt_vp",
+      path: `$.presentation`
+    }
+    ]
+  }
+
+  const { verifiablePresentation } = await decodeVp(application.presentation);
+
+  const payload = vcPayloadKYCFulfillment(
+    verifiablePresentation.holder,
+    {
+      authorityId: "did:web:circle.com",
+      approvalDate: "2020-06-01T14:00:00",
+      expirationDate: "2021-06-01T13:59:59",
+      authorityName: "Circle",
+      authorityUrl: "https://circle.com",
+      authorityCallbackUrl: "https://identity.circle.com",
+      serviceProviders: [
+        {
+          name: "Jumio",
+          score: 80
+        },
+        {
+          name: "OFAC-SDN",
+          score: 0
+        }
+      ]
+    }
+  )
+
+  const credential = await createVerifiableCredentialJwt(payload, issuer)
+  return {
+    credential_fulfillment: credentialFullfillment,
+    verifiableCredential: [credential]
+  }
+}
 
 export async function createFullfillment(
   issuer: Issuer,

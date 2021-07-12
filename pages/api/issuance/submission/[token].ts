@@ -3,9 +3,9 @@ import { ApiError } from "next/dist/next-server/server/api-utils"
 import { methodNotAllowed, validationError } from "lib/api-fns"
 import { createFullfillment } from "lib/issuance/fulfillment"
 import { validateCredentialSubmission } from "lib/issuance/submission"
-import { issuer } from "lib/sign-utils"
+import { issuer } from "lib/verity"
 import { CredentialFulfillmentResponse } from "types"
-import { CredentialApplication } from "types/presentation_submission/PresentationSubmission"
+import { CredentialApplicationWrapper } from "types/presentation_submission/PresentationSubmission"
 
 const handler: NextApiHandler<CredentialFulfillmentResponse | ApiError> =
   async (req, res) => {
@@ -13,7 +13,7 @@ const handler: NextApiHandler<CredentialFulfillmentResponse | ApiError> =
       return methodNotAllowed(res)
     }
 
-    const application: CredentialApplication = req.body
+    const application: CredentialApplicationWrapper = req.body
 
     try {
       validateCredentialSubmission(application)

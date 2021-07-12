@@ -1,26 +1,26 @@
-import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
-import { findManifestById } from "./manifest"
 import { asyncMap } from "lib/async-fns"
+import { findManifestById } from "lib/issuance/manifest"
+import { createVerifiablePresentationJwt } from 'lib/sign-utils'
 import {
-  vcPayloadApplication,
+  vpPayload,
   didKeyToIssuer,
   CredentialManifest,
   DidKey
 } from "lib/verity"
-
-import { CredentialApplication } from "types/presentation_submission/PresentationSubmission"
+import { CredentialApplicationWrapper } from "types/presentation_submission/PresentationSubmission"
 import { DescriptorMap } from "types/shared/DescriptorMap"
+
 
 export async function createCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest
-): Promise<any> {
+): Promise<CredentialApplicationWrapper> {
   const client = didKeyToIssuer(didKey)
 
-  // create credential_submission block
-  const credentialSubmission = {
+  // create credential_application block
+  const credentialApplication = {
     id: uuidv4(),
     manifest_id: manifest.id,
     format: {
@@ -36,29 +36,34 @@ export async function createCredentialApplication(
         return {
           id: d.id,
           format: "jwt_vp",
-          path: `$.presentation[${i}]`
+          path: `$.presentation`
         }
       }
     ) as DescriptorMap[]
   }
 
+  // TODO: come back to this
+  /*
   const credentials: JWT[] = (await asyncMap(
     manifest.presentation_definition.input_descriptors,
     async (d) => {
-      const payload = vcPayloadApplication(client)
-      return createVerifiableCredentialJwt(payload, client)
+      const payload = vpPayloadApplication(client)
+      return createVerifiablePresentationJwt(payload, client)
     }
-  )) as JWT[]
+  )) as JWT[]*/
+
+  const payload = vpPayload(client)
+  const vp = await createVerifiablePresentationJwt(payload, client)
 
   return {
-    credential_submission: credentialSubmission,
+    credential_application: credentialApplication,
     presentation_submission: presentationSubmission,
-    verifiableCredential: credentials
+    presentation: vp
   }
 }
 
 export function validateCredentialSubmission(
-  application: CredentialApplication
+  application: CredentialApplicationWrapper
 ): void {
   /**
    * Validate the format
@@ -67,7 +72,7 @@ export function validateCredentialSubmission(
    */
   if (
     !hasPaths(application, [
-      "credential_submission",
+      "credential_application",
       "presentation_submission",
       "presentation"
     ])
@@ -79,7 +84,7 @@ export function validateCredentialSubmission(
    * Ensure there is a valid manfiest with this manifest_id
    */
   const manifest = findManifestById(
-    application.credential_submission.manifest_id
+    application.credential_application.manifest_id
   )
   if (!manifest) {
     throw new Error("Invalid Manifest ID")

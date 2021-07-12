@@ -47,13 +47,13 @@ export function generateKycAmlManifest(
     },
     input_descriptors: [
       {
-        id: "kyc_input_1",
-        name: "DID",
+        id: "proofOfIdentifierControlVP",
+        name: "Proof of Control Verifiable Presentation",
         purpose:
-          "The DID subject of the credential, and proof of current control over the DID.",
+          "A Verifiable Presentation establishing proof of identifier control over the DID.",
         schema: [
           {
-            uri: "https://www.w3.org/2018/credentials/v1"
+            uri: "/.well-known/verifiablePresentationSchema.json"
           }
         ]
       }

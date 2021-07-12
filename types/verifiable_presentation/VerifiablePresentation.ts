@@ -46,5 +46,5 @@ export type VerifiableCredentialSubmission = {
 
 export type VerifiablePresentation = {
   id: string
-  credential: VerifiableCredential
+  verifiableCredential?: VerifiableCredential | VerifiableCredential[]
 }

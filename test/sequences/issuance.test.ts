@@ -1,9 +1,8 @@
 import { asyncMap } from "lib/async-fns"
-import { createFullfillment } from "lib/issuance/fulfillment"
+import { createFullfillmentFromVp } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
-import { issuer } from "lib/sign-utils"
-import { decodeVc, randomDidKey } from "lib/verity"
+import { decodeVc, issuer, randomDidKey } from "lib/verity"
 
 describe("issuance", () => {
   it("just works", async () => {
@@ -28,26 +27,25 @@ describe("issuance", () => {
       clientDidKey,
       kycManifest
     )
-    expect(application.credential_submission).toBeDefined()
-    expect(application.credential_submission.manifest_id).toEqual(
+    expect(application.credential_application).toBeDefined()
+    expect(application.credential_application.manifest_id).toEqual(
       "KYCAMLAttestation"
     )
     expect(application.presentation_submission).toBeDefined()
-    const verifiableCredentials: any[] = await asyncMap(
-      application.verifiableCredential,
-      decodeVc
-    )
+    expect(application.presentation_submission.definition_id).toEqual(kycManifest.presentation_definition.id)
+
+    /*
     verifiableCredentials.map(({ verifiableCredential }) => {
       expect(verifiableCredential.credentialSubject.id).toEqual(
         clientDidKey.controller
       )
       expect(verifiableCredential.type).toEqual(["VerifiableCredential"])
       expect(verifiableCredential.proof).toBeDefined()
-    })
+    })*/
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
-    const fulfillment = await createFullfillment(issuer, application)
+    const fulfillment = await createFullfillmentFromVp(issuer, application)
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
       "KYCAMLAttestation"
