@@ -2,7 +2,7 @@ import React from "react"
 import { View, StyleSheet, Button, Alert } from "react-native"
 import { requestIssuance } from "../src/lib/issuance"
 import { getOrCreateDidKey } from "../src/lib/storage"
-import { CredentialManifest } from "../types"
+import { DidKey, CredentialManifest } from "../src/lib/verity"
 
 /**
  * When scanning a QR code, it will encode a JSON object with a manifestUrl
@@ -28,9 +28,8 @@ const onScan = async ({ _type, data }) => {
   const description = outputDescriptor?.description
 
   // Prompt user to request the credentials or cancel
-  const did = (await getOrCreateDidKey()).controller
-  const proof = "fakeproof"
-  await promptRequestIssuance(name, description, submissionUrl, did, proof)
+  const did = await getOrCreateDidKey()
+  await promptRequestIssuance(name, description, submissionUrl, did, manifest)
 }
 
 /**
@@ -45,8 +44,8 @@ const promptRequestIssuance = async (
   title: string,
   description: string | undefined,
   url: string,
-  did: string,
-  proof: any
+  did: DidKey,
+  manifest: CredentialManifest
 ) => {
   Alert.alert(title, description, [
     {
@@ -56,7 +55,7 @@ const promptRequestIssuance = async (
     {
       text: "Request",
       onPress: async () => {
-        const response = await requestIssuance(url, did, proof)
+        const response = await requestIssuance(url, did, manifest)
       }
     }
   ])
