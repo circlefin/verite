@@ -45,13 +45,11 @@ export async function createFullfillmentFromVp(
   )
 
   const credential = await createVerifiableCredentialJwt(payload, issuer)
-
   return {
     credential_fulfillment: credentialFullfillment,
     verifiableCredential: [credential]
   }
 }
-
 
 export async function createFullfillment(
   issuer: Issuer,

@@ -71,7 +71,6 @@ export function vcPayloadKYCFulfillment(
   }
 }
 
-
 /**
  * Decodes a JWT with a Verifiable Credential payload.
  */
@@ -86,14 +85,12 @@ export async function decodeVp(vpJwt: JWT): Promise<VerifiedPresentation> {
   return verifyPresentation(vpJwt, didKeyResolver)
 }
 
-
 /**
  * Sign a VC and return a JWT
  */
 export const signVc = async (vcPayload: any): Promise<JWT> => {
   return createVerifiableCredentialJwt(vcPayload, issuer)
 }
-
 
 /**
  * Sign a VP and return a JWT
