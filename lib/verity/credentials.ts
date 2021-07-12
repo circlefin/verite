@@ -1,4 +1,3 @@
-import { EdDSASigner } from "did-jwt"
 import {
   JwtCredentialPayload,
   verifyPresentation,
@@ -11,7 +10,7 @@ import {
   VerifiedCredential,
   VerifiedPresentation
 } from "did-jwt-vc/lib/types"
-import { DidKey, didKeyResolver } from "lib/verity"
+import { didKeyResolver } from "lib/verity"
 
 export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
   return {
@@ -68,12 +67,4 @@ export function vpPayload(vcJwt: JWT | JWT[]): JwtPresentationPayload {
  */
 export async function decodeVp(vpJwt: JWT): Promise<VerifiedPresentation> {
   return verifyPresentation(vpJwt, didKeyResolver)
-}
-
-export function issuerFromDid(did: DidKey): Issuer {
-  return {
-    did: did.controller,
-    signer: EdDSASigner(did.privateKey),
-    alg: "EdDSA"
-  }
 }

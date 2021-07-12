@@ -1,11 +1,13 @@
 import { randomBytes } from "crypto"
 import * as ed25519 from "@stablelib/ed25519"
 import * as didKeyEd25519 from "@transmute/did-key-ed25519"
+import { EdDSASigner } from "did-jwt"
+import { Issuer } from "did-jwt-vc"
 import { Resolvable, DIDResolutionResult } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
 
-export interface DidKey {
+export type DidKey = {
   id: string
   controller: string
   publicKey: Uint8Array
@@ -49,6 +51,17 @@ export function generateDidKey({ secureRandom }: DidKeyParams): DidKey {
 export function randomDidKey(): DidKey {
   const secureRandom = () => new Uint8Array(randomBytes(32))
   return generateDidKey({ secureRandom })
+}
+
+/**
+ * Returns an `Issuer` instance for a given did:key
+ */
+export function didKeyToIssuer(didKey: DidKey): Issuer {
+  return {
+    did: didKey.controller,
+    signer: EdDSASigner(didKey.privateKey),
+    alg: "EdDSA"
+  }
 }
 
 /**
