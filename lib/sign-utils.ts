@@ -11,10 +11,10 @@ import {
   W3CPresentation,
   Verifiable
 } from "did-jwt-vc"
-import { normalizeCredential } from "did-jwt-vc/lib/converters"
-import { JWT} from "did-jwt-vc/lib/types"
+import { DEFAULT_JWT_PROOF_TYPE, JWT_ALG } from "did-jwt-vc/lib/constants"
+import { asArray, normalizeCredential, notEmpty } from "did-jwt-vc/lib/converters"
+import { CreateCredentialOptions, CreatePresentationOptions, JWT, VerifyPresentationOptions} from "did-jwt-vc/lib/types"
 
-export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'
 const did = process.env.ISSUER_DID
 const secret = process.env.ISSUER_SECRET
 
@@ -38,47 +38,12 @@ function deepCopy<T>(source: T): T {
     : (source as T)
 }
 
-
 type DeepPartial<T> = T extends Record<string, unknown> ? { [K in keyof T]?: DeepPartial<T[K]> } : T
 
 // TODO(kim): fix types
 export const signVc = async (vcPayload: any): Promise<JWT> => {
   return createVerifiableCredentialJwt(vcPayload, issuer)
 }
-
-
-export interface CreateCredentialOptions {
-  /**
-   * Determines whether the JSON->JWT transformation will remove the original fields from the input payload.
-   * See https://www.w3.org/TR/vc-data-model/#jwt-encoding
-   *
-   * @default true
-   */
-  removeOriginalFields?: boolean
-
-  /**
-   * Allows including or overriding some header parameters for the resulting JWT.
-   * If the issuer or holder does not list an `alg`, then the one specified in `header` will be used
-   */
-  header?: Partial<JWTHeader>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [x: string]: any
-}
-export interface CreatePresentationOptions extends CreateCredentialOptions {
-  domain?: string
-  challenge?: string
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function asArray(arg: any | any[]): any[] {
-  return Array.isArray(arg) ? arg : [arg]
-}
-
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
-}
-
-export const JWT_ALG = 'ES256K'
 
 export async function createVerifiablePresentationJwt(
   payload: JwtPresentationPayload | PresentationPayload,
