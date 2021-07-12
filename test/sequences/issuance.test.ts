@@ -1,10 +1,9 @@
 import { asyncMap } from "lib/async-fns"
-import { decodeVc } from "lib/credentials"
-import { randomDidKey } from "lib/didKey"
 import { createFullfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
 import { issuer } from "lib/sign-utils"
+import { decodeVc, randomDidKey } from "lib/verity"
 
 describe("issuance", () => {
   it("just works", async () => {
@@ -21,11 +20,8 @@ describe("issuance", () => {
     expect(clientDidKey.controller.startsWith("did:key")).toBe(true)
     expect(clientDidKey.id.startsWith(clientDidKey.controller)).toBe(true)
 
-    console.log(clientDidKey)
-    console.log(Buffer.from(clientDidKey.privateKey).toString("hex"))
-
     // 2. ISSUER: Discovery of available credentials
-    const kycManifest = findManifestById("Circle-KYCAMLAttestation")
+    const kycManifest = findManifestById("KYCAMLAttestation")
 
     // 3. CLIENT: Requesting the credential
     const application = await createCredentialApplication(
@@ -34,7 +30,7 @@ describe("issuance", () => {
     )
     expect(application.credential_submission).toBeDefined()
     expect(application.credential_submission.manifest_id).toEqual(
-      "Circle-KYCAMLAttestation"
+      "KYCAMLAttestation"
     )
     expect(application.presentation_submission).toBeDefined()
     const verifiableCredentials: any[] = await asyncMap(
@@ -54,7 +50,7 @@ describe("issuance", () => {
     const fulfillment = await createFullfillment(issuer, application)
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
-      "Circle-KYCAMLAttestation"
+      "KYCAMLAttestation"
     )
 
     await asyncMap(fulfillment.verifiableCredential, async (vc) => {

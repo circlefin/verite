@@ -1,12 +1,8 @@
-import {
-  createVerifiableCredentialJwt,
-  createVerifiablePresentationJwt,
-  Issuer
-} from "did-jwt-vc"
+import { createVerifiableCredentialJwt, Issuer } from "did-jwt-vc"
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { asyncMap } from "lib/async-fns"
-import { decodeVc, vcPayloadKYCFulfillment } from "lib/credentials"
+import { decodeVc, vcPayloadKYCFulfillment } from "lib/verity"
 import { DescriptorMap } from "types/shared/DescriptorMap"
 
 export async function createFullfillment(
