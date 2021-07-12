@@ -1,6 +1,6 @@
 import { createMocks } from "node-mocks-http"
-import { createUser } from "lib/database"
-import { findManifestById, inssuanceManifestToken } from "lib/issuance/manifest"
+import { createUser, temporaryAuthToken } from "lib/database"
+import { findManifestById } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
 import { randomDidKey } from "lib/verity"
 import handler from "pages/api/issuance/submission/[token]"
@@ -8,7 +8,7 @@ import handler from "pages/api/issuance/submission/[token]"
 describe("POST /issuance/submission/[token]", () => {
   it("returns a verified credential", async () => {
     const user = createUser("test@test.com", "testing")
-    const token = await inssuanceManifestToken(user)
+    const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
     const credentialApplication = await createCredentialApplication(
@@ -34,10 +34,11 @@ describe("POST /issuance/submission/[token]", () => {
 
   it("returns an error if not a POST", async () => {
     const user = createUser("test@test.com", "testing")
-    const token = await inssuanceManifestToken(user)
+    const token = await temporaryAuthToken(user)
     const { req, res } = createMocks({
       method: "GET",
-      query: { token, body: {} }
+      query: { token },
+      body: {}
     })
 
     await handler(req, res)
@@ -46,6 +47,22 @@ describe("POST /issuance/submission/[token]", () => {
     expect(res._getJSONData()).toEqual({
       status: 405,
       message: "Method not allowed"
+    })
+  })
+
+  it("returns an error if the auth token is invalid", async () => {
+    const { req, res } = createMocks({
+      method: "POST",
+      query: { token: "invalid" },
+      body: {}
+    })
+
+    await handler(req, res)
+
+    expect(res.statusCode).toBe(404)
+    expect(res._getJSONData()).toEqual({
+      status: 404,
+      message: "Not found"
     })
   })
 })
