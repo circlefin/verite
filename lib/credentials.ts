@@ -1,7 +1,6 @@
 import { EdDSASigner } from "did-jwt"
 import {
   JwtCredentialPayload,
-  verifyPresentation,
   verifyCredential,
   JwtPresentationPayload,
   Issuer
@@ -12,13 +11,16 @@ import {
   VerifiedPresentation
 } from "did-jwt-vc/lib/types"
 import { DidKey, resolver } from "./didKey"
+import {verifyPresentation } from "./sign-utils"
 
 export const vpPayloadApplication = (subject: Issuer): JwtPresentationPayload => {
   return {
+    iss: subject.did,
     sub: subject.did,
     vp: {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation"],
+      verifiableCredential: [], // TODO: why required?
       holder: subject.did
     }
   }

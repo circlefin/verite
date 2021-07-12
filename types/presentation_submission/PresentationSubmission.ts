@@ -6,7 +6,7 @@ export type CredentialApplication = {
   "@context"?: string[]
   type: string[]
 
-  credential_submission: CredentialSubmission
+  credential_application: CredentialSubmission
   presentation_submission?: PresentationSubmission
   presentation: JWT
   // {

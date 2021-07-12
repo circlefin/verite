@@ -1,13 +1,16 @@
-import { createVerifiableCredentialJwt, createVerifiablePresentationJwt } from "did-jwt-vc"
 import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { findManifestById } from "./manifest"
 import { asyncMap } from "lib/async-fns"
 import { issuerFromDid, vpPayloadApplication, vpPayload } from "lib/credentials"
 import { DidKey } from "lib/didKey"
+import { createVerifiablePresentationJwt } from 'lib/sign-utils'
 import { CredentialManifest } from "types"
 import { CredentialApplication } from "types/presentation_submission/PresentationSubmission"
 import { DescriptorMap } from "types/shared/DescriptorMap"
+
+
+
 
 export async function createCredentialApplication(
   did: DidKey,
@@ -38,18 +41,23 @@ export async function createCredentialApplication(
     ) as DescriptorMap[]
   }
 
+  // TODO: come back to this
+  /*
   const credentials: JWT[] = (await asyncMap(
     manifest.presentation_definition.input_descriptors,
     async (d) => {
       const payload = vpPayloadApplication(client)
       return createVerifiablePresentationJwt(payload, client)
     }
-  )) as JWT[]
+  )) as JWT[]*/
+
+  const payload = vpPayloadApplication(client)
+  const vp = await createVerifiablePresentationJwt(payload, client)
 
   return {
     credential_application: credentialApplication,
     presentation_submission: presentationSubmission,
-    verifiableCredential: credentials
+    presentation: vp
   }
 }
 
@@ -65,7 +73,7 @@ export function validateCredentialSubmission(
     !hasPaths(application, [
       "credential_application",
       "presentation_submission",
-      "vp"
+      "presentation"
     ])
   ) {
     throw new Error("Invalid JSON format")
@@ -75,7 +83,7 @@ export function validateCredentialSubmission(
    * Ensure there is a valid manfiest with this manifest_id
    */
   const manifest = findManifestById(
-    application.credential_submission.manifest_id
+    application.credential_application.manifest_id
   )
   if (!manifest) {
     throw new Error("Invalid Manifest ID")

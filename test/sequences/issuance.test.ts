@@ -29,22 +29,21 @@ describe("issuance", () => {
       clientDidKey,
       kycManifest
     )
-    expect(application.credential_submission).toBeDefined()
-    expect(application.credential_submission.manifest_id).toEqual(
+    expect(application.credential_application).toBeDefined()
+    expect(application.credential_application.manifest_id).toEqual(
       "Circle-KYCAMLAttestation"
     )
     expect(application.presentation_submission).toBeDefined()
-    const verifiableCredentials: any[] = await asyncMap(
-      application.verifiableCredential,
-      decodeVc
-    )
+    expect(application.presentation_submission.definition_id).toEqual(kycManifest.presentation_definition.id)
+
+    /*
     verifiableCredentials.map(({ verifiableCredential }) => {
       expect(verifiableCredential.credentialSubject.id).toEqual(
         clientDidKey.controller
       )
       expect(verifiableCredential.type).toEqual(["VerifiableCredential"])
       expect(verifiableCredential.proof).toBeDefined()
-    })
+    })*/
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
