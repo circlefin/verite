@@ -2,11 +2,8 @@ import { JWT } from "did-jwt-vc/lib/types"
 import { ClaimFormatDesignation } from "../../lib/verity"
 import { DescriptorMap } from "../shared/DescriptorMap"
 
-export type CredentialApplication = {
-  "@context"?: string[]
-  type: string[]
-
-  credential_application: CredentialSubmission
+export type CredentialApplicationWrapper = {
+  credential_application: CredentialApplication
   presentation_submission?: PresentationSubmission
   presentation: JWT
   // {
@@ -16,7 +13,7 @@ export type CredentialApplication = {
   // }
 }
 
-export type CredentialSubmission = {
+export type CredentialApplication = {
   id: string
   manifest_id: string
   format: ClaimFormatDesignation

@@ -1,7 +1,6 @@
 
-import { createJWT, EdDSASigner, decodeJWT, verifyJWT, JWTHeader } from "did-jwt"
+import { createJWT, decodeJWT, EdDSASigner, verifyJWT, JWTHeader } from "did-jwt"
 import {
-  Issuer as DidJwtIssuer,
   createVerifiableCredentialJwt,
   JwtPresentationPayload,
   PresentationPayload, 
@@ -18,11 +17,12 @@ import { CreateCredentialOptions, CreatePresentationOptions, JWT, VerifyPresenta
 const did = process.env.ISSUER_DID
 const secret = process.env.ISSUER_SECRET
 
-export const issuer: DidJwtIssuer = {
+export const issuer: Issuer = {
   did: did,
   alg: "EdDSA",
   signer: EdDSASigner(secret)
 }
+
 
 function deepCopy<T>(source: T): T {
   return Array.isArray(source)

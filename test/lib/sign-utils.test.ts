@@ -4,7 +4,7 @@ import loadEnvConfig from "test/support/setup"
 
 describe("sign VC", () => {
   // TODO(kim): re-enable after setting up test secret
-  test.skip("signs a VC", async () => {
+it("signs a VC", async () => {
     await loadEnvConfig()
     const vcPayload: JwtCredentialPayload = {
       sub: "did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4",

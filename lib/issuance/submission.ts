@@ -5,21 +5,19 @@ import { findManifestById } from "lib/issuance/manifest"
 import { createVerifiablePresentationJwt } from 'lib/sign-utils'
 import {
   vcPayloadApplication,
-  vpPayloadApplication,
+  vpPayload,
   didKeyToIssuer,
   CredentialManifest,
   DidKey
 } from "lib/verity"
-import { CredentialApplication } from "types/presentation_submission/PresentationSubmission"
+import { CredentialApplicationWrapper } from "types/presentation_submission/PresentationSubmission"
 import { DescriptorMap } from "types/shared/DescriptorMap"
-
-
 
 
 export async function createCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest
-): Promise<any> {
+): Promise<CredentialApplicationWrapper> {
   const client = didKeyToIssuer(didKey)
 
   // create credential_application block
@@ -55,7 +53,7 @@ export async function createCredentialApplication(
     }
   )) as JWT[]*/
 
-  const payload = vpPayloadApplication(client)
+  const payload = vpPayload(client)
   const vp = await createVerifiablePresentationJwt(payload, client)
 
   return {
@@ -66,7 +64,7 @@ export async function createCredentialApplication(
 }
 
 export function validateCredentialSubmission(
-  application: CredentialApplication
+  application: CredentialApplicationWrapper
 ): void {
   /**
    * Validate the format

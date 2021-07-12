@@ -1,7 +1,4 @@
 import {
-  EdDSASigner
-} from "did-jwt"
-import {
   JwtCredentialPayload,
   verifyCredential,
   JwtPresentationPayload,
@@ -14,7 +11,7 @@ import {
 } from "did-jwt-vc/lib/types"
 
 import { verifyPresentation } from "lib/sign-utils"
-import { DidKey, didKeyResolver } from "lib/verity"
+import { didKeyResolver } from "lib/verity"
 
 export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
   return {
@@ -29,7 +26,7 @@ export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
   }
 }
 
-export function vpPayloadApplication(subject: Issuer): JwtPresentationPayload {
+export function vpPayload(subject: Issuer, vcJwt?: JWT | JWT[]): JwtPresentationPayload {
   return {
     iss: subject.did,
     sub: subject.did,
@@ -37,7 +34,7 @@ export function vpPayloadApplication(subject: Issuer): JwtPresentationPayload {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation"],
       holder:  subject.did,
-      verifiableCredential: [] // TODO!
+      verifiableCredential: vcJwt ? [vcJwt].flat() : []
     }
   }
 }
@@ -76,24 +73,3 @@ export function decodeVc(vc: JWT): Promise<VerifiedCredential> {
  export async function decodeVp(vpJwt: JWT): Promise<VerifiedPresentation> {
   return verifyPresentation(vpJwt, didKeyResolver)
 }
-
-export function vpPayload(vcJwt: JWT | JWT[]): JwtPresentationPayload {
-  return {
-    vp: {
-      "@context": ["https://www.w3.org/2018/credentials/v1"],
-      type: ["VerifiablePresentation"],
-      verifiableCredential: [vcJwt].flat()
-    }
-  }
-}
-
-export function issuerFromDid(did: DidKey): Issuer {
-  return {
-    did: did.controller,
-    signer: EdDSASigner(did.privateKey),
-    alg: "EdDSA"
-  }
-}
-
-
-
