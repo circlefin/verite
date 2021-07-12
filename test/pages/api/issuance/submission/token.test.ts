@@ -1,16 +1,25 @@
 import { createMocks } from "node-mocks-http"
 import { createUser } from "lib/database"
-import { inssuanceManifestToken } from "lib/issuance/manifest"
+import { randomDidKey } from "lib/didKey"
+import { findManifestById, inssuanceManifestToken } from "lib/issuance/manifest"
+import { createCredentialApplication } from "lib/issuance/submission"
 import handler from "pages/api/issuance/submission/[token]"
 
 describe("POST /issuance/submission/[token]", () => {
   it("returns a verified credential", async () => {
     const user = createUser("test@test.com", "testing")
     const token = await inssuanceManifestToken(user)
+    const clientDid = await randomDidKey()
+    const kycManifest = findManifestById("Circle-KYCAMLAttestation")
+    const credentialApplication = await createCredentialApplication(
+      clientDid,
+      kycManifest
+    )
 
     const { req, res } = createMocks({
       method: "POST",
-      query: { token, body: {} }
+      query: { token },
+      body: credentialApplication
     })
 
     await handler(req, res)

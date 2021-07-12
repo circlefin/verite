@@ -1,7 +1,7 @@
 // https://identity.foundation/credential-manifest/#general-composition
 
+import { ClaimFormatDesignation } from "../shared/ClaimFormatDesignation"
 import { Issuer } from "../shared/Issuer"
-import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
 import { OutputDescriptor } from "./OutputDescriptor"
 import { PresentationDefinition } from "./PresentationDefinition"
 

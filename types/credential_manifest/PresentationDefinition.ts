@@ -1,4 +1,4 @@
-import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
+import { ClaimFormatDesignation } from "../shared/ClaimFormatDesignation"
 import { InputDescriptor } from "./InputDescriptor"
 
 // https://identity.foundation/presentation-exchange/#presentation-definition
