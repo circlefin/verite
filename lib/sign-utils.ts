@@ -1,7 +1,6 @@
-
-import { createJWT, decodeJWT, EdDSASigner, verifyJWT, JWTHeader } from "did-jwt"
+// This contains workarounds for did-jwt-vc
+import { createJWT, decodeJWT, verifyJWT } from "did-jwt"
 import {
-  createVerifiableCredentialJwt,
   JwtPresentationPayload,
   PresentationPayload, 
   Issuer, 
@@ -12,16 +11,7 @@ import {
 } from "did-jwt-vc"
 import { DEFAULT_JWT_PROOF_TYPE, JWT_ALG } from "did-jwt-vc/lib/constants"
 import { asArray, normalizeCredential, notEmpty } from "did-jwt-vc/lib/converters"
-import { CreateCredentialOptions, CreatePresentationOptions, JWT, VerifyPresentationOptions} from "did-jwt-vc/lib/types"
-
-const did = process.env.ISSUER_DID
-const secret = process.env.ISSUER_SECRET
-
-export const issuer: Issuer = {
-  did: did,
-  alg: "EdDSA",
-  signer: EdDSASigner(secret)
-}
+import { CreatePresentationOptions, JWT, VerifyPresentationOptions} from "did-jwt-vc/lib/types"
 
 
 function deepCopy<T>(source: T): T {
@@ -39,11 +29,6 @@ function deepCopy<T>(source: T): T {
 }
 
 type DeepPartial<T> = T extends Record<string, unknown> ? { [K in keyof T]?: DeepPartial<T[K]> } : T
-
-// TODO(kim): fix types
-export const signVc = async (vcPayload: any): Promise<JWT> => {
-  return createVerifiableCredentialJwt(vcPayload, issuer)
-}
 
 export async function createVerifiablePresentationJwt(
   payload: JwtPresentationPayload | PresentationPayload,

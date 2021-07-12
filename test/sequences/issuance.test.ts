@@ -1,9 +1,8 @@
 import { asyncMap } from "lib/async-fns"
-import { createFullfillment } from "lib/issuance/fulfillment"
+import { createFullfillmentFromVp } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
-import { issuer } from "lib/sign-utils"
-import { decodeVc, randomDidKey } from "lib/verity"
+import { decodeVc, issuer, randomDidKey } from "lib/verity"
 
 describe("issuance", () => {
   it("just works", async () => {
@@ -46,7 +45,7 @@ describe("issuance", () => {
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
-    const fulfillment = await createFullfillment(issuer, application)
+    const fulfillment = await createFullfillmentFromVp(issuer, application)
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
       "KYCAMLAttestation"

@@ -1,9 +1,8 @@
 import { JwtCredentialPayload } from "did-jwt-vc"
-import { signVc } from "lib/sign-utils"
+import { signVc } from "lib/verity"
 import loadEnvConfig from "test/support/setup"
 
 describe("sign VC", () => {
-  // TODO(kim): re-enable after setting up test secret
 it("signs a VC", async () => {
     await loadEnvConfig()
     const vcPayload: JwtCredentialPayload = {

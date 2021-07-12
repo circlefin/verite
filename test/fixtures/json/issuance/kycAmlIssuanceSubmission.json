@@ -13,7 +13,7 @@
     "definition_id": "32f54163-7166-48f1-93d8-ff217bdb0653",
     "descriptor_map": [
       {
-        "id": "proofOfIdentifierControlVP",
+        "id": "DID",
         "format": "jwt_vp",
         "path": "$.presentation"
       }

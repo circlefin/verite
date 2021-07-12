@@ -3,7 +3,7 @@ import { ApiError } from "next/dist/next-server/server/api-utils"
 import { methodNotAllowed, validationError } from "lib/api-fns"
 import { createFullfillment } from "lib/issuance/fulfillment"
 import { validateCredentialSubmission } from "lib/issuance/submission"
-import { issuer } from "lib/sign-utils"
+import { issuer } from "lib/verity"
 import { CredentialFulfillmentResponse } from "types"
 import { CredentialApplicationWrapper } from "types/presentation_submission/PresentationSubmission"
 

@@ -5,37 +5,81 @@ import { asyncMap } from "lib/async-fns"
 import { decodeVc, decodeVp, vcPayloadKYCFulfillment } from "lib/verity"
 import { DescriptorMap } from "types/shared/DescriptorMap"
 
-export async function createFullfillment(
+export async function createFullfillmentFromVp(
   issuer: Issuer,
   application: any
 ): Promise<any> {
   const credentialFullfillment = {
     id: uuidv4(),
     manifest_id: application.credential_application.manifest_id,
+    descriptor_map: [{
+      id: "DID",
+      format: "jwt_vp",
+      path: `$.presentation`
+    }
+    ]
+  }
+
+  const { verifiablePresentation } = await decodeVp(application.presentation);
+
+  const payload = vcPayloadKYCFulfillment(
+    verifiablePresentation.holder,
+    {
+      authorityId: "did:web:circle.com",
+      approvalDate: "2020-06-01T14:00:00",
+      expirationDate: "2021-06-01T13:59:59",
+      authorityName: "Circle",
+      authorityUrl: "https://circle.com",
+      authorityCallbackUrl: "https://identity.circle.com",
+      serviceProviders: [
+        {
+          name: "Jumio",
+          score: 80
+        },
+        {
+          name: "OFAC-SDN",
+          score: 0
+        }
+      ]
+    }
+  )
+
+  const credential = await createVerifiableCredentialJwt(payload, issuer)
+
+  return {
+    credential_fulfillment: credentialFullfillment,
+    verifiableCredential: [credential]
+  }
+}
+
+
+export async function createFullfillment(
+  issuer: Issuer,
+  application: any
+): Promise<any> {
+  const credentialFullfillment = {
+    id: uuidv4(),
+    manifest_id: application.credential_submission.manifest_id,
     descriptor_map: application.presentation_submission.descriptor_map.map(
       (d, i) => {
         return {
           id: d.id,
-          format: "jwt_vp",
-          path: `$.presentation`
-          //format: "jwt_vc",
-          //path: `$.presentation.credential[${i}]`
+          format: "jwt_vc",
+          path: `$.presentation.credential[${i}]`
         }
       }
     ) as DescriptorMap[]
   }
 
-  const { verifiablePresentation } = await decodeVp(application.presentation);
-  
-  //const credentials: JWT[] = (await asyncMap(
-    //application.presentation_submission.descriptor_map,
-   // async (d, i) => {
-   //   const { verifiablePresentation } = await decodeVp(
-    //    application.presentation[i]
-   //   )
+  const credentials: JWT[] = (await asyncMap(
+    application.presentation_submission.descriptor_map,
+    async (d, i) => {
+      const { verifiableCredential } = await decodeVc(
+        application.verifiableCredential[i]
+      )
 
       const payload = vcPayloadKYCFulfillment(
-        verifiablePresentation.holder,
+        verifiableCredential.credentialSubject.id,
         {
           authorityId: "did:web:circle.com",
           approvalDate: "2020-06-01T14:00:00",
@@ -56,12 +100,12 @@ export async function createFullfillment(
         }
       )
 
-     const credential = await createVerifiableCredentialJwt(payload, issuer)
-   // }
- // )) as JWT[]
+      return createVerifiableCredentialJwt(payload, issuer)
+    }
+  )) as JWT[]
 
   return {
     credential_fulfillment: credentialFullfillment,
-    verifiableCredential: [credential]
+    verifiableCredential: credentials
   }
 }

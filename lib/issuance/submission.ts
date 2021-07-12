@@ -4,7 +4,6 @@ import { asyncMap } from "lib/async-fns"
 import { findManifestById } from "lib/issuance/manifest"
 import { createVerifiablePresentationJwt } from 'lib/sign-utils'
 import {
-  vcPayloadApplication,
   vpPayload,
   didKeyToIssuer,
   CredentialManifest,
@@ -37,7 +36,7 @@ export async function createCredentialApplication(
         return {
           id: d.id,
           format: "jwt_vp",
-          path: `$.presentation[${i}]`
+          path: `$.presentation`
         }
       }
     ) as DescriptorMap[]
