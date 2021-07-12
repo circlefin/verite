@@ -2,7 +2,7 @@ import { createMocks } from "node-mocks-http"
 import { createUser } from "lib/database"
 import { findManifestById, inssuanceManifestToken } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
-import { randomDidKey } from "lib/verity/didKey"
+import { randomDidKey } from "lib/verity"
 import handler from "pages/api/issuance/submission/[token]"
 
 describe("POST /issuance/submission/[token]", () => {
@@ -10,7 +10,7 @@ describe("POST /issuance/submission/[token]", () => {
     const user = createUser("test@test.com", "testing")
     const token = await inssuanceManifestToken(user)
     const clientDid = await randomDidKey()
-    const kycManifest = findManifestById("Circle-KYCAMLAttestation")
+    const kycManifest = findManifestById("KYCAMLAttestation")
     const credentialApplication = await createCredentialApplication(
       clientDid,
       kycManifest
@@ -28,7 +28,7 @@ describe("POST /issuance/submission/[token]", () => {
 
     const response = res._getJSONData()
     expect(response.credential_fulfillment.manifest_id).toEqual(
-      "Circle-KYCAMLAttestation"
+      "KYCAMLAttestation"
     )
   })
 

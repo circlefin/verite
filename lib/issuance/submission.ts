@@ -3,9 +3,13 @@ import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { findManifestById } from "./manifest"
 import { asyncMap } from "lib/async-fns"
-import { vcPayloadApplication, didKeyToIssuer } from "lib/verity"
-import { DidKey } from "lib/verity/didKey"
-import { CredentialManifest } from "types"
+import {
+  vcPayloadApplication,
+  didKeyToIssuer,
+  CredentialManifest,
+  DidKey
+} from "lib/verity"
+
 import { CredentialApplication } from "types/presentation_submission/PresentationSubmission"
 import { DescriptorMap } from "types/shared/DescriptorMap"
 
