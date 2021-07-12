@@ -24,7 +24,7 @@ export default function Scanner({ navigation, route }) {
     return <Text>Requesting for camera permission</Text>
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>
+    return <Text>No access to camera. Go to settings and enable it.</Text>
   }
 
   return (
