@@ -9,7 +9,8 @@ import {
 } from "react-native"
 import { Colors } from "react-native/Libraries/NewAppScreen"
 
-import { getOrCreateDidKey, Did } from "../lib/storage"
+import { getOrCreateDidKey } from "../lib/storage"
+import { DidKey } from "../lib/verity"
 
 const Section: React.FC<{
   title: string
@@ -40,7 +41,7 @@ const Section: React.FC<{
 }
 
 const SettingsScreen = () => {
-  const [did, setDid] = useState<Did | null>(null)
+  const [did, setDid] = useState<DidKey | null>(null)
 
   useEffect(() => {
     ;(async () => {

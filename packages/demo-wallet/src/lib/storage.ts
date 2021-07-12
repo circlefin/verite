@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { random } from "./DidKey"
+import { randomDidKey } from "./verity"
 
 interface Did {
   id: string
@@ -18,7 +18,7 @@ export const getOrCreateDidKey = async (): Promise<Did> => {
     return parseDid
   }
 
-  const newDid = random()
+  const newDid = randomDidKey()
 
   await AsyncStorage.setItem("did", JSON.stringify(newDid))
 
