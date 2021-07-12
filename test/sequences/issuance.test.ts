@@ -1,16 +1,15 @@
 import { asyncMap } from "lib/async-fns"
-import { decodeVc } from "lib/credentials"
-import { randomDidKey } from "lib/didKey"
 import { createFullfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { createCredentialApplication } from "lib/issuance/submission"
 import { issuer } from "lib/sign-utils"
+import { decodeVc, randomDidKey } from "lib/verity"
 
 describe("issuance", () => {
   it("just works", async () => {
     // 0. ISSUER: The issuer gets a DID
     expect(issuer.did).toEqual(
-      "did:key:z6Mki3hKaW5bPVjDSbhqqzrdcQpzcczC2XLPqAwkLhzziatV"
+      "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
     )
     expect(issuer.alg).toEqual("EdDSA")
 
@@ -22,16 +21,16 @@ describe("issuance", () => {
     expect(clientDidKey.id.startsWith(clientDidKey.controller)).toBe(true)
 
     // 2. ISSUER: Discovery of available credentials
-    const kycManifest = findManifestById("Circle-KYCAMLAttestation")
+    const kycManifest = findManifestById("KYCAMLAttestation")
 
     // 3. CLIENT: Requesting the credential
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest
     )
-    expect(application.credential_application).toBeDefined()
-    expect(application.credential_application.manifest_id).toEqual(
-      "Circle-KYCAMLAttestation"
+    expect(application.credential_submission).toBeDefined()
+    expect(application.credential_submission.manifest_id).toEqual(
+      "KYCAMLAttestation"
     )
     expect(application.presentation_submission).toBeDefined()
     expect(application.presentation_submission.definition_id).toEqual(kycManifest.presentation_definition.id)
@@ -50,7 +49,7 @@ describe("issuance", () => {
     const fulfillment = await createFullfillment(issuer, application)
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
-      "Circle-KYCAMLAttestation"
+      "KYCAMLAttestation"
     )
 
     await asyncMap(fulfillment.verifiableCredential, async (vc) => {

@@ -1,4 +1,3 @@
-import { EdDSASigner } from "did-jwt"
 import {
   JwtCredentialPayload,
   verifyCredential,
@@ -10,26 +9,39 @@ import {
   VerifiedCredential,
   VerifiedPresentation
 } from "did-jwt-vc/lib/types"
-import { DidKey, resolver } from "./didKey"
-import {verifyPresentation } from "./sign-utils"
 
-export const vpPayloadApplication = (subject: Issuer): JwtPresentationPayload => {
+import { verifyPresentation } from "lib/sign-utils"
+import { didKeyResolver } from "lib/verity"
+
+export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
+  return {
+    sub: subject.did,
+    vc: {
+      "@context": ["https://www.w3.org/2018/credentials/v1"],
+      type: ["VerifiableCredential"],
+      credentialSubject: {
+        id: subject.did
+      }
+    }
+  }
+}
+
+export function vpPayloadApplication(subject: Issuer): JwtPresentationPayload {
   return {
     iss: subject.did,
     sub: subject.did,
     vp: {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation"],
-      verifiableCredential: [], // TODO: why required?
-      holder: subject.did
+      holder:  subject.did
     }
   }
 }
 
-export const vcPayloadKYCFulfillment = (
+export function vcPayloadKYCFulfillment(
   subject: string,
   kycAttestation: Record<string, unknown>
-): JwtCredentialPayload => {
+): JwtCredentialPayload {
   return {
     sub: subject,
     vc: {
@@ -46,11 +58,19 @@ export const vcPayloadKYCFulfillment = (
   }
 }
 
+
 /**
  * Decodes a JWT with a Verifiable Credential payload.
  */
-export const decodeVc = (vc: JWT): Promise<VerifiedCredential> => {
-  return verifyCredential(vc, resolver)
+export function decodeVc(vc: JWT): Promise<VerifiedCredential> {
+  return verifyCredential(vc, didKeyResolver)
+}
+
+/**
+ * Decode a JWT with a Verifiable Presentation payload.
+ */
+ export async function decodeVp(vpJwt: JWT): Promise<VerifiedPresentation> {
+  return verifyPresentation(vpJwt, didKeyResolver)
 }
 
 export function vpPayload(vcJwt: JWT | JWT[]): JwtPresentationPayload {
@@ -63,13 +83,6 @@ export function vpPayload(vcJwt: JWT | JWT[]): JwtPresentationPayload {
   }
 }
 
-/**
- * Decode a JWT with a Verifiable Presentation payload.
- */
-export const decodeVp = async (vpJwt: JWT): Promise<VerifiedPresentation> => {
-  return verifyPresentation(vpJwt, resolver)
-}
-
 export function issuerFromDid(did: DidKey): Issuer {
   return {
     did: did.controller,
@@ -77,3 +90,6 @@ export function issuerFromDid(did: DidKey): Issuer {
     alg: "EdDSA"
   }
 }
+
+
+

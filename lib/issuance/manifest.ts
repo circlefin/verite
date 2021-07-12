@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken"
 import { findUser, User } from "lib/database"
+import { CredentialIssuer, generateKycAmlManifest } from "lib/verity"
+
 import { CredentialManifest } from "types"
 
 const JWT_ALGORITHM = "EdDSA"
@@ -28,87 +30,32 @@ export const findUserFromManfiestToken = async (
   }
 }
 
-export const kycManifest: CredentialManifest = {
-  id: "Circle-KYCAMLAttestation",
-  version: "0.1.0",
-  issuer: {
-    id: "did:web:circle.com",
-    comment: "JSON-LD definition at https://circle.com/.well_known/did.json",
-    name: "Circle",
-    styles: {}
-  },
-  format: {
-    jwt_vc: {
-      alg: ["EdDSA"]
-    },
-    jwt_vp: {
-      alg: ["EdDSA"]
-    }
-  },
-  output_descriptors: [
-    {
-      id: "kycAttestationOutput",
-      schema: [
-        {
-          uri: "http://centre.io/schemas/identity/1.0.0/KYCAMLAttestation"
-        }
-      ],
-      name: "Proof of KYC from Circle",
-      description:
-        "Attestation that Circle has completed KYC/AML verification for this subject",
-      display: {
-        title: {
-          path: ["$.authorityName", "$.vc.authorityName"],
-          fallback: "Circle KYC Attestation"
-        },
-        subtitle: {
-          path: ["$.approvalDate", "$.vc.approvalDate"],
-          fallback: "Includes date of approval"
-        },
-        description: {
-          text: "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
-        }
-      },
-      styles: {
-        thumbnail: {
-          uri: "https://circle.com/img/logo.png",
-          alt: "Circle Logo"
-        },
-        hero: {
-          uri: "https://circle.com/img/kycCred.png",
-          alt: "KYC Visual"
-        },
-        background: {
-          color: "#ff0000"
-        },
-        text: {
-          color: "#d4d400"
-        }
-      }
-    }
-  ],
-  presentation_definition: {
-    id: "32f54163-7166-48f1-93d8-ff217bdb0653",
-    format: {
-      jwt_vp: {
-        alg: ["EdDSA"]
-      }
-    },
-    input_descriptors: [
-      {
-        id: "proofOfIdentifierControlVP",
-        name: "Proof of Control Verifiable Presentation",
-        purpose:
-          "A Verifiable Presentation establishing proof of identifier control over the DID.",
-        schema: [
-          {
-            uri: "/.well-known/verifiablePresentationSchema.json"
-          }
-        ]
-      }
-    ]
-  }
+export const circleIssuer: CredentialIssuer = {
+  id: "did:web:circle.com",
+  comment: "JSON-LD definition at https://circle.com/.well_known/did.json",
+  name: "Circle",
+  styles: {}
 }
+
+export const kycManifest: CredentialManifest = generateKycAmlManifest(
+  circleIssuer,
+  {
+    thumbnail: {
+      uri: "https://circle.com/img/logo.png",
+      alt: "Circle Logo"
+    },
+    hero: {
+      uri: "https://circle.com/img/kycCred.png",
+      alt: "KYC Visual"
+    },
+    background: {
+      color: "#ff0000"
+    },
+    text: {
+      color: "#d4d400"
+    }
+  }
+)
 
 export const MANIFEST_MAP: Record<string, CredentialManifest> = {
   kyc: kycManifest
@@ -116,8 +63,6 @@ export const MANIFEST_MAP: Record<string, CredentialManifest> = {
 
 export const MANIFESTS: CredentialManifest[] = Object.values(MANIFEST_MAP)
 
-export const findManifestById = (
-  id: string
-): CredentialManifest | undefined => {
+export function findManifestById(id: string): CredentialManifest | undefined {
   return MANIFESTS.find((m) => m.id === id)
 }

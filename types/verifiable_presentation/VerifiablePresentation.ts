@@ -1,4 +1,4 @@
-import { Issuer } from "types/shared/Issuer"
+import { CredentialIssuer } from "lib/verity"
 
 export type ServiceProvider = {
   name?: string
@@ -32,7 +32,7 @@ export type VerifiableCredentialProof = {
 export type VerifiableCredential = {
   "@context": string[]
   type: string[]
-  issuer: Issuer
+  issuer: CredentialIssuer
   issuanceDate: string
   credentialSubject: CredentialSubject
   proof: VerifiableCredentialProof

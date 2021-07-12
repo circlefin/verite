@@ -1,29 +1,27 @@
 import { randomBytes } from "crypto"
 import * as ed25519 from "@stablelib/ed25519"
 import * as didKeyEd25519 from "@transmute/did-key-ed25519"
-import {
-  Resolvable,
-  DIDResolutionResult,
-  DIDResolutionOptions
-} from "did-resolver"
+import { EdDSASigner } from "did-jwt"
+import { Issuer } from "did-jwt-vc"
+import { Resolvable, DIDResolutionResult } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
 
-export interface DidKey {
+export type DidKey = {
   id: string
   controller: string
   publicKey: Uint8Array
   privateKey: Uint8Array
 }
 
+type DidKeyParams = {
+  secureRandom: () => Uint8Array
+}
+
 /**
  * Returns a did:key for a given a seed function.
  */
-export const generateDidKey = ({
-  secureRandom
-}: {
-  secureRandom: () => Uint8Array
-}): DidKey => {
+export function generateDidKey({ secureRandom }: DidKeyParams): DidKey {
   const key = ed25519.generateKeyPair({
     isAvailable: true,
     randomBytes: secureRandom
@@ -50,9 +48,20 @@ export const generateDidKey = ({
 /**
  * Returns a did:key with a random seed.
  */
-export const randomDidKey = (): DidKey => {
+export function randomDidKey(): DidKey {
   const secureRandom = () => new Uint8Array(randomBytes(32))
   return generateDidKey({ secureRandom })
+}
+
+/**
+ * Returns an `Issuer` instance for a given did:key
+ */
+export function didKeyToIssuer(didKey: DidKey): Issuer {
+  return {
+    did: didKey.controller,
+    signer: EdDSASigner(didKey.privateKey),
+    alg: "EdDSA"
+  }
 }
 
 /**
@@ -60,11 +69,8 @@ export const randomDidKey = (): DidKey => {
  *
  * The interfaces look near identical, but Typescript is requiring we do this.
  */
-export const resolver: Resolvable = {
-  resolve: async (
-    didUrl: string,
-    _options?: DIDResolutionOptions
-  ): Promise<DIDResolutionResult> => {
+export const didKeyResolver: Resolvable = {
+  resolve: async (didUrl: string): Promise<DIDResolutionResult> => {
     const result = await didKeyEd25519.resolve(didUrl)
 
     return {

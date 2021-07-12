@@ -1,5 +1,5 @@
 import { JWT } from "did-jwt-vc/lib/types"
-import { ClaimFormatDesignation } from "../shared/ClaimFormatDesignation"
+import { ClaimFormatDesignation } from "../../lib/verity"
 import { DescriptorMap } from "../shared/DescriptorMap"
 
 export type CredentialApplication = {

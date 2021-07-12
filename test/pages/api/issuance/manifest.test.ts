@@ -9,6 +9,6 @@ describe("GET /issuance/manifest/[token]", () => {
 
     const manifest = res._getJSONData()
     expect(res.statusCode).toBe(200)
-    expect(manifest.id).toEqual("Circle-KYCAMLAttestation")
+    expect(manifest.id).toEqual("KYCAMLAttestation")
   })
 })

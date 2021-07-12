@@ -1,15 +1,24 @@
-// Contains workarounds until did-vc-jwt is fixed (TODO)
-import { createJWT, EdDSASigner, decodeJWT, verifyJWT, JWTHeader } from 'did-jwt'
-import { createVerifiableCredentialJwt, JwtPresentationPayload, PresentationPayload, Issuer, transformPresentationInput } from "did-jwt-vc"
-import { normalizeCredential } from "did-jwt-vc/lib/converters"
-import { JWT, Verifiable, W3CCredential, W3CPresentation, VerifiablePresentation, VerifyPresentationOptions, VerifiedPresentation } from "did-jwt-vc/lib/types"
 
+import { createJWT, EdDSASigner, decodeJWT, verifyJWT, JWTHeader } from "did-jwt"
+import {
+  Issuer as DidJwtIssuer,
+  createVerifiableCredentialJwt,
+  JwtPresentationPayload,
+  PresentationPayload, 
+  Issuer, 
+  transformPresentationInput,
+  VerifiedPresentation,
+  W3CPresentation,
+  Verifiable
+} from "did-jwt-vc"
+import { normalizeCredential } from "did-jwt-vc/lib/converters"
+import { JWT} from "did-jwt-vc/lib/types"
 
 export const DEFAULT_JWT_PROOF_TYPE = 'JwtProof2020'
 const did = process.env.ISSUER_DID
-const secret = Buffer.from(process.env.ISSUER_SECRET, "utf8")
+const secret = process.env.ISSUER_SECRET
 
-export const issuer: Issuer = {
+export const issuer: DidJwtIssuer = {
   did: did,
   alg: "EdDSA",
   signer: EdDSASigner(secret)
@@ -33,7 +42,7 @@ function deepCopy<T>(source: T): T {
 type DeepPartial<T> = T extends Record<string, unknown> ? { [K in keyof T]?: DeepPartial<T[K]> } : T
 
 // TODO(kim): fix types
-export const signVc = async (vcPayload: any): Promise<any> => {
+export const signVc = async (vcPayload: any): Promise<JWT> => {
   return createVerifiableCredentialJwt(vcPayload, issuer)
 }
 
