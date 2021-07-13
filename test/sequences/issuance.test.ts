@@ -1,8 +1,12 @@
 import { asyncMap } from "lib/async-fns"
 import { createFullfillmentFromVp } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
-import { createCredentialApplication } from "lib/issuance/submission"
-import { decodeVc, issuer, randomDidKey } from "lib/verity"
+import {
+  createCredentialApplication,
+  decodeVc,
+  issuer,
+  randomDidKey
+} from "lib/verity"
 
 describe("issuance", () => {
   it("just works", async () => {

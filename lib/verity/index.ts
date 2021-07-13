@@ -1,3 +1,4 @@
+export * from "./application"
 export * from "./credentials"
 export * from "./didKey"
 export * from "./manifest"

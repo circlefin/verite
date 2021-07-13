@@ -7,7 +7,9 @@ import {
   Issuer
 } from "did-jwt-vc"
 import {
+  CredentialPayload,
   JWT,
+  PresentationPayload,
   VerifiedCredential,
   VerifiedPresentation
 } from "did-jwt-vc/lib/types"
@@ -15,7 +17,7 @@ import {
 import {
   verifyPresentation,
   createVerifiablePresentationJwt
-} from "lib/sign-utils"
+} from "lib/did-jwt-vc"
 import { didKeyResolver } from "lib/verity"
 
 const did = process.env.ISSUER_DID
@@ -27,22 +29,9 @@ export const issuer: Issuer = {
   signer: EdDSASigner(secret)
 }
 
-export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
-  return {
-    sub: subject.did,
-    vc: {
-      "@context": ["https://www.w3.org/2018/credentials/v1"],
-      type: ["VerifiableCredential"],
-      credentialSubject: {
-        id: subject.did
-      }
-    }
-  }
-}
-
-export function vpPayload(
+export function verifiablePresentationPayload(
   subject: Issuer,
-  vcJwt?: JWT | JWT[]
+  vcJwt: JWT | JWT[] = []
 ): JwtPresentationPayload {
   return {
     iss: subject.did,
@@ -51,7 +40,7 @@ export function vpPayload(
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation"],
       holder: subject.did,
-      verifiableCredential: vcJwt ? [vcJwt].flat() : []
+      verifiableCredential: [vcJwt].flat()
     }
   }
 }
@@ -93,13 +82,17 @@ export async function decodeVp(vpJwt: JWT): Promise<VerifiedPresentation> {
 /**
  * Sign a VC and return a JWT
  */
-export const signVc = async (vcPayload: any): Promise<JWT> => {
+export const signVc = async (
+  vcPayload: JwtCredentialPayload | CredentialPayload
+): Promise<JWT> => {
   return createVerifiableCredentialJwt(vcPayload, issuer)
 }
 
 /**
  * Sign a VP and return a JWT
  */
-export const signVP = async (vcPayload: any): Promise<JWT> => {
+export const signVP = async (
+  vcPayload: JwtPresentationPayload | PresentationPayload
+): Promise<JWT> => {
   return createVerifiablePresentationJwt(vcPayload, issuer)
 }

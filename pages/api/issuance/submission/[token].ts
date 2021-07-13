@@ -4,9 +4,8 @@ import { methodNotAllowed, notFound, validationError } from "lib/api-fns"
 import { findUserFromTemporaryAuthToken } from "lib/database"
 import { createFullfillment } from "lib/issuance/fulfillment"
 import { validateCredentialSubmission } from "lib/issuance/submission"
-import { issuer } from "lib/verity"
+import { issuer, CredentialApplication } from "lib/verity"
 import { CredentialFulfillmentResponse } from "types"
-import { CredentialApplicationWrapper } from "types/presentation_submission/PresentationSubmission"
 
 const handler: NextApiHandler<CredentialFulfillmentResponse | ApiError> =
   async (req, res) => {
@@ -20,7 +19,7 @@ const handler: NextApiHandler<CredentialFulfillmentResponse | ApiError> =
       return notFound(res)
     }
 
-    const application: CredentialApplicationWrapper = req.body
+    const application: CredentialApplication = req.body
 
     try {
       validateCredentialSubmission(application)

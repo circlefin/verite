@@ -20,6 +20,7 @@ import {
   JWT,
   VerifyPresentationOptions
 } from "did-jwt-vc/lib/types"
+import { Resolvable } from "did-resolver"
 
 function deepCopy<T>(source: T): T {
   return Array.isArray(source)
@@ -223,7 +224,7 @@ export function normalizePresentation(
 
 export async function verifyPresentation(
   presentation: JWT,
-  resolver: any,
+  resolver: Resolvable,
   options: VerifyPresentationOptions = {}
 ): Promise<VerifiedPresentation> {
   const verified: Partial<VerifiedPresentation> = await verifyJWT(

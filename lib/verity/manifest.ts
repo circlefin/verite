@@ -7,7 +7,7 @@ import {
   PresentationDefinition
 } from "./types"
 
-export function generateKycAmlManifest(
+export function createKycAmlManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle | string = {}
 ): CredentialManifest {

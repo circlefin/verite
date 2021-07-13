@@ -1,6 +1,5 @@
 import { JWT } from "did-jwt-vc/lib/types"
-import { DescriptorMap } from "../shared/DescriptorMap"
-import { VerifiablePresentation } from "../verifiable_presentation/VerifiablePresentation"
+import { DescriptorMap } from "../../lib/verity"
 
 export type CredentialFulfillment = {
   id: string

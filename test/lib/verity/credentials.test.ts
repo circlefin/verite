@@ -1,6 +1,5 @@
 import { JwtCredentialPayload } from "did-jwt-vc"
 import { decodeVc, signVc } from "lib/verity"
-import loadEnvConfig from "test/support/setup"
 
 // tslint:disable-next-line: max-line-length
 const signedVc =
@@ -8,7 +7,6 @@ const signedVc =
 
 describe("VC signing and decoding", () => {
   it("signs a VC", async () => {
-    await loadEnvConfig()
     const vcPayload: JwtCredentialPayload = {
       sub: "did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4",
       nbf: 1562950282,
@@ -34,8 +32,8 @@ describe("VC signing and decoding", () => {
       "Baccalauréat en musiques numériques"
     )
   })
+
   it("decodes a VC", async () => {
-    await loadEnvConfig()
     const decoded = await decodeVc(signedVc)
     expect(decoded.verifiableCredential.type.length).toEqual(1)
     expect(decoded.verifiableCredential.type[0]).toEqual("VerifiableCredential")
