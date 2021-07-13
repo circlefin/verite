@@ -3,10 +3,10 @@ import Header from "./Header"
 
 const Layout: FC = ({ children }) => {
   return (
-    <>
+    <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
       <Header />
-      {children}
-    </>
+      <main className="py-4">{children}</main>
+    </div>
   )
 }
 
