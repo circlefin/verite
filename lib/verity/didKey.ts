@@ -6,13 +6,7 @@ import { Issuer } from "did-jwt-vc"
 import { Resolvable, DIDResolutionResult } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
-
-export type DidKey = {
-  id: string
-  controller: string
-  publicKey: Uint8Array
-  privateKey: Uint8Array
-}
+import { DidKey } from "./types"
 
 type DidKeyParams = {
   secureRandom: () => Uint8Array

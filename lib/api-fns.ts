@@ -5,7 +5,11 @@ export type ApiError = {
   message: string
 }
 
-export function apiError(res, status: number, message: string): void {
+export function apiError(
+  res: NextApiResponse,
+  status: number,
+  message: string
+): void {
   res.status(status).json({
     status,
     message

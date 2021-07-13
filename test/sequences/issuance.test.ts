@@ -1,8 +1,13 @@
 import { asyncMap } from "lib/async-fns"
-import { createFullfillmentFromVp } from "lib/issuance/fulfillment"
+import { createUser } from "lib/database"
+import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
-import { createCredentialApplication } from "lib/issuance/submission"
-import { decodeVc, issuer, randomDidKey } from "lib/verity"
+import {
+  createCredentialApplication,
+  decodeVerifiablePresentation,
+  issuer,
+  randomDidKey
+} from "lib/verity"
 
 describe("issuance", () => {
   it("just works", async () => {
@@ -23,6 +28,7 @@ describe("issuance", () => {
     const kycManifest = findManifestById("KYCAMLAttestation")
 
     // 3. CLIENT: Requesting the credential
+    const user = createUser("test@test.com", { jumioScore: 55, ofacScore: 2 })
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest
@@ -36,33 +42,40 @@ describe("issuance", () => {
       kycManifest.presentation_definition.id
     )
 
-    /*
-    verifiableCredentials.map(({ verifiableCredential }) => {
-      expect(verifiableCredential.credentialSubject.id).toEqual(
-        clientDidKey.controller
-      )
-      expect(verifiableCredential.type).toEqual(["VerifiableCredential"])
-      expect(verifiableCredential.proof).toBeDefined()
-    })*/
-
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
-    const fulfillment = await createFullfillmentFromVp(issuer, application)
+    const fulfillment = await createKycAmlFulfillment(user, issuer, application)
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
       "KYCAMLAttestation"
     )
 
-    await asyncMap(fulfillment.verifiableCredential, async (vc) => {
-      const { verifiableCredential } = await decodeVc(vc)
-      expect(verifiableCredential.credentialSubject.id).toEqual(
-        clientDidKey.controller
-      )
-      expect(verifiableCredential.type).toEqual([
-        "VerifiableCredential",
-        "KYCAMLAttestation"
-      ])
-      expect(verifiableCredential.proof).toBeDefined()
-    })
+    const { verifiablePresentation } = await decodeVerifiablePresentation(
+      fulfillment.presentation
+    )
+
+    await asyncMap(
+      verifiablePresentation.verifiableCredential,
+      async (verifiableCredential) => {
+        expect(verifiableCredential.type).toEqual([
+          "VerifiableCredential",
+          "KYCAMLAttestation"
+        ])
+        expect(verifiableCredential.proof).toBeDefined()
+
+        const credentialSubject = verifiableCredential.credentialSubject
+        expect(credentialSubject.id).toEqual(clientDidKey.controller)
+        expect(credentialSubject.KYCAMLAttestation.serviceProviders).toEqual([
+          {
+            name: "Jumio",
+            score: user.jumioScore
+          },
+          {
+            name: "OFAC-SDN",
+            score: user.ofacScore
+          }
+        ])
+      }
+    )
   })
 })

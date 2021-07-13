@@ -2,38 +2,43 @@ import { NextApiHandler } from "next"
 import { ApiError } from "next/dist/next-server/server/api-utils"
 import { methodNotAllowed, notFound, validationError } from "lib/api-fns"
 import { findUserFromTemporaryAuthToken } from "lib/database"
-import { createFullfillment } from "lib/issuance/fulfillment"
+import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { validateCredentialSubmission } from "lib/issuance/submission"
-import { issuer } from "lib/verity"
-import { CredentialFulfillmentResponse } from "types"
-import { CredentialApplicationWrapper } from "types/presentation_submission/PresentationSubmission"
+import {
+  issuer,
+  CredentialApplication,
+  CredentialFulfillment
+} from "lib/verity"
 
-const handler: NextApiHandler<CredentialFulfillmentResponse | ApiError> =
-  async (req, res) => {
-    if (req.method !== "POST") {
-      return methodNotAllowed(res)
-    }
-
-    const { token } = req.query
-    const user = await findUserFromTemporaryAuthToken(token as string)
-    if (!user) {
-      return notFound(res)
-    }
-
-    const application: CredentialApplicationWrapper = req.body
-
-    try {
-      validateCredentialSubmission(application)
-    } catch (err) {
-      return validationError(res, err)
-    }
-
-    const fulfillment: CredentialFulfillmentResponse = await createFullfillment(
-      issuer,
-      application
-    )
-
-    res.json(fulfillment)
+const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
+  req,
+  res
+) => {
+  if (req.method !== "POST") {
+    return methodNotAllowed(res)
   }
+
+  const { token } = req.query
+  const user = await findUserFromTemporaryAuthToken(token as string)
+  if (!user) {
+    return notFound(res)
+  }
+
+  const application: CredentialApplication = req.body
+
+  try {
+    validateCredentialSubmission(application)
+  } catch (err) {
+    return validationError(res, err)
+  }
+
+  const fulfillment: CredentialFulfillment = await createKycAmlFulfillment(
+    user,
+    issuer,
+    application
+  )
+
+  res.json(fulfillment)
+}
 
 export default handler

@@ -1,9 +1,7 @@
-import jwt from "jsonwebtoken"
-import { findUser, User } from "lib/database"
 import {
   CredentialIssuer,
   CredentialManifest,
-  generateKycAmlManifest
+  createKycAmlManifest
 } from "lib/verity"
 
 export const circleIssuer: CredentialIssuer = {
@@ -13,7 +11,7 @@ export const circleIssuer: CredentialIssuer = {
   styles: {}
 }
 
-export const kycManifest: CredentialManifest = generateKycAmlManifest(
+export const kycManifest: CredentialManifest = createKycAmlManifest(
   circleIssuer,
   {
     thumbnail: {
