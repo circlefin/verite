@@ -7,13 +7,15 @@ import {
   Issuer
 } from "did-jwt-vc"
 import {
-
   JWT,
   VerifiedCredential,
   VerifiedPresentation
 } from "did-jwt-vc/lib/types"
 
-import { verifyPresentation, createVerifiablePresentationJwt } from "lib/sign-utils"
+import {
+  verifyPresentation,
+  createVerifiablePresentationJwt
+} from "lib/sign-utils"
 import { didKeyResolver } from "lib/verity"
 
 const did = process.env.ISSUER_DID
@@ -38,7 +40,10 @@ export function vcPayloadApplication(subject: Issuer): JwtCredentialPayload {
   }
 }
 
-export function vpPayload(subject: Issuer, vcJwt?: JWT | JWT[]): JwtPresentationPayload {
+export function vpPayload(
+  subject: Issuer,
+  vcJwt?: JWT | JWT[]
+): JwtPresentationPayload {
   return {
     iss: subject.did,
     sub: subject.did,

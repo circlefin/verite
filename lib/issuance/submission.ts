@@ -2,7 +2,7 @@ import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { asyncMap } from "lib/async-fns"
 import { findManifestById } from "lib/issuance/manifest"
-import { createVerifiablePresentationJwt } from 'lib/sign-utils'
+import { createVerifiablePresentationJwt } from "lib/sign-utils"
 import {
   vpPayload,
   didKeyToIssuer,
@@ -11,7 +11,6 @@ import {
 } from "lib/verity"
 import { CredentialApplicationWrapper } from "types/presentation_submission/PresentationSubmission"
 import { DescriptorMap } from "types/shared/DescriptorMap"
-
 
 export async function createCredentialApplication(
   didKey: DidKey,

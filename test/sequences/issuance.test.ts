@@ -32,7 +32,9 @@ describe("issuance", () => {
       "KYCAMLAttestation"
     )
     expect(application.presentation_submission).toBeDefined()
-    expect(application.presentation_submission.definition_id).toEqual(kycManifest.presentation_definition.id)
+    expect(application.presentation_submission.definition_id).toEqual(
+      kycManifest.presentation_definition.id
+    )
 
     /*
     verifiableCredentials.map(({ verifiableCredential }) => {
