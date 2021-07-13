@@ -40,3 +40,36 @@ export const saveCredential = async (credential: any): Promise<any> => {
 
   await AsyncStorage.setItem("credentials", JSON.stringify(credentials))
 }
+
+/**
+ * Generic function to persist a list of values
+ */
+export const saveItemInList = async (
+  key: string,
+  value: any,
+  valueKey: string
+): Promise<void> => {
+  const rawValue = await AsyncStorage.getItem(key)
+  let list = {}
+  if (rawValue) {
+    list = JSON.parse(rawValue)
+  }
+
+  list[valueKey] = value
+
+  await AsyncStorage.setItem(key, JSON.stringify(list))
+}
+
+/**
+ * Generic function to retrieve a value from a list
+ */
+export const getItemInList = async (
+  key: string,
+  valueKey: string
+): Promise<any> => {
+  const rawValue = await AsyncStorage.getItem(key)
+  if (rawValue) {
+    const list = JSON.parse(rawValue)
+    return list[valueKey]
+  }
+}

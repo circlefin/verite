@@ -1,6 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Button, Alert } from "react-native"
 import { requestIssuance } from "../src/lib/issuance"
+import { getManifest, saveManifest } from "../src/lib/manifestRegistry"
 import { getOrCreateDidKey, saveCredential } from "../src/lib/storage"
 import { DidKey, CredentialManifest } from "../src/lib/verity"
 
@@ -21,6 +22,9 @@ const onScan = async ({ _type, data }) => {
 
   // Parse the manifest
   const manifest: CredentialManifest = await result.json()
+
+  // Persist the manifest
+  await saveManifest(manifest)
 
   // Parse the styles
   const outputDescriptor = manifest.output_descriptors[0]
