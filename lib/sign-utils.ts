@@ -2,33 +2,49 @@
 import { createJWT, decodeJWT, verifyJWT } from "did-jwt"
 import {
   JwtPresentationPayload,
-  PresentationPayload, 
-  Issuer, 
+  PresentationPayload,
+  Issuer,
   transformPresentationInput,
   VerifiedPresentation,
   W3CPresentation,
   Verifiable
 } from "did-jwt-vc"
 import { DEFAULT_JWT_PROOF_TYPE, JWT_ALG } from "did-jwt-vc/lib/constants"
-import { asArray, normalizeCredential, notEmpty } from "did-jwt-vc/lib/converters"
-import { CreatePresentationOptions, JWT, VerifyPresentationOptions} from "did-jwt-vc/lib/types"
-
+import {
+  asArray,
+  normalizeCredential,
+  notEmpty
+} from "did-jwt-vc/lib/converters"
+import {
+  CreatePresentationOptions,
+  JWT,
+  VerifyPresentationOptions
+} from "did-jwt-vc/lib/types"
 
 function deepCopy<T>(source: T): T {
   return Array.isArray(source)
     ? source.map((item) => deepCopy(item))
     : source instanceof Date
     ? new Date(source.getTime())
-    : source && typeof source === 'object'
+    : source && typeof source === "object"
     ? Object.getOwnPropertyNames(source).reduce((o, prop) => {
-        Object.defineProperty(o, prop, Object.getOwnPropertyDescriptor(source, prop) as NonNullable<PropertyDescriptor>)
+        Object.defineProperty(
+          o,
+          prop,
+          Object.getOwnPropertyDescriptor(
+            source,
+            prop
+          ) as NonNullable<PropertyDescriptor>
+        )
         o[prop] = deepCopy(source[prop as keyof T])
         return o
       }, Object.create(Object.getPrototypeOf(source)))
     : (source as T)
 }
 
-type DeepPartial<T> = T extends Record<string, unknown> ? { [K in keyof T]?: DeepPartial<T[K]> } : T
+type DeepPartial<T> = T extends Record<string, unknown>
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : T
 
 export async function createVerifiablePresentationJwt(
   payload: JwtPresentationPayload | PresentationPayload,
@@ -37,17 +53,23 @@ export async function createVerifiablePresentationJwt(
 ): Promise<JWT> {
   const parsedPayload: JwtPresentationPayload = {
     iat: undefined,
-    ...transformPresentationInput(payload, options?.removeOriginalFields),
+    ...transformPresentationInput(payload, options?.removeOriginalFields)
   }
 
   // add challenge to nonce
-  if (options.challenge && Object.getOwnPropertyNames(parsedPayload).indexOf('nonce') === -1) {
+  if (
+    options.challenge &&
+    Object.getOwnPropertyNames(parsedPayload).indexOf("nonce") === -1
+  ) {
     parsedPayload.nonce = options.challenge
   }
 
   // add domain to audience.
   if (options.domain) {
-    const audience = [...asArray(options.domain), ...asArray(parsedPayload.aud)].filter(notEmpty)
+    const audience = [
+      ...asArray(options.domain),
+      ...asArray(parsedPayload.aud)
+    ].filter(notEmpty)
     //parsedPayload.aud = [...new Set(audience)]
     parsedPayload.aud = audience
   }
@@ -55,12 +77,12 @@ export async function createVerifiablePresentationJwt(
   return createJWT(
     parsedPayload,
     {
-      issuer: holder.did || parsedPayload.iss || '',
-      signer: holder.signer,
+      issuer: holder.did || parsedPayload.iss || "",
+      signer: holder.signer
     },
     {
       ...options.header,
-      alg: holder.alg || options.header?.alg || JWT_ALG,
+      alg: holder.alg || options.header?.alg || JWT_ALG
     }
   )
 }
@@ -73,7 +95,7 @@ function normalizeJwtPresentationPayload(
 
   result.verifiableCredential = [
     ...asArray(input.verifiableCredential),
-    ...asArray(input.vp?.verifiableCredential),
+    ...asArray(input.vp?.verifiableCredential)
   ].filter(notEmpty)
   result.verifiableCredential = result.verifiableCredential.map((cred) => {
     return normalizeCredential(cred, removeOriginalFields)
@@ -90,21 +112,26 @@ function normalizeJwtPresentationPayload(
   }
 
   if (input.aud) {
-    result.verifier = [...asArray(input.verifier), ...asArray(input.aud)].filter(notEmpty)
+    result.verifier = [
+      ...asArray(input.verifier),
+      ...asArray(input.aud)
+    ].filter(notEmpty)
     //result.verifier = [...new Set(result.verifier)]
     if (removeOriginalFields) {
       delete result.aud
     }
   }
 
-  if (input.jti && Object.getOwnPropertyNames(input).indexOf('id') === -1) {
+  if (input.jti && Object.getOwnPropertyNames(input).indexOf("id") === -1) {
     result.id = input.id || input.jti
     if (removeOriginalFields) {
       delete result.jti
     }
   }
 
-  const types = [...asArray(input.type), ...asArray(input.vp?.type)].filter(notEmpty)
+  const types = [...asArray(input.type), ...asArray(input.vp?.type)].filter(
+    notEmpty
+  )
   result.type = types //[...new Set(types)]
   if (removeOriginalFields) {
     delete result.vp?.type
@@ -112,17 +139,19 @@ function normalizeJwtPresentationPayload(
 
   const contexts = [
     ...asArray(input.context),
-    ...asArray(input['@context']),
-    ...asArray(input.vp?.['@context']),
+    ...asArray(input["@context"]),
+    ...asArray(input.vp?.["@context"])
   ].filter(notEmpty)
-  result['@context'] = contexts //[...new Set(contexts)]
+  result["@context"] = contexts //[...new Set(contexts)]
   if (removeOriginalFields) {
     delete result.context
-    delete result.vp?.['@context']
+    delete result.vp?.["@context"]
   }
 
   if (!input.issuanceDate && (input.iat || input.nbf)) {
-    result.issuanceDate = new Date((input.nbf || input.iat) * 1000).toISOString()
+    result.issuanceDate = new Date(
+      (input.nbf || input.iat) * 1000
+    ).toISOString()
     if (removeOriginalFields) {
       if (input.nbf) {
         delete result.nbf
@@ -148,36 +177,47 @@ function normalizeJwtPresentationPayload(
   return result as W3CPresentation
 }
 
-function normalizeJwtPresentation(input: JWT, removeOriginalFields = true): Verifiable<W3CPresentation> {
+function normalizeJwtPresentation(
+  input: JWT,
+  removeOriginalFields = true
+): Verifiable<W3CPresentation> {
   let decoded
   try {
     decoded = decodeJWT(input)
   } catch (e) {
-    throw new TypeError('unknown presentation format')
+    throw new TypeError("unknown presentation format")
   }
   return {
     ...normalizeJwtPresentationPayload(decoded.payload, removeOriginalFields),
     proof: {
       type: DEFAULT_JWT_PROOF_TYPE,
-      jwt: input,
-    },
+      jwt: input
+    }
   }
 }
 
 export function normalizePresentation(
-  input: Partial<PresentationPayload> | DeepPartial<JwtPresentationPayload> | JWT,
+  input:
+    | Partial<PresentationPayload>
+    | DeepPartial<JwtPresentationPayload>
+    | JWT,
   removeOriginalFields = true
 ): Verifiable<W3CPresentation> {
-  if (typeof input === 'string') {
-     return normalizeJwtPresentation(input, removeOriginalFields)
-
+  if (typeof input === "string") {
+    return normalizeJwtPresentation(input, removeOriginalFields)
   } else if (input.proof?.jwt) {
     // TODO: test that it correctly propagates app specific proof properties
-    return { ...normalizeJwtPresentation(input.proof.jwt, removeOriginalFields), proof: input.proof }
+    return {
+      ...normalizeJwtPresentation(input.proof.jwt, removeOriginalFields),
+      proof: input.proof
+    }
   } else {
     // TODO: test that it accepts JWT payload, PresentationPayload, VerifiablePresentation
     // TODO: test that it correctly propagates proof, if any
-    return { proof: {}, ...normalizeJwtPresentationPayload(input, removeOriginalFields) }
+    return {
+      proof: {},
+      ...normalizeJwtPresentationPayload(input, removeOriginalFields)
+    }
   }
 }
 
@@ -186,9 +226,15 @@ export async function verifyPresentation(
   resolver: any,
   options: VerifyPresentationOptions = {}
 ): Promise<VerifiedPresentation> {
-  const verified: Partial<VerifiedPresentation> = await verifyJWT(presentation, { resolver, ...options })
+  const verified: Partial<VerifiedPresentation> = await verifyJWT(
+    presentation,
+    { resolver, ...options }
+  )
   //verifyPresentationPayloadOptions(verified.payload as JwtPresentationPayload, options)
-  verified.verifiablePresentation = normalizePresentation(verified.jwt as string, options?.removeOriginalFields)
+  verified.verifiablePresentation = normalizePresentation(
+    verified.jwt as string,
+    options?.removeOriginalFields
+  )
   //validatePresentationPayload(verified.verifiablePresentation)
   return verified as VerifiedPresentation
 }
