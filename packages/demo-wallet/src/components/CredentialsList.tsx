@@ -33,7 +33,6 @@ const CredentialsList = ({ navigation }) => {
   }
 
   const renderItem = ({ item }) => {
-    console.log(item)
     return (
       <TouchableOpacity
         style={{
