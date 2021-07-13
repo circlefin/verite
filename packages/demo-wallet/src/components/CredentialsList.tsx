@@ -10,8 +10,6 @@ const CredentialsList = ({ navigation }) => {
     })()
   }, [credentials])
 
-  console.log(credentials)
-
   if (credentials.length === 0) {
     return <Text>No Credentials</Text>
   }

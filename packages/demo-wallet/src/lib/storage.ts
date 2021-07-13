@@ -38,7 +38,5 @@ export const saveCredential = async (credential: any): Promise<any> => {
 
   credentials.push(credential)
 
-  console.log(credentials)
-
   await AsyncStorage.setItem("credentials", JSON.stringify(credentials))
 }

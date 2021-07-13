@@ -57,7 +57,6 @@ const promptRequestIssuance = async (
       onPress: async () => {
         const response = await requestIssuance(url, did, manifest)
         const credential = await response.json()
-        console.log("cred", credential)
         saveCredential(credential)
       }
     }
