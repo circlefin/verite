@@ -1,101 +1,39 @@
-import { createVerifiableCredentialJwt, Issuer } from "did-jwt-vc"
-import { JWT } from "did-jwt-vc/lib/types"
-import { v4 as uuidv4 } from "uuid"
-import { asyncMap } from "lib/async-fns"
-import { decodeVp, vcPayloadKYCFulfillment, DescriptorMap } from "lib/verity"
+import { Issuer } from "did-jwt-vc"
+import { User } from "lib/database"
+import {
+  createFullfillment,
+  CredentialApplication,
+  CredentialFulfillment,
+  decodeVp,
+  kycAmlVerifiableCredentialPayload
+} from "lib/verity"
 
-export async function createFullfillmentFromVp(
+export async function createKycAmlFulfillment(
+  user: User,
   issuer: Issuer,
-  application: any
-): Promise<any> {
-  const credentialFullfillment = {
-    id: uuidv4(),
-    manifest_id: application.credential_application.manifest_id,
-    descriptor_map: [
-      {
-        id: "DID",
-        format: "jwt_vp",
-        path: `$.presentation`
-      }
-    ]
-  }
-
+  application: CredentialApplication
+): Promise<CredentialFulfillment> {
   const { verifiablePresentation } = await decodeVp(application.presentation)
 
-  const payload = vcPayloadKYCFulfillment(verifiablePresentation.holder, {
-    authorityId: "did:web:circle.com",
-    approvalDate: "2020-06-01T14:00:00",
-    expirationDate: "2021-06-01T13:59:59",
-    authorityName: "Circle",
-    authorityUrl: "https://circle.com",
-    authorityCallbackUrl: "https://identity.circle.com",
-    serviceProviders: [
-      {
-        name: "Jumio",
-        score: 80
-      },
-      {
-        name: "OFAC-SDN",
-        score: 0
-      }
-    ]
-  })
-
-  const credential = await createVerifiableCredentialJwt(payload, issuer)
-  return {
-    credential_fulfillment: credentialFullfillment,
-    verifiableCredential: [credential]
-  }
-}
-
-export async function createFullfillment(
-  issuer: Issuer,
-  application: any
-): Promise<any> {
-  const credentialFullfillment = {
-    id: uuidv4(),
-    manifest_id: application.credential_application.manifest_id,
-    descriptor_map: application.presentation_submission.descriptor_map.map(
-      (d, i) => {
-        return {
-          id: d.id,
-          format: "jwt_vc",
-          path: `$.presentation.credential[${i}]`
+  return createFullfillment(
+    issuer,
+    application,
+    kycAmlVerifiableCredentialPayload(verifiablePresentation.holder, {
+      authorityId: "did:web:circle.com",
+      approvalDate: new Date().toJSON(),
+      authorityName: "Circle",
+      authorityUrl: "https://circle.com",
+      authorityCallbackUrl: "https://identity.circle.com",
+      serviceProviders: [
+        {
+          name: "Jumio",
+          score: user.jumioScore
+        },
+        {
+          name: "OFAC-SDN",
+          score: user.ofacScore
         }
-      }
-    ) as DescriptorMap[]
-  }
-
-  const { verifiablePresentation } = await decodeVp(application.presentation)
-
-  const credentials: JWT[] = (await asyncMap(
-    application.presentation_submission.descriptor_map,
-    async () => {
-      const payload = vcPayloadKYCFulfillment(verifiablePresentation.holder, {
-        authorityId: "did:web:circle.com",
-        approvalDate: "2020-06-01T14:00:00",
-        expirationDate: "2021-06-01T13:59:59",
-        authorityName: "Circle",
-        authorityUrl: "https://circle.com",
-        authorityCallbackUrl: "https://identity.circle.com",
-        serviceProviders: [
-          {
-            name: "Jumio",
-            score: 80
-          },
-          {
-            name: "OFAC-SDN",
-            score: 0
-          }
-        ]
-      })
-
-      return createVerifiableCredentialJwt(payload, issuer)
-    }
-  )) as JWT[]
-
-  return {
-    credential_fulfillment: credentialFullfillment,
-    verifiableCredential: credentials
-  }
+      ]
+    })
+  )
 }

@@ -1,5 +1,6 @@
 export * from "./application"
 export * from "./credentials"
 export * from "./didKey"
+export * from "./fulfillment"
 export * from "./manifest"
 export * from "./types"

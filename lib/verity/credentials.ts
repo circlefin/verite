@@ -34,7 +34,6 @@ export function verifiablePresentationPayload(
   vcJwt: JWT | JWT[] = []
 ): JwtPresentationPayload {
   return {
-    iss: subject.did,
     sub: subject.did,
     vp: {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
@@ -45,7 +44,7 @@ export function verifiablePresentationPayload(
   }
 }
 
-export function vcPayloadKYCFulfillment(
+export function kycAmlVerifiableCredentialPayload(
   subject: string,
   kycAttestation: Record<string, unknown>
 ): JwtCredentialPayload {

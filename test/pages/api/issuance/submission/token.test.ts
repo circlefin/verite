@@ -7,7 +7,7 @@ import handler from "pages/api/issuance/submission/[token]"
 
 describe("POST /issuance/submission/[token]", () => {
   it("returns a verified credential", async () => {
-    const user = createUser("test@test.com", "testing")
+    const user = createUser("test@test.com")
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
@@ -33,7 +33,7 @@ describe("POST /issuance/submission/[token]", () => {
   })
 
   it("returns an error if not a POST", async () => {
-    const user = createUser("test@test.com", "testing")
+    const user = createUser("test@test.com")
     const token = await temporaryAuthToken(user)
     const { req, res } = createMocks({
       method: "GET",

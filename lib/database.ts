@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+import { random } from "lodash"
 import { JWT } from "next-auth/jwt"
 import { v4 as uuidv4 } from "uuid"
 
@@ -9,24 +10,39 @@ export type User = {
   id: string
   email: string
   password: string
+  jumioScore?: number
+  ofacScore?: number
+}
+
+export type UserOpts = {
+  password?: string
+  jumioScore?: number
+  ofacScore?: number
 }
 
 export const USERS: User[] = [
   {
     id: "11111111-1111-1111-1111-111111111111",
     email: "alice@test.com",
-    password: "testing"
+    password: "testing",
+    jumioScore: 80,
+    ofacScore: 0
   },
   {
     id: "22222222-2222-2222-2222-222222222222",
     email: "bob@test.com",
-    password: "testing"
+    password: "testing",
+    jumioScore: 10,
+    ofacScore: 1
   }
 ]
 
-export function createUser(email: string, password: string): User {
+export function createUser(email: string, opts: UserOpts = {}): User {
   const id = uuidv4()
-  const user = { id, email, password }
+  const jumioScore = opts.jumioScore || random(0, 100)
+  const ofacScore = opts.ofacScore || random(0, 100)
+  const password = opts.password || "testing"
+  const user = { id, email, password, jumioScore, ofacScore }
 
   USERS.push(user)
   return user
