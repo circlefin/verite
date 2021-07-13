@@ -1,14 +1,10 @@
 import { asyncMap } from "lib/async-fns"
-import { createUser, USERS } from "lib/database"
-import {
-  createFullfillmentFromVp,
-  createKycAmlFulfillment
-} from "lib/issuance/fulfillment"
+import { createUser } from "lib/database"
+import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import {
   createCredentialApplication,
-  decodeVc,
-  decodeVp,
+  decodeVerifiablePresentation,
   issuer,
   randomDidKey
 } from "lib/verity"
@@ -54,7 +50,9 @@ describe("issuance", () => {
       "KYCAMLAttestation"
     )
 
-    const { verifiablePresentation } = await decodeVp(fulfillment.presentation)
+    const { verifiablePresentation } = await decodeVerifiablePresentation(
+      fulfillment.presentation
+    )
 
     await asyncMap(
       verifiablePresentation.verifiableCredential,

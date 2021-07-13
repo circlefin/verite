@@ -1,5 +1,3 @@
-import jwt from "jsonwebtoken"
-import { findUser, User } from "lib/database"
 import {
   CredentialIssuer,
   CredentialManifest,

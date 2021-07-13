@@ -4,7 +4,7 @@ import {
   createFullfillment,
   CredentialApplication,
   CredentialFulfillment,
-  decodeVp,
+  decodeVerifiablePresentation,
   kycAmlVerifiableCredentialPayload
 } from "lib/verity"
 
@@ -13,7 +13,9 @@ export async function createKycAmlFulfillment(
   issuer: Issuer,
   application: CredentialApplication
 ): Promise<CredentialFulfillment> {
-  const { verifiablePresentation } = await decodeVp(application.presentation)
+  const { verifiablePresentation } = await decodeVerifiablePresentation(
+    application.presentation
+  )
 
   return createFullfillment(
     issuer,

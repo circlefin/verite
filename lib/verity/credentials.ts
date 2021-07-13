@@ -14,11 +14,11 @@ import {
   VerifiedPresentation
 } from "did-jwt-vc/lib/types"
 
+import { didKeyResolver } from "./didKey"
 import {
   verifyPresentation,
   createVerifiablePresentationJwt
 } from "lib/did-jwt-vc"
-import { didKeyResolver } from "lib/verity"
 
 const did = process.env.ISSUER_DID
 const secret = process.env.ISSUER_SECRET
@@ -67,21 +67,25 @@ export function kycAmlVerifiableCredentialPayload(
 /**
  * Decodes a JWT with a Verifiable Credential payload.
  */
-export function decodeVc(vc: JWT): Promise<VerifiedCredential> {
+export function decodeVerifiableCredential(
+  vc: JWT
+): Promise<VerifiedCredential> {
   return verifyCredential(vc, didKeyResolver)
 }
 
 /**
  * Decode a JWT with a Verifiable Presentation payload.
  */
-export async function decodeVp(vpJwt: JWT): Promise<VerifiedPresentation> {
+export async function decodeVerifiablePresentation(
+  vpJwt: JWT
+): Promise<VerifiedPresentation> {
   return verifyPresentation(vpJwt, didKeyResolver)
 }
 
 /**
  * Sign a VC and return a JWT
  */
-export const signVc = async (
+export const signVerifiableCredential = async (
   vcPayload: JwtCredentialPayload | CredentialPayload
 ): Promise<JWT> => {
   return createVerifiableCredentialJwt(vcPayload, issuer)
@@ -90,7 +94,7 @@ export const signVc = async (
 /**
  * Sign a VP and return a JWT
  */
-export const signVP = async (
+export const signVerifiablePresentation = async (
   vcPayload: JwtPresentationPayload | PresentationPayload
 ): Promise<JWT> => {
   return createVerifiablePresentationJwt(vcPayload, issuer)

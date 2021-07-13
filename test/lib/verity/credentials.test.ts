@@ -1,5 +1,8 @@
 import { JwtCredentialPayload } from "did-jwt-vc"
-import { decodeVc, signVc } from "lib/verity"
+import {
+  decodeVerifiableCredential,
+  signVerifiableCredential
+} from "lib/verity"
 
 // tslint:disable-next-line: max-line-length
 const signedVc =
@@ -21,8 +24,8 @@ describe("VC signing and decoding", () => {
         }
       }
     }
-    const result = await signVc(vcPayload)
-    const decoded = await decodeVc(result)
+    const result = await signVerifiableCredential(vcPayload)
+    const decoded = await decodeVerifiableCredential(result)
     expect(decoded.verifiableCredential.type.length).toEqual(1)
     expect(decoded.verifiableCredential.type[0]).toEqual("VerifiableCredential")
     expect(decoded.verifiableCredential.credentialSubject.degree.type).toEqual(
@@ -34,7 +37,7 @@ describe("VC signing and decoding", () => {
   })
 
   it("decodes a VC", async () => {
-    const decoded = await decodeVc(signedVc)
+    const decoded = await decodeVerifiableCredential(signedVc)
     expect(decoded.verifiableCredential.type.length).toEqual(1)
     expect(decoded.verifiableCredential.type[0]).toEqual("VerifiableCredential")
     expect(decoded.verifiableCredential.credentialSubject.degree.type).toEqual(
