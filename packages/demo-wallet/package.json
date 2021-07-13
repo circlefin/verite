@@ -24,6 +24,7 @@
     "did-resolver": "^3.1.0",
     "events": "^1.1.1",
     "expo-barcode-scanner": "^10.2.2",
+    "lodash": "^4.17.21",
     "multibase": "^4.0.4",
     "multicodec": "^3.1.0",
     "process": "^0.11.10",
