@@ -1,79 +1,70 @@
-import React from "react"
-import { View, StyleSheet, Button, Alert } from "react-native"
+import React, { useState } from "react"
+import { View, StyleSheet, Button } from "react-native"
+import CredentialManifestPrompt from "../src/components/CredentialManifestPrompt"
 import { requestIssuance } from "../src/lib/issuance"
-import { getManifest, saveManifest } from "../src/lib/manifestRegistry"
+import { saveManifest } from "../src/lib/manifestRegistry"
 import { getOrCreateDidKey, saveCredential } from "../src/lib/storage"
-import { DidKey, CredentialManifest } from "../src/lib/verity"
-
-/**
- * When scanning a QR code, it will encode a JSON object with a manifestUrl
- * property. We will subsequently fetch that value to retrieve the full
- * manifest document. Afterward, we request credentials from the given
- * submissionUrl.
- */
-const onScan = async ({ _type, data }) => {
-  // Parse QR Code Data
-  const payload = JSON.parse(data)
-  const manifestUrl = payload.manifestUrl
-  const submissionUrl = payload.submissionUrl
-
-  // Fetch manifest URL
-  const result = await fetch(manifestUrl)
-
-  // Parse the manifest
-  const manifest: CredentialManifest = await result.json()
-
-  // Persist the manifest
-  await saveManifest(manifest)
-
-  // Parse the styles
-  const outputDescriptor = manifest.output_descriptors[0]
-  const name = outputDescriptor?.name || "Request Credentials"
-  const description = outputDescriptor?.description
-
-  // Prompt user to request the credentials or cancel
-  const did = await getOrCreateDidKey()
-  await promptRequestIssuance(name, description, submissionUrl, did, manifest)
-}
-
-/**
- * Prompts user with an alert box to request a credential.
- *
- * @param title Title text of the Alert box.
- * @param description Body text in the Alert box.
- * @param did DID identifier
- * @param proof TBD
- */
-const promptRequestIssuance = async (
-  title: string,
-  description: string | undefined,
-  url: string,
-  did: DidKey,
-  manifest: CredentialManifest
-) => {
-  Alert.alert(title, description, [
-    {
-      text: "Cancel",
-      style: "cancel"
-    },
-    {
-      text: "Request",
-      onPress: async () => {
-        const response = await requestIssuance(url, did, manifest)
-        const credential = await response.json()
-        saveCredential(credential)
-      }
-    }
-  ])
-}
+import { CredentialManifest } from "../src/lib/verity"
 
 export default function HomePage({ navigation }) {
+  const [submissionUrl, setSubmissionUrl] = useState<string>()
+  const [manifest, setManifest] = useState<CredentialManifest | null>()
+
+  /**
+   * When scanning a QR code, it will encode a JSON object with a manifestUrl
+   * property. We will subsequently fetch that value to retrieve the full
+   * manifest document. Afterward, we request credentials from the given
+   * submissionUrl.
+   */
+  const onScan = async ({ _type, data }) => {
+    // Parse QR Code Data
+    const payload = JSON.parse(data)
+
+    // We must request the credentials from the submissionUrl
+    setSubmissionUrl(payload.submissionUrl)
+
+    // Fetch manifest URL
+    const manifestUrl = payload.manifestUrl
+    const result = await fetch(manifestUrl)
+
+    // Parse the manifest
+    const manifest: CredentialManifest = await result.json()
+
+    // Persist the manifest to the device
+    await saveManifest(manifest)
+    setManifest(manifest)
+  }
+
+  const onCancel = () => {
+    setManifest(null)
+  }
+
+  const onConfirm = async () => {
+    if (!submissionUrl || !manifest) {
+      return
+    }
+    const did = await getOrCreateDidKey()
+    const response = await requestIssuance(submissionUrl, did, manifest)
+    const credential = await response.json()
+    saveCredential(credential)
+    setManifest(null)
+    navigation.navigate("Details", { credential: credential })
+  }
+
   return (
     <View style={styles.container}>
-      <Button
-        title={"Scan QR Code"}
-        onPress={() => navigation.navigate("Scanner", { onScan })}
-      />
+      {manifest ? (
+        <CredentialManifestPrompt
+          credentialManifest={manifest}
+          onCancel={onCancel}
+          onConfirm={onConfirm}
+        />
+      ) : (
+        <Button
+          title={"Scan QR Code"}
+          onPress={() => navigation.navigate("Scanner", { onScan })}
+        />
+      )}
     </View>
   )
 }
