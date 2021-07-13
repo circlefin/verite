@@ -5,6 +5,7 @@ import React from "react"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import HomePage from "./components/HomePage"
 import Scanner from "./components/Scanner"
+import CredentialDetail from "./src/components/CredentialDetail"
 import CredentialsList from "./src/components/CredentialsList"
 import SettingsScreen from "./src/components/SettingsScreen"
 
@@ -24,7 +25,7 @@ const credentialStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={CredentialsList} />
-      <Stack.Screen name="Scanner" component={Scanner} />
+      <Stack.Screen name="Details" component={CredentialDetail} />
     </Stack.Navigator>
   )
 }

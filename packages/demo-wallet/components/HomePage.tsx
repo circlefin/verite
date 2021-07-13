@@ -1,7 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Button, Alert } from "react-native"
 import { requestIssuance } from "../src/lib/issuance"
-import { getOrCreateDidKey } from "../src/lib/storage"
+import { getOrCreateDidKey, saveCredential } from "../src/lib/storage"
 import { DidKey, CredentialManifest } from "../src/lib/verity"
 
 /**
@@ -56,6 +56,9 @@ const promptRequestIssuance = async (
       text: "Request",
       onPress: async () => {
         const response = await requestIssuance(url, did, manifest)
+        const credential = await response.json()
+        console.log("cred", credential)
+        saveCredential(credential)
       }
     }
   ])

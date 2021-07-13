@@ -1,14 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { randomDidKey } from "./verity"
+import { DidKey, randomDidKey } from "./verity"
 
-interface Did {
-  id: string
-  controller: string
-  publicKey: Uint8Array
-  privateKey: Uint8Array
-}
-
-export const getOrCreateDidKey = async (): Promise<Did> => {
+export const getOrCreateDidKey = async (): Promise<DidKey> => {
   const did = await AsyncStorage.getItem("did")
 
   if (did) {
@@ -23,4 +16,29 @@ export const getOrCreateDidKey = async (): Promise<Did> => {
   await AsyncStorage.setItem("did", JSON.stringify(newDid))
 
   return newDid
+}
+
+export const getCredentials = async (): Promise<any> => {
+  const value = await AsyncStorage.getItem("credentials")
+  if (value) {
+    return JSON.parse(value)
+  } else {
+    return []
+  }
+}
+
+export const saveCredential = async (credential: any): Promise<any> => {
+  const value = await AsyncStorage.getItem("credentials")
+  let credentials
+  if (value) {
+    credentials = JSON.parse(value)
+  } else {
+    credentials = []
+  }
+
+  credentials.push(credential)
+
+  console.log(credentials)
+
+  await AsyncStorage.setItem("credentials", JSON.stringify(credentials))
 }

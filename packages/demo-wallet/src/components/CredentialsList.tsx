@@ -1,16 +1,39 @@
-import React from "react"
-import { View, Text } from "react-native"
+import React, { useState, useEffect } from "react"
+import { FlatList, Text, TouchableOpacity } from "react-native"
+import { getCredentials } from "../lib/storage"
 
-const CredentialsList = () => {
+const CredentialsList = ({ navigation }) => {
+  const [credentials, setCredentials] = useState([])
+  useEffect(() => {
+    ;(async () => {
+      setCredentials(await getCredentials())
+    })()
+  }, [credentials])
+
+  console.log(credentials)
+
+  if (credentials.length === 0) {
+    return <Text>No Credentials</Text>
+  }
+
+  const renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        style={{
+          margin: 16
+        }}
+        onPress={() => navigation.navigate("Details", { credential: item })}>
+        <Text>{item.credential_fulfillment.id}</Text>
+      </TouchableOpacity>
+    )
+  }
+
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "center"
-      }}>
-      <Text style={{ textAlign: "center" }}>Credentials go here</Text>
-    </View>
+    <FlatList
+      data={credentials}
+      renderItem={renderItem}
+      keyExtractor={item => item.credential_fulfillment.id}
+    />
   )
 }
 
