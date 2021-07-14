@@ -4,7 +4,7 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { getCredentials } from "../lib/storage"
 
-const CredentialsList = ({ navigation }) => {
+const CredentialsList = ({ navigation }): Element => {
   const [credentials, setCredentials] = useState([])
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {

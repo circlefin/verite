@@ -43,7 +43,7 @@ const Section: React.FC<{
 /**
  * This component can only render KYCAMLAttestation VCs at the moment
  */
-const CredentialDetail = ({ route }) => {
+const CredentialDetail = ({ route }): Element => {
   const { credential } = route.params
 
   // TODO: Is it unsafe to dig into this?

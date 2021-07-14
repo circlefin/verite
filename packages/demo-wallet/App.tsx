@@ -38,7 +38,7 @@ const settingsStack = () => {
   )
 }
 
-const App = () => {
+const App = (): Element => {
   return (
     <NavigationContainer>
       <Tab.Navigator

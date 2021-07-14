@@ -42,7 +42,7 @@ const Section: React.FC<{
   )
 }
 
-const SettingsScreen = () => {
+const SettingsScreen = (): Element => {
   const [did, setDid] = useState<DidKey | null>(null)
 
   useEffect(() => {

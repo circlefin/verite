@@ -9,7 +9,7 @@ import {
   CredentialManifest
 } from "../src/lib/verity"
 
-export default function HomePage({ navigation }) {
+export default function HomePage({ navigation }): Element {
   const [submissionUrl, setSubmissionUrl] = useState<string>()
   const [manifest, setManifest] = useState<CredentialManifest | null>()
 

@@ -10,7 +10,7 @@ const CredentialManifestPrompt = ({
   credentialManifest: CredentialManifest
   onCancel: () => void
   onConfirm: () => void
-}) => {
+}): Element => {
   console.log(credentialManifest)
 
   if (!credentialManifest) {
