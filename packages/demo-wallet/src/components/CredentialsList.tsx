@@ -7,7 +7,7 @@ import { getCredentials } from "../lib/storage"
 const CredentialsList = ({ navigation }) => {
   const [credentials, setCredentials] = useState([])
   useEffect(() => {
-    ;(async () => {
+    const unsubscribe = navigation.addListener("focus", async () => {
       const creds = await getCredentials()
       console.log("creds", creds)
       const doo = creds.map((cred, index) => {
@@ -23,8 +23,10 @@ const CredentialsList = ({ navigation }) => {
         }
       })
       setCredentials(doo)
-    })()
-  }, [])
+    })
+
+    return unsubscribe
+  }, [navigation])
 
   if (credentials.length === 0) {
     return <Text>No Credentials</Text>
