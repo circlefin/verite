@@ -6,13 +6,7 @@ import { Issuer } from "did-jwt-vc"
 import { Resolvable, DIDResolutionResult } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
-
-export type DidKey = {
-  id: string
-  controller: string
-  publicKey: Uint8Array
-  privateKey: Uint8Array
-}
+import { DidKey } from "./types"
 
 type DidKeyParams = {
   secureRandom: () => Uint8Array
@@ -74,9 +68,9 @@ export const didKeyResolver: Resolvable = {
     const result = await didKeyEd25519.resolve(didUrl)
 
     return {
-      didResolutionMetadata: result.didResolutionMetadata,
+      didResolutionMetadata: {},
       didDocument: result.didDocument,
-      didDocumentMetadata: result.didDocumentMetadata
+      didDocumentMetadata: {}
     }
   }
 }

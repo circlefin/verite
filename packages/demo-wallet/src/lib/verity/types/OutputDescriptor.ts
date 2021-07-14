@@ -9,6 +9,6 @@ export type OutputDescriptor = {
   schema: Schema[]
   name?: string
   description?: string
-  styles?: EntityStyle
+  styles?: EntityStyle | string
   display?: DataDisplay
 }

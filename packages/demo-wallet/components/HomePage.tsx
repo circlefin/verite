@@ -45,10 +45,16 @@ export default function HomePage({ navigation }) {
     }
     const did = await getOrCreateDidKey()
     const response = await requestIssuance(submissionUrl, did, manifest)
-    const credential = await response.json()
-    saveCredential(credential)
-    setManifest(null)
-    navigation.navigate("Details", { credential: credential })
+    if (response.status === 200) {
+      const credential = await response.json()
+      console.log(credential)
+      saveCredential(credential)
+      setManifest(null)
+      navigation.navigate("Details", { credential: credential })
+    } else {
+      console.log(response.status, await response.text())
+      // TODO: error handling
+    }
   }
 
   return (

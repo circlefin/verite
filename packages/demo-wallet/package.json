@@ -39,11 +39,11 @@
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.4.0",
     "react-native-unimodules": "^0.14.3",
-    "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^8.1.0",
     "readable-stream": "^1.0.33",
     "stream-browserify": "^1.0.0",
     "text-encoding": "^0.7.0",
+    "uuid": "^8.3.2",
     "vm-browserify": "0.0.4"
   },
   "devDependencies": {

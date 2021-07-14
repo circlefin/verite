@@ -1,4 +1,4 @@
-import { VerifiedCredential } from "did-jwt-vc"
+import { VerifiedCredential, VerifiedPresentation } from "did-jwt-vc"
 import compact from "lodash/compact"
 import React from "react"
 import { useEffect, useState } from "react"
@@ -13,7 +13,7 @@ import {
 } from "react-native"
 import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
-import { decodeVc } from "../lib/verity"
+import { decodeVerifiablePresentation } from "../lib/verity"
 
 const Section: React.FC<{
   title: string
@@ -49,16 +49,21 @@ const Section: React.FC<{
 const CredentialDetail = ({ route }) => {
   const json = route.params.credential
 
-  const [doo, setDoo] = useState<VerifiedCredential>()
+  const [doo, setDoo] = useState<VerifiedPresentation>()
 
   useEffect(() => {
     ;(async () => {
-      setDoo(await decodeVc(json.verifiableCredential[0]))
+      setDoo(await decodeVerifiablePresentation(json.presentation))
     })()
-  }, [json.verifiableCredential])
+  }, [json])
 
+  console.log(3)
+  console.log(doo)
+
+  // TODO: Is it unsafe to dig into this?
   const attestation =
-    doo?.verifiableCredential.credentialSubject.KYCAMLAttestation
+    doo?.verifiablePresentation.verifiableCredential[0].credentialSubject
+      .KYCAMLAttestation
 
   if (!attestation) {
     return <Text>Decoding Details</Text>

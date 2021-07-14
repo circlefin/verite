@@ -1,5 +1,8 @@
-import { createCredentialApplication } from "./issuance/submission"
-import { DidKey, CredentialManifest } from "./verity"
+import {
+  DidKey,
+  CredentialManifest,
+  createCredentialApplication
+} from "./verity"
 
 export const requestIssuance = async (
   url: string,

@@ -4,7 +4,7 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { asyncMap } from "../lib/async-fns"
 import { getCredentials } from "../lib/storage"
-import { decodeVc } from "../lib/verity"
+import { decodeVerifiablePresentation } from "../lib/verity"
 
 const CredentialsList = ({ navigation }) => {
   const [credentials, setCredentials] = useState([])
@@ -12,9 +12,13 @@ const CredentialsList = ({ navigation }) => {
     ;(async () => {
       const creds = await getCredentials()
       const doo = await asyncMap(creds, async cred => {
-        const vc = await decodeVc(cred.verifiableCredential[0])
+        const vc = await decodeVerifiablePresentation(cred.presentation)
+
+        // TODO: Is it unsafe to dig into this?
         const attestation =
-          vc?.verifiableCredential.credentialSubject.KYCAMLAttestation
+          vc?.verifiablePresentation.verifiableCredential[0].credentialSubject
+            .KYCAMLAttestation
+
         return {
           id: cred.credential_fulfillment.id,
           authorityId: attestation.authorityId,
