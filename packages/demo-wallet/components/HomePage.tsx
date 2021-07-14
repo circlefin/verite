@@ -1,13 +1,11 @@
 import React, { useState } from "react"
+import { Alert } from "react-native"
 import { View, StyleSheet, Button } from "react-native"
 import CredentialManifestPrompt from "../src/components/CredentialManifestPrompt"
 import { requestIssuance } from "../src/lib/issuance"
 import { saveManifest } from "../src/lib/manifestRegistry"
-import { getOrCreateDidKey, saveCredential } from "../src/lib/storage"
-import {
-  decodeVerifiablePresentation,
-  CredentialManifest
-} from "../src/lib/verity"
+import { getOrCreateDidKey } from "../src/lib/storage"
+import { CredentialManifest } from "../src/lib/verity"
 
 export default function HomePage({ navigation }): Element {
   const [submissionUrl, setSubmissionUrl] = useState<string>()
@@ -47,29 +45,12 @@ export default function HomePage({ navigation }): Element {
       return
     }
     const did = await getOrCreateDidKey()
-    const response = await requestIssuance(submissionUrl, did, manifest)
-    if (response.status === 200) {
-      // Parse JSON
-      const presentationRaw = await response.json()
+    const credential = await requestIssuance(submissionUrl, did, manifest)
 
-      // Decode the VP
-      const presentation = await decodeVerifiablePresentation(
-        presentationRaw.presentation
-      )
-
-      // Extract the issued VC
-      // TODO: It would be more correct to use the descriptor map
-      const credential =
-        presentation.verifiablePresentation.verifiableCredential[0]
-
-      // Persist the credential
-      saveCredential(credential)
-
-      // Navigate to the credential details page
+    if (credential) {
       navigation.navigate("Details", { credential: credential })
     } else {
-      console.log(response.status, await response.text())
-      // TODO: error handling
+      Alert.alert("Error", "Something went wrong.")
     }
   }
 

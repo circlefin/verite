@@ -1,3 +1,4 @@
+import { Verifiable, W3CCredential } from "did-jwt-vc"
 import compact from "lodash/compact"
 import React from "react"
 import {
@@ -44,7 +45,7 @@ const Section: React.FC<{
  * This component can only render KYCAMLAttestation VCs at the moment
  */
 const CredentialDetail = ({ route }): Element => {
-  const { credential } = route.params
+  const credential: Verifiable<W3CCredential> = route.params.credential
 
   // TODO: Is it unsafe to dig into this?
   const attestation = credential.credentialSubject.KYCAMLAttestation
