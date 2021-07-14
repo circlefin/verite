@@ -5,9 +5,11 @@ import {
   StyleSheet,
   View,
   useColorScheme,
-  Text
+  Text,
+  Button
 } from "react-native"
 import { Colors } from "react-native/Libraries/NewAppScreen"
+import { clear as clearStorage } from "../lib/storage"
 
 import { getOrCreateDidKey } from "../lib/storage"
 import { DidKey } from "../lib/verity"
@@ -71,6 +73,14 @@ const SettingsScreen = () => {
         </Section>
         <Section title="Private Key">
           <Text style={styles.sectionDescription}>{privateKey}</Text>
+        </Section>
+        <Section title="Debug Tols">
+          <Button
+            title={"Clear App Data"}
+            onPress={async () => {
+              await clearStorage()
+            }}
+          />
         </Section>
       </ScrollView>
     </SafeAreaView>

@@ -1,6 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { DidKey, randomDidKey } from "./verity"
 
+export const clear = async (): Promise<void> => {
+  await AsyncStorage.clear()
+}
+
 export const getOrCreateDidKey = async (): Promise<DidKey> => {
   const did = await AsyncStorage.getItem("did")
 
