@@ -1,7 +1,5 @@
-import { VerifiedCredential, VerifiedPresentation } from "did-jwt-vc"
 import compact from "lodash/compact"
 import React from "react"
-import { useEffect, useState } from "react"
 import {
   SafeAreaView,
   ScrollView,
@@ -13,7 +11,6 @@ import {
 } from "react-native"
 import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
-import { decodeVerifiablePresentation } from "../lib/verity"
 
 const Section: React.FC<{
   title: string
@@ -47,23 +44,10 @@ const Section: React.FC<{
  * This component can only render KYCAMLAttestation VCs at the moment
  */
 const CredentialDetail = ({ route }) => {
-  const json = route.params.credential
-
-  const [doo, setDoo] = useState<VerifiedPresentation>()
-
-  useEffect(() => {
-    ;(async () => {
-      setDoo(await decodeVerifiablePresentation(json.presentation))
-    })()
-  }, [json])
-
-  console.log(3)
-  console.log(doo)
+  const { credential } = route.params
 
   // TODO: Is it unsafe to dig into this?
-  const attestation =
-    doo?.verifiablePresentation.verifiableCredential[0].credentialSubject
-      .KYCAMLAttestation
+  const attestation = credential.credentialSubject.KYCAMLAttestation
 
   if (!attestation) {
     return <Text>Decoding Details</Text>
@@ -78,9 +62,9 @@ const CredentialDetail = ({ route }) => {
   const authority = attestation.authorityName
   const authorityUrl = attestation.authorityUrl
 
-  const scores = (attestation.serviceProviders || []).map(sp => {
+  const scores = (attestation.serviceProviders || []).map((sp, index) => {
     return (
-      <Text>
+      <Text key={index}>
         <Text style={{ fontWeight: "600" }}>{sp.name}:</Text> {sp.score}
         {sp.completionDate ? `\nCompleted ${sp.completionDate}` : ""}
         {sp.comment ? `\n${sp.comment}` : ""}
@@ -112,9 +96,9 @@ const CredentialDetail = ({ route }) => {
 
         {scores.length > 0 ? (
           <Section title="Scores">
-            {scores.map(score => {
+            {scores.map((score, index) => {
               return (
-                <Text>
+                <Text key={index}>
                   {score}
                   {"\n"}
                 </Text>
@@ -125,7 +109,7 @@ const CredentialDetail = ({ route }) => {
 
         <View>
           <Text style={styles.rawTitle}>Raw Data</Text>
-          <JSONTree data={json} />
+          <JSONTree data={credential} />
         </View>
       </ScrollView>
     </SafeAreaView>

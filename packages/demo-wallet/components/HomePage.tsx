@@ -4,7 +4,10 @@ import CredentialManifestPrompt from "../src/components/CredentialManifestPrompt
 import { requestIssuance } from "../src/lib/issuance"
 import { saveManifest } from "../src/lib/manifestRegistry"
 import { getOrCreateDidKey, saveCredential } from "../src/lib/storage"
-import { CredentialManifest } from "../src/lib/verity"
+import {
+  decodeVerifiablePresentation,
+  CredentialManifest
+} from "../src/lib/verity"
 
 export default function HomePage({ navigation }) {
   const [submissionUrl, setSubmissionUrl] = useState<string>()
@@ -46,10 +49,23 @@ export default function HomePage({ navigation }) {
     const did = await getOrCreateDidKey()
     const response = await requestIssuance(submissionUrl, did, manifest)
     if (response.status === 200) {
-      const credential = await response.json()
-      console.log(credential)
+      // Parse JSON
+      const presentationRaw = await response.json()
+
+      // Decode the VP
+      const presentation = await decodeVerifiablePresentation(
+        presentationRaw.presentation
+      )
+
+      // Extract the issued VC
+      // TODO: It would be more correct to use the descriptor map
+      const credential =
+        presentation.verifiablePresentation.verifiableCredential[0]
+
+      // Persist the credential
       saveCredential(credential)
-      setManifest(null)
+
+      // Navigate to the credential details page
       navigation.navigate("Details", { credential: credential })
     } else {
       console.log(response.status, await response.text())

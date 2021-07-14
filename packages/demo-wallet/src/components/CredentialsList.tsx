@@ -2,35 +2,29 @@ import compact from "lodash/compact"
 import React, { useState, useEffect } from "react"
 import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { asyncMap } from "../lib/async-fns"
 import { getCredentials } from "../lib/storage"
-import { decodeVerifiablePresentation } from "../lib/verity"
 
 const CredentialsList = ({ navigation }) => {
   const [credentials, setCredentials] = useState([])
   useEffect(() => {
     ;(async () => {
       const creds = await getCredentials()
-      const doo = await asyncMap(creds, async cred => {
-        const vc = await decodeVerifiablePresentation(cred.presentation)
-
+      console.log("creds", creds)
+      const doo = creds.map((cred, index) => {
         // TODO: Is it unsafe to dig into this?
-        const attestation =
-          vc?.verifiablePresentation.verifiableCredential[0].credentialSubject
-            .KYCAMLAttestation
+        const attestation = cred.credentialSubject.KYCAMLAttestation
 
         return {
-          id: cred.credential_fulfillment.id,
+          id: index, // unique id for FlatList
           authorityId: attestation.authorityId,
           authorityName: attestation.authorityName,
           authorityUrl: attestation.authorityUrl,
-          raw: vc,
           cred
         }
       })
       setCredentials(doo)
     })()
-  }, [credentials])
+  }, [])
 
   if (credentials.length === 0) {
     return <Text>No Credentials</Text>
@@ -52,7 +46,6 @@ const CredentialsList = ({ navigation }) => {
 
           <Text>
             {compact([
-              item.id,
               item.authorityName,
               item.authorityUrl,
               item.authorityId
