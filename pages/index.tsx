@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/protected"
+        destination: "/kyc"
       }
     }
   }
@@ -29,11 +29,11 @@ const Home: NextPage = () => {
         <title>Verity Demo</title>
       </Head>
 
-      <main className="container py-4 mx-auto font-inter">
+      <div className="container py-4 mx-auto font-inter">
         <h1 className="text-4xl font-extrabold tracking-tight text-center">
           Project Verity Demo
         </h1>
-      </main>
+      </div>
     </Layout>
   )
 }
