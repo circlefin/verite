@@ -3,7 +3,7 @@ import { getSession } from "next-auth/client"
 import QRCode from "qrcode.react"
 import Authenticated, { SessionProps } from "components/Authenticated"
 import Layout from "components/Layout"
-import { temporaryAuthToken, User } from "lib/database"
+import { findUser, temporaryAuthToken, User } from "lib/database"
 
 export type ManifestUrlContainer = {
   manifestUrl: string
@@ -13,6 +13,7 @@ export type ManifestUrlContainer = {
 
 type Props = SessionProps & {
   manifestUrlContainer: ManifestUrlContainer
+  user: User
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
@@ -29,7 +30,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     }
   }
 
-  const manifestToken = await temporaryAuthToken(session.user as User)
+  const user = findUser((session.user as User).id)
+  const manifestToken = await temporaryAuthToken(user)
   const manifestUrlContainer: ManifestUrlContainer = {
     manifestUrl: `${process.env.HOST}/api/issuance/manifest`,
     submissionUrl: `${process.env.HOST}/api/issuance/submission/${manifestToken}`,
@@ -39,25 +41,48 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   return {
     props: {
       manifestUrlContainer,
-      session
+      session,
+      user
     }
   }
 }
 
-const KycAmlPage: NextPage<Props> = ({ manifestUrlContainer }) => {
+const KycAmlPage: NextPage<Props> = ({ manifestUrlContainer, user }) => {
+  const stats = [
+    { name: "Jumio Score", stat: user.jumioScore },
+    { name: "OFAC Score", stat: user.ofacScore }
+  ]
+
   return (
     <Authenticated>
       <Layout title="KYC/AML Attestation">
-        <QRCode
-          value={JSON.stringify(manifestUrlContainer)}
-          className="w-48 h-48 mx-auto"
-          renderAs="svg"
-        />
-        <textarea
-          className="container h-40 mx-auto my-2 font-mono text-sm border-2"
-          readOnly
-          value={JSON.stringify(manifestUrlContainer, null, 4)}
-        />
+        <div className="flex flex-col justify-center space-y-8">
+          <dl className="flex flex-row mx-auto space-x-5">
+            {stats.map((item) => (
+              <div
+                key={item.name}
+                className="px-6 py-5 overflow-hidden text-center bg-white rounded-lg shadow sm:px-8 flex-0"
+              >
+                <dt className="text-sm font-medium text-gray-500 truncate">
+                  {item.name}
+                </dt>
+                <dd className="mt-1 text-3xl font-semibold text-gray-900">
+                  {item.stat}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <QRCode
+            value={JSON.stringify(manifestUrlContainer)}
+            className="w-48 h-48 mx-auto"
+            renderAs="svg"
+          />
+          <textarea
+            className="container h-40 mx-auto font-mono text-sm border-2"
+            readOnly
+            value={JSON.stringify(manifestUrlContainer, null, 4)}
+          />
+        </div>
       </Layout>
     </Authenticated>
   )
