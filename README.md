@@ -14,6 +14,14 @@ npm install
 npm run dev
 ```
 
+## Developing
+
+To run type-checking, linting, and tests, simply run:
+
+```
+npm run check
+```
+
 ### Linting the codebase
 
 ```
@@ -24,6 +32,14 @@ or, with autofix:
 
 ```
 npm run lint --fix
+```
+
+### Fixing with Prettier
+
+This app uses [Prettier](https://prettier.io), and you can auto-format all files with
+
+```
+npm run format
 ```
 
 ## Working with the mobile wallet locally
