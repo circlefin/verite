@@ -1,6 +1,6 @@
 import { Verifiable, W3CCredential } from "did-jwt-vc"
 import compact from "lodash/compact"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import {
   SafeAreaView,
   ScrollView,
@@ -12,10 +12,14 @@ import {
 } from "react-native"
 import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
+import { getManifest } from "../lib/manifestRegistry"
+import { CredentialManifest } from "../lib/verity"
+import { getDisplayProperties, getTitle } from "./foo"
 
 const Section: React.FC<{
   title: string
-}> = ({ children, title }) => {
+  subtitle?: string
+}> = ({ children, title, subtitle }) => {
   const isDarkMode = useColorScheme() === "dark"
   return (
     <View style={styles.sectionContainer}>
@@ -28,6 +32,18 @@ const Section: React.FC<{
         ]}>
         {title}
       </Text>
+
+      {subtitle ? (
+        <Text
+          style={[
+            styles.sectionSubtitle,
+            {
+              color: isDarkMode ? Colors.white : Colors.black
+            }
+          ]}>
+          {subtitle}
+        </Text>
+      ) : null}
       <Text
         style={[
           styles.sectionDescription,
@@ -44,7 +60,16 @@ const Section: React.FC<{
 /**
  * This component can only render KYCAMLAttestation VCs at the moment
  */
-const CredentialDetail = ({ route }): Element => {
+const CredentialDetail = ({ navigation, route }): Element => {
+  const [manifest, setManifest] = useState<CredentialManifest>()
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", async () => {
+      setManifest(await getManifest("KYCAMLAttestation"))
+    })
+
+    return unsubscribe
+  }, [navigation])
+
   const credential: Verifiable<W3CCredential> = route.params.credential
 
   // TODO: Is it unsafe to dig into this?
@@ -73,9 +98,19 @@ const CredentialDetail = ({ route }): Element => {
     )
   })
 
+  let display
+  if (manifest && credential) {
+    display = getDisplayProperties(manifest, credential)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
+        {manifest ? (
+          <Section title={display.title} subtitle={display.subtitle}>
+            {display.description}
+          </Section>
+        ) : null}
         <Section title="Authority">
           <Text
             onPress={async () => {
@@ -112,6 +147,12 @@ const CredentialDetail = ({ route }): Element => {
           <Text style={styles.rawTitle}>Raw Data</Text>
           <JSONTree data={credential} />
         </View>
+        {manifest ? (
+          <View>
+            <Text style={styles.rawTitle}>Raw Data</Text>
+            <JSONTree data={manifest} />
+          </View>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   )
@@ -128,6 +169,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: "600"
+  },
+  sectionSubtitle: {
+    fontSize: 20,
+    fontWeight: "500"
   },
   sectionDescription: {
     marginTop: 8,
