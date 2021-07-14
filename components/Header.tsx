@@ -15,7 +15,7 @@ function classNames(...classes) {
 }
 
 const Header: FC<Props> = ({ title }) => {
-  const [session, loading] = useSession()
+  const [session] = useSession()
   const router = useRouter()
 
   const navigation = session
@@ -132,14 +132,6 @@ const Header: FC<Props> = ({ title }) => {
                         )}
                       </Menu>
                     )}
-                    {!session && !loading && (
-                      <button
-                        onClick={() => signIn()}
-                        className="hidden px-3 py-2 bg-gray-400 rounded-md hover:bg-gray-300 sm:block"
-                      >
-                        Sign in
-                      </button>
-                    )}
                   </div>
                 </div>
               </div>
@@ -161,15 +153,6 @@ const Header: FC<Props> = ({ title }) => {
                         {item.name}
                       </a>
                     ))}
-
-                  {!session && (
-                    <button
-                      onClick={() => signIn()}
-                      className="block w-full px-3 py-2 text-base font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
-                    >
-                      Sign in
-                    </button>
-                  )}
                 </div>
               </Disclosure.Panel>
             </>
