@@ -1,6 +1,5 @@
 import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
-import Head from "next/head"
 import QRCode from "qrcode.react"
 import Authenticated, { SessionProps } from "components/Authenticated"
 import Layout from "components/Layout"
@@ -48,9 +47,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 const KycAmlPage: NextPage<Props> = ({ manifestUrlContainer }) => {
   return (
     <Authenticated>
-      <Head>
-        <title>KYC/AML Attestation - Verity Demo</title>
-      </Head>
       <Layout title="KYC/AML Attestation">
         <QRCode
           value={JSON.stringify(manifestUrlContainer)}
