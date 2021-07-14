@@ -21,7 +21,8 @@ const Header: FC<Props> = ({ title }) => {
   const navigation = session
     ? [
         { name: "Dashboard", href: "/dashboard" },
-        { name: "KYC/AML", href: "/attestations/kyc" }
+        { name: "KYC/AML", href: "/attestations/kyc" },
+        { name: "Credit Score", href: "/attestations/credit-score" }
       ]
     : []
 
