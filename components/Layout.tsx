@@ -1,11 +1,21 @@
 import { FC } from "react"
 import Header from "./Header"
 
-const Layout: FC = ({ children }) => {
+type Props = {
+  title: string
+}
+
+const Layout: FC<Props> = ({ children, title }) => {
   return (
     <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
-      <Header />
-      <main className="py-4">{children}</main>
+      <Header title={title} />
+      <main className="-mt-32">
+        <div className="px-4 pb-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="px-5 py-6 bg-white rounded-lg shadow sm:px-6">
+            {children}
+          </div>
+        </div>
+      </main>
     </div>
   )
 }

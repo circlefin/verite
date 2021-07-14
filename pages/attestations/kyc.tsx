@@ -51,22 +51,17 @@ const KycAmlPage: NextPage<Props> = ({ manifestUrlContainer }) => {
       <Head>
         <title>KYC/AML Attestation - Verity Demo</title>
       </Head>
-      <Layout>
-        <div className="container px-4 py-4 mx-auto sm:px-8 font-inter">
-          <h1 className="pb-8 text-4xl font-extrabold tracking-tight text-center">
-            KYC/AML Attestation
-          </h1>
-          <QRCode
-            value={JSON.stringify(manifestUrlContainer)}
-            className="w-48 h-48 mx-auto"
-            renderAs="svg"
-          />
-          <textarea
-            className="container h-40 mx-auto my-2 font-mono text-sm border-2"
-            readOnly
-            value={JSON.stringify(manifestUrlContainer, null, 4)}
-          />
-        </div>
+      <Layout title="KYC/AML Attestation">
+        <QRCode
+          value={JSON.stringify(manifestUrlContainer)}
+          className="w-48 h-48 mx-auto"
+          renderAs="svg"
+        />
+        <textarea
+          className="container h-40 mx-auto my-2 font-mono text-sm border-2"
+          readOnly
+          value={JSON.stringify(manifestUrlContainer, null, 4)}
+        />
       </Layout>
     </Authenticated>
   )
