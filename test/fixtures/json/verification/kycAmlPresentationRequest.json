@@ -23,7 +23,7 @@
         "purpose": "Please provide a valid credential from a KYC/AML issuer",
         "schema": [
           {
-            "uri": "https://centre.io/identity/KYCAMLAttestation.json",
+            "uri": "https://verity.id/identity/KYCAMLAttestation.json",
             "required": true
           }
         ],
@@ -39,7 +39,7 @@
               "purpose": "We can only verify KYC credentials attested by a trusted authority.",
               "filter": {
                 "type": "string",
-                "pattern": "did:web:circle.com|did:web:coinbase.com"
+                "pattern": "did:web:verity.id|did:web:coinbase.com"
               }
             }
           ]

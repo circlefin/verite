@@ -7,37 +7,11 @@ import {
   PresentationDefinition
 } from "./types"
 
-export function createKycAmlManifest(
+export function createManifest(
+  id: string,
   issuer: CredentialIssuer,
-  styles: EntityStyle | string = {}
+  outputDescriptors: OutputDescriptor[]
 ): CredentialManifest {
-  const outputDescriptors: OutputDescriptor[] = [
-    {
-      id: "kycAttestationOutput",
-      schema: [
-        {
-          uri: "http://centre.io/schemas/identity/1.0.0/KYCAMLAttestation"
-        }
-      ],
-      name: `Proof of KYC from ${issuer.name}`,
-      description: `Attestation that ${issuer.name} has completed KYC/AML verification for this subject`,
-      display: {
-        title: {
-          path: ["$.authorityName", "$.vc.authorityName"],
-          fallback: `${issuer.name} KYC Attestation`
-        },
-        subtitle: {
-          path: ["$.approvalDate", "$.vc.approvalDate"],
-          fallback: "Includes date of approval"
-        },
-        description: {
-          text: "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
-        }
-      },
-      styles
-    }
-  ]
-
   const presentationDefinition: PresentationDefinition = {
     id: uuidv4(),
     format: {
@@ -61,7 +35,7 @@ export function createKycAmlManifest(
   }
 
   return {
-    id: "KYCAMLAttestation",
+    id,
     version: "0.1.0",
     issuer,
     format: {
@@ -75,4 +49,72 @@ export function createKycAmlManifest(
     output_descriptors: outputDescriptors,
     presentation_definition: presentationDefinition
   }
+}
+
+export function createKycAmlManifest(
+  issuer: CredentialIssuer,
+  styles: EntityStyle | string = {}
+): CredentialManifest {
+  const outputDescriptors: OutputDescriptor[] = [
+    {
+      id: "kycAttestationOutput",
+      schema: [
+        {
+          uri: "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+        }
+      ],
+      name: `Proof of KYC from ${issuer.name}`,
+      description: `Attestation that ${issuer.name} has completed KYC/AML verification for this subject`,
+      display: {
+        title: {
+          path: ["$.authorityName", "$.vc.authorityName"],
+          fallback: `${issuer.name} KYC Attestation`
+        },
+        subtitle: {
+          path: ["$.approvalDate", "$.vc.approvalDate"],
+          fallback: "Includes date of approval"
+        },
+        description: {
+          text: "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
+        }
+      },
+      styles
+    }
+  ]
+
+  return createManifest("KYCAMLAttestation", issuer, outputDescriptors)
+}
+
+export function createCreditScoreManifest(
+  issuer: CredentialIssuer,
+  styles: EntityStyle | string = {}
+): CredentialManifest {
+  const outputDescriptors: OutputDescriptor[] = [
+    {
+      id: "creditScoreAttestationOutput",
+      schema: [
+        {
+          uri: "https://verity.id/schemas/identity/1.0.0/CreditScoreAttestation"
+        }
+      ],
+      name: `Proof of Credit Score from ${issuer.name}`,
+      description: `Attestation that ${issuer.name} has perfomed a Credit Score check for this subject`,
+      display: {
+        title: {
+          path: ["$.authorityName", "$.vc.authorityName"],
+          fallback: `${issuer.name} Credit Score Attestation`
+        },
+        subtitle: {
+          path: ["$.score", "$.vc.score"],
+          fallback: "Includes credit score"
+        },
+        description: {
+          text: "The Credit Score authority processes credit worthiness analysis, potentially employing a number of internal and external vendor providers."
+        }
+      },
+      styles
+    }
+  ]
+
+  return createManifest("CreditScoreAttestation", issuer, outputDescriptors)
 }

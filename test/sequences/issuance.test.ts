@@ -67,10 +67,12 @@ describe("issuance", () => {
         expect(credentialSubject.id).toEqual(clientDidKey.controller)
         expect(credentialSubject.KYCAMLAttestation.serviceProviders).toEqual([
           {
+            "@type": "KYCAMLProvider",
             name: "Jumio",
             score: user.jumioScore
           },
           {
+            "@type": "KYCAMLProvider",
             name: "OFAC-SDN",
             score: user.ofacScore
           }
