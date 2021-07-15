@@ -58,6 +58,7 @@ export default function HomePage({ navigation }): Element {
           credential: credential
         }
       })
+      setManifest(null)
     } else {
       Alert.alert("Error", "Something went wrong.")
     }
