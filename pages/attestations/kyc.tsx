@@ -7,7 +7,7 @@ import { findUser, temporaryAuthToken, User } from "lib/database"
 import { ManifestUrlWrapper } from "types"
 
 type Props = SessionProps & {
-  manifestUrlContainer: ManifestUrlWrapper
+  manifestUrlWrapper: ManifestUrlWrapper
   user: User
 }
 
@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   const user = findUser((session.user as User).id)
   const authToken = await temporaryAuthToken(user)
-  const manifestUrlContainer: ManifestUrlWrapper = {
+  const manifestUrlWrapper: ManifestUrlWrapper = {
     manifestUrl: `${process.env.HOST}/api/issuance/manifests/kyc`,
     submissionUrl: `${process.env.HOST}/api/issuance/submission/${authToken}`,
     version: "1"
@@ -35,14 +35,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   return {
     props: {
-      manifestUrlContainer,
+      manifestUrlWrapper,
       session,
       user
     }
   }
 }
 
-const KycAmlPage: NextPage<Props> = ({ manifestUrlContainer, user }) => {
+const KycAmlPage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
   const stats = [
     { name: "Jumio Score", stat: user.jumioScore },
     { name: "OFAC Score", stat: user.ofacScore }
@@ -68,14 +68,14 @@ const KycAmlPage: NextPage<Props> = ({ manifestUrlContainer, user }) => {
             ))}
           </dl>
           <QRCode
-            value={JSON.stringify(manifestUrlContainer)}
+            value={JSON.stringify(manifestUrlWrapper)}
             className="w-48 h-48 mx-auto"
             renderAs="svg"
           />
           <textarea
             className="container h-40 mx-auto font-mono text-sm border-2"
             readOnly
-            value={JSON.stringify(manifestUrlContainer, null, 4)}
+            value={JSON.stringify(manifestUrlWrapper, null, 4)}
           />
         </div>
       </Layout>
