@@ -5,6 +5,10 @@ import { createCredentialApplication, randomDidKey } from "lib/verity"
 
 import handler from "pages/api/issuance/submission/[token]"
 
+// tslint:disable-next-line: max-line-length
+const expiredPresentation =
+  "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
+
 describe("POST /issuance/submission/[token]", () => {
   it("returns a KYC credential", async () => {
     const user = createUser("test@test.com")
@@ -90,5 +94,42 @@ describe("POST /issuance/submission/[token]", () => {
       status: 404,
       message: "Not found"
     })
+  })
+
+  it("rejects an invalid application", async () => {
+    const user = createUser("test@test.com")
+    const token = await temporaryAuthToken(user)
+    const clientDid = await randomDidKey()
+    const kycManifest = findManifestById("KYCAMLAttestation")
+    const credentialApplication = await createCredentialApplication(
+      clientDid,
+      kycManifest
+    )
+    credentialApplication.presentation = expiredPresentation
+
+    const { req, res } = createMocks({
+      method: "POST",
+      query: { token },
+      body: credentialApplication
+    })
+
+    await handler(req, res)
+
+    expect(res.statusCode).toBe(400)
+
+    // TOOD: check response; this example should look like the following
+    /*
+    {
+      "status": 400,
+      "message": "Input wasn't a valid Verifiable Presentation",
+      "errors": [
+        {
+          "status": 400,
+          "title": "Error",
+          "detail": "invalid_jwt: JWT has expired: exp: 1626215411 < now: 1626316738"
+        }
+      ]
+    }
+    */
   })
 })

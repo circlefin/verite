@@ -13,7 +13,7 @@ import {
   verifyPresentation
 } from "did-jwt-vc"
 import { didKeyResolver } from "./didKey"
-import { JWT } from "./types"
+import { JWT, VerificationError, Verified } from "./types"
 
 const did = process.env.ISSUER_DID
 const secret = process.env.ISSUER_SECRET
@@ -81,10 +81,19 @@ export function creditScoreVerifiableCredentialPayload(
 /**
  * Decodes a JWT with a Verifiable Credential payload.
  */
-export function decodeVerifiableCredential(
+export async function decodeVerifiableCredential(
   vc: JWT
-): Promise<VerifiedCredential> {
-  return verifyCredential(vc, didKeyResolver)
+): Promise<Verified<VerifiedCredential>> {
+  try {
+    const res = await verifyCredential(vc, didKeyResolver)
+    res.checks = getChecks()
+    return res
+  } catch (err) {
+    throw new VerificationError(
+      "Input wasn't a valid Verifiable Credential",
+      err
+    )
+  }
 }
 
 /**
@@ -92,8 +101,17 @@ export function decodeVerifiableCredential(
  */
 export async function decodeVerifiablePresentation(
   vpJwt: JWT
-): Promise<VerifiedPresentation> {
-  return verifyPresentation(vpJwt, didKeyResolver)
+): Promise<Verified<VerifiedPresentation>> {
+  try {
+    const res = await verifyPresentation(vpJwt, didKeyResolver)
+    res.checks = getChecks()
+    return res
+  } catch (err) {
+    throw new VerificationError(
+      "Input wasn't a valid Verifiable Presentation",
+      err
+    )
+  }
 }
 
 /**
@@ -112,4 +130,15 @@ export const signVerifiablePresentation = async (
   vcPayload: JwtPresentationPayload | PresentationPayload
 ): Promise<JWT> => {
   return createVerifiablePresentationJwt(vcPayload, issuer)
+}
+
+// TODO: temporary hack
+function getChecks() {
+  return [
+    {
+      status: 200,
+      title: "VC Format Check",
+      detail: "Validated Verifiable Credential format"
+    }
+  ]
 }

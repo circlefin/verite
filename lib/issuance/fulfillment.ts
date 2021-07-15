@@ -1,12 +1,11 @@
 import { Issuer } from "did-jwt-vc"
 import { User } from "lib/database"
 import {
+  AcceptedCredentialApplication,
   createFullfillment,
-  CredentialApplication,
   CredentialFulfillment,
   CreditScore,
   creditScoreVerifiableCredentialPayload,
-  decodeVerifiablePresentation,
   KYCAMLAttestation,
   kycAmlVerifiableCredentialPayload
 } from "lib/verity"
@@ -14,11 +13,10 @@ import {
 export async function createKycAmlFulfillment(
   user: User,
   issuer: Issuer,
-  application: CredentialApplication
+  acceptedApplication: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
-  const { verifiablePresentation } = await decodeVerifiablePresentation(
-    application.presentation
-  )
+  const verifiablePresentation =
+    acceptedApplication.verified.verifiablePresentation
 
   const body: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
@@ -43,7 +41,7 @@ export async function createKycAmlFulfillment(
 
   return createFullfillment(
     issuer,
-    application,
+    acceptedApplication,
     kycAmlVerifiableCredentialPayload(verifiablePresentation.holder, body)
   )
 }
@@ -51,11 +49,10 @@ export async function createKycAmlFulfillment(
 export async function createCreditScoreFulfillment(
   user: User,
   issuer: Issuer,
-  application: CredentialApplication
+  acceptedApplication: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
-  const { verifiablePresentation } = await decodeVerifiablePresentation(
-    application.presentation
-  )
+  const verifiablePresentation =
+    acceptedApplication.verified.verifiablePresentation
 
   const body: CreditScore = {
     "@type": "CreditScore",
@@ -66,7 +63,7 @@ export async function createCreditScoreFulfillment(
 
   return createFullfillment(
     issuer,
-    application,
+    acceptedApplication,
     creditScoreVerifiableCredentialPayload(verifiablePresentation.holder, body)
   )
 }
@@ -74,7 +71,7 @@ export async function createCreditScoreFulfillment(
 export async function createFulfillment(
   user: User,
   issuer: Issuer,
-  application: CredentialApplication
+  application: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
   switch (application.credential_application.manifest_id) {
     case "KYCAMLAttestation":
