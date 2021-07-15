@@ -113,11 +113,12 @@ export const signVerifiablePresentation = async (
   return createVerifiablePresentationJwt(vcPayload, issuer)
 }
 
+// TODO: temporary hack
 function getChecks() {
   return [
     {
       status: 200,
-      title: "VC Format",
+      title: "VC Format Check",
       detail: "Validated Verifiable Credential format"
     }
   ]
