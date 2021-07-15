@@ -1,11 +1,15 @@
 import React, { useState } from "react"
 import { Alert } from "react-native"
-import { View, StyleSheet, Button } from "react-native"
+import { View, StyleSheet, Button, LogBox } from "react-native"
 import CredentialManifestPrompt from "../src/components/CredentialManifestPrompt"
 import { requestIssuance } from "../src/lib/issuance"
 import { saveManifest } from "../src/lib/manifestRegistry"
 import { getOrCreateDidKey } from "../src/lib/storage"
 import { CredentialManifest } from "../src/lib/verity"
+
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state"
+])
 
 export default function HomePage({ navigation }): Element {
   const [submissionUrl, setSubmissionUrl] = useState<string>()
