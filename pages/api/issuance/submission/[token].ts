@@ -27,18 +27,17 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
   const application: CredentialApplication = req.body
 
   try {
-    validateCredentialSubmission(application)
+    const acceptedApplication = await validateCredentialSubmission(application)
+    const fulfillment: CredentialFulfillment = await createKycAmlFulfillment(
+      user,
+      issuer,
+      acceptedApplication
+    )
+
+    res.json(fulfillment)
   } catch (err) {
     return validationError(res, err)
   }
-
-  const fulfillment: CredentialFulfillment = await createKycAmlFulfillment(
-    user,
-    issuer,
-    application
-  )
-
-  res.json(fulfillment)
 }
 
 export default handler

@@ -1,25 +1,25 @@
 import { Issuer } from "did-jwt-vc"
 import { User } from "lib/database"
 import {
+  AcceptedCredentialApplication,
   createFullfillment,
   CredentialApplication,
   CredentialFulfillment,
-  decodeVerifiablePresentation,
-  kycAmlVerifiableCredentialPayload
+  kycAmlVerifiableCredentialPayload,
+  Verified
 } from "lib/verity"
 
 export async function createKycAmlFulfillment(
   user: User,
   issuer: Issuer,
-  application: CredentialApplication
+  acceptedApplication: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
-  const { verifiablePresentation } = await decodeVerifiablePresentation(
-    application.presentation
-  )
+  const verifiablePresentation =
+    acceptedApplication.verified.verifiablePresentation
 
   return createFullfillment(
     issuer,
-    application,
+    acceptedApplication,
     kycAmlVerifiableCredentialPayload(verifiablePresentation.holder, {
       authorityId: "did:web:circle.com",
       approvalDate: new Date().toJSON(),

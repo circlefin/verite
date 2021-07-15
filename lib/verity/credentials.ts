@@ -13,7 +13,7 @@ import {
   verifyPresentation
 } from "did-jwt-vc"
 import { didKeyResolver } from "./didKey"
-import { JWT, VerificationError, VerifiedResult } from "./types"
+import { JWT, VerificationError, Verified } from "./types"
 
 const did = process.env.ISSUER_DID
 const secret = process.env.ISSUER_SECRET
@@ -64,15 +64,16 @@ export function kycAmlVerifiableCredentialPayload(
  */
 export async function decodeVerifiableCredential(
   vc: JWT
-): Promise<VerifiedResult<VerifiedCredential>> {
+): Promise<Verified<VerifiedCredential>> {
   try {
     const res = await verifyCredential(vc, didKeyResolver)
-    res.results = getChecks()
+    res.checks = getChecks()
     return res
   } catch (err) {
-    // coarse mapping
-    const result = toErrorObject(err)
-    throw new VerificationError("Failed to verify", [result], err)
+    throw new VerificationError(
+      "Input wasn't a valid Verifiable Credential",
+      err
+    )
   }
 }
 
@@ -81,15 +82,16 @@ export async function decodeVerifiableCredential(
  */
 export async function decodeVerifiablePresentation(
   vpJwt: JWT
-): Promise<VerifiedResult<VerifiedPresentation>> {
+): Promise<Verified<VerifiedPresentation>> {
   try {
     const res = await verifyPresentation(vpJwt, didKeyResolver)
-    res.results = getChecks()
+    res.checks = getChecks()
     return res
   } catch (err) {
-    // coarse mapping
-    const result = toErrorObject(err)
-    throw new VerificationError("Failed to verify", [result], err)
+    throw new VerificationError(
+      "Input wasn't a valid Verifiable Presentation",
+      err
+    )
   }
 }
 
@@ -109,13 +111,6 @@ export const signVerifiablePresentation = async (
   vcPayload: JwtPresentationPayload | PresentationPayload
 ): Promise<JWT> => {
   return createVerifiablePresentationJwt(vcPayload, issuer)
-}
-function toErrorObject(err: any) {
-  return {
-    status: 400,
-    title: err.name,
-    detail: err.message
-  }
 }
 
 function getChecks() {
