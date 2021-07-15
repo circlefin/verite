@@ -16,7 +16,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen"
 import { asyncMap } from "../lib/async-fns"
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getManifest } from "../lib/manifestRegistry"
-import { CredentialManifest } from "../lib/verity"
+import { CredentialManifest, KYCAMLAttestation } from "../lib/verity"
 
 const Section: React.FC<{
   title: string
@@ -80,8 +80,10 @@ const CredentialDetail = ({ navigation, route }): Element => {
     return unsubscribe
   }, [credential, navigation])
 
-  // TODO: Is it unsafe to dig into this?
-  const attestation = credential.credentialSubject.KYCAMLAttestation
+  // TODO: Is it unsafe to dig into this? Yes. Should refactor this out as a
+  // custom component just for KYCAMLAttestation.
+  const attestation: KYCAMLAttestation | undefined =
+    credential.credentialSubject.KYCAMLAttestation
 
   // The only required fields
   const authorityId = attestation?.authorityId
@@ -127,16 +129,19 @@ const CredentialDetail = ({ navigation, route }): Element => {
             {properties}
           </View>
         ) : null}
-        <Section title="Authority">
-          <Text
-            onPress={async () => {
-              if (authorityUrl) {
-                await Linking.openURL(authorityUrl)
-              }
-            }}>
-            {compact([authority, authorityUrl, authorityId]).join("\n")}
-          </Text>
-        </Section>
+
+        {compact([authority, authorityUrl, authorityId]).length != 0 ? (
+          <Section title="Authority">
+            <Text
+              onPress={async () => {
+                if (authorityUrl) {
+                  await Linking.openURL(authorityUrl)
+                }
+              }}>
+              {compact([authority, authorityUrl, authorityId]).join("\n")}
+            </Text>
+          </Section>
+        ) : null}
 
         {approvalDate ? (
           <Section title="Approved">{approvalDate}</Section>
@@ -160,12 +165,12 @@ const CredentialDetail = ({ navigation, route }): Element => {
         ) : null}
 
         <View>
-          <Text style={styles.rawTitle}>Raw Data</Text>
+          <Text style={styles.rawTitle}>Raw Credential</Text>
           <JSONTree data={credential} />
         </View>
         {manifest ? (
           <View>
-            <Text style={styles.rawTitle}>Raw Data</Text>
+            <Text style={styles.rawTitle}>Raw Manifest</Text>
             <JSONTree data={manifest} />
           </View>
         ) : null}
