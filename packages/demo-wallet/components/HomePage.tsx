@@ -48,7 +48,12 @@ export default function HomePage({ navigation }): Element {
     const credential = await requestIssuance(submissionUrl, did, manifest)
 
     if (credential) {
-      navigation.navigate("Details", { credential: credential })
+      navigation.navigate("Credentials", {
+        screen: "Details",
+        params: {
+          credential: credential
+        }
+      })
     } else {
       Alert.alert("Error", "Something went wrong.")
     }
