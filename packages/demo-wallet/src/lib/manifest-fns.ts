@@ -1,11 +1,10 @@
 import { Verifiable, W3CCredential } from "did-jwt-vc"
 import { JSONPath } from "jsonpath-plus"
-import get from "lodash/get"
 import {
   CredentialManifest,
   DisplayMapping,
   LabeledDataMappingSchema
-} from "../lib/verity"
+} from "./verity"
 
 interface DisplayProperties {
   title?: string

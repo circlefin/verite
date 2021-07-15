@@ -12,9 +12,9 @@ import {
 } from "react-native"
 import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
+import { getDisplayProperties } from "../lib/manifest-fns"
 import { getManifest } from "../lib/manifestRegistry"
 import { CredentialManifest } from "../lib/verity"
-import { getDisplayProperties, getTitle } from "./foo"
 
 const Section: React.FC<{
   title: string
@@ -75,20 +75,16 @@ const CredentialDetail = ({ navigation, route }): Element => {
   // TODO: Is it unsafe to dig into this?
   const attestation = credential.credentialSubject.KYCAMLAttestation
 
-  if (!attestation) {
-    return <Text>Decoding Details</Text>
-  }
-
   // The only required fields
-  const authorityId = attestation.authorityId
-  const approvalDate = attestation.approvalDate
+  const authorityId = attestation?.authorityId
+  const approvalDate = attestation?.approvalDate
 
   // Optional Fields
-  const expirationDate = attestation.expirationDate
-  const authority = attestation.authorityName
-  const authorityUrl = attestation.authorityUrl
+  const expirationDate = attestation?.expirationDate
+  const authority = attestation?.authorityName
+  const authorityUrl = attestation?.authorityUrl
 
-  const scores = (attestation.serviceProviders || []).map((sp, index) => {
+  const scores = (attestation?.serviceProviders || []).map((sp, index) => {
     return (
       <Text key={index}>
         <Text style={{ fontWeight: "600" }}>{sp.name}:</Text> {sp.score}
