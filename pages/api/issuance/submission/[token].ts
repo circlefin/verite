@@ -7,7 +7,8 @@ import { validateCredentialSubmission } from "lib/issuance/submission"
 import {
   issuer,
   CredentialApplication,
-  CredentialFulfillment
+  CredentialFulfillment,
+  AcceptedCredentialApplication
 } from "lib/verity"
 
 const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
@@ -25,16 +26,10 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
   }
 
   const application: CredentialApplication = req.body
+  let acceptedApplication: AcceptedCredentialApplication
 
   try {
-    const acceptedApplication = await validateCredentialSubmission(application)
-    const fulfillment: CredentialFulfillment = await createKycAmlFulfillment(
-      user,
-      issuer,
-      acceptedApplication
-    )
-
-    res.json(fulfillment)
+    acceptedApplication = await validateCredentialSubmission(application)
   } catch (err) {
     return validationError(res, err)
   }
@@ -42,7 +37,7 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
   const fulfillment: CredentialFulfillment = await createFulfillment(
     user,
     issuer,
-    application
+    acceptedApplication
   )
 
   if (!fulfillment) {
