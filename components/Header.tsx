@@ -5,18 +5,16 @@ import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { FC, Fragment } from "react"
+import { useActiveClass } from "lib/react-fns"
 
 type Props = {
   title: string
 }
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ")
-}
-
 const Header: FC<Props> = ({ title }) => {
   const [session] = useSession()
   const router = useRouter()
+  const activeClass = useActiveClass(router)
 
   const navigation = session
     ? [
@@ -25,10 +23,6 @@ const Header: FC<Props> = ({ title }) => {
         { name: "Credit Score", href: "/attestations/credit-score" }
       ]
     : []
-
-  const isActive = (href: string): boolean => {
-    return router.pathname === href
-  }
 
   return (
     <>
@@ -65,10 +59,10 @@ const Header: FC<Props> = ({ title }) => {
                         {navigation.map((item) => (
                           <Link key={item.name} href={item.href}>
                             <a
-                              className={classNames(
-                                isActive(item.href)
-                                  ? "bg-gray-900 text-white"
-                                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                              className={activeClass(
+                                item.href,
+                                "bg-gray-900 text-white",
+                                "text-gray-300 hover:bg-gray-700 hover:text-white",
                                 "px-3 py-2 rounded-md text-sm font-medium"
                               )}
                             >
@@ -113,19 +107,14 @@ const Header: FC<Props> = ({ title }) => {
                                   </p>
                                 </div>
                                 <Menu.Item>
-                                  {({ active }) => (
-                                    <button
-                                      onClick={() =>
-                                        signOut({ callbackUrl: "/" })
-                                      }
-                                      className={classNames(
-                                        active ? "bg-gray-100" : "",
-                                        "block px-4 py-2 text-sm text-gray-700 w-full text-left"
-                                      )}
-                                    >
-                                      Sign out
-                                    </button>
-                                  )}
+                                  <button
+                                    onClick={() =>
+                                      signOut({ callbackUrl: "/" })
+                                    }
+                                    className="block w-full px-4 py-2 text-sm text-left text-gray-700"
+                                  >
+                                    Sign out
+                                  </button>
                                 </Menu.Item>
                               </Menu.Items>
                             </Transition>
@@ -144,10 +133,10 @@ const Header: FC<Props> = ({ title }) => {
                       <a
                         key={item.name}
                         href={item.href}
-                        className={classNames(
-                          isActive(item.href)
-                            ? "bg-gray-900 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        className={activeClass(
+                          item.href,
+                          "bg-gray-900 text-white",
+                          "text-gray-300 hover:bg-gray-700 hover:text-white",
                           "block px-3 py-2 rounded-md text-base font-medium"
                         )}
                       >

@@ -3,6 +3,7 @@ import { getSession } from "next-auth/client"
 import QRCode from "qrcode.react"
 import Authenticated, { SessionProps } from "components/Authenticated"
 import Layout from "components/Layout"
+import AttestationNavigation from "components/issuer/AttestationNavigation"
 import { findUser, temporaryAuthToken, User } from "lib/database"
 import { ManifestUrlWrapper } from "types"
 
@@ -51,6 +52,7 @@ const KycAmlPage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
   return (
     <Authenticated>
       <Layout title="KYC/AML Attestation">
+        <AttestationNavigation></AttestationNavigation>
         <div className="flex flex-col justify-center space-y-8">
           <dl className="flex flex-row mx-auto space-x-5">
             {stats.map((item) => (
