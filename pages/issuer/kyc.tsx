@@ -2,7 +2,7 @@ import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
 import QRCode from "qrcode.react"
 import Authenticated, { SessionProps } from "components/Authenticated"
-import Layout from "components/Layout"
+import AttestationLayout from "components/issuer/AttestationLayout"
 import { findUser, temporaryAuthToken, User } from "lib/database"
 import { ManifestUrlWrapper } from "types"
 
@@ -50,13 +50,13 @@ const KycAmlPage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
 
   return (
     <Authenticated>
-      <Layout title="KYC/AML Attestation">
+      <AttestationLayout title="KYC/AML Attestation">
         <div className="flex flex-col justify-center space-y-8">
-          <dl className="flex flex-row mx-auto space-x-5">
+          <dl className="flex flex-row mx-auto space-x-2 sm:space-x-5">
             {stats.map((item) => (
               <div
                 key={item.name}
-                className="px-6 py-5 overflow-hidden text-center bg-white rounded-lg shadow sm:px-8 flex-0"
+                className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 sm:px-8 flex-0"
               >
                 <dt className="text-sm font-medium text-gray-500 truncate">
                   {item.name}
@@ -78,7 +78,7 @@ const KycAmlPage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
             value={JSON.stringify(manifestUrlWrapper, null, 4)}
           />
         </div>
-      </Layout>
+      </AttestationLayout>
     </Authenticated>
   )
 }

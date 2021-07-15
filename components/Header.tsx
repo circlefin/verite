@@ -5,42 +5,42 @@ import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { FC, Fragment } from "react"
+import { isActive, classNames } from "lib/react-fns"
 
 type Props = {
   title: string
-}
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ")
 }
 
 const Header: FC<Props> = ({ title }) => {
   const [session] = useSession()
   const router = useRouter()
 
-  const navigation = session
-    ? [
-        { name: "Dashboard", href: "/dashboard" },
-        { name: "KYC/AML", href: "/attestations/kyc" },
-        { name: "Credit Score", href: "/attestations/credit-score" }
-      ]
-    : []
+  const navigation = [
+    { name: "Issuer", href: "/issuer" },
+    { name: "Verifier", href: "/verifier" }
+  ]
 
-  const isActive = (href: string): boolean => {
-    return router.pathname === href
-  }
+  const colors = router.pathname.startsWith("/verifier")
+    ? {
+        bg: "bg-indigo-800",
+        active: "bg-indigo-900",
+        hover: "hover:bg-indigo-700"
+      }
+    : { bg: "bg-gray-800", active: "bg-gray-900", hover: "hover:bg-gray-700" }
 
   return (
     <>
-      <div className="pb-32 bg-gray-800">
-        <Disclosure as="nav" className="bg-gray-800">
+      <div className={`${colors.bg} pb-32`}>
+        <Disclosure as="nav" className={colors.bg}>
           {({ open }) => (
             <>
               <div className="max-w-3xl px-2 mx-auto sm:px-6 lg:px-8">
                 <div className="relative flex items-center justify-between h-16">
                   <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                     {/* Mobile menu button*/}
-                    <Disclosure.Button className="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <Disclosure.Button
+                      className={`inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white ${colors.hover} focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white`}
+                    >
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XIcon className="block w-6 h-6" aria-hidden="true" />
@@ -67,8 +67,8 @@ const Header: FC<Props> = ({ title }) => {
                             <a
                               className={classNames(
                                 isActive(item.href)
-                                  ? "bg-gray-900 text-white"
-                                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                                  ? `${colors.active} text-white`
+                                  : `text-gray-300 ${colors.hover} hover:text-white`,
                                 "px-3 py-2 rounded-md text-sm font-medium"
                               )}
                             >
@@ -85,7 +85,9 @@ const Header: FC<Props> = ({ title }) => {
                         {({ open }) => (
                           <>
                             <div>
-                              <Menu.Button className="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                              <Menu.Button
+                                className={`${colors.bg} flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white`}
+                              >
                                 <span className="sr-only">Open user menu</span>
                                 <UserCircleIcon className="w-8 h-8 text-gray-400 rounded-full" />
                               </Menu.Button>
@@ -113,19 +115,14 @@ const Header: FC<Props> = ({ title }) => {
                                   </p>
                                 </div>
                                 <Menu.Item>
-                                  {({ active }) => (
-                                    <button
-                                      onClick={() =>
-                                        signOut({ callbackUrl: "/" })
-                                      }
-                                      className={classNames(
-                                        active ? "bg-gray-100" : "",
-                                        "block px-4 py-2 text-sm text-gray-700 w-full text-left"
-                                      )}
-                                    >
-                                      Sign out
-                                    </button>
-                                  )}
+                                  <button
+                                    onClick={() =>
+                                      signOut({ callbackUrl: "/" })
+                                    }
+                                    className="block w-full px-4 py-2 text-sm text-left text-gray-700"
+                                  >
+                                    Sign out
+                                  </button>
                                 </Menu.Item>
                               </Menu.Items>
                             </Transition>
@@ -141,27 +138,29 @@ const Header: FC<Props> = ({ title }) => {
                 <div className="px-2 pt-2 pb-3 space-y-1">
                   {session &&
                     navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          isActive(item.href)
-                            ? "bg-gray-900 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          "block px-3 py-2 rounded-md text-base font-medium"
-                        )}
-                      >
-                        {item.name}
-                      </a>
+                      <Link key={item.name} href={item.href}>
+                        <a
+                          className={classNames(
+                            isActive(item.href)
+                              ? `${colors.active} text-white`
+                              : `text-gray-300 ${colors.hover} hover:text-white`,
+                            "block px-3 py-2 rounded-md text-base font-medium"
+                          )}
+                        >
+                          {item.name}
+                        </a>
+                      </Link>
                     ))}
                 </div>
               </Disclosure.Panel>
             </>
           )}
         </Disclosure>
-        <header className="py-10">
+        <header className="py-4 sm:py-10">
           <div className="max-w-3xl px-4 mx-auto sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold text-white">{title}</h1>
+            <h1 className="text-2xl font-bold text-white sm:text-3xl">
+              {title}
+            </h1>
           </div>
         </header>
       </div>
