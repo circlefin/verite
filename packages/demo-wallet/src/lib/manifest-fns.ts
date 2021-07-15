@@ -1,5 +1,10 @@
 import { Verifiable, W3CCredential } from "did-jwt-vc"
 import { JSONPath } from "jsonpath-plus"
+
+import compact from "lodash/compact"
+import last from "lodash/last"
+import { getManifest } from "../lib/manifestRegistry"
+import { asyncMap } from "./async-fns"
 import {
   CredentialManifest,
   DisplayMapping,
@@ -36,6 +41,11 @@ const getDisplayProperty = (
   const text = property?.text
   if (text) {
     return text
+  }
+
+  // If we do not have a credential by this point, we can early return the fallback
+  if (!credential) {
+    return fallback
   }
 
   // Display values can have an array of JSON paths
@@ -88,4 +98,16 @@ export const getDisplayProperties = (
     ),
     properties
   }
+}
+
+export const findManifestForCredential = async (
+  credential: Verifiable<W3CCredential>
+): Promise<CredentialManifest> => {
+  const manifests = await asyncMap(
+    credential.type,
+    async (type): Promise<CredentialManifest> => {
+      return await getManifest(type)
+    }
+  )
+  return last(compact(manifests))
 }
