@@ -53,7 +53,7 @@ export function kycAmlVerifiableCredentialPayload(
     vc: {
       "@context": [
         "https://www.w3.org/2018/credentials/v1",
-        "https://centre.io/identity"
+        "https://verity.id/identity"
       ],
       type: ["VerifiableCredential", "KYCAMLAttestation"],
       credentialSubject: {

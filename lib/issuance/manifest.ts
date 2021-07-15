@@ -1,37 +1,9 @@
-import {
-  CredentialIssuer,
-  CredentialManifest,
-  createKycAmlManifest
-} from "lib/verity"
-
-export const circleIssuer: CredentialIssuer = {
-  id: "did:web:circle.com",
-  comment: "JSON-LD definition at https://circle.com/.well_known/did.json",
-  name: "Circle",
-  styles: {}
-}
-
-export const kycManifest: CredentialManifest = createKycAmlManifest(
-  circleIssuer,
-  {
-    thumbnail: {
-      uri: "https://circle.com/img/logo.png",
-      alt: "Circle Logo"
-    },
-    hero: {
-      uri: "https://circle.com/img/kycCred.png",
-      alt: "KYC Visual"
-    },
-    background: {
-      color: "#ff0000"
-    },
-    text: {
-      color: "#d4d400"
-    }
-  }
-)
+import { creditScoreManifest } from "./manifests/creditScore"
+import { kycManifest } from "./manifests/kyc"
+import { CredentialManifest } from "lib/verity"
 
 export const MANIFEST_MAP: Record<string, CredentialManifest> = {
+  "credit-score": creditScoreManifest,
   kyc: kycManifest
 }
 

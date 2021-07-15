@@ -3,23 +3,23 @@
   "credential": {
     "@context": [
       "https://www.w3.org/2018/credentials/v1",
-      "https://centre.io/identity"
+      "https://verity.id/identity"
     ],
     "type": ["VerifiableCredential", "KYCAMLAttestation"],
     "issuer": {
-      "id": "did:web:circle.com",
-      "name": "Circle"
+      "id": "did:web:verity.id",
+      "name": "Verity"
     },
     "issuanceDate": "2021-05-05T17:23:31.000Z",
     "credentialSubject": {
       "id": "did:key:z6MktTGgFRVL5H4y5G9sKT2TszYsogRuFfZNvyj2en3RiXhP",
       "KYCAMLAttestation": {
-        "authorityId": "did:web:circle.com",
+        "authorityId": "did:web:verity.id",
         "approvalDate": "2020-06-01T14:00:00",
         "expirationDate": "2021-06-01T13:59:59",
-        "authortyName": "Circle",
-        "authortyUrl": "https://circle.com",
-        "authorityCallbackUrl": "https://identity.circle.com",
+        "authortyName": "Verity",
+        "authortyUrl": "https://verity.id",
+        "authorityCallbackUrl": "https://identity.verity.id",
         "serviceProviders": [
           {
             "name": "Jumio",

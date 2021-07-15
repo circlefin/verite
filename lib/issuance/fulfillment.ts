@@ -21,11 +21,11 @@ export async function createKycAmlFulfillment(
     issuer,
     application,
     kycAmlVerifiableCredentialPayload(verifiablePresentation.holder, {
-      authorityId: "did:web:circle.com",
+      authorityId: "did:web:verity.id",
       approvalDate: new Date().toJSON(),
-      authorityName: "Circle",
-      authorityUrl: "https://circle.com",
-      authorityCallbackUrl: "https://identity.circle.com",
+      authorityName: "Verity",
+      authorityUrl: "https://verity.id",
+      authorityCallbackUrl: "https://identity.verity.id",
       serviceProviders: [
         {
           name: "Jumio",

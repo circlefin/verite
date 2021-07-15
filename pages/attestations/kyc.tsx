@@ -4,15 +4,10 @@ import QRCode from "qrcode.react"
 import Authenticated, { SessionProps } from "components/Authenticated"
 import Layout from "components/Layout"
 import { findUser, temporaryAuthToken, User } from "lib/database"
-
-export type ManifestUrlContainer = {
-  manifestUrl: string
-  submissionUrl: string
-  version: string
-}
+import { ManifestUrlWrapper } from "types"
 
 type Props = SessionProps & {
-  manifestUrlContainer: ManifestUrlContainer
+  manifestUrlContainer: ManifestUrlWrapper
   user: User
 }
 
@@ -31,10 +26,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   }
 
   const user = findUser((session.user as User).id)
-  const manifestToken = await temporaryAuthToken(user)
-  const manifestUrlContainer: ManifestUrlContainer = {
-    manifestUrl: `${process.env.HOST}/api/issuance/manifest`,
-    submissionUrl: `${process.env.HOST}/api/issuance/submission/${manifestToken}`,
+  const authToken = await temporaryAuthToken(user)
+  const manifestUrlContainer: ManifestUrlWrapper = {
+    manifestUrl: `${process.env.HOST}/api/issuance/manifests/kyc`,
+    submissionUrl: `${process.env.HOST}/api/issuance/submission/${authToken}`,
     version: "1"
   }
 

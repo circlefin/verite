@@ -3,7 +3,8 @@ import { getSession } from "next-auth/client"
 import QRCode from "qrcode.react"
 import Authenticated, { SessionProps } from "components/Authenticated"
 import Layout from "components/Layout"
-import { findUser, User } from "lib/database"
+import { findUser, temporaryAuthToken, User } from "lib/database"
+import { ManifestUrlWrapper } from "types"
 
 type Props = SessionProps & {
   user: User
@@ -24,9 +25,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   }
 
   const user = findUser((session.user as User).id)
+  const authToken = await temporaryAuthToken(user)
+  const manifestUrlContainer: ManifestUrlWrapper = {
+    manifestUrl: `${process.env.HOST}/api/issuance/manifest`,
+    submissionUrl: `${process.env.HOST}/api/issuance/submission/${authToken}`,
+    version: "1"
+  }
 
   return {
     props: {
+      manifestUrlContainer,
       session,
       user
     }
