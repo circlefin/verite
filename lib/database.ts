@@ -12,12 +12,14 @@ export type User = {
   password: string
   jumioScore?: number
   ofacScore?: number
+  creditScore?: number
 }
 
 export type UserOpts = {
   password?: string
   jumioScore?: number
   ofacScore?: number
+  creditScore?: number
 }
 
 export const USERS: User[] = [
@@ -26,23 +28,27 @@ export const USERS: User[] = [
     email: "alice@test.com",
     password: "testing",
     jumioScore: 80,
-    ofacScore: 0
+    ofacScore: 0,
+    creditScore: 750
   },
   {
     id: "22222222-2222-2222-2222-222222222222",
     email: "bob@test.com",
     password: "testing",
     jumioScore: 10,
-    ofacScore: 1
+    ofacScore: 1,
+    creditScore: 320
   }
 ]
 
 export function createUser(email: string, opts: UserOpts = {}): User {
   const id = uuidv4()
+  const password = opts.password || "testing"
   const jumioScore = opts.jumioScore || random(0, 100)
   const ofacScore = opts.ofacScore || random(0, 100)
-  const password = opts.password || "testing"
-  const user = { id, email, password, jumioScore, ofacScore }
+  const creditScore = opts.creditScore || random(0, 100)
+
+  const user = { id, email, password, jumioScore, ofacScore, creditScore }
 
   USERS.push(user)
   return user

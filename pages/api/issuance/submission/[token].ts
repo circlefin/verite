@@ -2,7 +2,7 @@ import { NextApiHandler } from "next"
 import { ApiError } from "next/dist/next-server/server/api-utils"
 import { methodNotAllowed, notFound, validationError } from "lib/api-fns"
 import { findUserFromTemporaryAuthToken } from "lib/database"
-import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
+import { createFulfillment } from "lib/issuance/fulfillment"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import {
   issuer,
@@ -38,6 +38,18 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
   } catch (err) {
     return validationError(res, err)
   }
+
+  const fulfillment: CredentialFulfillment = await createFulfillment(
+    user,
+    issuer,
+    application
+  )
+
+  if (!fulfillment) {
+    return notFound(res)
+  }
+
+  res.json(fulfillment)
 }
 
 export default handler
