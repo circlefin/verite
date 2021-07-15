@@ -44,9 +44,10 @@ export function verifiablePresentationPayload(
   }
 }
 
-export function kycAmlVerifiableCredentialPayload(
+export function verifiableCredentialPayload(
+  type: string,
   subject: string,
-  kycAttestation: Record<string, unknown>
+  attestation: Record<string, unknown>
 ): JwtCredentialPayload {
   return {
     sub: subject,
@@ -55,13 +56,31 @@ export function kycAmlVerifiableCredentialPayload(
         "https://www.w3.org/2018/credentials/v1",
         "https://verity.id/identity"
       ],
-      type: ["VerifiableCredential", "KYCAMLAttestation"],
+      type: ["VerifiableCredential", type],
       credentialSubject: {
-        KYCAMLAttestation: kycAttestation,
+        [type]: attestation,
         id: subject
       }
     }
   }
+}
+
+export function kycAmlVerifiableCredentialPayload(
+  subject: string,
+  attestation: Record<string, unknown>
+): JwtCredentialPayload {
+  return verifiableCredentialPayload("KYCAMLAttestation", subject, attestation)
+}
+
+export function creditScoreVerifiableCredentialPayload(
+  subject: string,
+  attestation: Record<string, unknown>
+): JwtCredentialPayload {
+  return verifiableCredentialPayload(
+    "CreditScoreAttestation",
+    subject,
+    attestation
+  )
 }
 
 /**
