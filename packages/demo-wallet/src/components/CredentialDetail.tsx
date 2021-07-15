@@ -103,13 +103,25 @@ const CredentialDetail = ({ navigation, route }): Element => {
     display = getDisplayProperties(manifest, credential)
   }
 
+  const properties = (display?.properties || []).map((property, index) => {
+    return (
+      <Section key={index} title={property.label}>
+        {property.value}
+      </Section>
+    )
+  })
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {manifest ? (
-          <Section title={display.title} subtitle={display.subtitle}>
-            {display.description}
-          </Section>
+          <View>
+            <Section title={display.title} subtitle={display.subtitle}>
+              {display.description}
+            </Section>
+
+            {properties}
+          </View>
         ) : null}
         <Section title="Authority">
           <Text
