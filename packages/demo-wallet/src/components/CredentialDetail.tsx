@@ -1,5 +1,6 @@
 import { Verifiable, W3CCredential } from "did-jwt-vc"
 import compact from "lodash/compact"
+import last from "lodash/last"
 import React, { useEffect, useState } from "react"
 import {
   SafeAreaView,
@@ -12,6 +13,7 @@ import {
 } from "react-native"
 import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
+import { asyncMap } from "../lib/async-fns"
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getManifest } from "../lib/manifestRegistry"
 import { CredentialManifest } from "../lib/verity"
@@ -61,16 +63,22 @@ const Section: React.FC<{
  * This component can only render KYCAMLAttestation VCs at the moment
  */
 const CredentialDetail = ({ navigation, route }): Element => {
-  const [manifest, setManifest] = useState<CredentialManifest>()
+  const credential: Verifiable<W3CCredential> = route.params.credential
+
+  const [manifest, setManifest] = useState<CredentialManifest | undefined>()
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      setManifest(await getManifest("KYCAMLAttestation"))
+      const manifests = await asyncMap(
+        credential.type,
+        async (type): Promise<CredentialManifest> => {
+          return await getManifest(type)
+        }
+      )
+      setManifest(last(compact(manifests)))
     })
 
     return unsubscribe
-  }, [navigation])
-
-  const credential: Verifiable<W3CCredential> = route.params.credential
+  }, [credential, navigation])
 
   // TODO: Is it unsafe to dig into this?
   const attestation = credential.credentialSubject.KYCAMLAttestation
