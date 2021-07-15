@@ -6,7 +6,7 @@ export type DataMappingSchemaNonString = {
 
 export type DataMappingSchemaString = {
   type: "string"
-  format:
+  format?:
     | "date-time"
     | "time"
     | "date"
@@ -26,10 +26,6 @@ export type DataMappingSchema =
   | DataMappingSchemaString
   | DataMappingSchemaNonString
 
-export type LabeledDataMappingSchema = DataMappingSchema & {
-  label: string
-}
-
 export type DataMappingText = {
   text: string
 }
@@ -42,9 +38,13 @@ export type DataMappingPath = {
 
 export type DisplayMapping = DataMappingPath | DataMappingText
 
+export type LabeledDisplayMapping = DisplayMapping & {
+  label: string
+}
+
 export type DataDisplay = {
   title?: DisplayMapping
   subtitle?: DisplayMapping
   description?: DisplayMapping | { text: string }
-  properties?: LabeledDataMappingSchema[]
+  properties?: LabeledDisplayMapping[]
 }

@@ -67,7 +67,7 @@ export function createKycAmlManifest(
       description: `Attestation that ${issuer.name} has completed KYC/AML verification for this subject`,
       display: {
         title: {
-          path: ["$.authorityName", "$.vc.authorityName"],
+          path: ["$.KYCAMLAttestation.authorityName"],
           fallback: `${issuer.name} KYC Attestation`
         },
         subtitle: {
@@ -76,7 +76,32 @@ export function createKycAmlManifest(
         },
         description: {
           text: "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
-        }
+        },
+        properties: [
+          {
+            label: "Authority",
+            path: ["$.KYCAMLAttestation.authorityName"],
+            schema: {
+              type: "string"
+            }
+          },
+          {
+            label: "Authority URL",
+            path: ["$.KYCAMLAttestation.authorityUrl"],
+            schema: {
+              type: "string",
+              format: "uri"
+            }
+          },
+          {
+            label: "Approved At",
+            path: ["$.KYCAMLAttestation.approvalDate"],
+            schema: {
+              type: "string",
+              format: "date-time"
+            }
+          }
+        ]
       },
       styles
     }
@@ -101,16 +126,38 @@ export function createCreditScoreManifest(
       description: `Attestation that ${issuer.name} has perfomed a Credit Score check for this subject`,
       display: {
         title: {
-          path: ["$.authorityName", "$.vc.authorityName"],
-          fallback: `${issuer.name} Credit Score Attestation`
+          text: `${issuer.name} Risk Score`
         },
         subtitle: {
-          path: ["$.score", "$.vc.score"],
+          path: ["$.CreditScoreAttestation.scoreType"],
           fallback: "Includes credit score"
         },
         description: {
           text: "The Credit Score authority processes credit worthiness analysis, potentially employing a number of internal and external vendor providers."
-        }
+        },
+        properties: [
+          {
+            label: "Score",
+            path: ["$.CreditScoreAttestation.score"],
+            schema: {
+              type: "number"
+            }
+          },
+          {
+            label: "Score Type",
+            path: ["$.CreditScoreAttestation.scoreType"],
+            schema: {
+              type: "string"
+            }
+          },
+          {
+            label: "Provider",
+            path: ["$.CreditScoreAttestation.provider"],
+            schema: {
+              type: "string"
+            }
+          }
+        ]
       },
       styles
     }
