@@ -1,16 +1,16 @@
-import { NextRouter } from "next/router"
+import { useRouter } from "next/router"
 
-export function useActiveClass(router: NextRouter) {
-  return (
-    href: string,
-    active: string,
-    inactive: string,
-    base: string
-  ): string => {
-    if (router.pathname === href) {
-      return [base, active].join(" ")
-    } else {
-      return [base, inactive].join(" ")
-    }
+export function classNames(...classes: string[]): string {
+  return classes.filter(Boolean).join(" ")
+}
+
+export function isActive(href: string, inclusive = true): boolean {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter()
+
+  if (inclusive) {
+    return router.pathname.startsWith(href)
   }
+
+  return router.pathname === href
 }

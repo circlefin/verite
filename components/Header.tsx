@@ -5,7 +5,7 @@ import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { FC, Fragment } from "react"
-import { useActiveClass } from "lib/react-fns"
+import { isActive, classNames } from "lib/react-fns"
 
 type Props = {
   title: string
@@ -14,27 +14,33 @@ type Props = {
 const Header: FC<Props> = ({ title }) => {
   const [session] = useSession()
   const router = useRouter()
-  const activeClass = useActiveClass(router)
 
-  const navigation = session
-    ? [
-        { name: "Dashboard", href: "/dashboard" },
-        { name: "KYC/AML", href: "/attestations/kyc" },
-        { name: "Credit Score", href: "/attestations/credit-score" }
-      ]
-    : []
+  const navigation = [
+    { name: "Issuer", href: "/issuer" },
+    { name: "Verifier", href: "/verifier" }
+  ]
+
+  const colors = router.pathname.startsWith("/verifier")
+    ? {
+        bg: "bg-indigo-800",
+        active: "bg-indigo-900",
+        hover: "hover:bg-indigo-700"
+      }
+    : { bg: "bg-gray-800", active: "bg-gray-900", hover: "hover:bg-gray-700" }
 
   return (
     <>
-      <div className="pb-32 bg-gray-800">
-        <Disclosure as="nav" className="bg-gray-800">
+      <div className={`${colors.bg} pb-32`}>
+        <Disclosure as="nav" className={colors.bg}>
           {({ open }) => (
             <>
               <div className="max-w-3xl px-2 mx-auto sm:px-6 lg:px-8">
                 <div className="relative flex items-center justify-between h-16">
                   <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                     {/* Mobile menu button*/}
-                    <Disclosure.Button className="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <Disclosure.Button
+                      className={`inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white ${colors.hover} focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white`}
+                    >
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XIcon className="block w-6 h-6" aria-hidden="true" />
@@ -59,10 +65,10 @@ const Header: FC<Props> = ({ title }) => {
                         {navigation.map((item) => (
                           <Link key={item.name} href={item.href}>
                             <a
-                              className={activeClass(
-                                item.href,
-                                "bg-gray-900 text-white",
-                                "text-gray-300 hover:bg-gray-700 hover:text-white",
+                              className={classNames(
+                                isActive(item.href)
+                                  ? `${colors.active} text-white`
+                                  : `text-gray-300 ${colors.hover} hover:text-white`,
                                 "px-3 py-2 rounded-md text-sm font-medium"
                               )}
                             >
@@ -79,7 +85,9 @@ const Header: FC<Props> = ({ title }) => {
                         {({ open }) => (
                           <>
                             <div>
-                              <Menu.Button className="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                              <Menu.Button
+                                className={`${colors.bg} flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white`}
+                              >
                                 <span className="sr-only">Open user menu</span>
                                 <UserCircleIcon className="w-8 h-8 text-gray-400 rounded-full" />
                               </Menu.Button>
@@ -132,10 +140,10 @@ const Header: FC<Props> = ({ title }) => {
                     navigation.map((item) => (
                       <Link key={item.name} href={item.href}>
                         <a
-                          className={activeClass(
-                            item.href,
-                            "bg-gray-900 text-white",
-                            "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          className={classNames(
+                            isActive(item.href)
+                              ? `${colors.active} text-white`
+                              : `text-gray-300 ${colors.hover} hover:text-white`,
                             "block px-3 py-2 rounded-md text-base font-medium"
                           )}
                         >
