@@ -1,4 +1,5 @@
 import { NextApiResponse } from "next"
+import { VerificationError, VerificationObject } from "lib/verity"
 
 export type ApiError = {
   status: number
@@ -8,11 +9,13 @@ export type ApiError = {
 export function apiError(
   res: NextApiResponse,
   status: number,
-  message: string
+  message: string,
+  errors?: VerificationObject[]
 ): void {
   res.status(status).json({
     status,
-    message
+    message,
+    errors
   })
 }
 
@@ -25,5 +28,9 @@ export function methodNotAllowed(res: NextApiResponse): void {
 }
 
 export function validationError(res: NextApiResponse, error: Error): void {
-  apiError(res, 400, error.message)
+  if (error instanceof VerificationError) {
+    apiError(res, 400, error.message, error.errors)
+  } else {
+    apiError(res, 400, error.message)
+  }
 }

@@ -3,10 +3,8 @@ import { User } from "lib/database"
 import {
   AcceptedCredentialApplication,
   createFullfillment,
-  CredentialApplication,
   CredentialFulfillment,
-  kycAmlVerifiableCredentialPayload,
-  Verified
+  kycAmlVerifiableCredentialPayload
 } from "lib/verity"
 
 export async function createKycAmlFulfillment(

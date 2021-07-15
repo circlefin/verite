@@ -3,7 +3,7 @@ import {
   AcceptedCredentialApplication,
   CredentialApplication,
   decodeVerifiablePresentation,
-  Verified
+  VerificationError
 } from "lib/verity"
 
 export async function validateCredentialSubmission(
@@ -21,8 +21,7 @@ export async function validateCredentialSubmission(
       "presentation"
     ])
   ) {
-    // TODO(kim)
-    throw new Error("Invalid JSON format")
+    throw new VerificationError("Invalid JSON format")
   }
 
   /**
@@ -32,7 +31,7 @@ export async function validateCredentialSubmission(
     application.credential_application.manifest_id
   )
   if (!manifest) {
-    throw new Error("Invalid Manifest ID")
+    throw new VerificationError("Invalid Manifest ID")
   }
 
   /**

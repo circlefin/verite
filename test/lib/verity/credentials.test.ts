@@ -1,9 +1,8 @@
-import { JwtCredentialPayload, JwtPresentationPayload } from "did-jwt-vc"
+import { JwtCredentialPayload } from "did-jwt-vc"
 import {
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
   signVerifiableCredential,
-  signVerifiablePresentation,
   VerificationError
 } from "lib/verity"
 
@@ -64,6 +63,7 @@ describe("VC signing and decoding", () => {
   })
 
   it("rejects an expired VP", async () => {
+    expect.assertions(1)
     await expect(decodeVerifiablePresentation(expiredVp)).rejects.toThrowError(
       VerificationError
     )
