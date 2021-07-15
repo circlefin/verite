@@ -76,7 +76,32 @@ export function createKycAmlManifest(
         },
         description: {
           text: "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
-        }
+        },
+        properties: [
+          {
+            label: "Authority",
+            path: ["$.KYCAMLAttestation.authorityName"],
+            schema: {
+              type: "string"
+            }
+          },
+          {
+            label: "Authority URL",
+            path: ["$.KYCAMLAttestation.authorityUrl"],
+            schema: {
+              type: "string",
+              format: "uri"
+            }
+          },
+          {
+            label: "Approved At",
+            path: ["$.KYCAMLAttestation.approvalDate"],
+            schema: {
+              type: "string",
+              format: "date-time"
+            }
+          }
+        ]
       },
       styles
     }
