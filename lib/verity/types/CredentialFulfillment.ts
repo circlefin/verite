@@ -1,5 +1,5 @@
-import { JWT } from "did-jwt-vc/lib/types"
 import { DescriptorMap } from "./DescriptorMap"
+import { JWT } from "./Jwt"
 
 export type CredentialFulfillment = {
   credential_fulfillment: {

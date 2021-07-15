@@ -1,5 +1,5 @@
-import { JWT } from "did-jwt-vc/lib/types"
 import { ClaimFormatDesignation } from ".."
+import { JWT } from "./Jwt"
 import { PresentationSubmission } from "./PresentationSubmission"
 
 export type CredentialApplication = {

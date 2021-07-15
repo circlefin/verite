@@ -1,24 +1,19 @@
 import { EdDSASigner } from "did-jwt"
 import {
   createVerifiableCredentialJwt,
-  JwtCredentialPayload,
-  verifyCredential,
-  JwtPresentationPayload,
-  Issuer
-} from "did-jwt-vc"
-import {
+  createVerifiablePresentationJwt,
   CredentialPayload,
-  JWT,
+  Issuer,
+  JwtCredentialPayload,
+  JwtPresentationPayload,
   PresentationPayload,
   VerifiedCredential,
-  VerifiedPresentation
-} from "did-jwt-vc/lib/types"
-
+  VerifiedPresentation,
+  verifyCredential,
+  verifyPresentation
+} from "did-jwt-vc"
 import { didKeyResolver } from "./didKey"
-import {
-  verifyPresentation,
-  createVerifiablePresentationJwt
-} from "lib/did-jwt-vc"
+import { JWT } from "./types"
 
 const did = process.env.ISSUER_DID
 const secret = process.env.ISSUER_SECRET
