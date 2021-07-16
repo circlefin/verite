@@ -82,6 +82,7 @@
     ]
   },
   "react-native": {
+    "jsonpath-plus": "jsonpath-plus/dist/index-browser-esm",
     "crypto": "react-native-crypto",
     "_stream_transform": "readable-stream/transform",
     "_stream_readable": "readable-stream/readable",
@@ -92,6 +93,7 @@
     "vm": "vm-browserify"
   },
   "browser": {
+    "jsonpath-plus": "jsonpath-plus/dist/index-browser-esm",
     "crypto": "react-native-crypto",
     "_stream_transform": "readable-stream/transform",
     "_stream_readable": "readable-stream/readable",
