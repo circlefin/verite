@@ -1,8 +1,7 @@
 import { NextApiHandler } from "next"
-import { kycVerificationRequest } from "lib/verification/requests"
 
 const handler: NextApiHandler = (req, res) => {
-  res.json(kycVerificationRequest)
+  res.json({ status: "ok" })
 }
 
 export default handler

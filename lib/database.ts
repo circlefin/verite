@@ -69,7 +69,7 @@ export async function temporaryAuthToken(
   user: User,
   ttl: string = JWT_EXPIRES_IN
 ): Promise<JWT> {
-  return jwt.sign({}, process.env.JWT_SECRET, {
+  return jwt.sign({}, process.env.AUTH_JWT_SECRET, {
     subject: user.id,
     algorithm: JWT_ALGORITHM,
     expiresIn: ttl
@@ -80,7 +80,7 @@ export const findUserFromTemporaryAuthToken = async (
   token: string
 ): Promise<User | undefined> => {
   try {
-    const payload = await jwt.verify(token, process.env.JWT_SECRET, {
+    const payload = await jwt.verify(token, process.env.AUTH_JWT_SECRET, {
       algorithms: [JWT_ALGORITHM]
     })
 
