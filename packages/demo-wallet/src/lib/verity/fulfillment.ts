@@ -1,17 +1,17 @@
 import {
   createVerifiableCredentialJwt,
+  createVerifiablePresentationJwt,
   Issuer,
   JwtCredentialPayload
 } from "did-jwt-vc"
-import { JWT } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import { asyncMap } from "../async-fns"
-import { createVerifiablePresentationJwt } from "../did-jwt-vc"
 import { verifiablePresentationPayload } from "./credentials"
 import {
   CredentialApplication,
   CredentialFulfillment,
-  DescriptorMap
+  DescriptorMap,
+  JWT
 } from "./types"
 
 export async function createFullfillment(

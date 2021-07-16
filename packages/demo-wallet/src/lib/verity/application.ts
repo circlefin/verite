@@ -1,5 +1,5 @@
+import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
-import { createVerifiablePresentationJwt } from "../did-jwt-vc"
 import { verifiablePresentationPayload } from "./credentials"
 import { didKeyToIssuer } from "./didKey"
 import {
