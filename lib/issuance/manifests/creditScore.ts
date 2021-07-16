@@ -4,12 +4,12 @@ import { createCreditScoreManifest, CredentialManifest } from "lib/verity"
 export const creditScoreManifest: CredentialManifest =
   createCreditScoreManifest(manifestIssuer, {
     thumbnail: {
-      uri: "https://verity.id/img/logo.png",
+      uri: `${process.env.HOST}/img/logo.png`,
       alt: "Verity Logo"
     },
     hero: {
-      uri: "https://verity.id/img/kycCred.png",
-      alt: "KYC Visual"
+      uri: `${process.env.HOST}/img/credit-score-hero.png`,
+      alt: "Credit Score Visual"
     },
     background: {
       color: "#ff0000"
