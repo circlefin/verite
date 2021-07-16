@@ -6,8 +6,10 @@ import Ionicons from "react-native-vector-icons/Ionicons"
 import HomePage from "./components/HomePage"
 import Scanner from "./components/Scanner"
 import CredentialDetail from "./src/components/CredentialDetail"
+import CredentialPicker from "./src/components/CredentialPicker"
 import CredentialsList from "./src/components/CredentialsList"
 import SettingsScreen from "./src/components/SettingsScreen"
+import Verification from "./src/components/Verification"
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -17,6 +19,8 @@ const scannerStack = () => {
     <Stack.Navigator>
       <Stack.Screen name="Scan" component={HomePage} />
       <Stack.Screen name="Scanner" component={Scanner} />
+      <Stack.Screen name="CredentialPicker" component={CredentialPicker} />
+      <Stack.Screen name="Verification" component={Verification} />
     </Stack.Navigator>
   )
 }
