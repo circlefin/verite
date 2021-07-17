@@ -1,5 +1,6 @@
 import { JwtCredentialPayload } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
+import { asyncMap } from "./async-fns"
 import { CredentialSigner } from "./credential-signer"
 import { verifiablePresentationPayload } from "./credentials"
 import {
@@ -8,7 +9,6 @@ import {
   DescriptorMap,
   JWT
 } from "./types"
-import { asyncMap } from "lib/verity/async-fns"
 
 export async function createFullfillment(
   credentialSigner: CredentialSigner,
