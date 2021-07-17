@@ -13,10 +13,9 @@ import {
 } from "react-native"
 import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
-import { asyncMap } from "../lib/async-fns"
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getManifest } from "../lib/manifestRegistry"
-import { CredentialManifest, KYCAMLAttestation } from "../lib/verity"
+import { asyncMap, CredentialManifest, KYCAMLAttestation } from "../lib/verity"
 
 const Section: React.FC<{
   title: string

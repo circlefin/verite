@@ -2,13 +2,12 @@ import compact from "lodash/compact"
 import React, { useState, useEffect } from "react"
 import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { asyncMap } from "../lib/async-fns"
 import {
   findManifestForCredential,
   getDisplayProperties
 } from "../lib/manifest-fns"
 import { getCredentials } from "../lib/storage"
-import { KYCAMLAttestation } from "../lib/verity"
+import { asyncMap, KYCAMLAttestation } from "../lib/verity"
 
 const CredentialsList = ({ navigation }): Element => {
   const [credentials, setCredentials] = useState([])

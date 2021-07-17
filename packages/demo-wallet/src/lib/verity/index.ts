@@ -1,4 +1,6 @@
 export * from "./application"
+export * from "./async-fns"
+export * from "./credential-signer"
 export * from "./credentials"
 export * from "./didKey"
 export * from "./fulfillment"

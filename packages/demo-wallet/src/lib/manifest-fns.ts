@@ -4,8 +4,8 @@ import { JSONPath } from "jsonpath-plus"
 import compact from "lodash/compact"
 import last from "lodash/last"
 import { getManifest } from "../lib/manifestRegistry"
-import { asyncMap } from "./async-fns"
 import {
+  asyncMap,
   CredentialManifest,
   DisplayMapping,
   LabeledDataMappingSchema
