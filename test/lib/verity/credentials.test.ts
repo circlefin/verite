@@ -1,8 +1,6 @@
-import { JwtCredentialPayload } from "did-jwt-vc"
 import {
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
-  signVerifiableCredential,
   VerificationError
 } from "lib/verity"
 
@@ -15,34 +13,7 @@ const expiredVc =
 // tslint:disable-next-line: max-line-length
 const expiredVp =
   "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
-describe("VC signing and decoding", () => {
-  it("signs a VC", async () => {
-    const vcPayload: JwtCredentialPayload = {
-      sub: "did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4",
-      nbf: 1562950282,
-      vc: {
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
-        type: ["VerifiableCredential"],
-        credentialSubject: {
-          degree: {
-            type: "BachelorDegree",
-            name: "Baccalauréat en musiques numériques"
-          }
-        }
-      }
-    }
-    const result = await signVerifiableCredential(vcPayload)
-    const decoded = await decodeVerifiableCredential(result)
-    expect(decoded.verifiableCredential.type.length).toEqual(1)
-    expect(decoded.verifiableCredential.type[0]).toEqual("VerifiableCredential")
-    expect(decoded.verifiableCredential.credentialSubject.degree.type).toEqual(
-      "BachelorDegree"
-    )
-    expect(decoded.verifiableCredential.credentialSubject.degree.name).toEqual(
-      "Baccalauréat en musiques numériques"
-    )
-  })
-
+describe("VC decoding", () => {
   it("decodes a VC", async () => {
     const decoded = await decodeVerifiableCredential(signedVc)
     expect(decoded.verifiableCredential.type.length).toEqual(1)
