@@ -5,8 +5,10 @@ import {
   createFullfillment,
   CredentialFulfillment,
   CreditScore,
+  CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
   creditScoreVerifiableCredentialPayload,
   KYCAMLAttestation,
+  KYCAML_ATTESTATION_MANIFEST_ID,
   kycAmlVerifiableCredentialPayload
 } from "lib/verity"
 
@@ -74,9 +76,9 @@ export async function createFulfillment(
   application: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
   switch (application.credential_application.manifest_id) {
-    case "KYCAMLAttestation":
+    case KYCAML_ATTESTATION_MANIFEST_ID:
       return createKycAmlFulfillment(user, issuer, application)
-    case "CreditScoreAttestation":
+    case CREDIT_SCORE_ATTESTATION_MANIFEST_ID:
       return createCreditScoreFulfillment(user, issuer, application)
     default:
       return null

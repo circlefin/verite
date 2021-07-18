@@ -1,7 +1,11 @@
 import { createMocks } from "node-mocks-http"
-import { createUser, temporaryAuthToken } from "lib/database"
+import { createUser, temporaryAuthToken, USERS } from "lib/database"
 import { findManifestById } from "lib/issuance/manifest"
-import { createCredentialApplication, randomDidKey } from "lib/verity"
+import {
+  createCredentialApplication,
+  decodeVerifiablePresentation,
+  randomDidKey
+} from "lib/verity"
 
 import handler from "pages/api/issuance/submission/[token]"
 
@@ -131,5 +135,48 @@ describe("POST /issuance/submission/[token]", () => {
       ]
     }
     */
+  })
+
+  it("returns a KYC credential with known input/output", async () => {
+    const user = USERS[0]
+    const token = await temporaryAuthToken(user)
+    const clientDid = await randomDidKey()
+    const manifest = findManifestById("KYCAMLAttestation")
+    const credentialApplication = await createCredentialApplication(
+      clientDid,
+      manifest
+    )
+
+    const { req, res } = createMocks({
+      method: "POST",
+      query: { token },
+      body: credentialApplication
+    })
+
+    await handler(req, res)
+
+    expect(res.statusCode).toBe(200)
+
+    const response = res._getJSONData()
+    const { verifiablePresentation } = await decodeVerifiablePresentation(
+      response.presentation
+    )
+    const vc = verifiablePresentation.verifiableCredential[0]
+    expect(vc.credentialSubject.id).toBe(clientDid.controller)
+    expect(vc.credentialSubject.KYCAMLAttestation["@type"]).toBe(
+      "KYCAMLAttestation"
+    )
+    expect(vc.credentialSubject.KYCAMLAttestation.serviceProviders).toEqual([
+      {
+        "@type": "KYCAMLProvider",
+        name: "Jumio",
+        score: 80
+      },
+      {
+        "@type": "KYCAMLProvider",
+        name: "OFAC-SDN",
+        score: 0
+      }
+    ])
   })
 })

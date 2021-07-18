@@ -1,0 +1,249 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET /issuance/manifests/[type] returns the CreditScore manifest 1`] = `
+Object {
+  "format": Object {
+    "jwt_vc": Object {
+      "alg": Array [
+        "EdDSA",
+        "ES256K",
+      ],
+    },
+    "jwt_vp": Object {
+      "alg": Array [
+        "EdDSA",
+        "ES256K",
+      ],
+    },
+  },
+  "id": "CreditScoreAttestation",
+  "issuer": Object {
+    "comment": "JSON-LD definition at https://verity.id/.well_known/did.json",
+    "id": "did:web:verity.id",
+    "name": "Verity",
+    "styles": Object {},
+  },
+  "output_descriptors": Array [
+    Object {
+      "description": "Attestation that Verity has perfomed a Credit Score check for this subject",
+      "display": Object {
+        "description": Object {
+          "text": "The Credit Score authority processes credit worthiness analysis, potentially employing a number of internal and external vendor providers.",
+        },
+        "properties": Array [
+          Object {
+            "label": "Score",
+            "path": Array [
+              "$.CreditScoreAttestation.score",
+            ],
+            "schema": Object {
+              "type": "number",
+            },
+          },
+          Object {
+            "label": "Score Type",
+            "path": Array [
+              "$.CreditScoreAttestation.scoreType",
+            ],
+            "schema": Object {
+              "type": "string",
+            },
+          },
+          Object {
+            "label": "Provider",
+            "path": Array [
+              "$.CreditScoreAttestation.provider",
+            ],
+            "schema": Object {
+              "type": "string",
+            },
+          },
+        ],
+        "subtitle": Object {
+          "fallback": "Includes credit score",
+          "path": Array [
+            "$.CreditScoreAttestation.scoreType",
+          ],
+        },
+        "title": Object {
+          "text": "Verity Risk Score",
+        },
+      },
+      "id": "creditScoreAttestationOutput",
+      "name": "Proof of Credit Score from Verity",
+      "schema": Array [
+        Object {
+          "uri": "https://verity.id/schemas/identity/1.0.0/CreditScoreAttestation",
+        },
+      ],
+      "styles": Object {
+        "background": Object {
+          "color": "#ff0000",
+        },
+        "hero": Object {
+          "alt": "Credit Score Visual",
+          "uri": "http://localhost:3000/img/credit-score-hero.png",
+        },
+        "text": Object {
+          "color": "#d4d400",
+        },
+        "thumbnail": Object {
+          "alt": "Verity Logo",
+          "uri": "http://localhost:3000/img/logo.png",
+        },
+      },
+    },
+  ],
+  "presentation_definition": Object {
+    "format": Object {
+      "jwt_vp": Object {
+        "alg": Array [
+          "EdDSA",
+          "ES256K",
+        ],
+      },
+    },
+    "id": "ProofOfControlPresentationDefinition",
+    "input_descriptors": Array [
+      Object {
+        "id": "proofOfIdentifierControlVP",
+        "name": "Proof of Control Verifiable Presentation",
+        "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
+        "schema": Array [
+          Object {
+            "uri": "/.well-known/verifiablePresentationSchema.json",
+          },
+        ],
+      },
+    ],
+  },
+  "version": "0.1.0",
+}
+`;
+
+exports[`GET /issuance/manifests/[type] returns the KYC/AML manifest 1`] = `
+Object {
+  "format": Object {
+    "jwt_vc": Object {
+      "alg": Array [
+        "EdDSA",
+        "ES256K",
+      ],
+    },
+    "jwt_vp": Object {
+      "alg": Array [
+        "EdDSA",
+        "ES256K",
+      ],
+    },
+  },
+  "id": "KYCAMLAttestation",
+  "issuer": Object {
+    "comment": "JSON-LD definition at https://verity.id/.well_known/did.json",
+    "id": "did:web:verity.id",
+    "name": "Verity",
+    "styles": Object {},
+  },
+  "output_descriptors": Array [
+    Object {
+      "description": "Attestation that Verity has completed KYC/AML verification for this subject",
+      "display": Object {
+        "description": Object {
+          "text": "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers.",
+        },
+        "properties": Array [
+          Object {
+            "label": "Authority",
+            "path": Array [
+              "$.KYCAMLAttestation.authorityName",
+            ],
+            "schema": Object {
+              "type": "string",
+            },
+          },
+          Object {
+            "label": "Authority URL",
+            "path": Array [
+              "$.KYCAMLAttestation.authorityUrl",
+            ],
+            "schema": Object {
+              "format": "uri",
+              "type": "string",
+            },
+          },
+          Object {
+            "label": "Approved At",
+            "path": Array [
+              "$.KYCAMLAttestation.approvalDate",
+            ],
+            "schema": Object {
+              "format": "date-time",
+              "type": "string",
+            },
+          },
+        ],
+        "subtitle": Object {
+          "fallback": "Includes date of approval",
+          "path": Array [
+            "$.approvalDate",
+            "$.vc.approvalDate",
+          ],
+        },
+        "title": Object {
+          "fallback": "Verity KYC Attestation",
+          "path": Array [
+            "$.KYCAMLAttestation.authorityName",
+          ],
+        },
+      },
+      "id": "kycAttestationOutput",
+      "name": "Proof of KYC from Verity",
+      "schema": Array [
+        Object {
+          "uri": "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation",
+        },
+      ],
+      "styles": Object {
+        "background": Object {
+          "color": "#ff0000",
+        },
+        "hero": Object {
+          "alt": "KYC+AML Visual",
+          "uri": "http://localhost:3000/img/kyc-aml-hero.png",
+        },
+        "text": Object {
+          "color": "#d4d400",
+        },
+        "thumbnail": Object {
+          "alt": "Verity Logo",
+          "uri": "http://localhost:3000/img/logo.png",
+        },
+      },
+    },
+  ],
+  "presentation_definition": Object {
+    "format": Object {
+      "jwt_vp": Object {
+        "alg": Array [
+          "EdDSA",
+          "ES256K",
+        ],
+      },
+    },
+    "id": "ProofOfControlPresentationDefinition",
+    "input_descriptors": Array [
+      Object {
+        "id": "proofOfIdentifierControlVP",
+        "name": "Proof of Control Verifiable Presentation",
+        "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
+        "schema": Array [
+          Object {
+            "uri": "/.well-known/verifiablePresentationSchema.json",
+          },
+        ],
+      },
+    ],
+  },
+  "version": "0.1.0",
+}
+`;

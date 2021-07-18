@@ -2,12 +2,8 @@ import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 import { verifiablePresentationPayload } from "./credentials"
 import { didKeyToIssuer } from "./didKey"
-import {
-  CredentialApplication,
-  CredentialManifest,
-  DescriptorMap,
-  DidKey
-} from "./types"
+import { createVPSubmission } from "./submission"
+import { CredentialApplication, CredentialManifest, DidKey } from "./types"
 
 export async function createCredentialApplication(
   didKey: DidKey,
@@ -23,19 +19,10 @@ export async function createCredentialApplication(
     }
   }
 
-  const presentationSubmission = {
-    id: uuidv4(),
-    definition_id: manifest.presentation_definition.id,
-    descriptor_map: manifest.presentation_definition.input_descriptors.map(
-      (d) => {
-        return {
-          id: d.id,
-          format: "jwt_vp",
-          path: `$.presentation`
-        }
-      }
-    ) as DescriptorMap[]
-  }
+  const presentationSubmission = createVPSubmission(
+    manifest.presentation_definition.id,
+    manifest.presentation_definition.input_descriptors
+  )
 
   const payload = verifiablePresentationPayload(client)
   const vp = await createVerifiablePresentationJwt(payload, client)
