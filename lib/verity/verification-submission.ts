@@ -1,12 +1,13 @@
 import { createVerifiablePresentationJwt } from "did-jwt-vc"
+import { v4 as uuidv4 } from "uuid"
 import { verifiablePresentationPayload } from "./credentials"
 import { didKeyToIssuer } from "./didKey"
-import { createVerificationSubmission } from "./submission"
 import {
-  VerificationSubmission,
+  DescriptorMap,
   DidKey,
   JWT,
-  PresentationDefinition
+  PresentationDefinition,
+  VerificationSubmission
 } from "./types"
 
 export async function createPresentationSubmission(
@@ -16,10 +17,17 @@ export async function createPresentationSubmission(
 ): Promise<VerificationSubmission> {
   const client = didKeyToIssuer(didKey)
 
-  const presentationSubmission = createVerificationSubmission(
-    presentationDefinition.id,
-    presentationDefinition.input_descriptors
-  )
+  const presentationSubmission = {
+    id: uuidv4(),
+    definition_id: presentationDefinition.id,
+    descriptor_map: presentationDefinition.input_descriptors.map((d) => {
+      return {
+        id: d.id,
+        format: "jwt_vc",
+        path: `$.presentation.verifiableCredential[0]`
+      }
+    }) as DescriptorMap[]
+  }
 
   const payload = verifiablePresentationPayload(client, vcJwt)
   const vp = await createVerifiablePresentationJwt(payload, client)

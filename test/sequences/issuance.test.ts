@@ -1,12 +1,12 @@
-import { asyncMap } from "lib/async-fns"
 import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
+import { credentialSigner } from "lib/signer"
 import {
+  asyncMap,
   createCredentialApplication,
   decodeVerifiablePresentation,
-  issuer,
   randomDidKey,
   VerificationError
 } from "lib/verity"
@@ -18,10 +18,10 @@ const expiredPresentation =
 describe("issuance", () => {
   it("just works", async () => {
     // 0. ISSUER: The issuer gets a DID
-    expect(issuer.did).toEqual(
+    expect(credentialSigner.did).toEqual(
       "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
     )
-    expect(issuer.alg).toEqual("EdDSA")
+    expect(credentialSigner.signingConfig.alg).toEqual("EdDSA")
 
     // 1. CLIENT: The subject gets a DID
     const clientDidKey = await randomDidKey()
@@ -53,7 +53,7 @@ describe("issuance", () => {
     // 5. ISSUER: Delivering the VC
     const fulfillment = await createKycAmlFulfillment(
       user,
-      issuer,
+      credentialSigner,
       acceptedApplication
     )
     expect(fulfillment.credential_fulfillment).toBeDefined()

@@ -1,9 +1,9 @@
-import { Issuer } from "did-jwt-vc"
 import { User } from "lib/database"
 import {
   AcceptedCredentialApplication,
   createFullfillment,
   CredentialFulfillment,
+  CredentialSigner,
   CreditScore,
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
   creditScoreVerifiableCredentialPayload,
@@ -14,7 +14,7 @@ import {
 
 export async function createKycAmlFulfillment(
   user: User,
-  issuer: Issuer,
+  credentialSigner: CredentialSigner,
   acceptedApplication: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
   const verifiablePresentation =
@@ -42,7 +42,7 @@ export async function createKycAmlFulfillment(
   }
 
   return createFullfillment(
-    issuer,
+    credentialSigner,
     acceptedApplication,
     kycAmlVerifiableCredentialPayload(verifiablePresentation.holder, body)
   )
@@ -50,7 +50,7 @@ export async function createKycAmlFulfillment(
 
 export async function createCreditScoreFulfillment(
   user: User,
-  issuer: Issuer,
+  credentialSigner: CredentialSigner,
   acceptedApplication: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
   const verifiablePresentation =
@@ -64,7 +64,7 @@ export async function createCreditScoreFulfillment(
   }
 
   return createFullfillment(
-    issuer,
+    credentialSigner,
     acceptedApplication,
     creditScoreVerifiableCredentialPayload(verifiablePresentation.holder, body)
   )
@@ -72,14 +72,14 @@ export async function createCreditScoreFulfillment(
 
 export async function createFulfillment(
   user: User,
-  issuer: Issuer,
+  credentialSigner: CredentialSigner,
   application: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
   switch (application.credential_application.manifest_id) {
     case KYCAML_ATTESTATION_MANIFEST_ID:
-      return createKycAmlFulfillment(user, issuer, application)
+      return createKycAmlFulfillment(user, credentialSigner, application)
     case CREDIT_SCORE_ATTESTATION_MANIFEST_ID:
-      return createCreditScoreFulfillment(user, issuer, application)
+      return createCreditScoreFulfillment(user, credentialSigner, application)
     default:
       return null
   }

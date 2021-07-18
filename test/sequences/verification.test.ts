@@ -2,15 +2,14 @@ import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
+import { credentialSigner } from "lib/signer"
 import { kycVerificationRequest } from "lib/verification/requests"
 import { validateVerificationSubmission } from "lib/verification/submission"
 import {
   createCredentialApplication,
   createPresentationSubmission,
   decodeVerifiablePresentation,
-  issuer,
   randomDidKey,
-  VerificationError
 } from "lib/verity"
 
 describe("verification", () => {
@@ -26,7 +25,7 @@ describe("verification", () => {
     const acceptedApplication = await validateCredentialSubmission(application)
     const fulfillment = await createKycAmlFulfillment(
       user,
-      issuer,
+      credentialSigner,
       acceptedApplication
     )
 

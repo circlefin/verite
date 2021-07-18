@@ -1,10 +1,7 @@
-import {
-  createVerifiableCredentialJwt,
-  createVerifiablePresentationJwt,
-  Issuer,
-  JwtCredentialPayload
-} from "did-jwt-vc"
+import { JwtCredentialPayload } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
+import { asyncMap } from "./async-fns"
+import { CredentialSigner } from "./credential-signer"
 import { verifiablePresentationPayload } from "./credentials"
 import {
   CredentialApplication,
@@ -12,10 +9,9 @@ import {
   DescriptorMap,
   JWT
 } from "./types"
-import { asyncMap } from "lib/async-fns"
 
 export async function createFullfillment(
-  issuer: Issuer,
+  credentialSigner: CredentialSigner,
   application: CredentialApplication,
   credentials: JwtCredentialPayload | JwtCredentialPayload[]
 ): Promise<CredentialFulfillment> {
@@ -35,14 +31,16 @@ export async function createFullfillment(
 
   const jwtCredentials: JWT[] = (await asyncMap(
     [credentials].flat(),
-    (credential) => {
-      return createVerifiableCredentialJwt(credential, issuer)
+    credential => {
+      return credentialSigner.signVerifiableCredential(credential)
     }
   )) as JWT[]
 
-  const presentation = await createVerifiablePresentationJwt(
-    verifiablePresentationPayload(issuer, jwtCredentials),
-    issuer
+  const presentation = await credentialSigner.signVerifiablePresentation(
+    verifiablePresentationPayload(
+      credentialSigner.signingConfig.did,
+      jwtCredentials
+    )
   )
 
   return {
