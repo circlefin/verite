@@ -55,5 +55,5 @@ export type InputDescriptor = {
   group?: string
   name?: string
   purpose?: string
-  constaints?: InputDescriptorConstraints
+  constraints?: InputDescriptorConstraints
 }
