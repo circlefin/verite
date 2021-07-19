@@ -32,7 +32,7 @@ export const kycVerificationRequest = () => {
           purpose: "Please provide a valid credential from a KYC/AML issuer",
           schema: [
             {
-              uri: "https://verity.id/identity/KYCAMLAttestation.json",
+              uri: "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation",
               required: true
             }
           ],
