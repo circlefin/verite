@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid"
 import {
   CredentialIssuer,
   CredentialManifest,
@@ -7,13 +6,19 @@ import {
   PresentationDefinition
 } from "./types"
 
+export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreAttestation"
+export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"
+// Note: tracking issue in PEx spec saying it must be UUID
+export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
+  "ProofOfControlPresentationDefinition"
+
 export function createManifest(
-  id: string,
+  manifestId: string,
   issuer: CredentialIssuer,
   outputDescriptors: OutputDescriptor[]
 ): CredentialManifest {
   const presentationDefinition: PresentationDefinition = {
-    id: uuidv4(),
+    id: PROOF_OF_CONTROL_PRESENTATION_DEF_ID,
     format: {
       jwt_vp: {
         alg: ["EdDSA", "ES256K"]
@@ -35,7 +40,7 @@ export function createManifest(
   }
 
   return {
-    id,
+    id: manifestId,
     version: "0.1.0",
     issuer,
     format: {
@@ -107,7 +112,11 @@ export function createKycAmlManifest(
     }
   ]
 
-  return createManifest("KYCAMLAttestation", issuer, outputDescriptors)
+  return createManifest(
+    KYCAML_ATTESTATION_MANIFEST_ID,
+    issuer,
+    outputDescriptors
+  )
 }
 
 export function createCreditScoreManifest(
@@ -163,5 +172,9 @@ export function createCreditScoreManifest(
     }
   ]
 
-  return createManifest("CreditScoreAttestation", issuer, outputDescriptors)
+  return createManifest(
+    CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
+    issuer,
+    outputDescriptors
+  )
 }

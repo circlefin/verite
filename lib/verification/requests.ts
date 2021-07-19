@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
+const KYC_PRESENTATION_DEFINITION_ID = "KYCAMLPresentationDefinition"
 
 export const kycVerificationRequest = () => {
   const now = Date.now()
@@ -23,7 +24,7 @@ export const kycVerificationRequest = () => {
       challenge: "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e61" // TODO: Challenge
     },
     presentation_definition: {
-      id: uuidv4(),
+      id: KYC_PRESENTATION_DEFINITION_ID,
       input_descriptors: [
         {
           id: "kycaml_input",
