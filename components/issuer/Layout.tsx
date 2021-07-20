@@ -1,17 +1,16 @@
-import { Session } from "next-auth"
 import { FC } from "react"
 import AttestationNavigation from "./AttestationNavigation"
 import Layout from "components/Layout"
 
 type Props = {
   title: string
-  session?: Session
+  hideNavigation?: boolean
 }
 
-const IssuerLayout: FC<Props> = ({ title, children, session }) => {
+const IssuerLayout: FC<Props> = ({ title, children, hideNavigation }) => {
   return (
     <Layout title={title} theme="blue">
-      {session && <AttestationNavigation />}
+      {!hideNavigation && <AttestationNavigation />}
       {children}
     </Layout>
   )

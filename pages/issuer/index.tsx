@@ -31,7 +31,7 @@ export const getServerSideProps = requireAuth(async () => {
 
 const IssuerPage: NextPage = () => {
   return (
-    <IssuerLayout title="Issuer">
+    <IssuerLayout title="Issuer" hideNavigation={true}>
       <h2 className="text-lg font-medium text-gray-900">
         Request a Verifiable Credential
       </h2>
