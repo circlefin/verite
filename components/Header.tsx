@@ -1,6 +1,7 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { MenuIcon, XIcon, UserCircleIcon } from "@heroicons/react/outline"
+import { User } from "next-auth"
 import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { FC, Fragment } from "react"
@@ -18,20 +19,27 @@ type Theme = {
   hover: string
 }
 
+type UserWithRole = User & { role: string }
+
 const THEMES: Record<string, Theme> = {
   gray: {
     bg: "bg-gray-800",
     active: "bg-gray-900",
     hover: "hover:bg-gray-700"
   },
+  blue: {
+    bg: "bg-blue-600",
+    active: "bg-blue-800",
+    hover: "hover:bg-blue-700"
+  },
   indigo: {
-    bg: "bg-indigo-800",
-    active: "bg-indigo-900",
+    bg: "bg-indigo-600",
+    active: "bg-indigo-800",
     hover: "hover:bg-indigo-700"
   },
   green: {
-    bg: "bg-green-800",
-    active: "bg-green-900",
+    bg: "bg-green-600",
+    active: "bg-green-800",
     hover: "hover:bg-green-700"
   }
 }
@@ -42,9 +50,12 @@ const Header: FC<Props> = ({ title, theme, skipAuth }) => {
 
   const navigation = [
     { name: "Issuer", href: "/issuer" },
-    { name: "Verifier", href: "/verifier" },
-    { name: "Admin", href: "/admin" }
+    { name: "Verifier", href: "/verifier" }
   ]
+
+  if ((session?.user as UserWithRole)?.role === "admin") {
+    navigation.push({ name: "Admin", href: "/admin" })
+  }
 
   return (
     <>

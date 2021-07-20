@@ -10,16 +10,18 @@ export type User = {
   id: string
   email: string
   password: string
+  role: string
   jumioScore?: number
   ofacScore?: number
   creditScore?: number
 }
 
-export const USERS: User[] = [
+const USERS: User[] = [
   {
     id: "11111111-1111-1111-1111-111111111111",
     email: "alice@test.com",
     password: "testing",
+    role: "admin",
     jumioScore: 80,
     ofacScore: 0,
     creditScore: 750
@@ -28,33 +30,42 @@ export const USERS: User[] = [
     id: "22222222-2222-2222-2222-222222222222",
     email: "bob@test.com",
     password: "testing",
+    role: "member",
     jumioScore: 10,
     ofacScore: 1,
     creditScore: 320
   }
 ]
 
-export function createUser(email: string, opts: Partial<User> = {}): User {
+export async function createUser(
+  email: string,
+  opts: Partial<User> = {}
+): Promise<User> {
   const id = uuidv4()
   const password = opts.password || "testing"
+  const role = opts.role || "member"
   const jumioScore = opts.jumioScore || random(0, 100)
   const ofacScore = opts.ofacScore || random(0, 100)
   const creditScore = opts.creditScore || random(0, 100)
 
-  const user = { id, email, password, jumioScore, ofacScore, creditScore }
+  const user = { id, email, password, role, jumioScore, ofacScore, creditScore }
 
   USERS.push(user)
   return user
 }
 
-export function findUser(id: string): User | undefined {
+export async function allUsers(): Promise<User[]> {
+  return USERS
+}
+
+export async function findUser(id: string): Promise<User | undefined> {
   return USERS.find((u) => u.id === id)
 }
 
-export function authenticateUser(
+export async function authenticateUser(
   email: string,
   password: string
-): User | undefined {
+): Promise<User | undefined> {
   return USERS.find((u) => u.email === email && u.password === password)
 }
 

@@ -9,7 +9,7 @@ import {
   createCredentialApplication,
   createPresentationSubmission,
   decodeVerifiablePresentation,
-  randomDidKey,
+  randomDidKey
 } from "lib/verity"
 
 describe("verification", () => {
@@ -17,7 +17,10 @@ describe("verification", () => {
     // 0. PREREQ: Ensure client has a valid KYC credential
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
-    const user = createUser("test@test.com", { jumioScore: 55, ofacScore: 2 })
+    const user = await createUser("test@test.com", {
+      jumioScore: 55,
+      ofacScore: 2
+    })
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest

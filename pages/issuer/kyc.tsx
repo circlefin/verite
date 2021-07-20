@@ -1,21 +1,17 @@
 import { NextPage } from "next"
-import { Session } from "next-auth"
-import { getSession } from "next-auth/client"
 import QRCode from "qrcode.react"
 import IssuerLayout from "components/issuer/Layout"
-import { requireAuth } from "lib/auth-fns"
-import { findUser, temporaryAuthToken, User } from "lib/database"
+import { currentUser, requireAuth } from "lib/auth-fns"
+import { temporaryAuthToken, User } from "lib/database"
 import { ManifestUrlWrapper } from "types"
 
 type Props = {
   manifestUrlWrapper: ManifestUrlWrapper
-  session: Session
   user: User
 }
 
 export const getServerSideProps = requireAuth<Props>(async (context) => {
-  const session = await getSession(context)
-  const user = findUser((session.user as User).id)
+  const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const manifestUrlWrapper: ManifestUrlWrapper = {
     manifestUrl: `${process.env.HOST}/api/issuance/manifests/kyc`,
@@ -26,7 +22,6 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   return {
     props: {
       manifestUrlWrapper,
-      session,
       user
     }
   }

@@ -10,7 +10,7 @@ type Props = {
 
 const IssuerLayout: FC<Props> = ({ title, children, session }) => {
   return (
-    <Layout title={title} theme="gray">
+    <Layout title={title} theme="blue">
       {session && <AttestationNavigation />}
       {children}
     </Layout>

@@ -34,7 +34,10 @@ describe("issuance", () => {
     const kycManifest = findManifestById("KYCAMLAttestation")
 
     // 3. CLIENT: Requesting the credential
-    const user = createUser("test@test.com", { jumioScore: 55, ofacScore: 2 })
+    const user = await createUser("test@test.com", {
+      jumioScore: 55,
+      ofacScore: 2
+    })
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest
