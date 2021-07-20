@@ -2,8 +2,14 @@
 
 import { Schema } from "./Schema"
 
+export enum InputDescriptorConstraintStatusDirective {
+  REQUIRED = "required",
+  ALLOWED = "allowed",
+  DISALLOWED = "disallowed"
+}
+
 export type InputDescriptorConstraintStatus = {
-  directive: "required" | "allowed" | "disallowed"
+  directive: InputDescriptorConstraintStatusDirective
 }
 
 export type InputDescriptorConstraintStatuses = {
@@ -12,9 +18,14 @@ export type InputDescriptorConstraintStatuses = {
   revoked?: InputDescriptorConstraintStatus
 }
 
+export enum InputDescriptorConstraintSubjectConstraintDirective {
+  REQUIRED = "required",
+  PREFERRED = "preferred"
+}
+
 export type InputDescriptorConstraintSubjectConstraint = {
   field_id: string[]
-  directive: "required" | "preferred"
+  directive: InputDescriptorConstraintSubjectConstraintDirective
 }
 
 export type InputDescriptorConstraintFilter = {
@@ -55,5 +66,5 @@ export type InputDescriptor = {
   group?: string
   name?: string
   purpose?: string
-  constaints?: InputDescriptorConstraints
+  constraints?: InputDescriptorConstraints
 }
