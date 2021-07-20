@@ -35,7 +35,8 @@ describe("verification", () => {
     const fulfillmentVP = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
-    const clientVC = fulfillmentVP.payload.vp.verifiableCredential[0]
+    const clientVC =
+      fulfillmentVP.verifiablePresentation.verifiableCredential[0]
 
     // 2. VERIFIER: Discovery of verification requirements
     const kycRequest = kycVerificationRequest()
