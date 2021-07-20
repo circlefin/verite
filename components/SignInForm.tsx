@@ -1,20 +1,24 @@
 import { signIn } from "next-auth/client"
 import { FC, useState } from "react"
 
-const SignInForm: FC = () => {
+type Props = {
+  redirectTo?: string
+}
+
+const SignInForm: FC<Props> = ({ redirectTo }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const emailSignup = (e) => {
+  const emailSignin = (e) => {
     e.preventDefault()
-    signIn("credentials", { email, password })
+    signIn("credentials", { email, password, callbackUrl: redirectTo })
   }
 
   return (
     <form
       className="max-w-sm mx-auto mt-6 space-y-6"
       method="POST"
-      onSubmit={emailSignup}
+      onSubmit={emailSignin}
     >
       <div>
         <label

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import NextAuth from "next-auth"
 import Providers from "next-auth/providers"
 import { authenticateUser, User } from "lib/database"
@@ -24,14 +26,16 @@ export default NextAuth({
   session: { jwt: true },
   callbacks: {
     async session(session, jwtUser) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       session.user.id = jwtUser.uid
+      // @ts-ignore
+      session.user.role = jwtUser.role
       return Promise.resolve(session)
     },
     jwt: async (token, user: User) => {
       if (user) {
         token.uid = user.id
+        token.role = user.role
       }
       return Promise.resolve(token)
     }

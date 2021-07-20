@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from "next"
 import QRCode from "qrcode.react"
-import Layout from "components/Layout"
+import VerifierLayout from "components/verifier/Layout"
 import { VerificationRequestWrapper } from "types"
 
 type Props = {
@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 
 const VerifierPage: NextPage<Props> = ({ verificationRequestWrapper }) => {
   return (
-    <Layout title="KYC/AML Verification">
+    <VerifierLayout title="KYC/AML Verification">
       <div className="flex flex-col justify-center space-y-8">
         <QRCode
           value={JSON.stringify(verificationRequestWrapper)}
@@ -35,7 +35,7 @@ const VerifierPage: NextPage<Props> = ({ verificationRequestWrapper }) => {
           value={JSON.stringify(verificationRequestWrapper, null, 4)}
         />
       </div>
-    </Layout>
+    </VerifierLayout>
   )
 }
 
