@@ -15,13 +15,6 @@ export type User = {
   creditScore?: number
 }
 
-export type UserOpts = {
-  password?: string
-  jumioScore?: number
-  ofacScore?: number
-  creditScore?: number
-}
-
 export const USERS: User[] = [
   {
     id: "11111111-1111-1111-1111-111111111111",
@@ -41,7 +34,7 @@ export const USERS: User[] = [
   }
 ]
 
-export function createUser(email: string, opts: UserOpts = {}): User {
+export function createUser(email: string, opts: Partial<User> = {}): User {
   const id = uuidv4()
   const password = opts.password || "testing"
   const jumioScore = opts.jumioScore || random(0, 100)
