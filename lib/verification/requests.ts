@@ -1,3 +1,4 @@
+import { compact } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 import { InputDescriptorConstraintStatusDirective } from "lib/verity"
 
@@ -50,7 +51,7 @@ export const kycVerificationRequest = () => {
                   "We can only verify KYC credentials attested by a trusted authority.",
                 filter: {
                   type: "string",
-                  pattern: "did:web:verity.id|did:web:coinbase.com"
+                  pattern: compact(["did:web:verity.id", "did:web:coinbase.com", process.env.ISSUER_DID]).join("|")
                 }
               }
             ]
