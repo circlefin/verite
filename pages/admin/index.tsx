@@ -26,7 +26,7 @@ const AdminPage: NextPage<Props> = ({ users }) => {
               <Link href={`/admin/users/${user.id}`}>
                 <a className="flex justify-between py-4 hover:bg-gray-50">
                   <div className="ml-3">
-                    <p className="text-sm text-gray-500">{user.email}</p>
+                    <p className="text-sm text-gray-900">{user.email}</p>
                   </div>
                   <ChevronRightIcon
                     className="w-5 h-5 text-gray-400"

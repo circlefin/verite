@@ -7,9 +7,11 @@ type Props = {
   redirectTo: string
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
   const session = await getSession(context)
-  const redirectTo = context.query.redirectTo || "/issuer"
+  const redirectTo = (context.query.redirectTo || "/issuer") as string
 
   if (session) {
     return {
