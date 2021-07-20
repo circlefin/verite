@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
+import { InputDescriptorConstraintStatusDirective } from "lib/verity"
 
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 const KYC_PRESENTATION_DEFINITION_ID = "KYCAMLPresentationDefinition"
@@ -39,7 +40,7 @@ export const kycVerificationRequest = () => {
           constraints: {
             statuses: {
               active: {
-                directive: "required"
+                directive: InputDescriptorConstraintStatusDirective.REQUIRED
               }
             },
             fields: [
