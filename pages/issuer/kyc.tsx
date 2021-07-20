@@ -62,7 +62,6 @@ const KycAmlPage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
           value={JSON.stringify(manifestUrlWrapper, null, 4)}
         />
       </div>
-      j
     </IssuerLayout>
   )
 }
