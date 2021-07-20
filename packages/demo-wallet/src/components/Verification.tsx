@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Alert, View, StyleSheet, Text } from "react-native"
 import { getOrCreateDidKey } from "../lib/storage"
-import { requestVerification } from "../lib/verification"
+import { submitVerification } from "../lib/verification"
 
 export default function Verification({ navigation, route }): Element {
   const { credential, payload } = route.params
@@ -11,7 +11,7 @@ export default function Verification({ navigation, route }): Element {
   useEffect(() => {
     ;(async () => {
       const didKey = await getOrCreateDidKey()
-      const response = await requestVerification(
+      const response = await submitVerification(
         didKey,
         presentation,
         credential
