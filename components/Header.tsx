@@ -3,30 +3,48 @@ import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { MenuIcon, XIcon, UserCircleIcon } from "@heroicons/react/outline"
 import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { FC, Fragment } from "react"
 import { isActive, classNames } from "lib/react-fns"
 
 type Props = {
   title: string
+  theme?: string
+  skipAuth?: boolean
 }
 
-const Header: FC<Props> = ({ title }) => {
+type Theme = {
+  bg: string
+  active: string
+  hover: string
+}
+
+const THEMES: Record<string, Theme> = {
+  gray: {
+    bg: "bg-gray-800",
+    active: "bg-gray-900",
+    hover: "hover:bg-gray-700"
+  },
+  indigo: {
+    bg: "bg-indigo-800",
+    active: "bg-indigo-900",
+    hover: "hover:bg-indigo-700"
+  },
+  green: {
+    bg: "bg-green-800",
+    active: "bg-green-900",
+    hover: "hover:bg-green-700"
+  }
+}
+
+const Header: FC<Props> = ({ title, theme, skipAuth }) => {
   const [session] = useSession()
-  const router = useRouter()
+  const colors = THEMES[theme || "gray"]
 
   const navigation = [
     { name: "Issuer", href: "/issuer" },
-    { name: "Verifier", href: "/verifier" }
+    { name: "Verifier", href: "/verifier" },
+    { name: "Admin", href: "/admin" }
   ]
-
-  const colors = router.pathname.startsWith("/verifier")
-    ? {
-        bg: "bg-indigo-800",
-        active: "bg-indigo-900",
-        hover: "hover:bg-indigo-700"
-      }
-    : { bg: "bg-gray-800", active: "bg-gray-900", hover: "hover:bg-gray-700" }
 
   return (
     <>
@@ -80,7 +98,7 @@ const Header: FC<Props> = ({ title }) => {
                     </div>
                   </div>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    {session && (
+                    {!skipAuth && session && (
                       <Menu as="div" className="relative ml-3">
                         {({ open }) => (
                           <>

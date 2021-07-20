@@ -1,32 +1,22 @@
-import { GetServerSideProps, NextPage } from "next"
-import { getSession } from "next-auth/client"
+import { NextPage } from "next"
+import Link from "next/link"
 import Layout from "components/Layout"
-import SignInForm from "components/SignInForm"
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context)
-
-  if (session) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/issuer"
-      }
-    }
-  }
-
-  return {
-    props: {
-      session
-    }
-  }
-}
 
 const Home: NextPage = () => {
   return (
     <Layout title="Project Verity Demo">
       <div className="container px-4 py-4 mx-auto sm:px-8">
-        <SignInForm />
+        <div className="flex flex-col">
+          <Link href="/issuer">
+            <a>Issuer</a>
+          </Link>
+          <Link href="/verifier">
+            <a>Verifier</a>
+          </Link>
+          <Link href="/admin">
+            <a>Admin</a>
+          </Link>
+        </div>
       </div>
     </Layout>
   )
