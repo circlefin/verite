@@ -4,13 +4,12 @@ import React, { useState, useEffect } from "react"
 import { StyleSheet } from "react-native"
 import { FlatList, Text, TouchableOpacity, View } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { asyncMap } from "../lib/async-fns"
 import {
   findManifestForCredential,
   getDisplayProperties
 } from "../lib/manifest-fns"
 import { getCredentials } from "../lib/storage"
-import { InputDescriptor } from "../lib/verity"
+import { asyncMap, InputDescriptor } from "../lib/verity"
 
 /**
  * Predicate to determine if a credential satisfies a given input descriptor

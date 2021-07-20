@@ -9,10 +9,13 @@ module.exports = {
     "eslint:recommended",
     "@react-native-community",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "prettier"
   ],
   plugins: ["@typescript-eslint", "import"],
   rules: {
+    "import/namespace": "off",
     "import/order": [
       "error",
       {
