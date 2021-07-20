@@ -1,4 +1,4 @@
-import { CredentialSigner } from "./verity"
+import { CredentialSigner } from "lib/verity"
 
 const did = process.env.ISSUER_DID
 const secret = process.env.ISSUER_SECRET
