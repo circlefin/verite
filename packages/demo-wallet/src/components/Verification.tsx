@@ -13,7 +13,7 @@ export default function Verification({ navigation, route }): Element {
       const didKey = await getOrCreateDidKey()
       const response = await requestVerification(
         didKey,
-        presentation.request.reply_url,
+        presentation,
         credential
       )
 
