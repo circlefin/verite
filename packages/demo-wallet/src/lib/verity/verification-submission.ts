@@ -20,7 +20,7 @@ export async function createPresentationSubmission(
   const presentationSubmission = {
     id: uuidv4(),
     definition_id: presentationDefinition.id,
-    descriptor_map: presentationDefinition.input_descriptors.map((d) => {
+    descriptor_map: presentationDefinition.input_descriptors.map(d => {
       return {
         id: d.id,
         format: "jwt_vc",

@@ -2,7 +2,12 @@ import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 import { verifiablePresentationPayload } from "./credentials"
 import { didKeyToIssuer } from "./didKey"
-import { CredentialApplication, CredentialManifest, DescriptorMap, DidKey } from "./types"
+import {
+  CredentialApplication,
+  CredentialManifest,
+  DescriptorMap,
+  DidKey
+} from "./types"
 
 export async function createCredentialApplication(
   didKey: DidKey,
