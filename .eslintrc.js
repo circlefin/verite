@@ -1,3 +1,5 @@
+const { resolve } = require("path")
+
 module.exports = {
   env: {
     browser: true,
@@ -7,12 +9,9 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/typescript",
-    "prettier",
-    "next"
+    "prettier"
   ],
-  plugins: ["@typescript-eslint", "import"],
+  plugins: ["@typescript-eslint"],
   rules: {
     "import/order": [
       "error",
@@ -28,13 +27,13 @@ module.exports = {
       "@typescript-eslint/parser": [".ts", ".tsx"]
     },
     "import/resolver": {
+      "eslint-import-resolver-lerna": {
+        packages: resolve(__dirname, "packages")
+      },
       node: {
         extensions: [".js", ".jsx", ".ts", ".tsx"],
         moduleDirectory: ["node_modules", __dirname]
       }
-    },
-    react: {
-      version: "detect"
     }
   }
 }
