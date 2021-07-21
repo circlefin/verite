@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: "16"
           cache: "npm"
-      - run: echo npm version "$(npm --version)"
       - run: npm install --ignore-scripts && lerna link && lerna bootstrap
+      - run: npm run build:verity
       - run: npm run lint
       - run: npm run type-check
       - run: npm run test
