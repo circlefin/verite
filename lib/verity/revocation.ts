@@ -8,6 +8,8 @@ import {
   W3CCredential,
   JwtCredentialPayload
 } from "did-jwt-vc"
+import { CredentialSigner } from "./credential-signer";
+import { decodeVerifiableCredential } from "./credentials";
 
 const do_unzip = promisify(unzip);
 const do_deflate = promisify(deflate);
@@ -17,12 +19,8 @@ const do_deflate = promisify(deflate);
  * 1) A url
  * 2) The date the list was issued
  */
-export const generateRevocationList = (credentials): Verifiable<W3CCredential> => {
-  const url = "https://example.com/credentials/status/3" // Need to create a list
-  const issued = "2021-04-05T14:27:40Z"
-  const issuer = process.env.ISSUER_DID
-
-  const encodedList = generateBitstring(credentials)
+export const generateRevocationList = async (credentials: number[], url: string, issuer: string, signer: CredentialSigner, issued = new Date()): Verifiable<W3CCredential> => {
+  const encodedList = await generateBitstring(credentials)
 
   const vcPayload: JwtCredentialPayload = {
     vc: {
@@ -30,31 +28,38 @@ export const generateRevocationList = (credentials): Verifiable<W3CCredential> =
         "https://www.w3.org/2018/credentials/v1",
         "https://w3id.org/vc-status-list-2021/v1"
       ],
-      id: url,
+      id: `${url}#list`,
       type: ["VerifiableCredential", "StatusList2021Credential"],
       issuer,
       issued,
       credentialSubject: {
-        id: `${url}#list`,
         type: "RevocationList2021",
         encodedList
       }
     }
   }
 
-
-
-  return null
+  const vcJwt = await signer.signVerifiableCredential(vcPayload)
+  const decoded = await decodeVerifiableCredential(vcJwt)
+  return decoded
 }
 
 /**
  * Given a verififable credential, check if it has been revoked.
  */
-export const validateCredential = (credential): boolean => {
-  return true
+export const isRevoked = async (credential: Verifiable<W3CCredential>, statusList: Verifiable<W3CCredential>): Promise<boolean> => {
+  // If there is no credentialStatus, assume not revoked
+  if (!credential.verifiableCredential.credentialStatus) {
+    return false
+  }
+
+  const results = await expandBitstring(statusList.payload.vc.credentialSubject.encodedList)
+  const index = credential.payload.vc.credentialStatus.statusListIndex
+
+  return results.indexOf(index) !== -1
 }
 
-export const compress = async (input: Buffer): Promise<string> => {
+export const compress = async (input: string | ArrayBuffer): Promise<string> => {
   const deflated = await do_deflate(input)
   return deflated.toString("base64")
 }
@@ -102,7 +107,7 @@ export const expandBitstring = async (string: string): Promise<number[]> => {
 export const expandBitstringToBooleans = (bitstring: Buffer): boolean[] => {
   const bits = new Bits(bitstring)
   const results = []
-  for (let i = 0; i< bitstring.length * 8; i++) {
+  for (let i = 0; i< bitstring.byteLength * 8; i++) {
     results[i] = bits.testBit(i)
   }
   return results
