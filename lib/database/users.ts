@@ -2,19 +2,10 @@ import jwt from "jsonwebtoken"
 import { random } from "lodash"
 import { JWT } from "next-auth/jwt"
 import { v4 as uuidv4 } from "uuid"
+import type { User } from "./types"
 
 const JWT_ALGORITHM = "HS256"
 const JWT_EXPIRES_IN = "1h"
-
-export type User = {
-  id: string
-  email: string
-  password: string
-  role: string
-  jumioScore?: number
-  ofacScore?: number
-  creditScore?: number
-}
 
 const USERS: User[] = [
   {

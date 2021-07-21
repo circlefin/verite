@@ -1,7 +1,8 @@
 import { NextPage } from "next"
 import AdminLayout from "components/admin/Layout"
 import { requireAdmin } from "lib/auth-fns"
-import { findUser, User } from "lib/database"
+import { findUser } from "lib/database"
+import type { User } from "lib/database"
 
 type Props = {
   user: User

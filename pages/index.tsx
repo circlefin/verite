@@ -3,7 +3,7 @@ import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import Layout from "components/Layout"
 import { currentUser } from "lib/auth-fns"
-import { User } from "lib/database"
+import type { User } from "lib/database"
 
 type Props = {
   user?: User

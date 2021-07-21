@@ -2,7 +2,8 @@ import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import IssuerLayout from "components/issuer/Layout"
 import { currentUser, requireAuth } from "lib/auth-fns"
-import { temporaryAuthToken, User } from "lib/database"
+import { temporaryAuthToken } from "lib/database"
+import type { User } from "lib/database"
 import { ManifestUrlWrapper } from "types"
 
 type Props = {

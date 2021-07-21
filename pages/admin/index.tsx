@@ -3,7 +3,8 @@ import { NextPage } from "next"
 import Link from "next/link"
 import AdminLayout from "components/admin/Layout"
 import { requireAdmin } from "lib/auth-fns"
-import { allUsers, User } from "lib/database"
+import { allUsers } from "lib/database"
+import type { User } from "lib/database"
 
 type Props = {
   users: User[]

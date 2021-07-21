@@ -1,10 +1,10 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { MenuIcon, XIcon, UserCircleIcon } from "@heroicons/react/outline"
-import { User } from "next-auth"
 import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { FC, Fragment } from "react"
+import type { User } from "lib/database"
 import { isActive, classNames } from "lib/react-fns"
 
 type Props = {
@@ -18,8 +18,6 @@ type Theme = {
   active: string
   hover: string
 }
-
-type UserWithRole = User & { role: string }
 
 const THEMES: Record<string, Theme> = {
   gray: {
@@ -53,7 +51,7 @@ const Header: FC<Props> = ({ title, theme, skipAuth }) => {
     { name: "Verifier", href: "/verifier" }
   ]
 
-  if ((session?.user as UserWithRole)?.role === "admin") {
+  if ((session?.user as User)?.role === "admin") {
     navigation.push({ name: "Admin", href: "/admin" })
   }
 
