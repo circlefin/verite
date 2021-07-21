@@ -1,9 +1,13 @@
 import { JwtCredentialPayload } from "did-jwt-vc"
-import { credentialSigner } from "lib/signer"
-import { decodeVerifiableCredential } from "lib/verity"
+import { CredentialSigner, decodeVerifiableCredential } from ".."
 
 describe("VC signing", () => {
   it("signs a VC", async () => {
+    const credentialSigner = new CredentialSigner(
+      "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+      "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+    )
+
     const vcPayload: JwtCredentialPayload = {
       sub: "did:ethr:0x435df3eda57154cf8cf7926079881f2912f54db4",
       nbf: 1562950282,

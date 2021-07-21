@@ -1,5 +1,5 @@
+import { createCreditScoreManifest, CredentialManifest } from "@centre/verity"
 import { manifestIssuer } from "./issuer"
-import { createCreditScoreManifest, CredentialManifest } from "lib/verity"
 
 export const creditScoreManifest: CredentialManifest =
   createCreditScoreManifest(manifestIssuer, {

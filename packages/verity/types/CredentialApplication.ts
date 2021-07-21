@@ -1,5 +1,5 @@
 import { VerifiedPresentation } from "did-jwt-vc"
-import { ClaimFormatDesignation } from ".."
+import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
 import { JWT } from "./Jwt"
 import { PresentationSubmission } from "./PresentationSubmission"
 import { Verified } from "./VerificationResult"

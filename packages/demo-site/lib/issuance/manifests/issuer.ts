@@ -1,4 +1,4 @@
-import { CredentialIssuer } from "lib/verity"
+import { CredentialIssuer } from "@centre/verity"
 
 export const manifestIssuer: CredentialIssuer = {
   id: "did:web:verity.id",

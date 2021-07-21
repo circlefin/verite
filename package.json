@@ -5,10 +5,13 @@
     "./packages/*"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "demo-site": "lerna run dev --stream --scope demo-site",
+    "bootstrap": "npm install; lerna bootstrap",
+    "build": "lerna run build --stream",
+    "build:verity": "lerna run build --stream --scope @centre/verity",
+    "clean": "lerna run clean --stream",
     "format": "lerna run format --stream",
     "lint": "lerna run lint --stream",
+    "site": "lerna run dev --stream --scope @centre/demo-site",
     "test": "lerna run test --stream",
     "type-check": "lerna run type-check --stream"
   },

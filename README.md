@@ -2,7 +2,8 @@
 
 ## Packages
 
-- [demo-site](./packages/demo-site)
+- [@centre/demo-site](./packages/demo-site)
+- [@centre/verity](./packages/verity)
 
 ## Getting Started
 
@@ -12,19 +13,29 @@ npm run bootstrap
 
 ## Running the apps
 
-### demo-site:
+### @centre/verity:
 
 ```
-npm run demo-site
+npm run build:verity
 ```
 
-### Developing
-
-To run type-checking, linting, and tests, simply run:
+### @centre/demo-site:
 
 ```
-npm run check
+npm run site
 ```
+
+**NOTE** To run the demo-site, you _must_ build the verity project first.
+
+## Testing
+
+Run tests by running
+
+```
+npm run test
+```
+
+**NOTE** Be sure to have built `verity` by running `npm run build:verity`
 
 ### Linting the codebase
 

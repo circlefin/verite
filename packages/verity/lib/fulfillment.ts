@@ -1,14 +1,14 @@
 import { JwtCredentialPayload } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
-import { asyncMap } from "./async-fns"
-import { CredentialSigner } from "./credential-signer"
-import { verifiablePresentationPayload } from "./credentials"
 import {
   CredentialApplication,
   CredentialFulfillment,
   DescriptorMap,
   JWT
-} from "./types"
+} from "../types"
+import { asyncMap } from "./async-fns"
+import { CredentialSigner } from "./credential-signer"
+import { verifiablePresentationPayload } from "./credentials"
 
 export async function createFullfillment(
   credentialSigner: CredentialSigner,
@@ -31,7 +31,7 @@ export async function createFullfillment(
 
   const jwtCredentials: JWT[] = (await asyncMap(
     [credentials].flat(),
-    credential => {
+    (credential) => {
       return credentialSigner.signVerifiableCredential(credential)
     }
   )) as JWT[]

@@ -1,11 +1,11 @@
-import { createMocks } from "node-mocks-http"
-import { allUsers, createUser, temporaryAuthToken } from "lib/database"
-import { findManifestById } from "lib/issuance/manifest"
 import {
   createCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey
-} from "lib/verity"
+} from "@centre/verity"
+import { createMocks } from "node-mocks-http"
+import { allUsers, createUser, temporaryAuthToken } from "lib/database"
+import { findManifestById } from "lib/issuance/manifest"
 
 import handler from "pages/api/issuance/submission/[token]"
 

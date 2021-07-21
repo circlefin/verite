@@ -1,15 +1,15 @@
-import { createUser } from "lib/database"
-import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
-import { findManifestById } from "lib/issuance/manifest"
-import { validateCredentialSubmission } from "lib/issuance/submission"
-import { credentialSigner } from "lib/signer"
 import {
   asyncMap,
   createCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey,
   VerificationError
-} from "lib/verity"
+} from "@centre/verity"
+import { createUser } from "lib/database"
+import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
+import { findManifestById } from "lib/issuance/manifest"
+import { validateCredentialSubmission } from "lib/issuance/submission"
+import { credentialSigner } from "lib/signer"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =

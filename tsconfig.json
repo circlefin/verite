@@ -3,12 +3,15 @@
     "target": "esnext",
     "lib": ["esnext"],
     "allowJs": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@centre/*": ["packages/*"]
+    }
   },
-  // "include": ["packages/**/*.ts", "packages/**/*.tsx"],
   "exclude": ["node_modules"]
 }

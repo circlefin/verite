@@ -21,12 +21,7 @@ module.exports = {
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   // collectCoverageFrom: undefined,
-  collectCoverageFrom: [
-    "**/*.{js,jsx,ts,tsx}",
-    "!**/.next/**",
-    "!**/*.d.ts",
-    "!**/node_modules/**"
-  ],
+  collectCoverageFrom: ["**/*.{js,ts}", "!**/*.d.ts", "!**/node_modules/**"],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
@@ -35,7 +30,7 @@ module.exports = {
   // coveragePathIgnorePatterns: [
   //   "/node_modules/"
   // ],
-  coveragePathIgnorePatterns: ["/node_modules/", "/.next/"],
+  coveragePathIgnorePatterns: ["/node_modules/"],
 
   // Indicates which provider should be used to instrument code for coverage
   // coverageProvider: "babel",
@@ -62,7 +57,6 @@ module.exports = {
 
   // A path to a module which exports an async function that is triggered once before all test suites
   // globalSetup: undefined,
-  globalSetup: "<rootDir>/test/support/setup.ts",
 
   // A path to a module which exports an async function that is triggered once after all test suites
   // globalTeardown: undefined,
@@ -102,7 +96,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -138,7 +132,6 @@ module.exports = {
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
-  setupFilesAfterEnv: ["<rootDir>/test/support/setup.ts"],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -147,7 +140,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-jsdom",
+  testEnvironment: "node",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -160,13 +153,13 @@ module.exports = {
   //   "**/__tests__/**/*.[jt]s?(x)",
   //   "**/?(*.)+(spec|test).[tj]s?(x)"
   // ],
-  testMatch: ["<rootDir>/test/**/*.test.[jt]s?(x)"],
+  testMatch: ["<rootDir>/test/**/*.test.[jt]s"],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
   //   "/node_modules/"
   // ],
-  testPathIgnorePatterns: ["/node_modules/", "/.next/"],
+  testPathIgnorePatterns: ["/node_modules/"],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
@@ -185,9 +178,6 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   // transform: undefined,
-  transform: {
-    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
-  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

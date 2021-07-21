@@ -4,15 +4,15 @@ import {
   W3CCredential
 } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
-import { verifiablePresentationPayload } from "./credentials"
-import { didKeyToIssuer } from "./didKey"
 import {
   DescriptorMap,
   DidKey,
   JWT,
   PresentationDefinition,
   VerificationSubmission
-} from "./types"
+} from "../types"
+import { verifiablePresentationPayload } from "./credentials"
+import { didKeyToIssuer } from "./didKey"
 
 type CredentialType =
   | JWT

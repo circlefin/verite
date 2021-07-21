@@ -1,6 +1,6 @@
+import { CredentialManifest } from "@centre/verity"
 import { creditScoreManifest } from "./manifests/creditScore"
 import { kycManifest } from "./manifests/kyc"
-import { CredentialManifest } from "lib/verity"
 
 export const MANIFEST_MAP: Record<string, CredentialManifest> = {
   "credit-score": creditScoreManifest,

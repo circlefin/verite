@@ -1,5 +1,5 @@
+import { createKycAmlManifest, CredentialManifest } from "@centre/verity"
 import { manifestIssuer } from "./issuer"
-import { createKycAmlManifest, CredentialManifest } from "lib/verity"
 
 export const kycManifest: CredentialManifest = createKycAmlManifest(
   manifestIssuer,

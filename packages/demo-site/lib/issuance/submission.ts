@@ -1,10 +1,10 @@
-import { findManifestById } from "lib/issuance/manifest"
 import {
   AcceptedCredentialApplication,
   CredentialApplication,
   decodeVerifiablePresentation,
   VerificationError
-} from "lib/verity"
+} from "@centre/verity"
+import { findManifestById } from "./manifest"
 
 export async function validateCredentialSubmission(
   application: CredentialApplication

@@ -6,8 +6,8 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
+import { JWT, VerificationError, Verified } from "../types"
 import { didKeyResolver } from "./didKey"
-import { JWT, VerificationError, Verified } from "./types"
 
 export function verifiablePresentationPayload(
   subject: string,

@@ -2,7 +2,7 @@ import {
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
   VerificationError
-} from "lib/verity"
+} from ".."
 
 // tslint:disable-next-line: max-line-length
 const signedVc =

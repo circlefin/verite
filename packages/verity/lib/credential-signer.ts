@@ -8,7 +8,7 @@ import {
   JwtPresentationPayload,
   PresentationPayload
 } from "did-jwt-vc"
-import { JWT } from "./types"
+import { JWT } from "../types"
 
 export class CredentialSigner {
   did: string
