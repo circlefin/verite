@@ -7,7 +7,7 @@ import {
   CredentialSigner,
   generateRevocationList,
   decodeVerifiableCredential,
-  expandBitstring, expandBitstringToBooleans, generateBitstring, compress, decompress, isRevoked
+  expandBitstring, expandBitstringToBooleans, generateBitstring, compress, decompress, isRevoked, revokeCredential, unrevokeCredential
 } from "lib/verity"
 
 /**
@@ -42,6 +42,43 @@ const vectors = [
     bitstring: "H4sIAAAAAAAAA-3BMQEAAADCoPVPbQsvoAAAAAAAAAAAAAAAAP4GcwM92tQwAAA"
   }
 ]
+
+const credentialFactory = async (index: number, signer: CredentialSigner) => {
+  const vcPayload: JwtCredentialPayload = {
+    vc: {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1"
+      ],
+      sub: "did:web:m2.xyz",
+      type: ["VerifiableCredential"],
+      credentialSubject: {
+        id: "did:web:m2.xyz",
+        foo: "bar"
+      },
+      credentialStatus: {
+        "id": `http://example.com/revocation#${index}`,
+        "type": "RevocationList2021Status",
+        "statusListIndex": index,
+        "statusListCredential": "http://example.com/revocation"
+      }
+    }
+  }
+  const vcJwt = await signer.signVerifiableCredential(vcPayload)
+  const credential = await decodeVerifiableCredential(vcJwt)
+  return credential
+}
+
+const statusListFactory = async (credentials: number[]) => {
+  const revoke = credentials
+  const url = "https://example.com/credentials/status/3" // Need to create a list
+  const issuer = process.env.ISSUER_DID
+  const signer = new CredentialSigner(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+  const issued = new Date()
+
+  const vc = await generateRevocationList(revoke, url, issuer, signer, issued)
+
+  return vc
+}
 
 describe("Status List 2021", () => {
   it("compress", async () => {
@@ -170,6 +207,21 @@ describe("Status List 2021", () => {
 
       const revoked = await isRevoked(credential, statusList)
       expect(revoked).toBe(true)
+    })
+  })
+
+  describe("revokeCredential", () => {
+    it("updates the status list credential", async () => {
+      const signer = new CredentialSigner(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+
+      const credential = await credentialFactory(3, signer)
+      const statusList = await statusListFactory([])
+
+      expect(await isRevoked(credential, statusList)).toBe(false)
+      await revokeCredential(credential, statusList, signer)
+      expect(await isRevoked(credential, statusList)).toBe(true)
+      await unrevokeCredential(credential, statusList, signer)
+      expect(await isRevoked(credential, statusList)).toBe(false)
     })
   })
 

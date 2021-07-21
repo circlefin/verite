@@ -15,9 +15,7 @@ const do_unzip = promisify(unzip);
 const do_deflate = promisify(deflate);
 
 /**
- * Issuer needs to persist for each list:
- * 1) A url
- * 2) The date the list was issued
+ * Generate a revocation list.
  */
 export const generateRevocationList = async (credentials: number[], url: string, issuer: string, signer: CredentialSigner, issued = new Date()): Verifiable<W3CCredential> => {
   const encodedList = await generateBitstring(credentials)
@@ -45,6 +43,48 @@ export const generateRevocationList = async (credentials: number[], url: string,
 }
 
 /**
+ * Revoke a credential in a revocation list.
+ */
+export const revokeCredential = async (credential: Verifiable<Credential>, statusList: Verifiable<Credential>, signer: CredentialSigner): Promise<Credential> => {
+  // If a credential does not have a credential status, it cannot be revoked.
+  if (!credential.verifiableCredential.credentialStatus) {
+    return statusList
+  }
+
+  const oldList = await expandBitstring(statusList.payload.vc.credentialSubject.encodedList)
+  const newList = await generateBitstring(oldList.concat([credential.verifiableCredential.credentialStatus.statusListIndex]))
+
+  const newPayload = statusList.payload
+  newPayload.vc.credentialSubject.encodedList = newList
+  const vcJwt = await signer.signVerifiableCredential(newPayload)
+  const decoded = await decodeVerifiableCredential(vcJwt)
+  return decoded
+}
+
+/**
+ * Revoke a credential in a revocation list.
+ */
+ export const unrevokeCredential = async (credential: Verifiable<Credential>, statusList: Verifiable<Credential>, signer: CredentialSigner): Promise<Credential> => {
+  // If a credential does not have a credential status, it cannot be revoked.
+  if (!credential.verifiableCredential.credentialStatus) {
+    return statusList
+  }
+
+  const oldList = await expandBitstring(statusList.payload.vc.credentialSubject.encodedList)
+  const index = oldList.indexOf(credential.verifiableCredential.credentialStatus.statusListIndex)
+  if (index !== -1) {
+    oldList.splice(index, 1);
+  }
+  const newList = await generateBitstring(oldList)
+
+  const newPayload = statusList.payload
+  newPayload.vc.credentialSubject.encodedList = newList
+  const vcJwt = await signer.signVerifiableCredential(newPayload)
+  const decoded = await decodeVerifiableCredential(vcJwt)
+  return decoded
+}
+
+/**
  * Given a verififable credential, check if it has been revoked.
  */
 export const isRevoked = async (credential: Verifiable<W3CCredential>, statusList: Verifiable<W3CCredential>): Promise<boolean> => {
@@ -52,6 +92,7 @@ export const isRevoked = async (credential: Verifiable<W3CCredential>, statusLis
   if (!credential.verifiableCredential.credentialStatus) {
     return false
   }
+
 
   const results = await expandBitstring(statusList.payload.vc.credentialSubject.encodedList)
   const index = credential.payload.vc.credentialStatus.statusListIndex
