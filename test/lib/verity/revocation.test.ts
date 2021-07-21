@@ -30,10 +30,11 @@ const vectors = [
     credentials: [3], // zero index
     bitstring: "eJztwSEBAAAAAiAn+H+tMyxAAwAAAAAAAAAAAAAAAAAAALwNQDwAEQ=="
   },
-  // {
-  //   credentials: [],
-  //   bitstring: "H4sIAAAAAAAAA-3BMQEAAADCoPVPbQsvoAAAAAAAAAAAAAAAAP4GcwM92tQwAAA"
-  // }
+  {
+    skipGenerate: true, // When I generate a bitstring, I get the string found in the first vector. However, both these values decode to the same empty array.
+    credentials: [],
+    bitstring: "H4sIAAAAAAAAA-3BMQEAAADCoPVPbQsvoAAAAAAAAAAAAAAAAP4GcwM92tQwAAA"
+  }
 ]
 
 describe("Status List 2021", () => {
@@ -50,7 +51,11 @@ describe("Status List 2021", () => {
 
   it("generateBitstring", async () => {
     await asyncMap(vectors, async vector => {
-      const {credentials, bitstring} = vector
+      const {credentials, bitstring, skipGenerate} = vector
+
+      if (skipGenerate) {
+        return
+      }
 
       const encodedList = await generateBitstring(credentials)
       expect(encodedList).toEqual(bitstring)
@@ -63,7 +68,6 @@ describe("Status List 2021", () => {
 
       const decodedList = await expandBitstring(bitstring)
       expect(decodedList).toEqual(credentials)
-      // expect(decodedList.length).toEqual(16_384 * 8)
     })
   })
 

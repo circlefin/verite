@@ -87,7 +87,7 @@ export const generateBitstring = async (credentials: number[]): Promise<string> 
 /**
  * Given a string, expand to uncompressed bitstring
  */
-export const expandBitstring = async (string: string): Promise<boolean[]> => {
+export const expandBitstring = async (string: string): Promise<number[]> => {
   const buffer = await decompress(string)
   const bools = expandBitstringToBooleans(buffer)
   const result = []
