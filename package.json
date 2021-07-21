@@ -11,6 +11,7 @@
     "clean": "lerna run clean --stream",
     "format": "lerna run format --stream",
     "lint": "lerna run lint --stream",
+    "metro": "lerna run start --stream --scope @centre/demo-wallet",
     "site": "lerna run dev --stream --scope @centre/demo-site",
     "test": "lerna run test --stream",
     "type-check": "lerna run type-check --stream"
