@@ -100,38 +100,33 @@ export const isRevoked = async (credential: Verifiable<W3CCredential>, statusLis
   return results.indexOf(index) !== -1
 }
 
+/**
+ * Apply zlib compression with Base64 encoding
+ */
 export const compress = async (input: string | ArrayBuffer): Promise<string> => {
   const deflated = await do_deflate(input)
   return deflated.toString("base64")
 }
 
+/**
+ * Given the base64 encoded revocation list, decode and unzip it to a Buffer
+ */
 export const decompress = async (input: string): Promise<Buffer> => {
   const buffer = Buffer.from(input, 'base64');
   return await do_unzip(buffer)
 }
 
 /**
- * Given a list of credentials, generate the compressed bitstring
+ * Given a list of index values, generate the compressed bitstring
  */
-export const generateBitstring = async (credentials: number[]): Promise<string> => {
-  const bits = new Bits(16_384*8)
-
-  credentials.forEach(credential => {
-    bits.setBit(credential)
-  });
-
-  const encoded = await compress(bits.buffer)
-
-  // Create 16KB buffer initialized with 0. Use 131,072 length
-  // For each credential:
-  // 1) Update buffer at credential's revocation index to be a 1
-  // ZLIB compression rfc1950
-  // BASE64 encode
-  return encoded
+export const generateBitstring = async (indicies: number[]): Promise<string> => {
+  const bits = new Bits(16_384 * 8) // 16KB
+  indicies.forEach(index => bits.setBit(index))
+  return await compress(bits.buffer)
 }
 
 /**
- * Given a string, expand to uncompressed bitstring
+ * Given a bitstring, expand to list of revoked indexes.
  */
 export const expandBitstring = async (string: string): Promise<number[]> => {
   const buffer = await decompress(string)
@@ -145,10 +140,14 @@ export const expandBitstring = async (string: string): Promise<number[]> => {
   return result
 }
 
+/**
+ * Map the bitstring to a list of booleans. This is a very simple approach and
+ * not a very performant.
+ */
 export const expandBitstringToBooleans = (bitstring: Buffer): boolean[] => {
   const bits = new Bits(bitstring)
   const results = []
-  for (let i = 0; i< bitstring.byteLength * 8; i++) {
+  for (let i = 0; i < bitstring.byteLength * 8; i++) {
     results[i] = bits.testBit(i)
   }
   return results

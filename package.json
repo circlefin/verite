@@ -18,8 +18,6 @@
     "@heroicons/react": "^1.0.2",
     "@stablelib/ed25519": "^1.0.2",
     "@tailwindcss/forms": "^0.3.3",
-    "bitset": "^5.1.1",
-    "bitstring": "^1.0.0",
     "did-jwt": "^5.6.2",
     "did-jwt-vc": "^2.1.4",
     "jose": "^1.28.1",
