@@ -1,23 +1,28 @@
 {
   "name": "root",
   "private": true,
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=7.0.0"
+  },
   "workspaces": [
     "./packages/*"
   ],
   "scripts": {
-    "bootstrap": "npm install; lerna bootstrap",
-    "build": "lerna run build --stream",
-    "build:verity": "lerna run build --stream --scope @centre/verity",
-    "clean": "lerna run clean --parallel",
-    "dev": "lerna run dev --parallel",
-    "format": "lerna run format --parallel",
-    "lint": "lerna run lint --parallel",
+    "build": "npm run build --workspaces",
+    "build:verity": "npm run build --workspace @centre/verity",
+    "clean": "npm run clean --workspaces",
+    "dev": "npm run dev --workspaces",
+    "dev:site": "npm run dev --workspace @centre/demo-site",
+    "dev:verity": "npm run dev --workspace @centre/verity",
+    "format": "npm run format --workspaces",
+    "lint": "npm run lint --workspaces",
     "prepare": "npm run build:verity",
-    "site": "lerna run dev --stream --scope @centre/demo-site",
-    "test": "lerna run test --parallel",
-    "type-check": "lerna run type-check --stream"
+    "site": "npm run dev --workspace @centre/demo-site",
+    "test": "npm test --workspaces",
+    "type-check": "npm run type-check --workspaces"
   },
-  "devDependencies": {
-    "lerna": "^4.0.0"
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }

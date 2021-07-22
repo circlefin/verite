@@ -8,7 +8,7 @@
 ## Getting Started
 
 ```
-npm run bootstrap
+npm install
 ```
 
 ## Running the apps
