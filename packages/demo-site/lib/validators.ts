@@ -1,19 +1,20 @@
+import {
+  AcceptedCredentialApplication,
+  AcceptedVerificationSubmission,
+  CredentialApplication,
+  CredentialManifest,
+  decodeVerifiablePresentation,
+  InputDescriptor,
+  PresentationDefinition,
+  VerificationError,
+  VerificationObject,
+  VerificationSubmission,
+} from "@centre/verity"
 import Ajv from "ajv"
 import { VerifiableCredential, VerifiablePresentation } from "did-jwt-vc"
 import jsonpath from "jsonpath"
 import { findSchemaById, vcSchema, vpSchema } from "./schemas"
-import {
-  AcceptedVerificationSubmission,
-  VerificationObject,
-  CredentialApplication,
-  CredentialManifest,
-  InputDescriptor,
-  VerificationSubmission,
-  PresentationDefinition,
-  AcceptedCredentialApplication,
-  VerificationError
-} from "./types"
-import { decodeVerifiablePresentation } from "."
+
 const ajv = new Ajv()
 
 function validateSchema(input: any, schema: any, errors: any[]): boolean {
@@ -173,10 +174,12 @@ export async function verifyVerificationSubmission(
   } catch (err) {
     if (err instanceof VerificationError) {
       errors.push(...err.errors)
-    }
-    else {
+    } else {
       // TODO
-      errors.push({ descriptor: "unknown error during verification", info: "not a damn thing found" })
+      errors.push({
+        descriptor: "unknown error during verification",
+        info: "not a damn thing found"
+      })
     }
   }
 }
@@ -212,10 +215,12 @@ export async function verifyCredentialApplication(
   } catch (err) {
     if (err instanceof VerificationError) {
       errors.push(...err.errors)
-    }
-    else {
+    } else {
       // TODO
-      errors.push({ descriptor: "unknown error during verification", info: "not a damn thing found" })
+      errors.push({
+        descriptor: "unknown error during verification",
+        info: "not a damn thing found"
+      })
     }
   }
 }

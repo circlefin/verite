@@ -1,11 +1,11 @@
 import {
-  AcceptedVerificationSubmission,
   PresentationDefinition,
   VerificationError,
-  VerificationSubmission,
-  verifyVerificationSubmission
+  VerificationSubmission
 } from "@centre/verity"
+import { verifyVerificationSubmission } from "../validators"
 import { kycVerificationRequest } from "./requests"
+import { AcceptedVerificationSubmission } from "types/AcceptedVerificationSubmission"
 
 const kycPresentationDefinition =
   kycVerificationRequest().presentation_definition

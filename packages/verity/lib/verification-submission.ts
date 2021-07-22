@@ -20,7 +20,7 @@ type CredentialType =
   | Verifiable<W3CCredential>
   | Verifiable<W3CCredential>[]
 
-export async function createPresentationSubmission(
+export async function createVerificationSubmission(
   didKey: DidKey,
   presentationDefinition: PresentationDefinition,
   verifiableCredential: CredentialType

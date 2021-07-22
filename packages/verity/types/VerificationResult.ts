@@ -7,10 +7,6 @@ export type VerificationObject = {
   detail: string
 }
 
-export type Verified<T> = T & {
-  checks: VerificationObject[]
-}
-
 export class VerificationError extends Error {
   errors?: VerificationObject[]
   cause?: Error

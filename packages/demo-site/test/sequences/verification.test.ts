@@ -1,6 +1,6 @@
 import {
   createCredentialApplication,
-  createPresentationSubmission,
+  createVerificationSubmission,
   decodeVerifiablePresentation,
   randomDidKey
 } from "@centre/verity"
@@ -42,7 +42,7 @@ describe("verification", () => {
     const kycRequest = kycVerificationRequest()
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
-    const submission = await createPresentationSubmission(
+    const submission = await createVerificationSubmission(
       clientDidKey,
       kycRequest.presentation_definition,
       clientVC

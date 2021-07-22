@@ -1,10 +1,10 @@
 import {
-  AcceptedCredentialApplication,
   CredentialApplication,
-  verifyCredentialApplication,
   VerificationError
 } from "@centre/verity"
+import { verifyCredentialApplication } from "../validators"
 import { findManifestById } from "./manifest"
+import { AcceptedCredentialApplication } from "types/AcceptedVerificationSubmission"
 
 export async function validateCredentialSubmission(
   application: CredentialApplication
@@ -32,7 +32,11 @@ export async function validateCredentialSubmission(
   }
 
   const errors = []
-  const accepted = await verifyCredentialApplication(application, manifest, errors)
+  const accepted = await verifyCredentialApplication(
+    application,
+    manifest,
+    errors
+  )
   if (errors.length > 0) {
     throw new VerificationError("Submission was invalid", errors)
   }

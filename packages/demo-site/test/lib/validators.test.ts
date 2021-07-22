@@ -1,19 +1,20 @@
-import { JwtCredentialPayload } from "did-jwt-vc"
+import {
+  createCredentialApplication,
+  createPresentationSubmission,
+  decodeVerifiablePresentation,
+  randomDidKey
+} from "@centre/verity"
 import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
-import { kycVerificationRequest } from "lib/verification/requests"
-import { findPresentationDefinitionById } from "lib/verification/submission"
 import {
-  createCredentialApplication,
-  createPresentationSubmission,
-  decodeVerifiablePresentation,
-  randomDidKey,
   verifyCredentialApplication,
   verifyVerificationSubmission
-} from "lib/verity"
+} from "lib/validators"
+import { kycVerificationRequest } from "lib/verification/requests"
+import { findPresentationDefinitionById } from "lib/verification/submission"
 
 describe("VC validator", () => {
   it("validates a Verification Submission", async () => {
@@ -49,7 +50,11 @@ describe("VC validator", () => {
       "KYCAMLPresentationDefinition"
     )
     const errors = []
-    const result = await verifyVerificationSubmission(submission, presDef, errors)
+    const result = await verifyVerificationSubmission(
+      submission,
+      presDef,
+      errors
+    )
     expect(errors).toHaveLength(0)
     const matches = result.matches["kycaml_input"]
     expect(matches).toHaveLength(1)
@@ -70,7 +75,11 @@ describe("VC validator", () => {
     )
 
     const errors = []
-    const acceptedApplication = await verifyCredentialApplication(application, kycManifest, errors)
+    const acceptedApplication = await verifyCredentialApplication(
+      application,
+      kycManifest,
+      errors
+    )
     expect(errors).toHaveLength(0)
     const matches = acceptedApplication.matches["proofOfIdentifierControlVP"]
     expect(matches).toHaveLength(1)
