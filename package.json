@@ -12,7 +12,6 @@
     "dev": "lerna run dev --parallel",
     "format": "lerna run format --parallel",
     "lint": "lerna run lint --parallel",
-    "metro": "lerna run start --stream --scope @centre/demo-wallet",
     "site": "lerna run dev --stream --scope @centre/demo-site",
     "test": "lerna run test --parallel",
     "type-check": "lerna run type-check --stream"
