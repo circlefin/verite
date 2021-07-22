@@ -4,7 +4,7 @@ import {
 } from "@centre/verity"
 import { verifyCredentialApplication } from "../validators"
 import { findManifestById } from "./manifest"
-import { AcceptedCredentialApplication } from "types/AcceptedVerificationSubmission"
+import { AcceptedCredentialApplication } from "types"
 
 export async function validateCredentialSubmission(
   application: CredentialApplication

@@ -1,6 +1,4 @@
 import {
-  AcceptedCredentialApplication,
-  AcceptedVerificationSubmission,
   CredentialApplication,
   CredentialManifest,
   decodeVerifiablePresentation,
@@ -14,6 +12,7 @@ import Ajv from "ajv"
 import { VerifiableCredential, VerifiablePresentation } from "did-jwt-vc"
 import jsonpath from "jsonpath"
 import { findSchemaById, vcSchema, vpSchema } from "./schemas"
+import { AcceptedCredentialApplication, AcceptedVerificationSubmission, FieldMatch, Match, VerificationMatch } from "types"
 
 const ajv = new Ajv()
 
@@ -37,23 +36,27 @@ export function validateVp(vp: VerifiablePresentation, errors: any[]): boolean {
 export function validateInputDescriptors(
   creds: Map<string, VerifiableCredential[]>,
   descriptors: InputDescriptor[],
-  errors: any[]
-): any {
+  errors: any
+): Map<string, VerificationMatch[]> {
   return descriptors.reduce((map, descriptor) => {
     map[descriptor.id] = descriptor.schema.reduce((matches, obj) => {
       const candidates = creds[obj.uri]
       if (!candidates) return matches
       const credsAndMatches = candidates.reduce(
-        (candidateAccumulator, cred) => {
+        (candidateAccumulator: VerificationMatch[], cred: VerifiableCredential) => {
           const constraints = descriptor.constraints
           if (!constraints || !constraints.fields) {
             // no constraints
             candidateAccumulator.push({
               cred,
-              fieldsAndMatches: {
+              fieldMatches: [
+                {
+                  field: null,
+                  matches: [{
                 path: "*",
                 matchedValue: "*"
-              }
+                  }]
+              }]
             })
             return candidateAccumulator
           }
@@ -87,35 +90,30 @@ export function validateInputDescriptors(
                   }
                   // no match; return
                   return matchAccumulator
-                },
-                []
-              )
+                }, new Array<Match>())
               if (matchResults.length !== 0) {
                 fieldAccumulator.push({ field, matches: matchResults })
               }
               return fieldAccumulator
-            },
-            []
+            }, new Array<FieldMatch>()
           )
           if (fieldsAndMatches.length !== 0) {
             candidateAccumulator.push({
               cred,
-              fieldsAndMatches: fieldsAndMatches
+              fieldMatches: fieldsAndMatches
             })
           }
           return candidateAccumulator // array of {cred, {path, matchedValue}}
-        },
-        []
-      )
+        }, new Array<VerificationMatch>())
       if (credsAndMatches.length === 0) {
         errors.push({ descriptor, info: "not a damn thing found" }) // TODO
       } else {
         matches.push(...credsAndMatches)
       }
       return matches
-    }, [])
+    }, new Array<VerificationMatch>())
     return map // map<descriptorId, matches>
-  }, new Map())
+  }, new Map<string, VerificationMatch[]>())
 }
 
 function mapInputsToDescriptors(
@@ -202,16 +200,17 @@ export async function verifyCredentialApplication(
     )
 
     // check it has matches
-    const matches = validateInputDescriptors(
+    const matches: Map<string, VerificationMatch[]> = validateInputDescriptors(
       mapped,
       manifest.presentation_definition.input_descriptors,
       errors
     )
-
-    return {
+    const result: AcceptedCredentialApplication = {
       ...converted,
-      matches: matches
+      matches
     }
+
+    return result
   } catch (err) {
     if (err instanceof VerificationError) {
       errors.push(...err.errors)

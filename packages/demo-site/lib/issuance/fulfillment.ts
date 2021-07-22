@@ -1,5 +1,4 @@
 import {
-  AcceptedCredentialApplication,
   createFullfillment,
   CredentialFulfillment,
   CredentialSigner,
@@ -11,6 +10,7 @@ import {
   kycAmlVerifiableCredentialPayload
 } from "@centre/verity"
 import type { User } from "lib/database"
+import { AcceptedCredentialApplication } from "types"
 
 export async function createKycAmlFulfillment(
   user: User,
