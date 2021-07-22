@@ -1,5 +1,5 @@
 {
-  "name": "@centre/demo-wallet",
+  "name": "demo-wallet",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -20,6 +20,7 @@
     "@stablelib/ed25519": "^1.0.2",
     "@transmute/did-key-ed25519": "^0.3.0-unstable.4",
     "assert": "^1.5.0",
+    "buffer": "^4.9.2",
     "did-jwt-vc": "^2.1.4",
     "did-resolver": "^3.1.0",
     "events": "^1.1.1",

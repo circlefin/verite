@@ -1,5 +1,5 @@
-import { VerificationError, VerificationObject } from "@centre/verity"
 import { NextApiResponse } from "next"
+import { VerificationError, VerificationObject } from "verity"
 
 export type ApiError = {
   status: number

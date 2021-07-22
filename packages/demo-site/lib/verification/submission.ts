@@ -4,7 +4,7 @@ import {
   PresentationDefinition,
   VerificationError,
   VerificationSubmission
-} from "@centre/verity"
+} from "verity"
 import { kycVerificationRequest } from "./requests"
 
 const kycPresentationDefinition =

@@ -7,13 +7,13 @@
   "scripts": {
     "bootstrap": "npm install; lerna bootstrap",
     "build": "lerna run build --stream",
-    "build:verity": "lerna run build --stream --scope @centre/verity",
+    "build:verity": "lerna run build --stream --scope verity",
     "clean": "lerna run clean --parallel",
     "dev": "lerna run dev --parallel",
     "format": "lerna run format --parallel",
     "lint": "lerna run lint --parallel",
-    "metro": "lerna run start --stream --scope @centre/demo-wallet",
-    "site": "lerna run dev --stream --scope @centre/demo-site",
+    "metro": "lerna run start --stream --scope demo-wallet",
+    "site": "lerna run dev --stream --scope demo-site",
     "test": "lerna run test --parallel",
     "type-check": "lerna run type-check --stream"
   },

@@ -1,11 +1,11 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure, Menu, Transition } from "@headlessui/react"
 import { MenuIcon, XIcon, UserCircleIcon } from "@heroicons/react/outline"
+import type { User } from "lib/database"
+import { isActive, classNames } from "lib/react-fns"
 import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { FC, Fragment } from "react"
-import type { User } from "lib/database"
-import { isActive, classNames } from "lib/react-fns"
 
 type Props = {
   title: string

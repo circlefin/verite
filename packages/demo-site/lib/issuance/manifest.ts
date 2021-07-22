@@ -1,4 +1,4 @@
-import { CredentialManifest } from "@centre/verity"
+import { CredentialManifest } from "verity"
 import { creditScoreManifest } from "./manifests/creditScore"
 import { kycManifest } from "./manifests/kyc"
 

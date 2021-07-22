@@ -1,9 +1,3 @@
-import {
-  createCredentialApplication,
-  createPresentationSubmission,
-  decodeVerifiablePresentation,
-  randomDidKey
-} from "@centre/verity"
 import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
@@ -11,6 +5,12 @@ import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
 import { kycVerificationRequest } from "lib/verification/requests"
 import { validateVerificationSubmission } from "lib/verification/submission"
+import {
+  createCredentialApplication,
+  createPresentationSubmission,
+  decodeVerifiablePresentation,
+  randomDidKey
+} from "verity"
 
 describe("verification", () => {
   it("just works", async () => {

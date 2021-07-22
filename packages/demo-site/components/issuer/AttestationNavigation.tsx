@@ -1,6 +1,6 @@
+import { isActive, classNames } from "lib/react-fns"
 import Link from "next/link"
 import { FC } from "react"
-import { isActive, classNames } from "lib/react-fns"
 
 const tabs = [
   { name: "KYC/AML", href: "/issuer/kyc" },

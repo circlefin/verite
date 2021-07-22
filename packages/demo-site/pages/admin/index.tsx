@@ -1,10 +1,10 @@
 import { ChevronRightIcon } from "@heroicons/react/solid"
-import { NextPage } from "next"
-import Link from "next/link"
 import AdminLayout from "components/admin/Layout"
 import { requireAdmin } from "lib/auth-fns"
 import { allUsers } from "lib/database"
 import type { User } from "lib/database"
+import { NextPage } from "next"
+import Link from "next/link"
 
 type Props = {
   users: User[]

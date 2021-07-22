@@ -1,6 +1,6 @@
+import VerifierLayout from "components/verifier/Layout"
 import { GetServerSideProps, NextPage } from "next"
 import QRCode from "qrcode.react"
-import VerifierLayout from "components/verifier/Layout"
 import { VerificationRequestWrapper } from "types"
 
 type Props = {

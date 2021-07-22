@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import NextAuth from "next-auth"
-import Providers from "next-auth/providers"
 import type { User } from "lib/database"
 import { authenticateUser } from "lib/database"
+import NextAuth from "next-auth"
+import Providers from "next-auth/providers"
 
 type Credentials = {
   csrfToken: string

@@ -1,13 +1,13 @@
+import { allUsers, createUser, temporaryAuthToken } from "lib/database"
+import { findManifestById } from "lib/issuance/manifest"
+import { createMocks } from "node-mocks-http"
+
+import handler from "pages/api/issuance/submission/[token]"
 import {
   createCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey
-} from "@centre/verity"
-import { createMocks } from "node-mocks-http"
-import { allUsers, createUser, temporaryAuthToken } from "lib/database"
-import { findManifestById } from "lib/issuance/manifest"
-
-import handler from "pages/api/issuance/submission/[token]"
+} from "verity"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =

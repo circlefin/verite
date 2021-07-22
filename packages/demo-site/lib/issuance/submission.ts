@@ -3,7 +3,7 @@ import {
   CredentialApplication,
   decodeVerifiablePresentation,
   VerificationError
-} from "@centre/verity"
+} from "verity"
 import { findManifestById } from "./manifest"
 
 export async function validateCredentialSubmission(

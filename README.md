@@ -2,8 +2,9 @@
 
 ## Packages
 
-- [@centre/demo-site](./packages/demo-site)
-- [@centre/verity](./packages/verity)
+- [demo-site](./packages/demo-site)
+- [demo-wallet](./packages/demo-wallet)
+- [verity](./packages/verity)
 
 ## Getting Started
 
@@ -19,13 +20,13 @@ To run the `demo-site` while watching for changes in `vertity`, you can run
 npm run dev
 ```
 
-### @centre/verity:
+### verity:
 
 ```
 npm run build:verity
 ```
 
-### @centre/demo-site:
+### demo-site:
 
 ```
 npm run site
@@ -33,7 +34,7 @@ npm run site
 
 **NOTE** To run the demo-site, you _must_ build the verity project first.
 
-### @centre/demo-wallet:
+### demo-wallet:
 
 ```
 npm run metro

@@ -10,7 +10,7 @@
     "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
-      "@centre/*": ["packages/*"]
+      "*": ["packages/*"]
     }
   },
   "exclude": ["node_modules"]
