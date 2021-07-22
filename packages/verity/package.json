@@ -6,8 +6,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "clean": "tsc --build --clean",
     "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "dev": "tsc --watch --preserveWatchOutput",
     "format": "prettier  --write .",
     "lint": "eslint .",
     "test": "jest",

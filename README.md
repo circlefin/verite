@@ -13,6 +13,12 @@ npm run bootstrap
 
 ## Running the apps
 
+To run the `demo-site` while watching for changes in `vertity`, you can run
+
+```
+npm run dev
+```
+
 ### @centre/verity:
 
 ```
