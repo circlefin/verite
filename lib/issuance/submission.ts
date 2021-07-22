@@ -2,18 +2,13 @@ import { findManifestById } from "lib/issuance/manifest"
 import {
   AcceptedCredentialApplication,
   CredentialApplication,
-  decodeVerifiablePresentation,
+  verifyCredentialApplication,
   VerificationError
 } from "lib/verity"
 
 export async function validateCredentialSubmission(
   application: CredentialApplication
 ): Promise<AcceptedCredentialApplication> {
-  /**
-   * Validate the format
-   *
-   * TODO(mv): Use did-jwt validators?
-   */
   if (
     !hasPaths(application, [
       "credential_application",
@@ -21,11 +16,13 @@ export async function validateCredentialSubmission(
       "presentation"
     ])
   ) {
-    throw new VerificationError("Invalid JSON format")
+    throw new VerificationError(
+      "Missing required paths in Credential Application"
+    )
   }
 
   /**
-   * Ensure there is a valid manfiest with this manifest_id
+   * Ensure there is a valid manifest with this manifest_id
    */
   const manifest = findManifestById(
     application.credential_application.manifest_id
@@ -34,18 +31,12 @@ export async function validateCredentialSubmission(
     throw new VerificationError("Invalid Manifest ID")
   }
 
-  /**
-   * Decode VP, performing VP verification
-   */
-  const verified = await decodeVerifiablePresentation(application.presentation)
-  /**
-   * TODO: Validate input meets manifest requirements
-   */
-
-  return {
-    ...application,
-    verified: verified
+  const errors = []
+  const accepted = await verifyCredentialApplication(application, manifest, errors)
+  if (errors.length > 0) {
+    throw new VerificationError("Submission was invalid", errors)
   }
+  return accepted
 }
 
 function hasPaths(application: Record<string, unknown>, keys: string[]) {

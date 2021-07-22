@@ -1,10 +1,12 @@
 export type VerificationObject = {
   status: number
   source?: {
-    pointer: string // or path...
+    path: string
   }
   title: string
   detail: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  original?: any
 }
 
 export type Verified<T> = T & {
@@ -15,21 +17,19 @@ export class VerificationError extends Error {
   errors?: VerificationObject[]
   cause?: Error
 
-  constructor(message: string, cause?: Error) {
+  constructor(message: string, errors?: VerificationObject[], cause?: Error) {
     super(message)
     this.name = "VerificationError"
     this.cause = cause
-    if (cause) {
-      this.errors = [toErrorObject(cause)]
-    }
-
-    // TODO(kim): very coarse mapping until I add up-front checks
-    function toErrorObject(err: Error) {
-      return {
-        status: 400,
-        title: err.name,
-        detail: err.message
+    if (errors) {
+      this.errors = errors
+    } else {
+      const vo: VerificationObject = {
+        title: message,
+        detail: message,
+        status: 400 // TODO
       }
+      this.errors = [vo]
     }
   }
 }

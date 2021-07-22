@@ -1,10 +1,10 @@
 import { kycVerificationRequest } from "./requests"
 import {
   AcceptedVerificationSubmission,
-  decodeVerifiablePresentation,
   PresentationDefinition,
   VerificationError,
-  VerificationSubmission
+  VerificationSubmission,
+  verifyVerificationSubmission
 } from "lib/verity"
 
 const kycPresentationDefinition =
@@ -23,11 +23,6 @@ export function findPresentationDefinitionById(
 export async function validateVerificationSubmission(
   verificationSubmission: VerificationSubmission
 ): Promise<AcceptedVerificationSubmission> {
-  /**
-   * Validate the format
-   *
-   * TODO(mv): Use did-jwt validators?
-   */
   if (
     !hasPaths(verificationSubmission, [
       "presentation_submission",
@@ -40,7 +35,6 @@ export async function validateVerificationSubmission(
   /**
    * Ensure there is a valid presentation definition
    */
-
   const presentationDefinition = findPresentationDefinitionById(
     verificationSubmission.presentation_submission.definition_id
   )
@@ -48,25 +42,16 @@ export async function validateVerificationSubmission(
     throw new VerificationError("Invalid Presentation Definition ID")
   }
 
-  /**
-   * Decode VP, performing VP verification
-   */
-  const verified = await decodeVerifiablePresentation(
-    verificationSubmission.presentation
+  const errors = []
+  const verified = await verifyVerificationSubmission(
+    verificationSubmission,
+    presentationDefinition,
+    errors
   )
-  /**
-   * TODO: Validate input meets presentation definition requirements. Bad Hack for now!
-   */
-
-  verified.checks.push({
-    status: 200,
-    title: "Proof of KYC",
-    detail: "Proof of KYC from an accepted issuer"
-  })
-  return {
-    ...verificationSubmission,
-    verified: verified
+  if (errors.length > 0) {
+    throw new VerificationError("Submission was invalid", errors)
   }
+  return verified
 }
 
 function hasPaths(application: Record<string, unknown>, keys: string[]) {

@@ -17,9 +17,11 @@
     "@heroicons/react": "^1.0.2",
     "@stablelib/ed25519": "^1.0.2",
     "@tailwindcss/forms": "^0.3.3",
+    "ajv": "^6.12.6",
     "did-jwt": "^5.6.2",
     "did-jwt-vc": "^2.1.4",
     "jose": "^1.28.1",
+    "jsonpath": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "multibase": "^4.0.4",
@@ -53,6 +55,7 @@
     "prettier": "^2.3.2",
     "tailwindcss": "^2.2.4",
     "tailwindcss-font-inter": "^3.0.0",
+    "ts-json-schema-generator": "^0.94.1",
     "typescript": "^4.3.4"
   }
 }

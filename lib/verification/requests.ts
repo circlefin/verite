@@ -46,12 +46,16 @@ export const kycVerificationRequest = () => {
             },
             fields: [
               {
-                path: ["$.issuer", "$.vc.issuer", "$.iss"],
+                path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"], //"$.issuer.id"
                 purpose:
                   "We can only verify KYC credentials attested by a trusted authority.",
                 filter: {
                   type: "string",
-                  pattern: compact(["did:web:verity.id", "did:web:coinbase.com", process.env.ISSUER_DID]).join("|")
+                  pattern: compact([
+                    "did:web:verity.id",
+                    "did:web:coinbase.com",
+                    process.env.ISSUER_DID
+                  ]).join("|")
                 }
               }
             ]

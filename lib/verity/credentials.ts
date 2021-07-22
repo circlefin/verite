@@ -7,7 +7,7 @@ import {
   verifyPresentation
 } from "did-jwt-vc"
 import { didKeyResolver } from "./didKey"
-import { JWT, VerificationError, Verified } from "./types"
+import { JWT, VerificationError } from "./types"
 
 export function verifiablePresentationPayload(
   subject: string,
@@ -68,15 +68,13 @@ export function creditScoreVerifiableCredentialPayload(
  */
 export async function decodeVerifiableCredential(
   vc: JWT
-): Promise<Verified<VerifiedCredential>> {
+): Promise<VerifiedCredential> {
   try {
-    const res = await verifyCredential(vc, didKeyResolver)
-    res.checks = getChecks()
-    return res
+    const verified = await verifyCredential(vc, didKeyResolver)
+    return verified
   } catch (err) {
     throw new VerificationError(
-      "Input wasn't a valid Verifiable Credential",
-      err
+      "Input wasn't a valid Verifiable Credential" // TODO
     )
   }
 }
@@ -86,26 +84,13 @@ export async function decodeVerifiableCredential(
  */
 export async function decodeVerifiablePresentation(
   vpJwt: JWT
-): Promise<Verified<VerifiedPresentation>> {
+): Promise<VerifiedPresentation> {
   try {
-    const res = await verifyPresentation(vpJwt, didKeyResolver)
-    res.checks = getChecks()
-    return res
+    const verified = await verifyPresentation(vpJwt, didKeyResolver)
+    return verified
   } catch (err) {
     throw new VerificationError(
-      "Input wasn't a valid Verifiable Presentation",
-      err
+      "Input wasn't a valid Verifiable Presentation" // TODO
     )
   }
-}
-
-// TODO: temporary hack
-function getChecks() {
-  return [
-    {
-      status: 200,
-      title: "VC Format Check",
-      detail: "Validated Verifiable Credential format"
-    }
-  ]
 }

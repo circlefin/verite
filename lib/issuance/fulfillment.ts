@@ -18,7 +18,7 @@ export async function createKycAmlFulfillment(
   acceptedApplication: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
   const verifiablePresentation =
-    acceptedApplication.verified.verifiablePresentation
+    acceptedApplication.presentation
 
   const body: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
@@ -54,7 +54,7 @@ export async function createCreditScoreFulfillment(
   acceptedApplication: AcceptedCredentialApplication
 ): Promise<CredentialFulfillment> {
   const verifiablePresentation =
-    acceptedApplication.verified.verifiablePresentation
+    acceptedApplication.presentation
 
   const body: CreditScore = {
     "@type": "CreditScore",

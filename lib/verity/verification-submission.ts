@@ -29,7 +29,7 @@ export async function createPresentationSubmission(
     }) as DescriptorMap[]
   }
 
-  const payload = verifiablePresentationPayload(client, vcJwt)
+  const payload = verifiablePresentationPayload(client.did, vcJwt)
   const vp = await createVerifiablePresentationJwt(payload, client)
 
   return {
