@@ -1,10 +1,14 @@
+import { CredentialApplication } from "@centre/verity"
 import {
-  CredentialApplication,
-  VerificationError
-} from "@centre/verity"
-import { verifyCredentialApplication } from "../validators"
+  tryAcceptCredentialApplication,
+  messageToVerificationFailure
+} from "../validators"
 import { findManifestById } from "./manifest"
-import { AcceptedCredentialApplication } from "types"
+import {
+  AcceptedCredentialApplication,
+  ValidationError,
+  ValidationFailure
+} from "types"
 
 export async function validateCredentialSubmission(
   application: CredentialApplication
@@ -16,8 +20,11 @@ export async function validateCredentialSubmission(
       "presentation"
     ])
   ) {
-    throw new VerificationError(
-      "Missing required paths in Credential Application"
+    throw new ValidationError(
+      "Missing required paths in Credential Application",
+      messageToVerificationFailure(
+        "Input doesn't have the required format for a Credential Application"
+      )
     )
   }
 
@@ -28,17 +35,25 @@ export async function validateCredentialSubmission(
     application.credential_application.manifest_id
   )
   if (!manifest) {
-    throw new VerificationError("Invalid Manifest ID")
+    throw new ValidationError(
+      "Invalid Manifest ID",
+      messageToVerificationFailure(
+        "This issuer doesn't issue credentials for the specified Manifest ID"
+      )
+    )
   }
 
-  const errors = []
-  const accepted = await verifyCredentialApplication(
+  const errors = new Array<ValidationFailure>()
+  const accepted = await tryAcceptCredentialApplication(
     application,
     manifest,
     errors
   )
   if (errors.length > 0) {
-    throw new VerificationError("Submission was invalid", errors)
+    throw new ValidationError(
+      "Unable to validate Credential Application",
+      errors
+    )
   }
   return accepted
 }

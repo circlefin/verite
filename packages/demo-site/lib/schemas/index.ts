@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as kycSchema from "./KycAmlAttestation.json"
 import * as vcSchema from "./vc-schema.json"
 import * as vpSchema from "./vp-schema.json"

@@ -4,46 +4,96 @@ import {
   decodeVerifiablePresentation,
   InputDescriptor,
   PresentationDefinition,
-  VerificationError,
-  VerificationObject,
-  VerificationSubmission,
+  VerificationSubmission
 } from "@centre/verity"
 import Ajv from "ajv"
 import { VerifiableCredential, VerifiablePresentation } from "did-jwt-vc"
 import jsonpath from "jsonpath"
 import { findSchemaById, vcSchema, vpSchema } from "./schemas"
-import { AcceptedCredentialApplication, AcceptedVerificationSubmission, FieldMatch, Match, VerificationMatch } from "types"
+import {
+  AcceptedCredentialApplication,
+  AcceptedVerificationSubmission,
+  FieldMatch,
+  Match,
+  VerificationMatch,
+  ValidationError,
+  ValidationFailure
+} from "types"
 
 const ajv = new Ajv()
 
-function validateSchema(input: any, schema: any, errors: any[]): boolean {
+export function errorToValidationFailure(err: Error): ValidationFailure {
+  return {
+    status: 400,
+    title: err.name,
+    detail: err.message
+  }
+}
+
+export function messageToVerificationFailure(
+  message: string
+): ValidationFailure {
+  return {
+    status: 400,
+    title: "Validation Failure",
+    detail: message
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function ajvErrorToVerificationFailures(errors: any): ValidationFailure[] {
+  const convertedErrors = errors.map((e) => {
+    return {
+      status: 400, // TODO
+      title: `${e.keyword} json schema validation failure`,
+      detail: `${e.dataPath ? e.dataPath : "input"} ${e.message}`,
+      source: {
+        path: e.dataPath
+      },
+      original: e
+    }
+  })
+  return convertedErrors
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function validateSchema(input: any, schema: any, errors: ValidationFailure[]): boolean {
   const validate = ajv.compile(schema)
   const valid = validate(input)
   if (!valid) {
-    errors.push(...convertAjvErrors(validate.errors))
+    errors.push(...ajvErrorToVerificationFailures(validate.errors))
   }
   return valid as boolean
 }
 
-export function validateVc(vc: VerifiableCredential, errors: any[]): boolean {
+export function validateVc(
+  vc: VerifiableCredential,
+  errors: ValidationFailure[]
+): boolean {
   return validateSchema(vc, vcSchema, errors)
 }
 
-export function validateVp(vp: VerifiablePresentation, errors: any[]): boolean {
+export function validateVp(
+  vp: VerifiablePresentation,
+  errors: ValidationFailure[]
+): boolean {
   return validateSchema(vp, vpSchema, errors)
 }
 
 export function validateInputDescriptors(
   creds: Map<string, VerifiableCredential[]>,
   descriptors: InputDescriptor[],
-  errors: any
+  errors: ValidationFailure[]
 ): Map<string, VerificationMatch[]> {
   return descriptors.reduce((map, descriptor) => {
     map[descriptor.id] = descriptor.schema.reduce((matches, obj) => {
       const candidates = creds[obj.uri]
       if (!candidates) return matches
       const credsAndMatches = candidates.reduce(
-        (candidateAccumulator: VerificationMatch[], cred: VerifiableCredential) => {
+        (
+          candidateAccumulator: VerificationMatch[],
+          cred: VerifiableCredential
+        ) => {
           const constraints = descriptor.constraints
           if (!constraints || !constraints.fields) {
             // no constraints
@@ -52,11 +102,14 @@ export function validateInputDescriptors(
               fieldMatches: [
                 {
                   field: null,
-                  matches: [{
-                path: "*",
-                matchedValue: "*"
-                  }]
-              }]
+                  matches: [
+                    {
+                      path: "*",
+                      matchedValue: "*"
+                    }
+                  ]
+                }
+              ]
             })
             return candidateAccumulator
           }
@@ -90,12 +143,15 @@ export function validateInputDescriptors(
                   }
                   // no match; return
                   return matchAccumulator
-                }, new Array<Match>())
+                },
+                new Array<Match>()
+              )
               if (matchResults.length !== 0) {
                 fieldAccumulator.push({ field, matches: matchResults })
               }
               return fieldAccumulator
-            }, new Array<FieldMatch>()
+            },
+            new Array<FieldMatch>()
           )
           if (fieldsAndMatches.length !== 0) {
             candidateAccumulator.push({
@@ -103,16 +159,22 @@ export function validateInputDescriptors(
               fieldMatches: fieldsAndMatches
             })
           }
-          return candidateAccumulator // array of {cred, {path, matchedValue}}
-        }, new Array<VerificationMatch>())
+          return candidateAccumulator
+        },
+        new Array<VerificationMatch>()
+      )
       if (credsAndMatches.length === 0) {
-        errors.push({ descriptor, info: "not a damn thing found" }) // TODO
+        errors.push(
+          messageToVerificationFailure(
+            `No match found for input descriptor ${descriptor.id}`
+          )
+        )
       } else {
         matches.push(...credsAndMatches)
       }
       return matches
     }, new Array<VerificationMatch>())
-    return map // map<descriptorId, matches>
+    return map
   }, new Map<string, VerificationMatch[]>())
 }
 
@@ -128,10 +190,10 @@ function mapInputsToDescriptors(
   }, new Map<string, VerifiableCredential[]>())
 }
 
-export async function verifyVerificationSubmission(
+export async function tryAcceptVerificationSubmission(
   submission: VerificationSubmission,
   definition: PresentationDefinition,
-  errors: any[]
+  errors: ValidationFailure[]
 ): Promise<AcceptedVerificationSubmission> {
   const DEEP_SCHEMA_VALIDATION = false
   try {
@@ -141,17 +203,21 @@ export async function verifyVerificationSubmission(
       presentation: decoded.verifiablePresentation
     }
 
+    // check conforms to VP schema: disabled for now
     if (DEEP_SCHEMA_VALIDATION) {
       if (!validateVp(decoded.payload, errors)) {
-        throw new VerificationError("not a valid VP", errors)
+        throw new ValidationError("not a valid VP", errors)
       }
     }
 
     const mapped = mapInputsToDescriptors(converted, definition)
-    // TODO: check conforms with expected schema
+
+    // check conforms to expected schema: disabled for now
     if (DEEP_SCHEMA_VALIDATION) {
       Object.keys(mapped).map((key) => {
         const schema = findSchemaById(key)
+        // TODO(kim)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const result = mapped[key].every((cred) => {
           validateSchema(cred.credentialSubject, schema, errors)
         })
@@ -170,22 +236,14 @@ export async function verifyVerificationSubmission(
       matches
     }
   } catch (err) {
-    if (err instanceof VerificationError) {
-      errors.push(...err.errors)
-    } else {
-      // TODO
-      errors.push({
-        descriptor: "unknown error during verification",
-        info: "not a damn thing found"
-      })
-    }
+    errors.push(errorToValidationFailure(err))
   }
 }
 
-export async function verifyCredentialApplication(
+export async function tryAcceptCredentialApplication(
   application: CredentialApplication,
   manifest: CredentialManifest,
-  errors: any[]
+  errors: ValidationFailure[]
 ): Promise<AcceptedCredentialApplication> {
   try {
     const decoded = await decodeVerifiablePresentation(application.presentation)
@@ -212,29 +270,6 @@ export async function verifyCredentialApplication(
 
     return result
   } catch (err) {
-    if (err instanceof VerificationError) {
-      errors.push(...err.errors)
-    } else {
-      // TODO
-      errors.push({
-        descriptor: "unknown error during verification",
-        info: "not a damn thing found"
-      })
-    }
+    errors.push(errorToValidationFailure(err))
   }
-}
-
-function convertAjvErrors(errors): VerificationObject[] {
-  const convertedErrors = errors.map((e) => {
-    return {
-      status: 400, // TODO
-      title: `${e.keyword} json schema validation failure`,
-      detail: `${e.dataPath ? e.dataPath : "input"} ${e.message}`,
-      source: {
-        path: e.dataPath
-      },
-      original: e
-    }
-  })
-  return convertedErrors
 }

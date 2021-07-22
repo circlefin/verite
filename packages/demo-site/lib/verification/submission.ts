@@ -1,11 +1,14 @@
+import { PresentationDefinition, VerificationSubmission } from "@centre/verity"
 import {
-  PresentationDefinition,
-  VerificationError,
-  VerificationSubmission
-} from "@centre/verity"
-import { verifyVerificationSubmission } from "../validators"
+  tryAcceptVerificationSubmission,
+  messageToVerificationFailure
+} from "../validators"
 import { kycVerificationRequest } from "./requests"
-import { AcceptedVerificationSubmission } from "types"
+import {
+  AcceptedVerificationSubmission,
+  ValidationError,
+  ValidationFailure
+} from "types"
 
 const kycPresentationDefinition =
   kycVerificationRequest().presentation_definition
@@ -29,7 +32,12 @@ export async function validateVerificationSubmission(
       "presentation"
     ])
   ) {
-    throw new VerificationError("Invalid JSON format")
+    throw new ValidationError(
+      "Missing required paths in Credential Application",
+      messageToVerificationFailure(
+        "Input doesn't have the required format for a Credential Application"
+      )
+    )
   }
 
   /**
@@ -39,17 +47,25 @@ export async function validateVerificationSubmission(
     verificationSubmission.presentation_submission.definition_id
   )
   if (!presentationDefinition) {
-    throw new VerificationError("Invalid Presentation Definition ID")
+    throw new ValidationError(
+      "Invalid Presentation Definition ID",
+      messageToVerificationFailure(
+        "This issuer doesn't accept submissions associated with the presentation definition id"
+      )
+    )
   }
 
-  const errors = []
-  const verified = await verifyVerificationSubmission(
+  const errors = new Array<ValidationFailure>()
+  const verified = await tryAcceptVerificationSubmission(
     verificationSubmission,
     presentationDefinition,
     errors
   )
   if (errors.length > 0) {
-    throw new VerificationError("Submission was invalid", errors)
+    throw new ValidationError(
+      "Unable to validate Credential Application",
+      errors
+    )
   }
   return verified
 }

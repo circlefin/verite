@@ -1,6 +1,6 @@
 import {
   createCredentialApplication,
-  createPresentationSubmission,
+  createVerificationSubmission,
   decodeVerifiablePresentation,
   randomDidKey
 } from "@centre/verity"
@@ -10,8 +10,8 @@ import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
 import {
-  verifyCredentialApplication,
-  verifyVerificationSubmission
+  tryAcceptCredentialApplication,
+  tryAcceptVerificationSubmission
 } from "lib/validators"
 import { kycVerificationRequest } from "lib/verification/requests"
 import { findPresentationDefinitionById } from "lib/verification/submission"
@@ -40,7 +40,7 @@ describe("VC validator", () => {
     )
     const clientVC = fulfillmentVP.payload.vp.verifiableCredential[0]
     const kycRequest = kycVerificationRequest()
-    const submission = await createPresentationSubmission(
+    const submission = await createVerificationSubmission(
       clientDidKey,
       kycRequest.presentation_definition,
       clientVC
@@ -50,7 +50,7 @@ describe("VC validator", () => {
       "KYCAMLPresentationDefinition"
     )
     const errors = []
-    const result = await verifyVerificationSubmission(
+    const result = await tryAcceptVerificationSubmission(
       submission,
       presDef,
       errors
@@ -58,7 +58,7 @@ describe("VC validator", () => {
     expect(errors).toHaveLength(0)
     const matches = result.matches["kycaml_input"]
     expect(matches).toHaveLength(1)
-    const theMatch = matches[0].fieldsAndMatches[0].matches[0]
+    const theMatch = matches[0].fieldMatches[0].matches[0]
     expect(theMatch.path).toEqual("$.issuer.id")
   })
 
@@ -75,7 +75,7 @@ describe("VC validator", () => {
     )
 
     const errors = []
-    const acceptedApplication = await verifyCredentialApplication(
+    const acceptedApplication = await tryAcceptCredentialApplication(
       application,
       kycManifest,
       errors

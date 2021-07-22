@@ -2,14 +2,14 @@ import {
   asyncMap,
   createCredentialApplication,
   decodeVerifiablePresentation,
-  randomDidKey,
-  VerificationError
+  randomDidKey
 } from "@centre/verity"
 import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
+import { ValidationError } from "types"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =
@@ -110,6 +110,6 @@ describe("issuance", () => {
 
     await expect(
       validateCredentialSubmission(application)
-    ).rejects.toThrowError(VerificationError)
+    ).rejects.toThrowError(ValidationError)
   })
 })
