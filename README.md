@@ -8,7 +8,7 @@
 ## Getting Started
 
 ```
-npm run bootstrap
+npm install
 ```
 
 ## Running the apps
@@ -32,14 +32,6 @@ npm run site
 ```
 
 **NOTE** To run the demo-site, you _must_ build the verity project first.
-
-### @centre/demo-wallet:
-
-```
-npm run metro
-```
-
-See the [demo-wallet README](https://github.com/centrehq/demo-site/blob/main/packages/demo-wallet/README.md) for details on how to run on simulator versus device.
 
 ## Testing
 
