@@ -108,7 +108,7 @@ describe("Status List 2021", () => {
     const issued = new Date()
 
     const vc = await generateRevocationList(revoke, url, issuer, signer, issued)
-    expect(vc.payload.vc.id).toBe(`${url}#list`)
+    expect(vc.payload.vc.id).toBe(`${url}`)
     expect(vc.payload.vc.issuer).toBe(issuer)
     expect(vc.payload.vc.issued).toBe(issued.toISOString())
     expect(vc.payload.vc.credentialSubject.type).toBe("RevocationList2021")

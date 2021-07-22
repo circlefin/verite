@@ -6,7 +6,7 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
-import { JWT, VerificationError, Verified } from "../types"
+import { JWT, CredentialStatus, VerificationError, Verified } from "../types"
 import { didKeyResolver } from "./didKey"
 
 export function verifiablePresentationPayload(
@@ -27,9 +27,10 @@ export function verifiablePresentationPayload(
 export function verifiableCredentialPayload(
   type: string,
   subject: string,
-  attestation: Record<string, unknown>
+  attestation: Record<string, unknown>,
+  status?: CredentialStatus
 ): JwtCredentialPayload {
-  return {
+  const payload = {
     sub: subject,
     vc: {
       "@context": [
@@ -43,13 +44,25 @@ export function verifiableCredentialPayload(
       }
     }
   }
+
+  if (status) {
+    Object.assign(payload, { credentialStatus: status })
+  }
+
+  return payload
 }
 
 export function kycAmlVerifiableCredentialPayload(
   subject: string,
-  attestation: Record<string, unknown>
+  attestation: Record<string, unknown>,
+  status: CredentialStatus
 ): JwtCredentialPayload {
-  return verifiableCredentialPayload("KYCAMLAttestation", subject, attestation)
+  return verifiableCredentialPayload(
+    "KYCAMLAttestation",
+    subject,
+    attestation,
+    status
+  )
 }
 
 export function creditScoreVerifiableCredentialPayload(

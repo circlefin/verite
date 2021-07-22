@@ -8,14 +8,16 @@ import {
   creditScoreVerifiableCredentialPayload,
   KYCAMLAttestation,
   KYCAML_ATTESTATION_MANIFEST_ID,
-  kycAmlVerifiableCredentialPayload
+  kycAmlVerifiableCredentialPayload,
+  CredentialStatus
 } from "@centre/verity"
 import type { User } from "lib/database"
 
 export async function createKycAmlFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
-  acceptedApplication: AcceptedCredentialApplication
+  acceptedApplication: AcceptedCredentialApplication,
+  status?: CredentialStatus
 ): Promise<CredentialFulfillment> {
   const verifiablePresentation =
     acceptedApplication.verified.verifiablePresentation
@@ -44,7 +46,11 @@ export async function createKycAmlFulfillment(
   return createFullfillment(
     credentialSigner,
     acceptedApplication,
-    kycAmlVerifiableCredentialPayload(verifiablePresentation.holder, body)
+    kycAmlVerifiableCredentialPayload(
+      verifiablePresentation.holder,
+      body,
+      status
+    )
   )
 }
 
@@ -73,11 +79,17 @@ export async function createCreditScoreFulfillment(
 export async function createFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
-  application: AcceptedCredentialApplication
+  application: AcceptedCredentialApplication,
+  credentialStatus?: CredentialStatus
 ): Promise<CredentialFulfillment> {
   switch (application.credential_application.manifest_id) {
     case KYCAML_ATTESTATION_MANIFEST_ID:
-      return createKycAmlFulfillment(user, credentialSigner, application)
+      return createKycAmlFulfillment(
+        user,
+        credentialSigner,
+        application,
+        credentialStatus
+      )
     case CREDIT_SCORE_ATTESTATION_MANIFEST_ID:
       return createCreditScoreFulfillment(user, credentialSigner, application)
     default:

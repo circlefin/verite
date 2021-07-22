@@ -57,7 +57,13 @@ describe("issuance", () => {
     const fulfillment = await createKycAmlFulfillment(
       user,
       credentialSigner,
-      acceptedApplication
+      acceptedApplication,
+      {
+        id: "http://example.com/revocation-list#42",
+        type: "RevocationList2021Status",
+        statusListIndex: "42",
+        statusListCredential: "http://example.com/revocation-list"
+      }
     )
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
@@ -91,6 +97,16 @@ describe("issuance", () => {
             score: user.ofacScore
           }
         ])
+
+        const credentialStatus = verifiableCredential.credentialStatus
+        expect(credentialStatus.id).toEqual(
+          "http://example.com/revocation-list#42"
+        )
+        expect(credentialStatus.type).toEqual("RevocationList2021Status")
+        expect(credentialStatus.statusListIndex).toEqual("42")
+        expect(credentialStatus.statusListCredential).toEqual(
+          "http://example.com/revocation-list"
+        )
       }
     )
   })
