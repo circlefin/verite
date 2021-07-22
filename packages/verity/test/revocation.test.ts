@@ -1,0 +1,305 @@
+import { Bits } from "@fry/bits"
+import { JwtCredentialPayload } from "did-jwt-vc"
+import {
+  asyncMap,
+  CredentialSigner,
+  generateRevocationList,
+  decodeVerifiableCredential,
+  expandBitstring,
+  expandBitstringToBooleans,
+  generateBitstring,
+  compress,
+  decompress,
+  isRevoked,
+  revokeCredential,
+  unrevokeCredential
+} from "../index"
+
+/**
+ * Helper to create a Buffer with the bits set to 1 at the indices given.
+ */
+const indices2Buffer = (indices: number[], bitlength = 16): Buffer => {
+  const bits = new Bits(bitlength)
+
+  indices.forEach((credential) => {
+    bits.setBit(credential)
+  })
+
+  return bits.buffer
+}
+
+const vectors = [
+  {
+    credentials: [],
+    bitstring: "eJztwTEBAAAAwqD1T20MH6AAAAAAAAAAAAAAAAAAAACAtwFAAAAB"
+  },
+  {
+    credentials: [0],
+    bitstring: "eJztwSEBAAAAAiCnO90ZFqABAAAAAAAAAAAAAAAAAAAA3gZB4ACB"
+  },
+  {
+    credentials: [3], // zero index
+    bitstring: "eJztwSEBAAAAAiAn+H+tMyxAAwAAAAAAAAAAAAAAAAAAALwNQDwAEQ=="
+  },
+  {
+    skipGenerate: true, // When I generate a bitstring, I get the string found in the first vector. However, both these values decode to the same empty array.
+    credentials: [],
+    bitstring: "H4sIAAAAAAAAA-3BMQEAAADCoPVPbQsvoAAAAAAAAAAAAAAAAP4GcwM92tQwAAA"
+  }
+]
+
+const credentialFactory = async (index: number, signer: CredentialSigner) => {
+  const vcPayload: JwtCredentialPayload = {
+    vc: {
+      "@context": ["https://www.w3.org/2018/credentials/v1"],
+      sub: "did:web:m2.xyz",
+      type: ["VerifiableCredential"],
+      credentialSubject: {
+        id: "did:web:m2.xyz",
+        foo: "bar"
+      },
+      credentialStatus: {
+        id: `http://example.com/revocation#${index}`,
+        type: "RevocationList2021Status",
+        statusListIndex: index,
+        statusListCredential: "http://example.com/revocation"
+      }
+    }
+  }
+  const vcJwt = await signer.signVerifiableCredential(vcPayload)
+  const credential = await decodeVerifiableCredential(vcJwt)
+  return credential
+}
+
+const statusListFactory = async (credentials: number[]) => {
+  const revoke = credentials
+  const url = "https://example.com/credentials/status/3" // Need to create a list
+  const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+  const signer = new CredentialSigner(
+    "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+    "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+  )
+  const issued = new Date()
+
+  const vc = await generateRevocationList(revoke, url, issuer, signer, issued)
+
+  return vc
+}
+
+describe("Status List 2021", () => {
+  it("compress", async () => {
+    const value = await compress(".................................")
+    expect(value).toBe("eJzT0yMAAGTvBe8=")
+  })
+
+  it("decompress", async () => {
+    const value = await decompress("eJzT0yMAAGTvBe8=")
+    expect(value.toString()).toBe(".................................")
+  })
+
+  it("generateRevocationList", async () => {
+    const revoke = [3]
+    const url = "https://example.com/credentials/status/3" // Need to create a list
+    const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+    const signer = new CredentialSigner(
+      "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+      "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+    )
+    const issued = new Date()
+
+    const vc = await generateRevocationList(revoke, url, issuer, signer, issued)
+    expect(vc.payload.vc.id).toBe(`${url}#list`)
+    expect(vc.payload.vc.issuer).toBe(issuer)
+    expect(vc.payload.vc.issued).toBe(issued.toISOString())
+    expect(vc.payload.vc.credentialSubject.type).toBe("RevocationList2021")
+    expect(vc.payload.vc.credentialSubject.encodedList).toBe(
+      "eJztwSEBAAAAAiAn+H+tMyxAAwAAAAAAAAAAAAAAAAAAALwNQDwAEQ=="
+    )
+  })
+
+  describe("#isRevoked", () => {
+    it("returns false if the given credential has no credentialStatus", async () => {
+      const revoke = [3]
+      const url = "https://example.com/credentials/status/3" // Need to create a list
+      const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+      const signer = new CredentialSigner(
+        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+      )
+      const issued = new Date()
+
+      const statusList = await generateRevocationList(
+        revoke,
+        url,
+        issuer,
+        signer,
+        issued
+      )
+
+      const vcPayload: JwtCredentialPayload = {
+        vc: {
+          "@context": ["https://www.w3.org/2018/credentials/v1"],
+          sub: "did:web:m2.xyz",
+          type: ["VerifiableCredential"],
+          credentialSubject: {
+            id: "did:web:m2.xyz",
+            foo: "bar"
+          }
+        }
+      }
+      const vcJwt = await signer.signVerifiableCredential(vcPayload)
+      const credential = await decodeVerifiableCredential(vcJwt)
+
+      const revoked = await isRevoked(credential, statusList)
+      expect(revoked).toBe(false)
+    })
+
+    it("returns false if the given credential has a credentialSubject that is not revoked", async () => {
+      const revoke = []
+      const url = "https://example.com/credentials/status/3" // Need to create a list
+      const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+      const signer = new CredentialSigner(
+        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+      )
+      const issued = new Date()
+
+      const statusList = await generateRevocationList(
+        revoke,
+        url,
+        issuer,
+        signer,
+        issued
+      )
+      const index = 3
+
+      const vcPayload: JwtCredentialPayload = {
+        vc: {
+          "@context": ["https://www.w3.org/2018/credentials/v1"],
+          sub: "did:web:m2.xyz",
+          type: ["VerifiableCredential"],
+          credentialSubject: {
+            id: "did:web:m2.xyz",
+            foo: "bar"
+          },
+          credentialStatus: {
+            id: `${url}#${index}`,
+            type: "RevocationList2021Status",
+            statusListIndex: index,
+            statusListCredential: url
+          }
+        }
+      }
+      const vcJwt = await signer.signVerifiableCredential(vcPayload)
+      const credential = await decodeVerifiableCredential(vcJwt)
+
+      const revoked = await isRevoked(credential, statusList)
+      expect(revoked).toBe(false)
+    })
+
+    it("returns true if the given credential has a revoked", async () => {
+      const revoke = [3]
+      const url = "https://example.com/credentials/status/3" // Need to create a list
+      const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+      const signer = new CredentialSigner(
+        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+      )
+      const issued = new Date()
+
+      const statusList = await generateRevocationList(
+        revoke,
+        url,
+        issuer,
+        signer,
+        issued
+      )
+      const index = 3
+
+      const vcPayload: JwtCredentialPayload = {
+        vc: {
+          "@context": ["https://www.w3.org/2018/credentials/v1"],
+          sub: "did:web:m2.xyz",
+          type: ["VerifiableCredential"],
+          credentialSubject: {
+            id: "did:web:m2.xyz",
+            foo: "bar"
+          },
+          credentialStatus: {
+            id: `${url}#${index}`,
+            type: "RevocationList2021Status",
+            statusListIndex: index,
+            statusListCredential: url
+          }
+        }
+      }
+      const vcJwt = await signer.signVerifiableCredential(vcPayload)
+      const credential = await decodeVerifiableCredential(vcJwt)
+
+      const revoked = await isRevoked(credential, statusList)
+      expect(revoked).toBe(true)
+    })
+  })
+
+  describe("revokeCredential", () => {
+    it("updates the status list credential", async () => {
+      const signer = new CredentialSigner(
+        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+      )
+
+      const credential = await credentialFactory(3, signer)
+      const statusList = await statusListFactory([])
+
+      expect(await isRevoked(credential, statusList)).toBe(false)
+      await revokeCredential(credential, statusList, signer)
+      expect(await isRevoked(credential, statusList)).toBe(true)
+      await unrevokeCredential(credential, statusList, signer)
+      expect(await isRevoked(credential, statusList)).toBe(false)
+    })
+  })
+
+  it("generateBitstring", async () => {
+    await asyncMap(vectors, async (vector) => {
+      const { credentials, bitstring, skipGenerate } = vector
+
+      if (skipGenerate) {
+        return
+      }
+
+      const encodedList = await generateBitstring(credentials)
+      expect(encodedList).toEqual(bitstring)
+    })
+  })
+
+  it("expandBitstring", async () => {
+    await asyncMap(vectors, async (vector) => {
+      const { credentials, bitstring } = vector
+
+      const decodedList = await expandBitstring(bitstring)
+      expect(decodedList).toEqual(credentials)
+    })
+  })
+
+  it("expandBitstringToBooleans", async () => {
+    const buffer = indices2Buffer([0, 1, 15], 16)
+    expect(expandBitstringToBooleans(buffer)).toEqual([
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ])
+  })
+})
