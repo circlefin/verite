@@ -1,7 +1,7 @@
 import { promisify } from "util"
 import { deflate, unzip } from "zlib"
 import { Bits } from "@fry/bits"
-import { Verifiable, W3CCredential, JwtCredentialPayload } from "did-jwt-vc"
+import { JwtCredentialPayload, Verifiable, W3CCredential } from "../types"
 import { CredentialSigner } from "./credential-signer"
 import { decodeVerifiableCredential } from "./credentials"
 

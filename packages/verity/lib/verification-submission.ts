@@ -1,13 +1,11 @@
-import {
-  createVerifiablePresentationJwt,
-  VerifiableCredential
-} from "did-jwt-vc"
+import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 import {
   DescriptorMap,
   DidKey,
   PresentationDefinition,
-  EncodedVerificationSubmission
+  EncodedVerificationSubmission,
+  VerifiableCredential
 } from "../types"
 import { verifiablePresentationPayload } from "./credentials"
 import { didKeyToIssuer } from "./didKey"

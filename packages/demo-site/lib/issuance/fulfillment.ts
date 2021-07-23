@@ -1,6 +1,5 @@
 import {
   createFullfillment,
-  CredentialFulfillment,
   CredentialSigner,
   CreditScore,
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
@@ -8,7 +7,8 @@ import {
   KYCAMLAttestation,
   KYCAML_ATTESTATION_MANIFEST_ID,
   kycAmlVerifiableCredentialPayload,
-  RevocationList2021Status
+  RevocationList2021Status,
+  EncodedCredentialFulfillment
 } from "@centre/verity"
 
 import type { User } from "lib/database"
@@ -19,7 +19,7 @@ export async function createKycAmlFulfillment(
   credentialSigner: CredentialSigner,
   acceptedApplication: ProcessedCredentialApplication,
   credentialStatus?: RevocationList2021Status
-): Promise<CredentialFulfillment> {
+): Promise<EncodedCredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
   const body: KYCAMLAttestation = {
@@ -59,7 +59,7 @@ export async function createCreditScoreFulfillment(
   credentialSigner: CredentialSigner,
   acceptedApplication: ProcessedCredentialApplication,
   credentialStatus?: RevocationList2021Status
-): Promise<CredentialFulfillment> {
+): Promise<EncodedCredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
   const body: CreditScore = {
@@ -85,7 +85,7 @@ export async function createFulfillment(
   credentialSigner: CredentialSigner,
   application: ProcessedCredentialApplication,
   credentialStatus?: RevocationList2021Status
-): Promise<CredentialFulfillment> {
+): Promise<EncodedCredentialFulfillment> {
   switch (application.credential_application.manifest_id) {
     case KYCAML_ATTESTATION_MANIFEST_ID:
       return createKycAmlFulfillment(

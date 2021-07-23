@@ -1,4 +1,9 @@
 export type {
+  CredentialPayload,
+  Issuer,
+  JwtCredentialPayload,
+  JwtPresentationPayload,
+  PresentationPayload,
   Verifiable,
   VerifiableCredential,
   VerifiablePresentation,
