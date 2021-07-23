@@ -1,8 +1,8 @@
 import { Bits } from "@fry/bits"
-import { JwtCredentialPayload } from "did-jwt-vc"
 import {
   asyncMap,
   CredentialSigner,
+  CredentialPayload,
   generateRevocationList,
   decodeVerifiableCredential,
   expandBitstring,
@@ -12,8 +12,10 @@ import {
   decompress,
   isRevoked,
   revokeCredential,
-  unrevokeCredential
+  unrevokeCredential,
+  Revocable
 } from "../index"
+import { RevocableCredential } from "../types"
 
 /**
  * Helper to create a Buffer with the bits set to 1 at the indices given.
@@ -48,27 +50,29 @@ const vectors = [
   }
 ]
 
-const credentialFactory = async (index: number, signer: CredentialSigner) => {
-  const vcPayload: JwtCredentialPayload = {
-    vc: {
-      "@context": ["https://www.w3.org/2018/credentials/v1"],
-      sub: "did:web:m2.xyz",
-      type: ["VerifiableCredential"],
-      credentialSubject: {
-        id: "did:web:m2.xyz",
-        foo: "bar"
-      },
-      credentialStatus: {
-        id: `http://example.com/revocation#${index}`,
-        type: "RevocationList2021Status",
-        statusListIndex: index,
-        statusListCredential: "http://example.com/revocation"
-      }
+const credentialFactory = async (
+  index: number,
+  signer: CredentialSigner
+): Promise<RevocableCredential> => {
+  const vcPayload: Revocable<CredentialPayload> = {
+    "@context": ["https://www.w3.org/2018/credentials/v1"],
+    sub: "did:web:m2.xyz",
+    type: ["VerifiableCredential"],
+    issuer: signer.did,
+    issuanceDate: new Date(),
+    credentialSubject: {
+      id: "did:web:m2.xyz",
+      foo: "bar"
+    },
+    credentialStatus: {
+      id: `http://example.com/revocation#${index}`,
+      type: "RevocationList2021Status",
+      statusListIndex: index.toString(),
+      statusListCredential: "http://example.com/revocation"
     }
   }
   const vcJwt = await signer.signVerifiableCredential(vcPayload)
-  const credential = await decodeVerifiableCredential(vcJwt)
-  return credential
+  return decodeVerifiableCredential(vcJwt) as Promise<RevocableCredential>
 }
 
 const statusListFactory = async (credentials: number[]) => {
@@ -81,9 +85,7 @@ const statusListFactory = async (credentials: number[]) => {
   )
   const issued = new Date()
 
-  const vc = await generateRevocationList(revoke, url, issuer, signer, issued)
-
-  return vc
+  return generateRevocationList(revoke, url, issuer, signer, issued)
 }
 
 describe("Status List 2021", () => {
@@ -101,18 +103,12 @@ describe("Status List 2021", () => {
     const revoke = [3]
     const url = "https://example.com/credentials/status/3" // Need to create a list
     const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-    const signer = new CredentialSigner(
-      "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
-      "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
-    )
-    const issued = new Date()
 
-    const vc = await generateRevocationList(revoke, url, issuer, signer, issued)
-    expect(vc.payload.vc.id).toBe(`${url}`)
-    expect(vc.payload.vc.issuer).toBe(issuer)
-    expect(vc.payload.vc.issued).toBe(issued.toISOString())
-    expect(vc.payload.vc.credentialSubject.type).toBe("RevocationList2021")
-    expect(vc.payload.vc.credentialSubject.encodedList).toBe(
+    const vc = await statusListFactory(revoke)
+    expect(vc.id).toBe(`${url}`)
+    expect(vc.issuer.id).toBe(issuer)
+    expect(vc.credentialSubject.type).toBe("RevocationList2021")
+    expect(vc.credentialSubject.encodedList).toBe(
       "eJztwSEBAAAAAiAn+H+tMyxAAwAAAAAAAAAAAAAAAAAAALwNQDwAEQ=="
     )
   })
@@ -136,15 +132,15 @@ describe("Status List 2021", () => {
         issued
       )
 
-      const vcPayload: JwtCredentialPayload = {
-        vc: {
-          "@context": ["https://www.w3.org/2018/credentials/v1"],
-          sub: "did:web:m2.xyz",
-          type: ["VerifiableCredential"],
-          credentialSubject: {
-            id: "did:web:m2.xyz",
-            foo: "bar"
-          }
+      const vcPayload: CredentialPayload = {
+        "@context": ["https://www.w3.org/2018/credentials/v1"],
+        sub: "did:web:m2.xyz",
+        type: ["VerifiableCredential"],
+        issuer,
+        issuanceDate: issued,
+        credentialSubject: {
+          id: "did:web:m2.xyz",
+          foo: "bar"
         }
       }
       const vcJwt = await signer.signVerifiableCredential(vcPayload)
@@ -173,21 +169,21 @@ describe("Status List 2021", () => {
       )
       const index = 3
 
-      const vcPayload: JwtCredentialPayload = {
-        vc: {
-          "@context": ["https://www.w3.org/2018/credentials/v1"],
-          sub: "did:web:m2.xyz",
-          type: ["VerifiableCredential"],
-          credentialSubject: {
-            id: "did:web:m2.xyz",
-            foo: "bar"
-          },
-          credentialStatus: {
-            id: `${url}#${index}`,
-            type: "RevocationList2021Status",
-            statusListIndex: index,
-            statusListCredential: url
-          }
+      const vcPayload: Revocable<CredentialPayload> = {
+        "@context": ["https://www.w3.org/2018/credentials/v1"],
+        sub: "did:web:m2.xyz",
+        type: ["VerifiableCredential"],
+        issuer,
+        issuanceDate: new Date(),
+        credentialSubject: {
+          id: "did:web:m2.xyz",
+          foo: "bar"
+        },
+        credentialStatus: {
+          id: `${url}#${index}`,
+          type: "RevocationList2021Status",
+          statusListIndex: index.toString(),
+          statusListCredential: url
         }
       }
       const vcJwt = await signer.signVerifiableCredential(vcPayload)
@@ -216,21 +212,21 @@ describe("Status List 2021", () => {
       )
       const index = 3
 
-      const vcPayload: JwtCredentialPayload = {
-        vc: {
-          "@context": ["https://www.w3.org/2018/credentials/v1"],
-          sub: "did:web:m2.xyz",
-          type: ["VerifiableCredential"],
-          credentialSubject: {
-            id: "did:web:m2.xyz",
-            foo: "bar"
-          },
-          credentialStatus: {
-            id: `${url}#${index}`,
-            type: "RevocationList2021Status",
-            statusListIndex: index,
-            statusListCredential: url
-          }
+      const vcPayload: Revocable<CredentialPayload> = {
+        "@context": ["https://www.w3.org/2018/credentials/v1"],
+        sub: "did:web:m2.xyz",
+        type: ["VerifiableCredential"],
+        issuer,
+        issuanceDate: new Date(),
+        credentialSubject: {
+          id: "did:web:m2.xyz",
+          foo: "bar"
+        },
+        credentialStatus: {
+          id: `${url}#${index}`,
+          type: "RevocationList2021Status",
+          statusListIndex: index.toString(),
+          statusListCredential: url
         }
       }
       const vcJwt = await signer.signVerifiableCredential(vcPayload)
@@ -249,12 +245,13 @@ describe("Status List 2021", () => {
       )
 
       const credential = await credentialFactory(3, signer)
-      const statusList = await statusListFactory([])
-
+      let statusList = await statusListFactory([])
       expect(await isRevoked(credential, statusList)).toBe(false)
-      await revokeCredential(credential, statusList, signer)
+
+      statusList = await revokeCredential(credential, statusList, signer)
       expect(await isRevoked(credential, statusList)).toBe(true)
-      await unrevokeCredential(credential, statusList, signer)
+
+      statusList = await unrevokeCredential(credential, statusList, signer)
       expect(await isRevoked(credential, statusList)).toBe(false)
     })
   })

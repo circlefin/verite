@@ -6,8 +6,11 @@ import {
   RevocationList2021Status,
   VerificationError,
   VerifiableCredential,
-  VerifiedCredential,
-  VerifiedPresentation
+  RevocableCredential,
+  RevocationListCredential,
+  Verifiable,
+  W3CCredential,
+  W3CPresentation
 } from "../types"
 import { didKeyResolver } from "./didKey"
 
@@ -84,11 +87,13 @@ export function creditScoreVerifiableCredentialPayload(
  * Decodes a JWT with a Verifiable Credential payload.
  */
 export async function decodeVerifiableCredential(
-  vc: JWT
-): Promise<VerifiedCredential> {
+  vcJwt: JWT
+): Promise<
+  Verifiable<W3CCredential> | RevocableCredential | RevocationListCredential
+> {
   try {
-    const res = await verifyCredential(vc, didKeyResolver)
-    return res
+    const res = await verifyCredential(vcJwt, didKeyResolver)
+    return res.verifiableCredential
   } catch (err) {
     throw new VerificationError(
       "Input wasn't a valid Verifiable Credential",
@@ -102,10 +107,10 @@ export async function decodeVerifiableCredential(
  */
 export async function decodeVerifiablePresentation(
   vpJwt: JWT
-): Promise<VerifiedPresentation> {
+): Promise<Verifiable<W3CPresentation>> {
   try {
     const res = await verifyPresentation(vpJwt, didKeyResolver)
-    return res
+    return res.verifiablePresentation
   } catch (err) {
     throw new VerificationError(
       "Input wasn't a valid Verifiable Presentation",

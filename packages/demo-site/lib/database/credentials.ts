@@ -70,12 +70,12 @@ export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
   // Find all credentials in the revocation list and map the index
   const consumedIndexes = CREDENTIALS.filter((credential) => {
     credential.statusList === list.verifiableCredential.vc.id
-  }).map((credential) => credential.index)
+  }).map((credential) => parseInt(credential.index, 10))
 
   // Try up to 10 times for now
   for (let i = 0; i < 131072; i++) {
     const randomIndex = random(0, 131071) // 131072 - 1
-    const index = consumedIndexes.indexOf(randomIndex.toString())
+    const index = consumedIndexes.indexOf(randomIndex)
     if (index === -1) {
       return {
         id: `${list.verifiableCredential.vc.id}#list`,
