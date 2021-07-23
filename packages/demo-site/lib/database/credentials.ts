@@ -6,8 +6,16 @@ import {
 import { Verifiable, W3CCredential } from "did-jwt-vc"
 import { random, sample } from "lodash"
 import { credentialSigner } from "../signer"
+
+type RecvocableCredential = {
+  userId: string
+  credentialType: string
+  index: string
+  statusList: string
+}
+
 const REVOCATION_LISTS: Verifiable<W3CCredential>[] = []
-const CREDENTIALS: Verifiable<W3CCredential>[] = []
+const CREDENTIALS: RecvocableCredential[] = []
 
 // Generate a default revocation list credential when the app starts
 const setupIfNecessary = async () => {
@@ -66,7 +74,7 @@ export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
   // Try up to 10 times for now
   for (let i = 0; i < 131072; i++) {
     const randomIndex = random(0, 131071) // 131072 - 1
-    const index = consumedIndexes.indexOf(randomIndex)
+    const index = consumedIndexes.indexOf(randomIndex.toString())
     if (index === -1) {
       return {
         id: `${list.verifiableCredential.vc.id}#list`,

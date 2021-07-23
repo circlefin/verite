@@ -1,6 +1,7 @@
 import {
   JwtCredentialPayload,
   JwtPresentationPayload,
+  VerifiableCredential,
   VerifiedCredential,
   VerifiedPresentation,
   verifyCredential,
@@ -11,7 +12,7 @@ import { didKeyResolver } from "./didKey"
 
 export function verifiablePresentationPayload(
   subject: string,
-  vcJwt: JWT | JWT[] = []
+  vcJwt: VerifiableCredential | VerifiableCredential[] = []
 ): JwtPresentationPayload {
   return {
     sub: subject,

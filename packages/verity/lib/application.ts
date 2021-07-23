@@ -1,7 +1,7 @@
 import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 import {
-  CredentialApplication,
+  EncodedCredentialApplication,
   CredentialManifest,
   DescriptorMap,
   DidKey
@@ -12,7 +12,7 @@ import { didKeyToIssuer } from "./didKey"
 export async function createCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest
-): Promise<CredentialApplication> {
+): Promise<EncodedCredentialApplication> {
   const client = didKeyToIssuer(didKey)
 
   const credentialApplication = {
@@ -37,7 +37,7 @@ export async function createCredentialApplication(
     ) as DescriptorMap[]
   }
 
-  const payload = verifiablePresentationPayload(client)
+  const payload = verifiablePresentationPayload(client.did)
   const vp = await createVerifiablePresentationJwt(payload, client)
 
   return {

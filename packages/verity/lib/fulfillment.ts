@@ -1,7 +1,7 @@
 import { JwtCredentialPayload } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 import {
-  CredentialApplication,
+  GenericCredentialApplication,
   CredentialFulfillment,
   DescriptorMap,
   JWT
@@ -12,7 +12,7 @@ import { verifiablePresentationPayload } from "./credentials"
 
 export async function createFullfillment(
   credentialSigner: CredentialSigner,
-  application: CredentialApplication,
+  application: GenericCredentialApplication,
   credentials: JwtCredentialPayload | JwtCredentialPayload[]
 ): Promise<CredentialFulfillment> {
   const credentialFullfillment = {

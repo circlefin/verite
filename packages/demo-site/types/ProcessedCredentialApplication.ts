@@ -1,8 +1,13 @@
-import { ClaimFormatDesignation, PresentationSubmission } from "@centre/verity"
+import {
+  ClaimFormatDesignation,
+  DecodedCredentialApplication,
+  PresentationSubmission
+} from "@centre/verity"
 import { VerifiedPresentation } from "did-jwt-vc"
 import { ValidationCheck } from "./Matches"
-
-export class ProcessedCredentialApplication {
+export class ProcessedCredentialApplication
+  implements DecodedCredentialApplication
+{
   credential_application: {
     id: string
     manifest_id: string

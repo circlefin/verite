@@ -17,7 +17,7 @@ export const generateRevocationList = async (
   issuer: string,
   signer: CredentialSigner,
   issued = new Date()
-): Verifiable<W3CCredential> => {
+): Promise<Verifiable<W3CCredential>> => {
   const encodedList = await generateBitstring(credentials)
 
   const vcPayload: JwtCredentialPayload = {
@@ -40,7 +40,7 @@ export const generateRevocationList = async (
 
   const vcJwt = await signer.signVerifiableCredential(vcPayload)
   const decoded = await decodeVerifiableCredential(vcJwt)
-  return decoded
+  return decoded.verifiableCredential
 }
 
 /**
@@ -69,7 +69,7 @@ export const revokeCredential = async (
   newPayload.vc.credentialSubject.encodedList = newList
   const vcJwt = await signer.signVerifiableCredential(newPayload)
   const decoded = await decodeVerifiableCredential(vcJwt)
-  return decoded
+  return decoded.verifiableCredential
 }
 
 /**
@@ -100,7 +100,7 @@ export const unrevokeCredential = async (
   newPayload.vc.credentialSubject.encodedList = newList
   const vcJwt = await signer.signVerifiableCredential(newPayload)
   const decoded = await decodeVerifiableCredential(vcJwt)
-  return decoded
+  return decoded.verifiableCredential
 }
 
 /**

@@ -1,13 +1,24 @@
+import { VerifiedPresentation } from "did-jwt-vc"
 import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
 import { JWT } from "./Jwt"
 import { PresentationSubmission } from "./PresentationSubmission"
 
-export type CredentialApplication = {
+type NarrowCredentialApplication = {
   credential_application: {
     id: string
     manifest_id: string
     format: ClaimFormatDesignation
   }
   presentation_submission?: PresentationSubmission
+}
+
+export type GenericCredentialApplication = NarrowCredentialApplication & {
+  presentation: JWT | VerifiedPresentation
+}
+
+export type EncodedCredentialApplication = NarrowCredentialApplication & {
   presentation: JWT
+}
+export type DecodedCredentialApplication = NarrowCredentialApplication & {
+  presentation: VerifiedPresentation
 }
