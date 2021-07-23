@@ -1,13 +1,12 @@
 import { PresentationDefinition, VerificationSubmission } from "@centre/verity"
 import {
-  tryAcceptVerificationSubmission,
+  processVerificationSubmission,
   messageToVerificationFailure
 } from "../validators"
 import { kycVerificationRequest } from "./requests"
 import {
-  AcceptedVerificationSubmission,
-  ValidationError,
-  ValidationFailure
+  ProcessedVerificationSubmission,
+  ValidationError
 } from "types"
 
 const kycPresentationDefinition =
@@ -25,7 +24,7 @@ export function findPresentationDefinitionById(
 
 export async function validateVerificationSubmission(
   verificationSubmission: VerificationSubmission
-): Promise<AcceptedVerificationSubmission> {
+): Promise<ProcessedVerificationSubmission> {
   if (
     !hasPaths(verificationSubmission, [
       "presentation_submission",
@@ -55,19 +54,11 @@ export async function validateVerificationSubmission(
     )
   }
 
-  const errors = new Array<ValidationFailure>()
-  const verified = await tryAcceptVerificationSubmission(
+  const processed = await processVerificationSubmission(
     verificationSubmission,
     presentationDefinition,
-    errors
   )
-  if (errors.length > 0) {
-    throw new ValidationError(
-      "Unable to validate Credential Application",
-      errors
-    )
-  }
-  return verified
+  return processed
 }
 
 function hasPaths(application: Record<string, unknown>, keys: string[]) {

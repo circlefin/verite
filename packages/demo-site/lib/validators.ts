@@ -9,14 +9,13 @@ import {
 import Ajv from "ajv"
 import { VerifiableCredential, VerifiablePresentation } from "did-jwt-vc"
 import jsonpath from "jsonpath"
-import { findSchemaById, vcSchema, vpSchema } from "./schemas"
+import { vcSchema, vpSchema } from "./schemas"
 import {
-  AcceptedCredentialApplication,
-  AcceptedVerificationSubmission,
-  FieldMatch,
-  Match,
-  VerificationMatch,
-  ValidationError,
+  ProcessedCredentialApplication,
+  ProcessedVerificationSubmission,
+  ConstraintCheck,
+  PathMatches as PathMatch,
+  ValidationCheck,
   ValidationFailure
 } from "types"
 
@@ -66,116 +65,48 @@ function validateSchema(input: any, schema: any, errors: ValidationFailure[]): b
   return valid as boolean
 }
 
-export function validateVc(
-  vc: VerifiableCredential,
-  errors: ValidationFailure[]
-): boolean {
+export function validateVc(vc: VerifiableCredential, errors: ValidationFailure[]): boolean {
   return validateSchema(vc, vcSchema, errors)
 }
 
-export function validateVp(
-  vp: VerifiablePresentation,
-  errors: ValidationFailure[]
-): boolean {
+export function validateVp(vp: VerifiablePresentation, errors: ValidationFailure[]): boolean {
   return validateSchema(vp, vpSchema, errors)
 }
 
 export function validateInputDescriptors(
-  creds: Map<string, VerifiableCredential[]>,
-  descriptors: InputDescriptor[],
-  errors: ValidationFailure[]
-): Map<string, VerificationMatch[]> {
+  creds: Map<string, VerifiableCredential[]>, 
+  descriptors: InputDescriptor[]): Map<string, ValidationCheck[]> {
   return descriptors.reduce((map, descriptor) => {
     map[descriptor.id] = descriptor.schema.reduce((matches, obj) => {
-      const candidates = creds[obj.uri]
-      if (!candidates) return matches
-      const credsAndMatches = candidates.reduce(
-        (
-          candidateAccumulator: VerificationMatch[],
-          cred: VerifiableCredential
-        ) => {
-          const constraints = descriptor.constraints
-          if (!constraints || !constraints.fields) {
-            // no constraints
-            candidateAccumulator.push({
-              cred,
-              fieldMatches: [
-                {
-                  field: null,
-                  matches: [
-                    {
-                      path: "*",
-                      matchedValue: "*"
-                    }
-                  ]
-                }
-              ]
-            })
-            return candidateAccumulator
-          }
-          // if it has a constraint, every field must have a match
-          const fieldsAndMatches = constraints.fields.reduce(
-            (fieldAccumulator, field) => {
-              const matchResults = field.path.reduce(
-                (matchAccumulator, path) => {
-                  try {
-                    const values = jsonpath.query(cred, path)
-                    if (values.length !== 0) {
-                      if (!field.filter) {
-                        return matchAccumulator.concat({
-                          path,
-                          matchedValue: values[0]
-                        })
-                      }
-                      const validateResult = ajv.validate(
-                        field.filter,
-                        values[0]
-                      )
-                      if (validateResult) {
-                        return matchAccumulator.concat({
-                          path,
-                          matchedValue: values[0]
-                        })
-                      }
-                    }
-                  } catch (e) {
-                    console.error(e)
-                  }
-                  // no match; return
-                  return matchAccumulator
-                },
-                new Array<Match>()
-              )
-              if (matchResults.length !== 0) {
-                fieldAccumulator.push({ field, matches: matchResults })
-              }
-              return fieldAccumulator
-            },
-            new Array<FieldMatch>()
-          )
-          if (fieldsAndMatches.length !== 0) {
-            candidateAccumulator.push({
-              cred,
-              fieldMatches: fieldsAndMatches
-            })
-          }
-          return candidateAccumulator
-        },
-        new Array<VerificationMatch>()
-      )
-      if (credsAndMatches.length === 0) {
-        errors.push(
-          messageToVerificationFailure(
-            `No match found for input descriptor ${descriptor.id}`
-          )
-        )
-      } else {
-        matches.push(...credsAndMatches)
-      }
-      return matches
-    }, new Array<VerificationMatch>())
-    return map
-  }, new Map<string, VerificationMatch[]>())
+      const candidates = creds[obj.uri];
+      matches = !candidates ? matches : matches.concat(candidates.map(cred => {
+        const constraints = descriptor.constraints;
+        if (!constraints || !constraints.fields) {
+          return new ValidationCheck(descriptor.id, cred, [])
+        }
+        const xform = constraints.fields.map((field, fieldIndex) => {
+          const pathMatchResults = field.path.reduce((pathMatches: PathMatch[], path) => {
+            try {
+              const values = jsonpath.query(cred, path);
+              if (values.length === 0) return pathMatches;
+              if (!field.filter || ajv.validate(field.filter, values[0])) {
+                pathMatches.push(new PathMatch(path, !field.filter ? "*" : values[0]))
+              } 
+              return pathMatches
+            }
+            catch (e) {
+              console.error(e)
+              return pathMatches;
+            }
+          }, new Array<PathMatch>());
+          return new ConstraintCheck(fieldIndex, pathMatchResults) 
+        });
+        return new ValidationCheck(descriptor.id, cred, xform)
+      }));
+      return matches;
+    }, []);
+    return map;
+  }, new Map<string, ValidationCheck[]>())
 }
 
 function mapInputsToDescriptors(
@@ -190,86 +121,66 @@ function mapInputsToDescriptors(
   }, new Map<string, VerifiableCredential[]>())
 }
 
-export async function tryAcceptVerificationSubmission(
+export async function processVerificationSubmission(
   submission: VerificationSubmission,
-  definition: PresentationDefinition,
-  errors: ValidationFailure[]
-): Promise<AcceptedVerificationSubmission> {
-  const DEEP_SCHEMA_VALIDATION = false
-  try {
-    const decoded = await decodeVerifiablePresentation(submission.presentation)
-    const converted = {
-      presentation_submission: submission.presentation_submission,
-      presentation: decoded.verifiablePresentation
-    }
+  definition: PresentationDefinition
+): Promise<ProcessedVerificationSubmission> {
 
-    // check conforms to VP schema: disabled for now
-    if (DEEP_SCHEMA_VALIDATION) {
-      if (!validateVp(decoded.payload, errors)) {
-        throw new ValidationError("not a valid VP", errors)
-      }
-    }
-
-    const mapped = mapInputsToDescriptors(converted, definition)
-
-    // check conforms to expected schema: disabled for now
-    if (DEEP_SCHEMA_VALIDATION) {
-      Object.keys(mapped).map((key) => {
-        const schema = findSchemaById(key)
-        // TODO(kim)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const result = mapped[key].every((cred) => {
-          validateSchema(cred.credentialSubject, schema, errors)
-        })
-      })
-    }
-
-    // check it has matches
-    const matches = validateInputDescriptors(
-      mapped,
-      definition.input_descriptors,
-      errors
-    )
-
-    return {
-      ...converted,
-      matches
-    }
-  } catch (err) {
-    errors.push(errorToValidationFailure(err))
+  const decoded = await decodeVerifiablePresentation(submission.presentation)
+  const converted = {
+    presentation_submission: submission.presentation_submission,
+    presentation: decoded.verifiablePresentation
   }
+
+  const mapped = mapInputsToDescriptors(converted, definition)
+
+  // check conforms to expected schema: disabled for now
+  /*
+    Object.keys(mapped).map((key) => {
+      const schema = findSchemaById(key)
+      // TODO(kim)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const result = mapped[key].every((cred) => {
+        validateSchema(cred.credentialSubject, schema, errors)
+      })
+    })
+  */
+
+  const checks = validateInputDescriptors(
+    mapped,
+    definition.input_descriptors
+  )
+
+  return new ProcessedVerificationSubmission(
+    converted.presentation,
+    checks,
+    converted.presentation_submission
+  )
+
 }
 
-export async function tryAcceptCredentialApplication(
+export async function processCredentialApplication(
   application: CredentialApplication,
-  manifest: CredentialManifest,
-  errors: ValidationFailure[]
-): Promise<AcceptedCredentialApplication> {
-  try {
-    const decoded = await decodeVerifiablePresentation(application.presentation)
-    const converted = {
-      ...application,
-      presentation: decoded.verifiablePresentation
-    }
-
-    const mapped = mapInputsToDescriptors(
-      converted,
-      manifest.presentation_definition
-    )
-
-    // check it has matches
-    const matches: Map<string, VerificationMatch[]> = validateInputDescriptors(
-      mapped,
-      manifest.presentation_definition.input_descriptors,
-      errors
-    )
-    const result: AcceptedCredentialApplication = {
-      ...converted,
-      matches
-    }
-
-    return result
-  } catch (err) {
-    errors.push(errorToValidationFailure(err))
+  manifest: CredentialManifest
+): Promise<ProcessedCredentialApplication> {
+  const decoded = await decodeVerifiablePresentation(application.presentation)
+  const converted = {
+    ...application,
+    presentation: decoded.verifiablePresentation
   }
+
+  const mapped = mapInputsToDescriptors(
+    converted,
+    manifest.presentation_definition
+  )
+
+  const checks: Map<string, ValidationCheck[]> = validateInputDescriptors(
+    mapped,
+    manifest.presentation_definition.input_descriptors
+  )
+  return new ProcessedCredentialApplication(
+    converted.credential_application,
+    converted.presentation,
+    checks,
+    converted.presentation_submission)
 }

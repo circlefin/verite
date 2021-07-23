@@ -2,7 +2,8 @@ import {
   asyncMap,
   createCredentialApplication,
   decodeVerifiablePresentation,
-  randomDidKey
+  randomDidKey,
+  VerificationError
 } from "@centre/verity"
 import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
@@ -110,6 +111,6 @@ describe("issuance", () => {
 
     await expect(
       validateCredentialSubmission(application)
-    ).rejects.toThrowError(ValidationError)
+    ).rejects.toThrowError(VerificationError)
   })
 })

@@ -1,18 +1,17 @@
 import { CredentialApplication } from "@centre/verity"
 import {
-  tryAcceptCredentialApplication,
+  processCredentialApplication,
   messageToVerificationFailure
 } from "../validators"
 import { findManifestById } from "./manifest"
 import {
-  AcceptedCredentialApplication,
-  ValidationError,
-  ValidationFailure
+  ProcessedCredentialApplication,
+  ValidationError
 } from "types"
 
 export async function validateCredentialSubmission(
   application: CredentialApplication
-): Promise<AcceptedCredentialApplication> {
+): Promise<ProcessedCredentialApplication> {
   if (
     !hasPaths(application, [
       "credential_application",
@@ -43,19 +42,12 @@ export async function validateCredentialSubmission(
     )
   }
 
-  const errors = new Array<ValidationFailure>()
-  const accepted = await tryAcceptCredentialApplication(
+  const processed = await processCredentialApplication(
     application,
-    manifest,
-    errors
+    manifest
   )
-  if (errors.length > 0) {
-    throw new ValidationError(
-      "Unable to validate Credential Application",
-      errors
-    )
-  }
-  return accepted
+
+  return processed
 }
 
 function hasPaths(application: Record<string, unknown>, keys: string[]) {
