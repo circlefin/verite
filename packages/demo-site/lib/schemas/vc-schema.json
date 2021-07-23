@@ -1,0 +1,42 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1626809845.json",
+  "title": "Root",
+  "type": "object",
+  "required": ["sub", "vc"],
+  "properties": {
+    "sub": {
+      "type": "string",
+      "examples": ["did:example:1234"]
+    },
+    "nbf": {
+      "type": "integer",
+      "examples": [1562950282]
+    },
+    "vc": {
+      "type": "object",
+      "required": ["@context", "type", "credentialSubject"],
+      "properties": {
+        "@context": {
+          "type": "array",
+          "items": {
+            "examples": ["https://www.w3.org/2018/credentials/v1"]
+          }
+        },
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "examples": ["VerifiableCredential"]
+          }
+        },
+        "credentialSubject": {
+          "type": "object",
+          "required": [],
+          "properties": {}
+        }
+      }
+    }
+  }
+}

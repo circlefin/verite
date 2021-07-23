@@ -1,19 +1,17 @@
+import { CredentialApplication } from "@centre/verity"
 import {
-  AcceptedCredentialApplication,
-  CredentialApplication,
-  decodeVerifiablePresentation,
-  VerificationError
-} from "@centre/verity"
+  processCredentialApplication,
+  messageToVerificationFailure
+} from "../validators"
 import { findManifestById } from "./manifest"
+import {
+  ProcessedCredentialApplication,
+  ValidationError
+} from "types"
 
 export async function validateCredentialSubmission(
   application: CredentialApplication
-): Promise<AcceptedCredentialApplication> {
-  /**
-   * Validate the format
-   *
-   * TODO(mv): Use did-jwt validators?
-   */
+): Promise<ProcessedCredentialApplication> {
   if (
     !hasPaths(application, [
       "credential_application",
@@ -21,31 +19,35 @@ export async function validateCredentialSubmission(
       "presentation"
     ])
   ) {
-    throw new VerificationError("Invalid JSON format")
+    throw new ValidationError(
+      "Missing required paths in Credential Application",
+      messageToVerificationFailure(
+        "Input doesn't have the required format for a Credential Application"
+      )
+    )
   }
 
   /**
-   * Ensure there is a valid manfiest with this manifest_id
+   * Ensure there is a valid manifest with this manifest_id
    */
   const manifest = findManifestById(
     application.credential_application.manifest_id
   )
   if (!manifest) {
-    throw new VerificationError("Invalid Manifest ID")
+    throw new ValidationError(
+      "Invalid Manifest ID",
+      messageToVerificationFailure(
+        "This issuer doesn't issue credentials for the specified Manifest ID"
+      )
+    )
   }
 
-  /**
-   * Decode VP, performing VP verification
-   */
-  const verified = await decodeVerifiablePresentation(application.presentation)
-  /**
-   * TODO: Validate input meets manifest requirements
-   */
+  const processed = await processCredentialApplication(
+    application,
+    manifest
+  )
 
-  return {
-    ...application,
-    verified: verified
-  }
+  return processed
 }
 
 function hasPaths(application: Record<string, unknown>, keys: string[]) {

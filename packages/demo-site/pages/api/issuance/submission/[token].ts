@@ -1,7 +1,6 @@
 import {
   CredentialApplication,
   CredentialFulfillment,
-  AcceptedCredentialApplication,
   decodeVerifiablePresentation
 } from "@centre/verity"
 import { NextApiHandler } from "next"
@@ -12,6 +11,7 @@ import { pickListAndIndex, storeRevocableCredential } from "lib/database"
 import { createFulfillment } from "lib/issuance/fulfillment"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
+import { ProcessedCredentialApplication } from "types"
 
 const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
   req,
@@ -28,7 +28,7 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
   }
 
   const application: CredentialApplication = req.body
-  let acceptedApplication: AcceptedCredentialApplication
+  let acceptedApplication: ProcessedCredentialApplication
 
   try {
     acceptedApplication = await validateCredentialSubmission(application)

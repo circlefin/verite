@@ -10,6 +10,7 @@ import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
+import { ValidationError } from "types"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =

@@ -68,3 +68,7 @@ export type InputDescriptor = {
   purpose?: string
   constraints?: InputDescriptorConstraints
 }
+
+export type DescriptorWithMatch = InputDescriptor & {
+  match: any
+}

@@ -1,5 +1,4 @@
 import {
-  AcceptedCredentialApplication,
   createFullfillment,
   CredentialFulfillment,
   CredentialSigner,
@@ -11,16 +10,17 @@ import {
   kycAmlVerifiableCredentialPayload,
   CredentialStatus
 } from "@centre/verity"
+
 import type { User } from "lib/database"
+import { ProcessedCredentialApplication } from "types"
 
 export async function createKycAmlFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
-  acceptedApplication: AcceptedCredentialApplication,
+  acceptedApplication: ProcessedCredentialApplication,
   status?: CredentialStatus
 ): Promise<CredentialFulfillment> {
-  const verifiablePresentation =
-    acceptedApplication.verified.verifiablePresentation
+  const verifiablePresentation = acceptedApplication.presentation
 
   const body: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
@@ -57,10 +57,9 @@ export async function createKycAmlFulfillment(
 export async function createCreditScoreFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
-  acceptedApplication: AcceptedCredentialApplication
+  acceptedApplication: ProcessedCredentialApplication
 ): Promise<CredentialFulfillment> {
-  const verifiablePresentation =
-    acceptedApplication.verified.verifiablePresentation
+  const verifiablePresentation = acceptedApplication.presentation
 
   const body: CreditScore = {
     "@type": "CreditScore",
@@ -79,7 +78,7 @@ export async function createCreditScoreFulfillment(
 export async function createFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
-  application: AcceptedCredentialApplication,
+  application: ProcessedCredentialApplication,
   credentialStatus?: CredentialStatus
 ): Promise<CredentialFulfillment> {
   switch (application.credential_application.manifest_id) {

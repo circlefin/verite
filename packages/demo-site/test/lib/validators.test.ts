@@ -9,12 +9,15 @@ import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
+import {
+  processCredentialApplication,
+  processVerificationSubmission
+} from "lib/validators"
 import { kycVerificationRequest } from "lib/verification/requests"
-import { validateVerificationSubmission } from "lib/verification/submission"
+import { findPresentationDefinitionById } from "lib/verification/submission"
 
-describe("verification", () => {
-  it("just works", async () => {
-    // 0. PREREQ: Ensure client has a valid KYC credential
+describe("VC validator", () => {
+  it("validates a Verification Submission", async () => {
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
     const user = await createUser("test@test.com", {
@@ -35,48 +38,47 @@ describe("verification", () => {
     const fulfillmentVP = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
-    const clientVC =
-      fulfillmentVP.verifiablePresentation.verifiableCredential[0]
-
-    // 2. VERIFIER: Discovery of verification requirements
+    const clientVC = fulfillmentVP.payload.vp.verifiableCredential[0]
     const kycRequest = kycVerificationRequest()
-
-    // 3. CLIENT: Create verification submission (wraps a presentation submission)
     const submission = await createVerificationSubmission(
       clientDidKey,
       kycRequest.presentation_definition,
       clientVC
     )
 
-    expect(submission.presentation_submission.descriptor_map).toEqual([
-      {
-        id: "kycaml_input",
-        format: "jwt_vc",
-        path: "$.presentation.verifiableCredential[0]"
-      }
-    ])
-
-    // 4. VERIFIER: Verifies submission
-    const result = await validateVerificationSubmission(submission)
-    expect(result).toBeDefined()
+    const presDef = findPresentationDefinitionById(
+      "KYCAMLPresentationDefinition"
+    )
+    const result = await processVerificationSubmission(
+      submission,
+      presDef
+    )
+    expect(result.accepted()).toBeTruthy()
+    const matches = result.validationChecks["kycaml_input"]
+    expect(matches).toHaveLength(1)
+   // const theMatch = matches[0].fieldMatches[0].matches[0]
+   // expect(theMatch.path).toEqual("$.issuer.id")
   })
 
-  it("rejects an expired input", async () => {
-    /*
-    expect.assertions(1)
-
+  it("validates a CredentialApplication", async () => {
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
+    const user = await createUser("test@test.com", {
+      jumioScore: 55,
+      ofacScore: 2
+    })
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest
     )
+    const acceptedApplication = await processCredentialApplication(
+      application,
+      kycManifest
+    )
 
-    // overwrite with expired VP
-    application.presentation = expiredPresentation
+    expect(acceptedApplication.accepted()).toBeTruthy()
 
-    await expect(
-      validateCredentialSubmission(application)
-    ).rejects.toThrowError(VerificationError)*/
+    const matches = acceptedApplication.validationChecks["proofOfIdentifierControlVP"]
+    expect(matches).toHaveLength(1)
   })
 })
