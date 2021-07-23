@@ -1,11 +1,13 @@
+import { PresentationDefinition, VerificationSubmission } from "@centre/verity"
 import {
-  AcceptedVerificationSubmission,
-  decodeVerifiablePresentation,
-  PresentationDefinition,
-  VerificationError,
-  VerificationSubmission
-} from "@centre/verity"
+  processVerificationSubmission,
+  messageToVerificationFailure
+} from "../validators"
 import { kycVerificationRequest } from "./requests"
+import {
+  ProcessedVerificationSubmission,
+  ValidationError
+} from "types"
 
 const kycPresentationDefinition =
   kycVerificationRequest().presentation_definition
@@ -22,51 +24,41 @@ export function findPresentationDefinitionById(
 
 export async function validateVerificationSubmission(
   verificationSubmission: VerificationSubmission
-): Promise<AcceptedVerificationSubmission> {
-  /**
-   * Validate the format
-   *
-   * TODO(mv): Use did-jwt validators?
-   */
+): Promise<ProcessedVerificationSubmission> {
   if (
     !hasPaths(verificationSubmission, [
       "presentation_submission",
       "presentation"
     ])
   ) {
-    throw new VerificationError("Invalid JSON format")
+    throw new ValidationError(
+      "Missing required paths in Credential Application",
+      messageToVerificationFailure(
+        "Input doesn't have the required format for a Credential Application"
+      )
+    )
   }
 
   /**
    * Ensure there is a valid presentation definition
    */
-
   const presentationDefinition = findPresentationDefinitionById(
     verificationSubmission.presentation_submission.definition_id
   )
   if (!presentationDefinition) {
-    throw new VerificationError("Invalid Presentation Definition ID")
+    throw new ValidationError(
+      "Invalid Presentation Definition ID",
+      messageToVerificationFailure(
+        "This issuer doesn't accept submissions associated with the presentation definition id"
+      )
+    )
   }
 
-  /**
-   * Decode VP, performing VP verification
-   */
-  const verified = await decodeVerifiablePresentation(
-    verificationSubmission.presentation
+  const processed = await processVerificationSubmission(
+    verificationSubmission,
+    presentationDefinition,
   )
-  /**
-   * TODO: Validate input meets presentation definition requirements. Bad Hack for now!
-   */
-
-  verified.checks.push({
-    status: 200,
-    title: "Proof of KYC",
-    detail: "Proof of KYC from an accepted issuer"
-  })
-  return {
-    ...verificationSubmission,
-    verified: verified
-  }
+  return processed
 }
 
 function hasPaths(application: Record<string, unknown>, keys: string[]) {

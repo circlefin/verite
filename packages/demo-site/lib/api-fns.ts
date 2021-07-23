@@ -1,5 +1,5 @@
-import { VerificationError, VerificationObject } from "@centre/verity"
 import { NextApiResponse } from "next"
+import { ValidationError, ValidationFailure } from "types"
 
 export type ApiError = {
   status: number
@@ -10,7 +10,7 @@ export function apiError(
   res: NextApiResponse,
   status: number,
   message: string,
-  errors?: VerificationObject[]
+  errors?: ValidationFailure[]
 ): void {
   res.status(status).json({
     status,
@@ -28,8 +28,8 @@ export function methodNotAllowed(res: NextApiResponse): void {
 }
 
 export function validationError(res: NextApiResponse, error: Error): void {
-  if (error instanceof VerificationError) {
-    apiError(res, 400, error.message, error.errors)
+  if (error instanceof ValidationError) {
+    apiError(res, 400, error.message, error.failures)
   } else {
     apiError(res, 400, error.message)
   }

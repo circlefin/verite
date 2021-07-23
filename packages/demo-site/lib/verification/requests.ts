@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from "uuid"
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 const KYC_PRESENTATION_DEFINITION_ID = "KYCAMLPresentationDefinition"
 
+// TODO(kim)
+//eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const kycVerificationRequest = () => {
   const now = Date.now()
   const expires = now + ONE_MONTH
@@ -46,7 +48,7 @@ export const kycVerificationRequest = () => {
             },
             fields: [
               {
-                path: ["$.issuer", "$.vc.issuer", "$.iss"],
+                path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"], //"$.issuer.id"
                 purpose:
                   "We can only verify KYC credentials attested by a trusted authority.",
                 filter: {
