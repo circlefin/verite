@@ -45,6 +45,12 @@ export const storeRevocableCredential = (
   })
 }
 
+export const getRevocationListById = (id: string): Verifiable<W3CCredential> => {
+  return REVOCATION_LISTS.find(list => {
+    list.verifiableCredential.vc.id == id 
+  })
+}
+
 /**
  * Each revocable credential requires that we provide it a unique index in a list.
  */
