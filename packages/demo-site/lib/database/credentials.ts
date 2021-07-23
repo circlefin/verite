@@ -1,9 +1,10 @@
 import {
   generateRevocationList,
   RevocableCredential,
-  RevocationList2021Status
+  RevocationList2021Status,
+  Verifiable,
+  W3CCredential
 } from "@centre/verity"
-import { Verifiable, W3CCredential } from "did-jwt-vc"
 import { random, sample } from "lodash"
 import { credentialSigner } from "../signer"
 

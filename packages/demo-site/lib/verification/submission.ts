@@ -1,13 +1,13 @@
-import { PresentationDefinition, VerificationSubmission } from "@centre/verity"
+import {
+  EncodedVerificationSubmission,
+  PresentationDefinition
+} from "@centre/verity"
 import {
   processVerificationSubmission,
   messageToVerificationFailure
 } from "../validators"
 import { kycVerificationRequest } from "./requests"
-import {
-  ProcessedVerificationSubmission,
-  ValidationError
-} from "types"
+import { ProcessedVerificationSubmission, ValidationError } from "types"
 
 const kycPresentationDefinition =
   kycVerificationRequest().presentation_definition
@@ -23,7 +23,7 @@ export function findPresentationDefinitionById(
 }
 
 export async function validateVerificationSubmission(
-  verificationSubmission: VerificationSubmission
+  verificationSubmission: EncodedVerificationSubmission
 ): Promise<ProcessedVerificationSubmission> {
   if (
     !hasPaths(verificationSubmission, [
@@ -56,7 +56,7 @@ export async function validateVerificationSubmission(
 
   const processed = await processVerificationSubmission(
     verificationSubmission,
-    presentationDefinition,
+    presentationDefinition
   )
   return processed
 }

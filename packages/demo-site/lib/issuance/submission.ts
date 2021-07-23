@@ -1,16 +1,13 @@
-import { CredentialApplication } from "@centre/verity"
+import { EncodedCredentialApplication } from "@centre/verity"
 import {
   processCredentialApplication,
   messageToVerificationFailure
 } from "../validators"
 import { findManifestById } from "./manifest"
-import {
-  ProcessedCredentialApplication,
-  ValidationError
-} from "types"
+import { ProcessedCredentialApplication, ValidationError } from "types"
 
 export async function validateCredentialSubmission(
-  application: CredentialApplication
+  application: EncodedCredentialApplication
 ): Promise<ProcessedCredentialApplication> {
   if (
     !hasPaths(application, [
@@ -42,10 +39,7 @@ export async function validateCredentialSubmission(
     )
   }
 
-  const processed = await processCredentialApplication(
-    application,
-    manifest
-  )
+  const processed = await processCredentialApplication(application, manifest)
 
   return processed
 }

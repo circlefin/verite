@@ -7,7 +7,7 @@ import {
   DescriptorMap,
   DidKey,
   PresentationDefinition,
-  VerificationSubmission
+  EncodedVerificationSubmission
 } from "../types"
 import { verifiablePresentationPayload } from "./credentials"
 import { didKeyToIssuer } from "./didKey"
@@ -16,7 +16,7 @@ export async function createVerificationSubmission(
   didKey: DidKey,
   presentationDefinition: PresentationDefinition,
   verifiedCredential: VerifiableCredential | VerifiableCredential[]
-): Promise<VerificationSubmission> {
+): Promise<EncodedVerificationSubmission> {
   const client = didKeyToIssuer(didKey)
 
   const presentationSubmission = {

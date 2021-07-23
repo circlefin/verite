@@ -1,4 +1,4 @@
-import { VerifiedPresentation } from "did-jwt-vc"
+import { Verifiable, W3CPresentation } from "did-jwt-vc"
 import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
 import { JWT } from "./Jwt"
 import { PresentationSubmission } from "./PresentationSubmission"
@@ -13,12 +13,12 @@ type NarrowCredentialApplication = {
 }
 
 export type GenericCredentialApplication = NarrowCredentialApplication & {
-  presentation: JWT | VerifiedPresentation
+  presentation: JWT | Verifiable<W3CPresentation>
 }
 
 export type EncodedCredentialApplication = NarrowCredentialApplication & {
   presentation: JWT
 }
 export type DecodedCredentialApplication = NarrowCredentialApplication & {
-  presentation: VerifiedPresentation
+  presentation: Verifiable<W3CPresentation>
 }
