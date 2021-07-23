@@ -26,11 +26,12 @@ export const generateRevocationList = async (
         "https://www.w3.org/2018/credentials/v1",
         "https://w3id.org/vc-status-list-2021/v1"
       ],
-      id: `${url}#list`,
+      id: `${url}`,
       type: ["VerifiableCredential", "StatusList2021Credential"],
       issuer,
       issued,
       credentialSubject: {
+        id: `${url}#list`,
         type: "RevocationList2021",
         encodedList
       }
@@ -118,6 +119,17 @@ export const isRevoked = async (
     statusList.payload.vc.credentialSubject.encodedList
   )
   const index = credential.payload.vc.credentialStatus.statusListIndex
+
+  return results.indexOf(index) !== -1
+}
+
+export const isRevokedIndex = async (
+  index: number,
+  statusList: Verifiable<W3CCredential>
+): Promise<boolean> => {
+  const results = await expandBitstring(
+    statusList.payload.vc.credentialSubject.encodedList
+  )
 
   return results.indexOf(index) !== -1
 }
