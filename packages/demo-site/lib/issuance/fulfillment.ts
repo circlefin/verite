@@ -8,7 +8,7 @@ import {
   KYCAMLAttestation,
   KYCAML_ATTESTATION_MANIFEST_ID,
   kycAmlVerifiableCredentialPayload,
-  CredentialStatus
+  RevocationList2021Status
 } from "@centre/verity"
 
 import type { User } from "lib/database"
@@ -18,7 +18,7 @@ export async function createKycAmlFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
   acceptedApplication: ProcessedCredentialApplication,
-  status?: CredentialStatus
+  credentialStatus?: RevocationList2021Status
 ): Promise<CredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
@@ -49,7 +49,7 @@ export async function createKycAmlFulfillment(
     kycAmlVerifiableCredentialPayload(
       verifiablePresentation.holder,
       body,
-      status
+      credentialStatus
     )
   )
 }
@@ -57,7 +57,8 @@ export async function createKycAmlFulfillment(
 export async function createCreditScoreFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
-  acceptedApplication: ProcessedCredentialApplication
+  acceptedApplication: ProcessedCredentialApplication,
+  credentialStatus?: RevocationList2021Status
 ): Promise<CredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
@@ -71,7 +72,11 @@ export async function createCreditScoreFulfillment(
   return createFullfillment(
     credentialSigner,
     acceptedApplication,
-    creditScoreVerifiableCredentialPayload(verifiablePresentation.holder, body)
+    creditScoreVerifiableCredentialPayload(
+      verifiablePresentation.holder,
+      body,
+      credentialStatus
+    )
   )
 }
 
@@ -79,7 +84,7 @@ export async function createFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
   application: ProcessedCredentialApplication,
-  credentialStatus?: CredentialStatus
+  credentialStatus?: RevocationList2021Status
 ): Promise<CredentialFulfillment> {
   switch (application.credential_application.manifest_id) {
     case KYCAML_ATTESTATION_MANIFEST_ID:
@@ -90,7 +95,12 @@ export async function createFulfillment(
         credentialStatus
       )
     case CREDIT_SCORE_ATTESTATION_MANIFEST_ID:
-      return createCreditScoreFulfillment(user, credentialSigner, application)
+      return createCreditScoreFulfillment(
+        user,
+        credentialSigner,
+        application,
+        credentialStatus
+      )
     default:
       return null
   }

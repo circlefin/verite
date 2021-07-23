@@ -1,4 +1,8 @@
-import { CredentialStatus, generateRevocationList } from "@centre/verity"
+import {
+  generateRevocationList,
+  RevocableCredential,
+  RevocationList2021Status
+} from "@centre/verity"
 import { Verifiable, W3CCredential } from "did-jwt-vc"
 import { random, sample } from "lodash"
 import { credentialSigner } from "../signer"
@@ -17,7 +21,7 @@ const setupIfNecessary = async () => {
 }
 
 export const storeRevocableCredential = (
-  credentials: Verifiable<W3CCredential>[],
+  credentials: RevocableCredential[],
   userId: string
 ): void => {
   credentials.forEach((credential) => {
@@ -48,7 +52,7 @@ export const storeRevocableCredential = (
 /**
  * Each revocable credential requires that we provide it a unique index in a list.
  */
-export const pickListAndIndex = async (): Promise<CredentialStatus> => {
+export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
   await setupIfNecessary()
 
   // Pick a random revocation list
