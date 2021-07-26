@@ -159,7 +159,7 @@ export const generateBitstring = (indicies: number[]): string => {
 export const expandBitstring = async (string: string): Promise<number[]> => {
   const buffer = await decompress(string)
   const bools = expandBitstringToBooleans(buffer)
-  const result = []
+  const result: number[] = []
   bools.forEach((b, index) => {
     if (b) {
       result.push(index)
@@ -174,7 +174,7 @@ export const expandBitstring = async (string: string): Promise<number[]> => {
  */
 export const expandBitstringToBooleans = (bitstring: Buffer): boolean[] => {
   const bits = new Bits(bitstring)
-  const results = []
+  const results: boolean[] = []
   for (let i = 0; i < bitstring.byteLength * 8; i++) {
     results[i] = bits.testBit(i)
   }

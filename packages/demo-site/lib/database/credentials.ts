@@ -13,7 +13,7 @@ type DatabaseCredential = {
   credential: RevocableCredential
 }
 
-const MINIMUM_BITSTREAM_LENGTH = 131072
+const MINIMUM_BITSTREAM_LENGTH = 16 * 1_024 * 8 // 16KB
 const REVOCATION_LISTS: RevocationListCredential[] = []
 const CREDENTIALS: DatabaseCredential[] = []
 
