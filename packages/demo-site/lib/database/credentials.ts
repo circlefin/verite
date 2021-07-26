@@ -5,10 +5,10 @@ import {
   RevocationList2021Status,
   RevocationListCredential
 } from "@centre/verity"
-import { random, sample } from "lodash"
-import { credentialSigner } from "../signer"
+import { findIndex, random, sample } from "lodash"
+import { credentialSigner } from "lib/signer"
 
-type DatabaseCredential = {
+export type DatabaseCredential = {
   userId: string
   credential: RevocableCredential
 }
@@ -44,8 +44,41 @@ export const storeRevocableCredential = (
   })
 }
 
-export const getRevocationListById = (id: string): RevocationListCredential => {
+export const allRevocationLists = async (): Promise<
+  RevocationListCredential[]
+> => {
+  await setupIfNecessary()
+
+  return REVOCATION_LISTS
+}
+
+export const findCredentialsByUserId = async (
+  userId: string
+): Promise<DatabaseCredential[]> => {
+  await setupIfNecessary()
+
+  return CREDENTIALS.filter((c) => c.userId === userId)
+}
+
+export const getRevocationListById = async (
+  id: string
+): Promise<RevocationListCredential> => {
+  await setupIfNecessary()
   return REVOCATION_LISTS.find((list) => list.id === id)
+}
+
+export const saveRevocationList = async (
+  revocationList: RevocationListCredential
+): Promise<void> => {
+  const index = findIndex(REVOCATION_LISTS, (list) => {
+    return list.id === revocationList.id
+  })
+
+  if (index !== -1) {
+    REVOCATION_LISTS.splice(index, 1)
+  }
+
+  REVOCATION_LISTS.push(revocationList)
 }
 
 /**

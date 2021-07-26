@@ -265,7 +265,7 @@ describe("Status List 2021", () => {
         return
       }
 
-      const encodedList = await generateBitstring(credentials)
+      const encodedList = generateBitstring(credentials)
       expect(encodedList).toEqual(bitstring)
     })
   })
