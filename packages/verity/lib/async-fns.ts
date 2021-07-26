@@ -1,6 +1,6 @@
-export function asyncMap<T>(
+export function asyncMap<T, P>(
   arr: T[],
-  fn: (T, i?: number) => unknown
-): Promise<unknown[]> {
+  fn: (arg0: T, i: number, arr: T[]) => Promise<P>
+): Promise<P[]> {
   return Promise.all(arr.map(fn))
 }
