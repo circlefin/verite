@@ -71,7 +71,7 @@ describe("issuance", () => {
       "KYCAMLAttestation"
     )
 
-    const { verifiablePresentation } = await decodeVerifiablePresentation(
+    const verifiablePresentation = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
 

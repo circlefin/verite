@@ -7,8 +7,9 @@ import {
   EncodedVerificationSubmission,
   DecodedCredentialApplication,
   EncodedCredentialApplication,
-  VerifiableCredential,
-  VerifiablePresentation
+  W3CCredential,
+  W3CPresentation,
+  Verifiable
 } from "@centre/verity"
 import Ajv from "ajv"
 import jsonpath from "jsonpath"
@@ -60,8 +61,8 @@ function ajvErrorToVerificationFailures(errors: any): ValidationFailure[] {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateSchema(
-  input: any,
-  schema: any,
+  input: Verifiable<W3CCredential | W3CPresentation>,
+  schema: Record<string, unknown>,
   errors: ValidationFailure[]
 ): boolean {
   const validate = ajv.compile(schema)
@@ -73,21 +74,21 @@ function validateSchema(
 }
 
 export function validateVc(
-  vc: VerifiableCredential,
+  vc: Verifiable<W3CCredential>,
   errors: ValidationFailure[]
 ): boolean {
   return validateSchema(vc, vcSchema, errors)
 }
 
 export function validateVp(
-  vp: VerifiablePresentation,
+  vp: Verifiable<W3CPresentation>,
   errors: ValidationFailure[]
 ): boolean {
   return validateSchema(vp, vpSchema, errors)
 }
 
 export function validateInputDescriptors(
-  creds: Map<string, VerifiableCredential[]>,
+  creds: Map<string, Verifiable<W3CCredential>[]>,
   descriptors: InputDescriptor[]
 ): Map<string, ValidationCheck[]> {
   return descriptors.reduce((map, descriptor) => {
@@ -143,17 +144,19 @@ function mapInputsToDescriptors(
     const values = jsonpath.query(submission, d.path)
     map[match.schema[0].uri] = values
     return map
-  }, new Map<string, VerifiableCredential[]>())
+  }, new Map<string, Verifiable<W3CCredential>[]>())
 }
 
 export async function processVerificationSubmission(
   submission: EncodedVerificationSubmission,
   definition: PresentationDefinition
 ): Promise<ProcessedVerificationSubmission> {
-  const decoded = await decodeVerifiablePresentation(submission.presentation)
+  const presentation = await decodeVerifiablePresentation(
+    submission.presentation
+  )
   const converted: DecodedVerificationSubmission = {
     presentation_submission: submission.presentation_submission,
-    presentation: decoded.verifiablePresentation
+    presentation
   }
 
   const mapped = mapInputsToDescriptors(converted, definition)
@@ -183,10 +186,12 @@ export async function processCredentialApplication(
   application: EncodedCredentialApplication,
   manifest: CredentialManifest
 ): Promise<ProcessedCredentialApplication> {
-  const decoded = await decodeVerifiablePresentation(application.presentation)
+  const presentation = await decodeVerifiablePresentation(
+    application.presentation
+  )
   const converted: DecodedCredentialApplication = {
     ...application,
-    presentation: decoded.verifiablePresentation
+    presentation
   }
 
   const mapped = mapInputsToDescriptors(

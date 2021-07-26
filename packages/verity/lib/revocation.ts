@@ -33,7 +33,7 @@ export const generateRevocationList = async (
       "https://www.w3.org/2018/credentials/v1",
       "https://w3id.org/vc-status-list-2021/v1"
     ],
-    id: `${url}`,
+    id: url,
     type: ["VerifiableCredential", "StatusList2021Credential"],
     issuer,
     issuanceDate,
@@ -188,6 +188,15 @@ export const expandBitstringToBooleans = (bitstring: Buffer): boolean[] => {
 }
 
 /**
+ * Determine if a given credential is revocable or not.
+ */
+export const isRevocable = (
+  credential: Verifiable<W3CCredential> | RevocableCredential
+): boolean => {
+  return has(credential, "credentialStatus.statusListIndex")
+}
+
+/**
  * Generate a new RevocationList given an update list
  */
 async function updateRevocationList(
@@ -201,13 +210,4 @@ async function updateRevocationList(
 
   const vcJwt = await signer.signVerifiableCredential(newPayload)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
-}
-
-/**
- * Determine if a given credential is revocable or not.
- */
-function isRevocable(
-  credential: Verifiable<W3CCredential> | RevocableCredential
-): boolean {
-  return has(credential, "credentialStatus.statusListIndex")
 }

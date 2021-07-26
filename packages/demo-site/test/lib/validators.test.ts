@@ -38,7 +38,7 @@ describe("VC validator", () => {
     const fulfillmentVP = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
-    const clientVC = fulfillmentVP.payload.vp.verifiableCredential[0]
+    const clientVC = fulfillmentVP.verifiableCredential[0]
     const kycRequest = kycVerificationRequest()
     const submission = await createVerificationSubmission(
       clientDidKey,
@@ -49,15 +49,12 @@ describe("VC validator", () => {
     const presDef = findPresentationDefinitionById(
       "KYCAMLPresentationDefinition"
     )
-    const result = await processVerificationSubmission(
-      submission,
-      presDef
-    )
+    const result = await processVerificationSubmission(submission, presDef)
     expect(result.accepted()).toBeTruthy()
     const matches = result.validationChecks["kycaml_input"]
     expect(matches).toHaveLength(1)
-   // const theMatch = matches[0].fieldMatches[0].matches[0]
-   // expect(theMatch.path).toEqual("$.issuer.id")
+    // const theMatch = matches[0].fieldMatches[0].matches[0]
+    // expect(theMatch.path).toEqual("$.issuer.id")
   })
 
   it("validates a CredentialApplication", async () => {
@@ -78,7 +75,8 @@ describe("VC validator", () => {
 
     expect(acceptedApplication.accepted()).toBeTruthy()
 
-    const matches = acceptedApplication.validationChecks["proofOfIdentifierControlVP"]
+    const matches =
+      acceptedApplication.validationChecks["proofOfIdentifierControlVP"]
     expect(matches).toHaveLength(1)
   })
 })

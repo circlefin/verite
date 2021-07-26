@@ -159,7 +159,7 @@ describe("POST /issuance/submission/[token]", () => {
     expect(res.statusCode).toBe(200)
 
     const response = res._getJSONData()
-    const { verifiablePresentation } = await decodeVerifiablePresentation(
+    const verifiablePresentation = await decodeVerifiablePresentation(
       response.presentation
     )
     const vc = verifiablePresentation.verifiableCredential[0]

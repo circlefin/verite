@@ -1,22 +1,21 @@
 import {
   generateRevocationList,
+  isRevocable,
   RevocableCredential,
   RevocationList2021Status,
-  Verifiable,
-  W3CCredential
+  RevocationListCredential
 } from "@centre/verity"
 import { random, sample } from "lodash"
 import { credentialSigner } from "../signer"
 
-type RecvocableCredential = {
+type DatabaseCredential = {
   userId: string
-  credentialType: string
-  index: string
-  statusList: string
+  credential: RevocableCredential
 }
 
-const REVOCATION_LISTS: Verifiable<W3CCredential>[] = []
-const CREDENTIALS: RecvocableCredential[] = []
+const MINIMUM_BITSTREAM_LENGTH = 131072
+const REVOCATION_LISTS: RevocationListCredential[] = []
+const CREDENTIALS: DatabaseCredential[] = []
 
 // Generate a default revocation list credential when the app starts
 const setupIfNecessary = async () => {
@@ -34,26 +33,13 @@ export const storeRevocableCredential = (
   userId: string
 ): void => {
   credentials.forEach((credential) => {
-    if (!credential.credentialStatus) {
+    if (!isRevocable(credential)) {
       return
     }
 
-    const credentialType = credential.type[1]
-    const index = credential.credentialStatus.statusListIndex
-    const statusList = credential.credentialStatus.statusListCredential
-
-    /**
-     * At bare minimum, we need to persist:
-     * 1. Internal Customer Id
-     * 2. Credential Type
-     * 3. Index of the credential
-     * 4. Which status list the index is in
-     */
     CREDENTIALS.push({
       userId,
-      credentialType,
-      index,
-      statusList
+      credential
     })
   })
 }
@@ -65,23 +51,28 @@ export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
   await setupIfNecessary()
 
   // Pick a random revocation list
-  const list = sample(REVOCATION_LISTS)
+  const revocationList = sample(REVOCATION_LISTS)
+
+  console.log("list", revocationList)
 
   // Find all credentials in the revocation list and map the index
-  const consumedIndexes = CREDENTIALS.filter((credential) => {
-    credential.statusList === list.verifiableCredential.vc.id
-  }).map((credential) => parseInt(credential.index, 10))
+  const consumedIndexes = CREDENTIALS.filter(
+    ({ credential }) =>
+      credential.credentialStatus.statusListCredential === revocationList.id
+  ).map(({ credential }) =>
+    parseInt(credential.credentialStatus.statusListIndex, 10)
+  )
 
   // Try up to 10 times for now
-  for (let i = 0; i < 131072; i++) {
-    const randomIndex = random(0, 131071) // 131072 - 1
+  for (let i = 0; i < MINIMUM_BITSTREAM_LENGTH; i++) {
+    const randomIndex = random(0, MINIMUM_BITSTREAM_LENGTH - 1)
     const index = consumedIndexes.indexOf(randomIndex)
     if (index === -1) {
       return {
-        id: `${list.verifiableCredential.vc.id}#list`,
+        id: `${revocationList.id}#${randomIndex}`,
         type: "RevocationList2021Status",
         statusListIndex: randomIndex.toString(),
-        statusListCredential: `${list.verifiableCredential.vc.id}`
+        statusListCredential: revocationList.id
       }
     }
   }

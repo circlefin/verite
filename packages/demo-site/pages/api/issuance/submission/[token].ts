@@ -52,8 +52,9 @@ const handler: NextApiHandler<EncodedCredentialFulfillment | ApiError> = async (
   const decodedPresentation = await decodeVerifiablePresentation(
     fulfillment.presentation
   )
-  const decodedCredential = decodedPresentation.verifiablePresentation
-    .verifiableCredential as RevocableCredential[]
+
+  const decodedCredential =
+    decodedPresentation.verifiableCredential as RevocableCredential[]
 
   storeRevocableCredential(decodedCredential, user.id)
 
