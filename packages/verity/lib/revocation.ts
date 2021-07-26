@@ -1,7 +1,7 @@
-import { promisify } from "util"
-import { deflate, unzip } from "zlib"
 import { Bits } from "@fry/bits"
+import base64js from "base64-js"
 import { cloneDeep, has } from "lodash"
+import { inflate, deflate } from "pako"
 import {
   CredentialPayload,
   RevocableCredential,
@@ -12,9 +12,6 @@ import {
 } from "../types"
 import { CredentialSigner } from "./credential-signer"
 import { decodeVerifiableCredential } from "./credentials"
-
-const do_unzip = promisify(unzip)
-const do_deflate = promisify(deflate)
 
 /**
  * Generate a revocation list.
@@ -133,27 +130,24 @@ export const isRevokedIndex = async (
 /**
  * Apply zlib compression with Base64 encoding
  */
-export const compress = async (
-  input: string | ArrayBuffer
-): Promise<string> => {
-  const deflated = await do_deflate(input)
-  return deflated.toString("base64")
+export const compress = (input: string | Buffer): string => {
+  const deflated = deflate(input)
+  const deflated2 = base64js.fromByteArray(deflated)
+  return deflated2
 }
 
 /**
  * Given the base64 encoded revocation list, decode and unzip it to a Buffer
  */
-export const decompress = async (input: string): Promise<Buffer> => {
-  const buffer = Buffer.from(input, "base64")
-  return do_unzip(buffer)
+export const decompress = (input: string): Buffer => {
+  const decoded = base64js.toByteArray(input)
+  return Buffer.from(inflate(decoded))
 }
 
 /**
  * Given a list of index values, generate the compressed bitstring
  */
-export const generateBitstring = async (
-  indicies: number[]
-): Promise<string> => {
+export const generateBitstring = (indicies: number[]): string => {
   const bits = new Bits(16_384 * 8) // 16KB
   indicies.forEach((index) => bits.setBit(index))
   return compress(bits.buffer)

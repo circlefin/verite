@@ -44,6 +44,14 @@ export const storeRevocableCredential = (
   })
 }
 
+export const getRevocationListById = (
+  id: string
+): Verifiable<W3CCredential> => {
+  return REVOCATION_LISTS.find((list) => {
+    list.verifiableCredential.vc.id == id
+  })
+}
+
 /**
  * Each revocable credential requires that we provide it a unique index in a list.
  */
@@ -52,8 +60,6 @@ export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
 
   // Pick a random revocation list
   const revocationList = sample(REVOCATION_LISTS)
-
-  console.log("list", revocationList)
 
   // Find all credentials in the revocation list and map the index
   const consumedIndexes = CREDENTIALS.filter(

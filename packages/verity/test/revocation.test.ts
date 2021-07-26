@@ -46,7 +46,8 @@ const vectors = [
   {
     skipGenerate: true, // When I generate a bitstring, I get the string found in the first vector. However, both these values decode to the same empty array.
     credentials: [],
-    bitstring: "H4sIAAAAAAAAA-3BMQEAAADCoPVPbQsvoAAAAAAAAAAAAAAAAP4GcwM92tQwAAA"
+    bitstring:
+      "H4sIAAAAAAAAA-3BMQEAAADCoPVPbQsvoAAAAAAAAAAAAAAAAP4GcwM92tQwAAA="
   }
 ]
 
@@ -89,13 +90,13 @@ const statusListFactory = async (credentials: number[]) => {
 }
 
 describe("Status List 2021", () => {
-  it("compress", async () => {
-    const value = await compress(".................................")
+  it("compress periods", () => {
+    const value = compress(".................................")
     expect(value).toBe("eJzT0yMAAGTvBe8=")
   })
 
-  it("decompress", async () => {
-    const value = await decompress("eJzT0yMAAGTvBe8=")
+  it("decompress", () => {
+    const value = decompress("eJzT0yMAAGTvBe8=")
     expect(value.toString()).toBe(".................................")
   })
 
