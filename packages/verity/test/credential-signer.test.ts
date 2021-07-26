@@ -1,5 +1,8 @@
-import { JwtCredentialPayload } from "did-jwt-vc"
-import { CredentialSigner, decodeVerifiableCredential } from ".."
+import {
+  CredentialSigner,
+  decodeVerifiableCredential,
+  JwtCredentialPayload
+} from ".."
 
 describe("VC signing", () => {
   it("signs a VC", async () => {
