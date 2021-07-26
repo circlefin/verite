@@ -1,4 +1,4 @@
-import { Verifiable, W3CCredential } from "./W3C"
+import { Verifiable, W3CCredential, W3CPresentation } from "./W3C"
 
 export type RevocationList2021Status = {
   id: string
@@ -18,6 +18,10 @@ export type Revocable<T> = T & {
 }
 
 export type RevocableCredential = Revocable<Verifiable<W3CCredential>>
+
+export type RevocablePresentation = Verifiable<W3CPresentation> & {
+  verifiableCredential?: RevocableCredential[]
+}
 
 export type RevocationList<T> = T & {
   readonly credentialSubject: RevocationList2021Subject
