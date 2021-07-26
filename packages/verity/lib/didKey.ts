@@ -2,11 +2,10 @@ import { randomBytes } from "crypto"
 import * as ed25519 from "@stablelib/ed25519"
 import * as didKeyEd25519 from "@transmute/did-key-ed25519"
 import { EdDSASigner } from "did-jwt"
-import { Issuer } from "did-jwt-vc"
 import { Resolvable, DIDResolutionResult } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
-import { DidKey } from "../types"
+import { DidKey, Issuer } from "../types"
 
 type DidKeyParams = {
   secureRandom: () => Uint8Array

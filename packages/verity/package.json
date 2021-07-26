@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "tsc --build --clean",
+    "clean": "rimraf ./dist",
     "dev": "tsc --watch --preserveWatchOutput",
     "format": "prettier  --write .",
     "lint": "eslint .",
@@ -20,16 +20,19 @@
     "base64-js": "^1.5.1",
     "did-jwt-vc": "^2.1.4",
     "did-resolver": "^3.1.0",
+    "lodash": "^4.17.21",
     "multibase": "^4.0.4",
     "multicodec": "^3.1.0",
     "pako": "^1.0.11",
-    "schema-dts": "^0.8.3",
+    "schema-dts": "^0.9.0",
     "semver": "^7.3.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
+    "@types/lodash": "^4.14.171",
     "@types/pako": "^1.0.2",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "eslint": "^7.29.0",
@@ -38,6 +41,7 @@
     "eslint-plugin-import": "^2.23.4",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.4"
   }

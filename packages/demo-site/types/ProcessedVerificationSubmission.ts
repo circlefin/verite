@@ -1,14 +1,20 @@
-import { PresentationSubmission } from "@centre/verity"
-import { VerifiedPresentation } from "did-jwt-vc"
+import {
+  DecodedVerificationSubmission,
+  PresentationSubmission,
+  Verifiable,
+  W3CPresentation
+} from "@centre/verity"
 import { ValidationCheck } from "./Matches"
 
-export class ProcessedVerificationSubmission {
+export class ProcessedVerificationSubmission
+  implements DecodedVerificationSubmission
+{
   presentation_submission?: PresentationSubmission
-  presentation: VerifiedPresentation
+  presentation: Verifiable<W3CPresentation>
   validationChecks: Map<string, ValidationCheck[]>
 
   constructor(
-    presentation: VerifiedPresentation,
+    presentation: Verifiable<W3CPresentation>,
     validationChecks: Map<string, ValidationCheck[]>,
     presentation_submission?: PresentationSubmission
   ) {

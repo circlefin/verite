@@ -1,7 +1,7 @@
-import { VerifiedCredential } from "did-jwt-vc"
+import { VerifiedCredential } from "@centre/verity"
 
 export class PathMatches {
-  path: string  
+  path: string
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   matchedValue: any
 
@@ -31,7 +31,11 @@ export class ValidationCheck {
   credential: VerifiedCredential
   constraintChecks: ConstraintCheck[]
 
-  constructor(descriptorId: string, credential: VerifiedCredential, constraintChecks: ConstraintCheck[]) {
+  constructor(
+    descriptorId: string,
+    credential: VerifiedCredential,
+    constraintChecks: ConstraintCheck[]
+  ) {
     this.descriptorId = descriptorId
     this.credential = credential
     this.constraintChecks = constraintChecks
@@ -41,7 +45,7 @@ export class ValidationCheck {
     if (this.constraintChecks === null || this.constraintChecks.length === 0) {
       return true
     }
-    const result = this.constraintChecks.every(c => {
+    const result = this.constraintChecks.every((c) => {
       return c.hasMatches()
     })
     return result

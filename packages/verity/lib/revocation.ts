@@ -1,7 +1,15 @@
 import { Bits } from "@fry/bits"
 import base64js from "base64-js"
-import { Verifiable, W3CCredential, JwtCredentialPayload } from "did-jwt-vc"
+import { cloneDeep, has } from "lodash"
 import { inflate, deflate } from "pako"
+import {
+  CredentialPayload,
+  RevocableCredential,
+  RevocationList,
+  RevocationListCredential,
+  Verifiable,
+  W3CCredential
+} from "../types"
 import { CredentialSigner } from "./credential-signer"
 import { decodeVerifiableCredential } from "./credentials"
 
@@ -13,119 +21,107 @@ export const generateRevocationList = async (
   url: string,
   issuer: string,
   signer: CredentialSigner,
-  issued = new Date()
-): Verifiable<W3CCredential> => {
+  issuanceDate = new Date()
+): Promise<RevocationListCredential> => {
   const encodedList = await generateBitstring(credentials)
 
-  const vcPayload: JwtCredentialPayload = {
-    vc: {
-      "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        "https://w3id.org/vc-status-list-2021/v1"
-      ],
-      id: `${url}`,
-      type: ["VerifiableCredential", "StatusList2021Credential"],
-      issuer,
-      issued,
-      credentialSubject: {
-        id: `${url}#list`,
-        type: "RevocationList2021",
-        encodedList
-      }
+  const vcPayload: RevocationList<CredentialPayload> = {
+    "@context": [
+      "https://www.w3.org/2018/credentials/v1",
+      "https://w3id.org/vc-status-list-2021/v1"
+    ],
+    id: url,
+    type: ["VerifiableCredential", "StatusList2021Credential"],
+    issuer,
+    issuanceDate,
+    credentialSubject: {
+      id: `${url}#list`,
+      type: "RevocationList2021",
+      encodedList
     }
   }
 
   const vcJwt = await signer.signVerifiableCredential(vcPayload)
-  const decoded = await decodeVerifiableCredential(vcJwt)
-  return decoded
+  return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }
 
 /**
  * Revoke a credential in a revocation list.
  */
 export const revokeCredential = async (
-  credential: Verifiable<W3CCredential>,
-  statusList: Verifiable<W3CCredential>,
+  credential: RevocableCredential,
+  statusList: RevocationListCredential,
   signer: CredentialSigner
-): Promise<W3CCredential> => {
+): Promise<RevocationListCredential> => {
   // If a credential does not have a credential status, it cannot be revoked.
-  if (!credential.verifiableCredential.credentialStatus) {
+  if (!isRevocable(credential)) {
     return statusList
   }
 
   const oldList = await expandBitstring(
-    statusList.payload.vc.credentialSubject.encodedList
-  )
-  const newList = await generateBitstring(
-    oldList.concat([
-      credential.verifiableCredential.credentialStatus.statusListIndex
-    ])
+    statusList.credentialSubject.encodedList
   )
 
-  const newPayload = statusList.payload
-  newPayload.vc.credentialSubject.encodedList = newList
-  const vcJwt = await signer.signVerifiableCredential(newPayload)
-  const decoded = await decodeVerifiableCredential(vcJwt)
-  return decoded
+  const newIndex = parseInt(credential.credentialStatus.statusListIndex, 10)
+
+  return updateRevocationList(signer, statusList, oldList.concat([newIndex]))
 }
 
 /**
  * Revoke a credential in a revocation list.
  */
 export const unrevokeCredential = async (
-  credential: Verifiable<W3CCredential>,
-  statusList: Verifiable<W3CCredential>,
+  credential: RevocableCredential,
+  statusList: RevocationListCredential,
   signer: CredentialSigner
-): Promise<W3CCredential> => {
+): Promise<RevocationListCredential> => {
   // If a credential does not have a credential status, it cannot be revoked.
-  if (!credential.verifiableCredential.credentialStatus) {
+  if (!isRevocable(credential)) {
     return statusList
   }
 
   const oldList = await expandBitstring(
-    statusList.payload.vc.credentialSubject.encodedList
+    statusList.credentialSubject.encodedList
   )
   const index = oldList.indexOf(
-    credential.verifiableCredential.credentialStatus.statusListIndex
+    parseInt(credential.credentialStatus.statusListIndex, 10)
   )
   if (index !== -1) {
     oldList.splice(index, 1)
   }
-  const newList = await generateBitstring(oldList)
 
-  const newPayload = statusList.payload
-  newPayload.vc.credentialSubject.encodedList = newList
-  const vcJwt = await signer.signVerifiableCredential(newPayload)
-  const decoded = await decodeVerifiableCredential(vcJwt)
-  return decoded
+  return updateRevocationList(signer, statusList, oldList)
 }
 
 /**
  * Given a verififable credential, check if it has been revoked.
  */
 export const isRevoked = async (
-  credential: Verifiable<W3CCredential>,
-  statusList: Verifiable<W3CCredential>
+  credential: Verifiable<W3CCredential> | RevocableCredential,
+  statusList: RevocationListCredential
 ): Promise<boolean> => {
   // If there is no credentialStatus, assume not revoked
-  if (!credential.verifiableCredential.credentialStatus) {
+  if (!isRevocable(credential)) {
     return false
   }
 
   const results = await expandBitstring(
-    statusList.payload.vc.credentialSubject.encodedList
+    statusList.credentialSubject.encodedList
   )
-  const index = credential.payload.vc.credentialStatus.statusListIndex
+  const index = parseInt(
+    (credential as RevocableCredential).credentialStatus.statusListIndex,
+    10
+  )
 
   return results.indexOf(index) !== -1
 }
 
 export const isRevokedIndex = async (
   index: number,
-  statusList: Verifiable<W3CCredential>
+  statusList: RevocationListCredential
 ): Promise<boolean> => {
   const results = await expandBitstring(
-    statusList.payload.vc.credentialSubject.encodedList
+    statusList.credentialSubject.encodedList
   )
 
   return results.indexOf(index) !== -1
@@ -183,4 +179,29 @@ export const expandBitstringToBooleans = (bitstring: Buffer): boolean[] => {
     results[i] = bits.testBit(i)
   }
   return results
+}
+
+/**
+ * Determine if a given credential is revocable or not.
+ */
+export const isRevocable = (
+  credential: Verifiable<W3CCredential> | RevocableCredential
+): boolean => {
+  return has(credential, "credentialStatus.statusListIndex")
+}
+
+/**
+ * Generate a new RevocationList given an update list
+ */
+async function updateRevocationList(
+  signer: CredentialSigner,
+  statusList: RevocationListCredential,
+  list: number[]
+): Promise<RevocationListCredential> {
+  const newPayload = cloneDeep(statusList)
+  const newEncodedList = await generateBitstring(list)
+  newPayload.credentialSubject.encodedList = newEncodedList
+
+  const vcJwt = await signer.signVerifiableCredential(newPayload)
+  return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }

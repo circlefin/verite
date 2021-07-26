@@ -1,8 +1,9 @@
 import { NextApiHandler } from "next"
+import { RevocationListCredential } from "../../../../verity/dist"
 import { notFound } from "lib/api-fns"
 import { getRevocationListById } from "lib/database"
 
-const handler: NextApiHandler<any> = async (req, res) => {
+const handler: NextApiHandler<RevocationListCredential> = async (req, res) => {
   const revocationList = getRevocationListById("foo")
 
   if (!revocationList) {

@@ -26,6 +26,7 @@ describe("verification", () => {
       kycManifest
     )
     const acceptedApplication = await validateCredentialSubmission(application)
+
     const fulfillment = await createKycAmlFulfillment(
       user,
       credentialSigner,
@@ -35,8 +36,7 @@ describe("verification", () => {
     const fulfillmentVP = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
-    const clientVC =
-      fulfillmentVP.verifiablePresentation.verifiableCredential[0]
+    const clientVC = fulfillmentVP.verifiableCredential[0]
 
     // 2. VERIFIER: Discovery of verification requirements
     const kycRequest = kycVerificationRequest()

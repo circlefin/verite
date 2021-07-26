@@ -1,6 +1,5 @@
 import {
   createFullfillment,
-  CredentialFulfillment,
   CredentialSigner,
   CreditScore,
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
@@ -8,7 +7,8 @@ import {
   KYCAMLAttestation,
   KYCAML_ATTESTATION_MANIFEST_ID,
   kycAmlVerifiableCredentialPayload,
-  CredentialStatus
+  RevocationList2021Status,
+  EncodedCredentialFulfillment
 } from "@centre/verity"
 
 import type { User } from "lib/database"
@@ -18,8 +18,8 @@ export async function createKycAmlFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
   acceptedApplication: ProcessedCredentialApplication,
-  status?: CredentialStatus
-): Promise<CredentialFulfillment> {
+  credentialStatus?: RevocationList2021Status
+): Promise<EncodedCredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
   const body: KYCAMLAttestation = {
@@ -49,7 +49,7 @@ export async function createKycAmlFulfillment(
     kycAmlVerifiableCredentialPayload(
       verifiablePresentation.holder,
       body,
-      status
+      credentialStatus
     )
   )
 }
@@ -57,8 +57,9 @@ export async function createKycAmlFulfillment(
 export async function createCreditScoreFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
-  acceptedApplication: ProcessedCredentialApplication
-): Promise<CredentialFulfillment> {
+  acceptedApplication: ProcessedCredentialApplication,
+  credentialStatus?: RevocationList2021Status
+): Promise<EncodedCredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
   const body: CreditScore = {
@@ -71,7 +72,11 @@ export async function createCreditScoreFulfillment(
   return createFullfillment(
     credentialSigner,
     acceptedApplication,
-    creditScoreVerifiableCredentialPayload(verifiablePresentation.holder, body)
+    creditScoreVerifiableCredentialPayload(
+      verifiablePresentation.holder,
+      body,
+      credentialStatus
+    )
   )
 }
 
@@ -79,8 +84,8 @@ export async function createFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
   application: ProcessedCredentialApplication,
-  credentialStatus?: CredentialStatus
-): Promise<CredentialFulfillment> {
+  credentialStatus?: RevocationList2021Status
+): Promise<EncodedCredentialFulfillment> {
   switch (application.credential_application.manifest_id) {
     case KYCAML_ATTESTATION_MANIFEST_ID:
       return createKycAmlFulfillment(
@@ -90,7 +95,12 @@ export async function createFulfillment(
         credentialStatus
       )
     case CREDIT_SCORE_ATTESTATION_MANIFEST_ID:
-      return createCreditScoreFulfillment(user, credentialSigner, application)
+      return createCreditScoreFulfillment(
+        user,
+        credentialSigner,
+        application,
+        credentialStatus
+      )
     default:
       return null
   }

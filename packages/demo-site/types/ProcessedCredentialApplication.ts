@@ -1,21 +1,27 @@
-import { ClaimFormatDesignation, PresentationSubmission } from "@centre/verity"
-import { VerifiedPresentation } from "did-jwt-vc"
+import {
+  ClaimFormatDesignation,
+  DecodedCredentialApplication,
+  PresentationSubmission,
+  Verifiable,
+  W3CPresentation
+} from "@centre/verity"
 import { ValidationCheck } from "./Matches"
-
-export class ProcessedCredentialApplication {
+export class ProcessedCredentialApplication
+  implements DecodedCredentialApplication
+{
   credential_application: {
     id: string
     manifest_id: string
     format: ClaimFormatDesignation
   }
   presentation_submission?: PresentationSubmission
-  presentation: VerifiedPresentation
+  presentation: Verifiable<W3CPresentation>
   validationChecks: Map<string, ValidationCheck[]>
 
   constructor(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     credential_application: any,
-    presentation: VerifiedPresentation,
+    presentation: Verifiable<W3CPresentation>,
     validationChecks: Map<string, ValidationCheck[]>,
     presentation_submission?: PresentationSubmission
   ) {
