@@ -10,7 +10,8 @@ import {
   RevocationListCredential,
   Verifiable,
   W3CCredential,
-  W3CPresentation
+  W3CPresentation,
+  RevocablePresentation
 } from "../types"
 import { didKeyResolver } from "./didKey"
 
@@ -107,7 +108,7 @@ export async function decodeVerifiableCredential(
  */
 export async function decodeVerifiablePresentation(
   vpJwt: JWT
-): Promise<Verifiable<W3CPresentation>> {
+): Promise<Verifiable<W3CPresentation> | RevocablePresentation> {
   try {
     const res = await verifyPresentation(vpJwt, didKeyResolver)
     return res.verifiablePresentation

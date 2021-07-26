@@ -29,12 +29,12 @@ export async function createFullfillment(
     ) as DescriptorMap[]
   }
 
-  const jwtCredentials: JWT[] = (await asyncMap(
+  const jwtCredentials: JWT[] = await asyncMap<JwtCredentialPayload, JWT>(
     [credentials].flat(),
     (credential) => {
       return credentialSigner.signVerifiableCredential(credential)
     }
-  )) as JWT[]
+  )
 
   const presentation = await credentialSigner.signVerifiablePresentation(
     verifiablePresentationPayload(
