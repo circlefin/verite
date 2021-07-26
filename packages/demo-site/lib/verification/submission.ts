@@ -2,6 +2,7 @@ import {
   EncodedVerificationSubmission,
   PresentationDefinition
 } from "@centre/verity"
+import { has } from "lodash"
 import {
   processVerificationSubmission,
   messageToVerificationFailure
@@ -61,6 +62,6 @@ export async function validateVerificationSubmission(
   return processed
 }
 
-function hasPaths(application: Record<string, unknown>, keys: string[]) {
-  return keys.some((key) => application[key] !== undefined)
+function hasPaths(obj: Record<string, unknown>, keys: string[]) {
+  return keys.every((key) => has(obj, key))
 }

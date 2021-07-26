@@ -1,4 +1,5 @@
 import { EncodedCredentialApplication } from "@centre/verity"
+import { has } from "lodash"
 import {
   processCredentialApplication,
   messageToVerificationFailure
@@ -44,6 +45,6 @@ export async function validateCredentialSubmission(
   return processed
 }
 
-function hasPaths(application: Record<string, unknown>, keys: string[]) {
-  return keys.some((key) => application[key] !== undefined)
+function hasPaths(obj: Record<string, unknown>, keys: string[]) {
+  return keys.every((key) => has(obj, key))
 }

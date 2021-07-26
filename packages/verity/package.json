@@ -19,6 +19,7 @@
     "@transmute/did-key-ed25519": "^0.3.0-unstable.4",
     "did-jwt-vc": "^2.1.4",
     "did-resolver": "^3.1.0",
+    "lodash": "^4.17.21",
     "multibase": "^4.0.4",
     "multicodec": "^3.1.0",
     "schema-dts": "^0.9.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
+    "@types/lodash": "^4.14.171",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
