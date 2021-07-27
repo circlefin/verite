@@ -1,9 +1,8 @@
 import { EncodedVerificationSubmission } from "@centre/verity"
-import { NextApiHandler } from "next"
-import { methodNotAllowed, validationError } from "lib/api-fns"
+import { apiHandler, methodNotAllowed, validationError } from "lib/api-fns"
 import { validateVerificationSubmission } from "lib/verification/submission"
 
-const handler: NextApiHandler = async (req, res) => {
+export default apiHandler(async (req, res) => {
   if (req.method !== "POST") {
     return methodNotAllowed(res)
   }
@@ -16,6 +15,4 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   res.json({ status: "ok" })
-}
-
-export default handler
+})

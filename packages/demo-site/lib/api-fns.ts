@@ -1,13 +1,14 @@
-import { NextApiResponse } from "next"
+import { NextApiHandler, NextApiResponse } from "next"
 import { ValidationError, ValidationFailure } from "types"
 
-export type ApiError = {
+export type ApiErrorResponse = {
   status: number
   message: string
+  errors?: ValidationFailure[]
 }
 
 export function apiError(
-  res: NextApiResponse,
+  res: NextApiResponse<ApiErrorResponse>,
   status: number,
   message: string,
   errors?: ValidationFailure[]
@@ -19,18 +20,36 @@ export function apiError(
   })
 }
 
-export function notFound(res: NextApiResponse): void {
+export function notFound(res: NextApiResponse<ApiErrorResponse>): void {
   apiError(res, 404, "Not found")
 }
 
-export function methodNotAllowed(res: NextApiResponse): void {
+export function methodNotAllowed(res: NextApiResponse<ApiErrorResponse>): void {
   apiError(res, 405, "Method not allowed")
 }
 
-export function validationError(res: NextApiResponse, error: Error): void {
+export function validationError(
+  res: NextApiResponse<ApiErrorResponse>,
+  error: Error
+): void {
   if (error instanceof ValidationError) {
     apiError(res, 400, error.message, error.failures)
   } else {
     apiError(res, 400, error.message)
+  }
+}
+
+/**
+ * Wrapper for API requests which handles API Errors and basic logging
+ */
+export function apiHandler<T>(
+  handler: NextApiHandler<T | ApiErrorResponse>
+): NextApiHandler<T | ApiErrorResponse> {
+  return async (req, res) => {
+    if (process.env.NODE_ENV !== "test") {
+      console.info(`> ${req.method} ${req.url}`)
+    }
+
+    return handler(req, res)
   }
 }

@@ -1,9 +1,7 @@
 import { VerificationRequest } from "@centre/verity"
-import { NextApiHandler } from "next"
+import { apiHandler } from "lib/api-fns"
 import { kycVerificationRequest } from "lib/verification/requests"
 
-const handler: NextApiHandler<VerificationRequest> = (req, res) => {
+export default apiHandler<VerificationRequest>(async (req, res) => {
   res.json(kycVerificationRequest())
-}
-
-export default handler
+})
