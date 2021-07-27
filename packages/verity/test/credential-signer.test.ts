@@ -1,5 +1,8 @@
-import { JwtCredentialPayload } from "did-jwt-vc"
-import { CredentialSigner, decodeVerifiableCredential } from ".."
+import {
+  CredentialSigner,
+  decodeVerifiableCredential,
+  JwtCredentialPayload
+} from ".."
 
 describe("VC signing", () => {
   it("signs a VC", async () => {
@@ -24,12 +27,10 @@ describe("VC signing", () => {
     }
     const result = await credentialSigner.signVerifiableCredential(vcPayload)
     const decoded = await decodeVerifiableCredential(result)
-    expect(decoded.verifiableCredential.type.length).toEqual(1)
-    expect(decoded.verifiableCredential.type[0]).toEqual("VerifiableCredential")
-    expect(decoded.verifiableCredential.credentialSubject.degree.type).toEqual(
-      "BachelorDegree"
-    )
-    expect(decoded.verifiableCredential.credentialSubject.degree.name).toEqual(
+    expect(decoded.type.length).toEqual(1)
+    expect(decoded.type[0]).toEqual("VerifiableCredential")
+    expect(decoded.credentialSubject.degree.type).toEqual("BachelorDegree")
+    expect(decoded.credentialSubject.degree.name).toEqual(
       "Baccalauréat en musiques numériques"
     )
   })

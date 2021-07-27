@@ -1,13 +1,17 @@
 import {
-  CredentialApplication,
   CredentialManifest,
+  DecodedVerificationSubmission,
   decodeVerifiablePresentation,
   InputDescriptor,
   PresentationDefinition,
-  VerificationSubmission
+  EncodedVerificationSubmission,
+  DecodedCredentialApplication,
+  EncodedCredentialApplication,
+  W3CCredential,
+  W3CPresentation,
+  Verifiable
 } from "@centre/verity"
 import Ajv from "ajv"
-import { VerifiableCredential, VerifiablePresentation } from "did-jwt-vc"
 import jsonpath from "jsonpath"
 import { vcSchema, vpSchema } from "./schemas"
 
@@ -56,11 +60,10 @@ function ajvErrorToVerificationFailures(errors: any): ValidationFailure[] {
   return convertedErrors
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateSchema(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  input: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  schema: any,
+  input: Verifiable<W3CCredential | W3CPresentation>,
+  schema: Record<string, unknown>,
   errors: ValidationFailure[]
 ): boolean {
   const validate = ajv.compile(schema)
@@ -72,25 +75,25 @@ function validateSchema(
 }
 
 export function validateVc(
-  vc: VerifiableCredential,
+  vc: Verifiable<W3CCredential>,
   errors: ValidationFailure[]
 ): boolean {
   return validateSchema(vc, vcSchema, errors)
 }
 
 export function validateVp(
-  vp: VerifiablePresentation,
+  vp: Verifiable<W3CPresentation>,
   errors: ValidationFailure[]
 ): boolean {
   return validateSchema(vp, vpSchema, errors)
 }
 
 export function validateInputDescriptors(
-  creds: Map<string, VerifiableCredential[]>,
+  creds: Map<string, Verifiable<W3CCredential>[]>,
   descriptors: InputDescriptor[]
-): InputDescriptorEvaluation[] {
-  return descriptors.map((descriptor) => {
-    const credResults = descriptor.schema.reduce((matches, obj) => {
+): Map<string, ValidationCheck[]> {
+  return descriptors.reduce((map, descriptor) => {
+    map[descriptor.id] = descriptor.schema.reduce((matches, obj) => {
       const candidates = creds[obj.uri]
       matches = !candidates
         ? matches
@@ -98,61 +101,43 @@ export function validateInputDescriptors(
             candidates.map((cred) => {
               const constraints = descriptor.constraints
               if (!constraints || !constraints.fields) {
-                return new CredentialEvaluation(constraints, null, null, cred)
+                return new ValidationCheck(descriptor.id, cred, [])
               }
-              const fieldChecks = new Array<FieldConstraintEvaluation>()
-              let failed = false
-              for (const field of constraints.fields) {
-                const pathEvaluations = new Array<PathEvaluation>()
-                const pathMatch = field.path.some((path) => {
-                  try {
-                    const values = jsonpath.query(cred, path)
-                    const hasMatch =
-                      values.length === 0
-                        ? false
-                        : !field.filter || ajv.validate(field.filter, values[0])
-                    pathEvaluations.push({
-                      path,
-                      value: values.length > 0 ? values[0] : null
-                    })
-                    return hasMatch as boolean
-                  } catch (err) {
-                    console.log(err)
-                    pathEvaluations.push({path, value: null})
-                    return false
-                  }
-                })
-                const match = pathMatch
-                  ? pathEvaluations[pathEvaluations.length - 1]
-                  : null
-                const failures = pathMatch ? null : pathEvaluations
-                fieldChecks.push(
-                  new FieldConstraintEvaluation(field, match, failures)
+              const xform = constraints.fields.map((field, fieldIndex) => {
+                const pathMatchResults = field.path.reduce(
+                  (pathMatches: PathMatch[], path) => {
+                    try {
+                      const values = jsonpath.query(cred, path)
+                      if (values.length === 0) return pathMatches
+                      if (
+                        !field.filter ||
+                        ajv.validate(field.filter, values[0])
+                      ) {
+                        pathMatches.push(
+                          new PathMatch(path, !field.filter ? "*" : values[0])
+                        )
+                      }
+                      return pathMatches
+                    } catch (e) {
+                      console.error(e)
+                      return pathMatches
+                    }
+                  },
+                  new Array<PathMatch>()
                 )
-                // all field checks must pass; quit early
-                if (!pathMatch) {
-                  failed = true
-                  break
-                }
-              }
-              return new CredentialEvaluation(
-                constraints,
-                failed ? null : fieldChecks,
-                failed
-                  ? fieldChecks[ajvErrorToVerificationFailures.length - 1]
-                  : null,
-                cred
-              )
+                return new ConstraintCheck(fieldIndex, pathMatchResults)
+              })
+              return new ValidationCheck(descriptor.id, cred, xform)
             })
           )
       return matches
     }, [])
-    return new InputDescriptorEvaluation(descriptor.id, credResults)
-  })
+    return map
+  }, new Map<string, ValidationCheck[]>())
 }
 
 function mapInputsToDescriptors(
-  submission: VerificationSubmission,
+  submission: DecodedVerificationSubmission,
   definition: PresentationDefinition
 ) {
   return submission.presentation_submission.descriptor_map.reduce((map, d) => {
@@ -160,17 +145,19 @@ function mapInputsToDescriptors(
     const values = jsonpath.query(submission, d.path)
     map[match.schema[0].uri] = values
     return map
-  }, new Map<string, VerifiableCredential[]>())
+  }, new Map<string, Verifiable<W3CCredential>[]>())
 }
 
 export async function processVerificationSubmission(
-  submission: VerificationSubmission,
+  submission: EncodedVerificationSubmission,
   definition: PresentationDefinition
 ): Promise<ProcessedVerificationSubmission> {
-  const decoded = await decodeVerifiablePresentation(submission.presentation)
-  const converted = {
+  const presentation = await decodeVerifiablePresentation(
+    submission.presentation
+  )
+  const converted: DecodedVerificationSubmission = {
     presentation_submission: submission.presentation_submission,
-    presentation: decoded.verifiablePresentation
+    presentation
   }
 
   const mapped = mapInputsToDescriptors(converted, definition)
@@ -187,10 +174,7 @@ export async function processVerificationSubmission(
     })
   */
 
-  const evaluations = validateInputDescriptors(
-    mapped,
-    definition.input_descriptors
-  )
+  const checks = validateInputDescriptors(mapped, definition.input_descriptors)
 
   return new ProcessedVerificationSubmission(
     converted.presentation,
@@ -200,13 +184,15 @@ export async function processVerificationSubmission(
 }
 
 export async function processCredentialApplication(
-  application: CredentialApplication,
+  application: EncodedCredentialApplication,
   manifest: CredentialManifest
 ): Promise<ProcessedCredentialApplication> {
-  const decoded = await decodeVerifiablePresentation(application.presentation)
-  const converted = {
+  const presentation = await decodeVerifiablePresentation(
+    application.presentation
+  )
+  const converted: DecodedCredentialApplication = {
     ...application,
-    presentation: decoded.verifiablePresentation
+    presentation
   }
 
   const mapped = mapInputsToDescriptors(
@@ -222,7 +208,7 @@ export async function processCredentialApplication(
   return new ProcessedCredentialApplication(
     converted.credential_application,
     converted.presentation,
-    new Reporter(evaluations),
+    checks,
     converted.presentation_submission
   )
 }

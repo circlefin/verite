@@ -1,14 +1,16 @@
 import { EdDSASigner } from "did-jwt"
 import {
   createVerifiableCredentialJwt,
-  createVerifiablePresentationJwt,
+  createVerifiablePresentationJwt
+} from "did-jwt-vc"
+import {
   CredentialPayload,
   Issuer,
   JwtCredentialPayload,
   JwtPresentationPayload,
-  PresentationPayload
-} from "did-jwt-vc"
-import { JWT } from "../types"
+  PresentationPayload,
+  JWT
+} from "../types"
 
 export class CredentialSigner {
   did: string

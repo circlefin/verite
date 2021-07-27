@@ -1,7 +1,8 @@
 import {
-  CredentialApplication,
-  CredentialFulfillment,
-  decodeVerifiablePresentation
+  decodeVerifiablePresentation,
+  EncodedCredentialApplication,
+  EncodedCredentialFulfillment,
+  RevocableCredential
 } from "@centre/verity"
 import { NextApiHandler } from "next"
 import { ApiError } from "next/dist/next-server/server/api-utils"
@@ -13,7 +14,7 @@ import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
 import { ProcessedCredentialApplication } from "types"
 
-const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
+const handler: NextApiHandler<EncodedCredentialFulfillment | ApiError> = async (
   req,
   res
 ) => {
@@ -27,7 +28,7 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
     return notFound(res)
   }
 
-  const application: CredentialApplication = req.body
+  const application: EncodedCredentialApplication = req.body
   let acceptedApplication: ProcessedCredentialApplication
 
   try {
@@ -36,7 +37,7 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
     return validationError(res, err)
   }
 
-  const fulfillment: CredentialFulfillment = await createFulfillment(
+  const fulfillment: EncodedCredentialFulfillment = await createFulfillment(
     user,
     credentialSigner,
     acceptedApplication,
@@ -51,8 +52,9 @@ const handler: NextApiHandler<CredentialFulfillment | ApiError> = async (
   const decodedPresentation = await decodeVerifiablePresentation(
     fulfillment.presentation
   )
+
   const decodedCredential =
-    decodedPresentation.verifiablePresentation.verifiableCredential
+    decodedPresentation.verifiableCredential as RevocableCredential[]
 
   storeRevocableCredential(decodedCredential, user.id)
 

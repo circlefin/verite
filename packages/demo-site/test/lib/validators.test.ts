@@ -39,7 +39,7 @@ describe("Submission validator", () => {
     const fulfillmentVP = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
-    const clientVC = fulfillmentVP.payload.vp.verifiableCredential[0]
+    const clientVC = fulfillmentVP.verifiableCredential[0]
     const kycRequest = kycVerificationRequest()
     const submission = await createVerificationSubmission(
       clientDidKey,

@@ -3,14 +3,17 @@ import {
   createCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey,
-  VerificationError
+  Revocable,
+  RevocablePresentation,
+  Verifiable,
+  VerificationError,
+  W3CCredential
 } from "@centre/verity"
 import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
-import { ValidationError } from "types"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =
@@ -71,11 +74,11 @@ describe("issuance", () => {
       "KYCAMLAttestation"
     )
 
-    const { verifiablePresentation } = await decodeVerifiablePresentation(
+    const verifiablePresentation = (await decodeVerifiablePresentation(
       fulfillment.presentation
-    )
+    )) as RevocablePresentation
 
-    await asyncMap(
+    await asyncMap<Revocable<Verifiable<W3CCredential>>, void>(
       verifiablePresentation.verifiableCredential,
       async (verifiableCredential) => {
         expect(verifiableCredential.type).toEqual([
