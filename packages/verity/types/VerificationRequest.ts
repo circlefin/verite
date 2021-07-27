@@ -13,5 +13,5 @@ export type VerificationRequest = {
     callback_url?: string
     challenge?: string
   }
-  presentation_definition?: PresentationDefinition
+  presentation_definition: PresentationDefinition
 }
