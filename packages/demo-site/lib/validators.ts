@@ -92,7 +92,7 @@ export function validateInputDescriptors(
   descriptors: InputDescriptor[]
 ): ValidationCheck[] {
   return descriptors.reduce((map, descriptor) => {
-   const credentialResults = descriptor.schema.reduce((matches, obj) => {
+    const credentialResults = descriptor.schema.reduce((matches, obj) => {
       const candidates = creds[obj.uri]
       matches = !candidates
         ? matches
@@ -109,7 +109,10 @@ export function validateInputDescriptors(
                 const pathMatch = field.path.some((path) => {
                   try {
                     const values = jsonpath.query(cred, path)
-                    const hasMatch = !field.filter || (values.length > 0 && ajv.validate(field.filter, values[0]))
+                    const hasMatch =
+                      !field.filter ||
+                      (values.length > 0 &&
+                        ajv.validate(field.filter, values[0]))
                     pathEvaluations.push({
                       path,
                       match: hasMatch as boolean,
@@ -118,15 +121,17 @@ export function validateInputDescriptors(
                     return hasMatch as boolean
                   } catch (err) {
                     console.log(err)
-                    pathEvaluations.push({path, match: false, value: null})
+                    pathEvaluations.push({ path, match: false, value: null })
                     return false
                   }
                 })
-                const match = pathMatch
-                  ? pathEvaluations.slice(-1)[0]
-                  : null
+                const match = pathMatch ? pathEvaluations.slice(-1)[0] : null
                 fieldChecks.push(
-                  new FieldConstraintEvaluation(field, match, pathMatch ? null : pathEvaluations)
+                  new FieldConstraintEvaluation(
+                    field,
+                    match,
+                    pathMatch ? null : pathEvaluations
+                  )
                 )
                 // all field checks must pass; quit early
                 if (!pathMatch) {
@@ -181,7 +186,10 @@ export async function processVerificationSubmission(
     })
   */
 
-  const evaluations = validateInputDescriptors(mapped, definition.input_descriptors)
+  const evaluations = validateInputDescriptors(
+    mapped,
+    definition.input_descriptors
+  )
   return new ProcessedVerificationSubmission(
     converted.presentation,
     evaluations,

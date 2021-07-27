@@ -1,4 +1,3 @@
-
 import {
   DecodedVerificationSubmission,
   PresentationSubmission,
@@ -7,7 +6,6 @@ import {
 } from "@centre/verity"
 import { ValidationCheck, ValidationCheckFormatter } from "./Matches"
 import { CredentialMatch, ValidationFailure } from "types"
-
 
 export class ProcessedVerificationSubmission
   implements DecodedVerificationSubmission
@@ -39,8 +37,4 @@ export class ProcessedVerificationSubmission
   results(): CredentialMatch[] {
     return this.formatter.results()
   }
-
-
-
-
 }

@@ -1,4 +1,3 @@
-
 import {
   ClaimFormatDesignation,
   DecodedCredentialApplication,
@@ -11,7 +10,6 @@ import { CredentialMatch, ValidationFailure } from "./ValidationResults"
 export class ProcessedCredentialApplication
   implements DecodedCredentialApplication
 {
-
   credential_application: {
     id: string
     manifest_id: string
@@ -26,7 +24,7 @@ export class ProcessedCredentialApplication
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     credential_application: any,
     presentation: Verifiable<W3CPresentation>,
-    validationChecks:  ValidationCheck[],
+    validationChecks: ValidationCheck[],
     presentation_submission?: PresentationSubmission
   ) {
     this.credential_application = credential_application
@@ -47,5 +45,4 @@ export class ProcessedCredentialApplication
   results(): CredentialMatch[] {
     return this.formatter.results()
   }
-
 }

@@ -15,7 +15,11 @@ import {
 } from "lib/validators"
 import { kycVerificationRequest } from "lib/verification/requests"
 import { findPresentationDefinitionById } from "lib/verification/submission"
-import { CredentialResults, FieldConstraintEvaluation, ValidationCheck } from "types"
+import {
+  CredentialResults,
+  FieldConstraintEvaluation,
+  ValidationCheck
+} from "types"
 
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
@@ -88,10 +92,16 @@ describe("Submission validator", () => {
       path: ["path1", "path2", "path3"],
       purpose: "checks that input is suitable"
     }
-    const success = {path: "string1", match: true, value: "test1" }
+    const success = { path: "string1", match: true, value: "test1" }
 
-    const fieldConstraintEvaluation = new FieldConstraintEvaluation(inputDescriptorConstraintField, success, null)
-    const validationCheck = new ValidationCheck("id1", [new CredentialResults(null, [fieldConstraintEvaluation])])
+    const fieldConstraintEvaluation = new FieldConstraintEvaluation(
+      inputDescriptorConstraintField,
+      success,
+      null
+    )
+    const validationCheck = new ValidationCheck("id1", [
+      new CredentialResults(null, [fieldConstraintEvaluation])
+    ])
     const match = validationCheck.results()
 
     expect(match[0].inputDescriptorId).toEqual("id1")
@@ -105,15 +115,23 @@ describe("Submission validator", () => {
       purpose: "checks that input is suitable"
     }
     const peArray = [
-      {path: "string1", match: false, value:"test1"},
-      {path: "string1", match: false, value: "test2"}
+      { path: "string1", match: false, value: "test1" },
+      { path: "string1", match: false, value: "test2" }
     ]
 
-    const fieldConstraintEvaluation = new FieldConstraintEvaluation(inputDescriptorConstraintField, null, peArray)
+    const fieldConstraintEvaluation = new FieldConstraintEvaluation(
+      inputDescriptorConstraintField,
+      null,
+      peArray
+    )
 
-    const validationCheck = new ValidationCheck("id1", [new CredentialResults(null, [fieldConstraintEvaluation])])
+    const validationCheck = new ValidationCheck("id1", [
+      new CredentialResults(null, [fieldConstraintEvaluation])
+    ])
 
     const errors = validationCheck.errors()
-    expect(errors[0].message).toEqual("Credential failed to meet criteria specified by input descriptor id1")
+    expect(errors[0].message).toEqual(
+      "Credential failed to meet criteria specified by input descriptor id1"
+    )
   })
 })

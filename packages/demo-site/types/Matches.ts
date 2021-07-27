@@ -78,13 +78,13 @@ export class ValidationCheck {
   }
 
   passed(): boolean {
-    return this.credentialResults.some(c => c.passed())
+    return this.credentialResults.some((c) => c.passed())
   }
 
   results(): CredentialMatch[] {
     if (!this.passed()) return null
     return this.credentialResults
-      .filter(c => c.passed())
+      .filter((c) => c.passed())
       .flatMap((d) => {
         return {
           inputDescriptorId: this.descriptorId,
@@ -102,7 +102,7 @@ export class ValidationCheck {
   errors(): ValidationFailure[] {
     if (this.passed()) return null
     return this.credentialResults
-      .filter(c => !c.passed())
+      .filter((c) => !c.passed())
       .flatMap((d) => {
         return {
           message: `Credential failed to meet criteria specified by input descriptor ${this.descriptorId}`,

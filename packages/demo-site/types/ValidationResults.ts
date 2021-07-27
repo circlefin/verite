@@ -3,7 +3,7 @@ import { VerifiedCredential } from "@centre/verity"
 /**
  * Results of a path evaluation.
  */
- export type PathEvaluation = {
+export type PathEvaluation = {
   path: string
   match: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

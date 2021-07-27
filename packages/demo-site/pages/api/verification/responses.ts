@@ -11,7 +11,7 @@ const handler: NextApiHandler = async (req, res) => {
   const submission: EncodedVerificationSubmission = req.body
   try {
     await validateVerificationSubmission(submission)
-    // Note: we're making a distinction between malformed input (which gives an error to the caller) vs a 
+    // Note: we're making a distinction between malformed input (which gives an error to the caller) vs a
     // submission that's not been accepted. Results of this should be posted to the callback.
     /*
     const processed = await validateVerificationSubmission(submission)
@@ -20,7 +20,6 @@ const handler: NextApiHandler = async (req, res) => {
     } else {
       const errors = processed.errors()
     }*/
-
   } catch (err) {
     return validationError(res, err)
   }
