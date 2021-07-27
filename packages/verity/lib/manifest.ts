@@ -58,7 +58,7 @@ export function createManifest(
 
 export function createKycAmlManifest(
   issuer: CredentialIssuer,
-  styles: EntityStyle | string = {}
+  styles: EntityStyle = {}
 ): CredentialManifest {
   const outputDescriptors: OutputDescriptor[] = [
     {
@@ -121,7 +121,7 @@ export function createKycAmlManifest(
 
 export function createCreditScoreManifest(
   issuer: CredentialIssuer,
-  styles: EntityStyle | string = {}
+  styles: EntityStyle = {}
 ): CredentialManifest {
   const outputDescriptors: OutputDescriptor[] = [
     {
