@@ -1,4 +1,7 @@
-import { InputDescriptorConstraintStatusDirective } from "@centre/verity"
+import {
+  InputDescriptorConstraintStatusDirective,
+  VerificationRequest
+} from "@centre/verity"
 import { compact } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 
@@ -6,8 +9,7 @@ const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 const KYC_PRESENTATION_DEFINITION_ID = "KYCAMLPresentationDefinition"
 
 // TODO(kim)
-//eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const kycVerificationRequest = () => {
+export const kycVerificationRequest = (): VerificationRequest => {
   const now = Date.now()
   const expires = now + ONE_MONTH
 
