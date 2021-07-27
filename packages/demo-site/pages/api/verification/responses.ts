@@ -2,7 +2,11 @@ import { EncodedVerificationSubmission } from "@centre/verity"
 import { apiHandler, methodNotAllowed, validationError } from "lib/api-fns"
 import { validateVerificationSubmission } from "lib/verification/submission"
 
-export default apiHandler(async (req, res) => {
+type ResponseType = {
+  status: string
+}
+
+export default apiHandler<ResponseType>(async (req, res) => {
   if (req.method !== "POST") {
     return methodNotAllowed(res)
   }
