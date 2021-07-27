@@ -1,7 +1,7 @@
 import { CredentialApplication } from "@centre/verity"
 import {
   processCredentialApplication,
-  messageToVerificationFailure
+  messageToValidationFailure
 } from "../validators"
 import { findManifestById } from "./manifest"
 import {
@@ -21,7 +21,7 @@ export async function validateCredentialSubmission(
   ) {
     throw new ValidationError(
       "Missing required paths in Credential Application",
-      messageToVerificationFailure(
+      messageToValidationFailure(
         "Input doesn't have the required format for a Credential Application"
       )
     )
@@ -36,7 +36,7 @@ export async function validateCredentialSubmission(
   if (!manifest) {
     throw new ValidationError(
       "Invalid Manifest ID",
-      messageToVerificationFailure(
+      messageToValidationFailure(
         "This issuer doesn't issue credentials for the specified Manifest ID"
       )
     )

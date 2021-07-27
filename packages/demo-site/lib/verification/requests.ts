@@ -48,7 +48,7 @@ export const kycVerificationRequest = () => {
             },
             fields: [
               {
-                path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"], //"$.issuer.id"
+                path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"], 
                 purpose:
                   "We can only verify KYC credentials attested by a trusted authority.",
                 filter: {

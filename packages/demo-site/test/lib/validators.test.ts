@@ -15,8 +15,9 @@ import {
 } from "lib/validators"
 import { kycVerificationRequest } from "lib/verification/requests"
 import { findPresentationDefinitionById } from "lib/verification/submission"
+import { CredentialEvaluation, FieldConstraintEvaluation, InputDescriptorEvaluation } from "types"
 
-describe("VC validator", () => {
+describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
@@ -49,15 +50,18 @@ describe("VC validator", () => {
     const presDef = findPresentationDefinitionById(
       "KYCAMLPresentationDefinition"
     )
-    const result = await processVerificationSubmission(
-      submission,
-      presDef
-    )
+    const result = await processVerificationSubmission(submission, presDef)
     expect(result.accepted()).toBeTruthy()
-    const matches = result.validationChecks["kycaml_input"]
+
+    const errors = result.errors()
+    expect(errors).toHaveLength(0)
+
+    const matches = result.matches()
     expect(matches).toHaveLength(1)
-   // const theMatch = matches[0].fieldMatches[0].matches[0]
-   // expect(theMatch.path).toEqual("$.issuer.id")
+    const match = matches[0]
+    expect(match.inputDescriptorId).toEqual("kycaml_input")
+    expect(match.results).toHaveLength(1)
+    expect(match.results[0].match.path).toEqual("$.issuer.id")
   })
 
   it("validates a CredentialApplication", async () => {
@@ -77,8 +81,86 @@ describe("VC validator", () => {
     )
 
     expect(acceptedApplication.accepted()).toBeTruthy()
+  })
 
-    const matches = acceptedApplication.validationChecks["proofOfIdentifierControlVP"]
-    expect(matches).toHaveLength(1)
+  it("checks a match", async () => {
+    const inputDescriptorConstraintField = {
+      path: ["path1", "path2", "path3"],
+      purpose: "checks that input is suitable"
+    }
+    const success = {path: "string1", value: "test1" }
+
+    const fieldConstraintEvaluation = new FieldConstraintEvaluation(inputDescriptorConstraintField, success, null)
+    const credEval = new CredentialEvaluation(null, [fieldConstraintEvaluation], null, null)
+    const inputDescriptorEval = new InputDescriptorEvaluation("id1", [credEval])
+    const match = inputDescriptorEval.match()
+
+    expect(match).toEqual(
+      [
+        {
+          "inputDescriptorId": "id1",
+          "results": [
+            {
+              "constraint": {
+                "path": [
+                  "path1",
+                  "path2",
+                  "path3"
+                ],
+                "purpose": "checks that input is suitable"
+              },
+              "match": {
+                "path": "string1",
+                "value": "test1"
+              }
+            }
+          ]
+        }
+      ]
+    )
+  })
+
+  it("checks an error", async () => {
+    const inputDescriptorConstraintField = {
+      path: ["path1", "path2", "path3"],
+      purpose: "checks that input is suitable"
+    }
+    const peArray = [
+      {path: "string1", value:"test1"},
+      {path: "string1", value: "test2"}
+    ]
+
+    const fieldConstraintEvaluation = new FieldConstraintEvaluation(inputDescriptorConstraintField, null, peArray)
+    const credEval = new CredentialEvaluation(null, null, fieldConstraintEvaluation, null)
+    const inputDescriptorEval = new InputDescriptorEvaluation("id1", [credEval])
+    const errors = inputDescriptorEval.errors()
+    expect(errors).toEqual(
+      [
+        {
+          "message": "Credential failed to meet criteria specified by input descriptor id1",
+          "details": "Credential did not match constraint: checks that input is suitable",
+          "results": {
+            "constraint": {
+              "path": [
+                "path1",
+                "path2",
+                "path3"
+              ],
+              "purpose": "checks that input is suitable"
+            },
+            "failures": [
+              {
+                "path": "string1",
+                "value": "test1"
+              },
+              {
+                "path": "string1",
+                "value": "test2"
+              }
+            ]
+          }
+        }
+      ]
+    )
   })
 })

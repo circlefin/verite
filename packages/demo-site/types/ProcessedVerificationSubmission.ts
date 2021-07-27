@@ -1,28 +1,32 @@
 import { PresentationSubmission } from "@centre/verity"
 import { VerifiedPresentation } from "did-jwt-vc"
-import { ValidationCheck } from "./Matches"
+import { CredentialMatch, ValidationFailure, Reporter } from "types"
 
 export class ProcessedVerificationSubmission {
   presentation_submission?: PresentationSubmission
   presentation: VerifiedPresentation
-  validationChecks: Map<string, ValidationCheck[]>
+  reporter: Reporter
 
   constructor(
     presentation: VerifiedPresentation,
-    validationChecks: Map<string, ValidationCheck[]>,
+    reporter: Reporter,
     presentation_submission?: PresentationSubmission
   ) {
     this.presentation = presentation
-    this.validationChecks = validationChecks
+    this.reporter = reporter
     this.presentation_submission = presentation_submission
   }
 
   accepted(): boolean {
-    const accepted = Object.keys(this.validationChecks).every((key) => {
-      return this.validationChecks[key].every((c) => {
-        return c.passed()
-      })
-    })
-    return accepted
+    return this.reporter.passed()
   }
+
+  errors(): ValidationFailure[] {
+    return this.reporter.errors()
+  }
+
+  matches(): CredentialMatch[] {
+    return this.reporter.matches()
+  }
+
 }
