@@ -87,7 +87,7 @@ describe("Submission validator", () => {
     expect(acceptedApplication.accepted()).toBeTruthy()
   })
 
-  it("checks a match", async () => {
+  it("checks validation formatting for successful matches", async () => {
     const inputDescriptorConstraintField = {
       path: ["path1", "path2", "path3"],
       purpose: "checks that input is suitable"
@@ -109,7 +109,7 @@ describe("Submission validator", () => {
     expect(match[0].results[0].match.value).toEqual("test1")
   })
 
-  it("checks an error", async () => {
+  it("checks validation formatting for failed matches", async () => {
     const inputDescriptorConstraintField = {
       path: ["path1", "path2", "path3"],
       purpose: "checks that input is suitable"

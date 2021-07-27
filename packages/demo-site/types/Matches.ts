@@ -112,8 +112,7 @@ export class ValidationCheck {
               constraint: f.constraint,
               failures: f.failures()
             }
-          }),
-          credentialId: "d.credentialId TODO"
+          })
         }
       })
   }
