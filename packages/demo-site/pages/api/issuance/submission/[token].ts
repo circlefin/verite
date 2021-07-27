@@ -4,9 +4,12 @@ import {
   EncodedCredentialFulfillment,
   RevocableCredential
 } from "@centre/verity"
-import { NextApiHandler } from "next"
-import { ApiError } from "next/dist/next-server/server/api-utils"
-import { methodNotAllowed, notFound, validationError } from "lib/api-fns"
+import {
+  apiHandler,
+  methodNotAllowed,
+  notFound,
+  validationError
+} from "lib/api-fns"
 import { findUserFromTemporaryAuthToken } from "lib/database"
 import { pickListAndIndex, storeRevocableCredential } from "lib/database"
 import { createFulfillment } from "lib/issuance/fulfillment"
@@ -14,10 +17,7 @@ import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
 import { ProcessedCredentialApplication } from "types"
 
-const handler: NextApiHandler<EncodedCredentialFulfillment | ApiError> = async (
-  req,
-  res
-) => {
+export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   if (req.method !== "POST") {
     return methodNotAllowed(res)
   }
@@ -59,6 +59,4 @@ const handler: NextApiHandler<EncodedCredentialFulfillment | ApiError> = async (
   storeRevocableCredential(decodedCredential, user.id)
 
   res.json(fulfillment)
-}
-
-export default handler
+})
