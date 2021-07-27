@@ -1,6 +1,6 @@
 import { Bits } from "@fry/bits"
 import base64js from "base64-js"
-import { cloneDeep, has } from "lodash"
+import { has } from "lodash"
 import { inflate, deflate } from "pako"
 import {
   CredentialPayload,
@@ -23,7 +23,7 @@ export const generateRevocationList = async (
   signer: CredentialSigner,
   issuanceDate = new Date()
 ): Promise<RevocationListCredential> => {
-  const encodedList = await generateBitstring(credentials)
+  const encodedList = generateBitstring(credentials)
 
   const vcPayload: RevocationList<CredentialPayload> = {
     "@context": [
@@ -58,13 +58,11 @@ export const revokeCredential = async (
     return statusList
   }
 
-  const oldList = await expandBitstring(
-    statusList.credentialSubject.encodedList
-  )
+  const list = await expandBitstring(statusList.credentialSubject.encodedList)
+  const index = parseInt(credential.credentialStatus.statusListIndex, 10)
+  list.push(index)
 
-  const newIndex = parseInt(credential.credentialStatus.statusListIndex, 10)
-
-  return updateRevocationList(signer, statusList, oldList.concat([newIndex]))
+  return await generateRevocationList(list, statusList.id!, signer.did, signer)
 }
 
 /**
@@ -80,17 +78,15 @@ export const unrevokeCredential = async (
     return statusList
   }
 
-  const oldList = await expandBitstring(
-    statusList.credentialSubject.encodedList
-  )
-  const index = oldList.indexOf(
+  const list = await expandBitstring(statusList.credentialSubject.encodedList)
+  const index = list.indexOf(
     parseInt(credential.credentialStatus.statusListIndex, 10)
   )
   if (index !== -1) {
-    oldList.splice(index, 1)
+    list.splice(index, 1)
   }
 
-  return updateRevocationList(signer, statusList, oldList)
+  return await generateRevocationList(list, statusList.id!, signer.did, signer)
 }
 
 /**
@@ -188,20 +184,4 @@ export const isRevocable = (
   credential: Verifiable<W3CCredential> | RevocableCredential
 ): boolean => {
   return has(credential, "credentialStatus.statusListIndex")
-}
-
-/**
- * Generate a new RevocationList given an update list
- */
-async function updateRevocationList(
-  signer: CredentialSigner,
-  statusList: RevocationListCredential,
-  list: number[]
-): Promise<RevocationListCredential> {
-  const newPayload = cloneDeep(statusList)
-  const newEncodedList = await generateBitstring(list)
-  newPayload.credentialSubject.encodedList = newEncodedList
-
-  const vcJwt = await signer.signVerifiableCredential(newPayload)
-  return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }
