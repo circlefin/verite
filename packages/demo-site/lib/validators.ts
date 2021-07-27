@@ -16,14 +16,13 @@ import jsonpath from "jsonpath"
 import { vcSchema, vpSchema } from "./schemas"
 
 import {
-  FieldConstraintEvaluation,
-  PathEvaluation,
   ProcessedCredentialApplication,
   ProcessedVerificationSubmission,
-  Reporter,
-  InputDescriptorEvaluation,
+  ValidationCheck,
   ValidationFailure,
-  CredentialEvaluation
+  FieldConstraintEvaluation,
+  PathEvaluation,
+  CredentialResults
 } from "types"
 
 const ajv = new Ajv()
@@ -91,9 +90,9 @@ export function validateVp(
 export function validateInputDescriptors(
   creds: Map<string, Verifiable<W3CCredential>[]>,
   descriptors: InputDescriptor[]
-): Map<string, ValidationCheck[]> {
+): ValidationCheck[] {
   return descriptors.reduce((map, descriptor) => {
-    map[descriptor.id] = descriptor.schema.reduce((matches, obj) => {
+   const credentialResults = descriptor.schema.reduce((matches, obj) => {
       const candidates = creds[obj.uri]
       matches = !candidates
         ? matches
@@ -101,39 +100,47 @@ export function validateInputDescriptors(
             candidates.map((cred) => {
               const constraints = descriptor.constraints
               if (!constraints || !constraints.fields) {
-                return new ValidationCheck(descriptor.id, cred, [])
+                return new CredentialResults(cred, [])
               }
-              const xform = constraints.fields.map((field, fieldIndex) => {
-                const pathMatchResults = field.path.reduce(
-                  (pathMatches: PathMatch[], path) => {
-                    try {
-                      const values = jsonpath.query(cred, path)
-                      if (values.length === 0) return pathMatches
-                      if (
-                        !field.filter ||
-                        ajv.validate(field.filter, values[0])
-                      ) {
-                        pathMatches.push(
-                          new PathMatch(path, !field.filter ? "*" : values[0])
-                        )
-                      }
-                      return pathMatches
-                    } catch (e) {
-                      console.error(e)
-                      return pathMatches
-                    }
-                  },
-                  new Array<PathMatch>()
+
+              const fieldChecks = new Array<FieldConstraintEvaluation>()
+              for (const field of constraints.fields) {
+                const pathEvaluations = new Array<PathEvaluation>()
+                const pathMatch = field.path.some((path) => {
+                  try {
+                    const values = jsonpath.query(cred, path)
+                    const hasMatch = !field.filter || (values.length > 0 && ajv.validate(field.filter, values[0]))
+                    pathEvaluations.push({
+                      path,
+                      match: hasMatch as boolean,
+                      value: values.length > 0 ? values[0] : null
+                    })
+                    return hasMatch as boolean
+                  } catch (err) {
+                    console.log(err)
+                    pathEvaluations.push({path, match: false, value: null})
+                    return false
+                  }
+                })
+                const match = pathMatch
+                  ? pathEvaluations.slice(-1)[0]
+                  : null
+                fieldChecks.push(
+                  new FieldConstraintEvaluation(field, match, pathMatch ? null : pathEvaluations)
                 )
-                return new ConstraintCheck(fieldIndex, pathMatchResults)
-              })
-              return new ValidationCheck(descriptor.id, cred, xform)
+                // all field checks must pass; quit early
+                if (!pathMatch) {
+                  break
+                }
+              }
+              return new CredentialResults(cred, fieldChecks)
             })
           )
       return matches
     }, [])
+    map.push(new ValidationCheck(descriptor.id, credentialResults))
     return map
-  }, new Map<string, ValidationCheck[]>())
+  }, new Array<ValidationCheck>())
 }
 
 function mapInputsToDescriptors(
@@ -174,11 +181,10 @@ export async function processVerificationSubmission(
     })
   */
 
-  const checks = validateInputDescriptors(mapped, definition.input_descriptors)
-
+  const evaluations = validateInputDescriptors(mapped, definition.input_descriptors)
   return new ProcessedVerificationSubmission(
     converted.presentation,
-    new Reporter(evaluations),
+    evaluations,
     converted.presentation_submission
   )
 }
@@ -208,7 +214,7 @@ export async function processCredentialApplication(
   return new ProcessedCredentialApplication(
     converted.credential_application,
     converted.presentation,
-    checks,
+    evaluations,
     converted.presentation_submission
   )
 }

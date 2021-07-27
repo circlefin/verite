@@ -15,7 +15,7 @@ import {
 } from "lib/validators"
 import { kycVerificationRequest } from "lib/verification/requests"
 import { findPresentationDefinitionById } from "lib/verification/submission"
-import { CredentialEvaluation, FieldConstraintEvaluation, InputDescriptorEvaluation } from "types"
+import { CredentialResults, FieldConstraintEvaluation, ValidationCheck } from "types"
 
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
@@ -54,11 +54,11 @@ describe("Submission validator", () => {
     expect(result.accepted()).toBeTruthy()
 
     const errors = result.errors()
-    expect(errors).toHaveLength(0)
+    expect(errors).toBeNull()
 
-    const matches = result.matches()
-    expect(matches).toHaveLength(1)
-    const match = matches[0]
+    const results = result.results()
+    expect(results).toHaveLength(1)
+    const match = results[0]
     expect(match.inputDescriptorId).toEqual("kycaml_input")
     expect(match.results).toHaveLength(1)
     expect(match.results[0].match.path).toEqual("$.issuer.id")
@@ -88,36 +88,15 @@ describe("Submission validator", () => {
       path: ["path1", "path2", "path3"],
       purpose: "checks that input is suitable"
     }
-    const success = {path: "string1", value: "test1" }
+    const success = {path: "string1", match: true, value: "test1" }
 
     const fieldConstraintEvaluation = new FieldConstraintEvaluation(inputDescriptorConstraintField, success, null)
-    const credEval = new CredentialEvaluation(null, [fieldConstraintEvaluation], null, null)
-    const inputDescriptorEval = new InputDescriptorEvaluation("id1", [credEval])
-    const match = inputDescriptorEval.match()
+    const validationCheck = new ValidationCheck("id1", [new CredentialResults(null, [fieldConstraintEvaluation])])
+    const match = validationCheck.results()
 
-    expect(match).toEqual(
-      [
-        {
-          "inputDescriptorId": "id1",
-          "results": [
-            {
-              "constraint": {
-                "path": [
-                  "path1",
-                  "path2",
-                  "path3"
-                ],
-                "purpose": "checks that input is suitable"
-              },
-              "match": {
-                "path": "string1",
-                "value": "test1"
-              }
-            }
-          ]
-        }
-      ]
-    )
+    expect(match[0].inputDescriptorId).toEqual("id1")
+    expect(match[0].results[0].match.path).toEqual("string1")
+    expect(match[0].results[0].match.value).toEqual("test1")
   })
 
   it("checks an error", async () => {
@@ -126,41 +105,15 @@ describe("Submission validator", () => {
       purpose: "checks that input is suitable"
     }
     const peArray = [
-      {path: "string1", value:"test1"},
-      {path: "string1", value: "test2"}
+      {path: "string1", match: false, value:"test1"},
+      {path: "string1", match: false, value: "test2"}
     ]
 
     const fieldConstraintEvaluation = new FieldConstraintEvaluation(inputDescriptorConstraintField, null, peArray)
-    const credEval = new CredentialEvaluation(null, null, fieldConstraintEvaluation, null)
-    const inputDescriptorEval = new InputDescriptorEvaluation("id1", [credEval])
-    const errors = inputDescriptorEval.errors()
-    expect(errors).toEqual(
-      [
-        {
-          "message": "Credential failed to meet criteria specified by input descriptor id1",
-          "details": "Credential did not match constraint: checks that input is suitable",
-          "results": {
-            "constraint": {
-              "path": [
-                "path1",
-                "path2",
-                "path3"
-              ],
-              "purpose": "checks that input is suitable"
-            },
-            "failures": [
-              {
-                "path": "string1",
-                "value": "test1"
-              },
-              {
-                "path": "string1",
-                "value": "test2"
-              }
-            ]
-          }
-        }
-      ]
-    )
+
+    const validationCheck = new ValidationCheck("id1", [new CredentialResults(null, [fieldConstraintEvaluation])])
+
+    const errors = validationCheck.errors()
+    expect(errors[0].message).toEqual("Credential failed to meet criteria specified by input descriptor id1")
   })
 })

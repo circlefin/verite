@@ -1,8 +1,11 @@
+import { VerifiedCredential } from "@centre/verity"
+
 /**
  * Results of a path evaluation.
  */
  export type PathEvaluation = {
   path: string
+  match: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any
 }
@@ -15,7 +18,7 @@ export type RuleEvaluationResult = {
 
 export type CredentialMatch = {
   inputDescriptorId: string
-  credentialId: string
+  credential: VerifiedCredential
   results: RuleEvaluationResult[]
 }
 
