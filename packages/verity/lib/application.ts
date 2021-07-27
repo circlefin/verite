@@ -19,22 +19,26 @@ export async function createCredentialApplication(
     id: uuidv4(),
     manifest_id: manifest.id,
     format: {
-      jwt_vp: manifest.presentation_definition.format.jwt_vp
+      jwt_vp: manifest.presentation_definition?.format?.jwt_vp
     }
   }
 
-  const presentationSubmission = {
-    id: uuidv4(),
-    definition_id: manifest.presentation_definition.id,
-    descriptor_map: manifest.presentation_definition.input_descriptors.map(
-      (d) => {
-        return {
-          id: d.id,
-          format: "jwt_vp",
-          path: `$.presentation`
-        }
-      }
-    ) as DescriptorMap[]
+  let presentationSubmission
+  if (manifest.presentation_definition) {
+    presentationSubmission = {
+      id: uuidv4(),
+      definition_id: manifest.presentation_definition?.id,
+      descriptor_map:
+        manifest.presentation_definition?.input_descriptors?.map<DescriptorMap>(
+          (d) => {
+            return {
+              id: d.id,
+              format: "jwt_vp",
+              path: `$.presentation`
+            }
+          }
+        )
+    }
   }
 
   const payload = verifiablePresentationPayload(client.did)

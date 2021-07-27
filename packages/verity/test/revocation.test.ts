@@ -152,7 +152,7 @@ describe("Status List 2021", () => {
     })
 
     it("returns false if the given credential has a credentialSubject that is not revoked", async () => {
-      const revoke = []
+      const revokedCredentials: number[] = []
       const url = "https://example.com/credentials/status/3" // Need to create a list
       const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
       const signer = new CredentialSigner(
@@ -162,7 +162,7 @@ describe("Status List 2021", () => {
       const issued = new Date()
 
       const statusList = await generateRevocationList(
-        revoke,
+        revokedCredentials,
         url,
         issuer,
         signer,

@@ -18,15 +18,16 @@ export async function createFullfillment(
   const credentialFullfillment = {
     id: uuidv4(),
     manifest_id: application.credential_application.manifest_id,
-    descriptor_map: application.presentation_submission.descriptor_map.map(
-      (d, i) => {
-        return {
-          id: d.id,
-          format: "jwt_vc",
-          path: `$.presentation.credential[${i}]`
+    descriptor_map:
+      application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
+        (d, i) => {
+          return {
+            id: d.id,
+            format: "jwt_vc",
+            path: `$.presentation.credential[${i}]`
+          }
         }
-      }
-    ) as DescriptorMap[]
+      ) || []
   }
 
   const jwtCredentials: JWT[] = await asyncMap<JwtCredentialPayload, JWT>(
