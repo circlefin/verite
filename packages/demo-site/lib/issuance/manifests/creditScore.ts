@@ -12,9 +12,9 @@ export const creditScoreManifest: CredentialManifest =
       alt: "Credit Score Visual"
     },
     background: {
-      color: "#ff0000"
+      color: "#8B5CF6"
     },
     text: {
-      color: "#d4d400"
+      color: "#FFFFFF"
     }
   })

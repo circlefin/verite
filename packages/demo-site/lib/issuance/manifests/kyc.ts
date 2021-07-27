@@ -13,10 +13,10 @@ export const kycManifest: CredentialManifest = createKycAmlManifest(
       alt: "KYC+AML Visual"
     },
     background: {
-      color: "#ff0000"
+      color: "#EC4899"
     },
     text: {
-      color: "#d4d400"
+      color: "#FFFFFF"
     }
   }
 )
