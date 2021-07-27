@@ -4,7 +4,7 @@ import { manifestIssuer } from "./issuer"
 export const creditScoreManifest: CredentialManifest =
   createCreditScoreManifest(manifestIssuer, {
     thumbnail: {
-      uri: `${process.env.HOST}/img/logo.png`,
+      uri: `${process.env.HOST}/img/credit-score-thumbnail.png`,
       alt: "Verity Logo"
     },
     hero: {
