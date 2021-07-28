@@ -1,5 +1,5 @@
 import {
-  createFullfillment,
+  generateFulfillment,
   CredentialSigner,
   CreditScore,
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
@@ -43,7 +43,7 @@ export async function createKycAmlFulfillment(
     ]
   }
 
-  return createFullfillment(
+  return generateFulfillment(
     credentialSigner,
     acceptedApplication,
     kycAmlVerifiableCredentialPayload(
@@ -69,7 +69,7 @@ export async function createCreditScoreFulfillment(
     provider: "Experian"
   }
 
-  return createFullfillment(
+  return generateFulfillment(
     credentialSigner,
     acceptedApplication,
     creditScoreVerifiableCredentialPayload(
