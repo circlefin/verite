@@ -10,12 +10,12 @@ import { asyncMap } from "./async-fns"
 import { CredentialSigner } from "./credential-signer"
 import { verifiablePresentationPayload } from "./credentials"
 
-export async function createFullfillment(
+export async function generateFulfillment(
   credentialSigner: CredentialSigner,
   application: GenericCredentialApplication,
   credentials: JwtCredentialPayload | JwtCredentialPayload[]
 ): Promise<EncodedCredentialFulfillment> {
-  const credentialFullfillment = {
+  const credentialFulfillment = {
     id: uuidv4(),
     manifest_id: application.credential_application.manifest_id,
     descriptor_map:
@@ -45,7 +45,7 @@ export async function createFullfillment(
   )
 
   return {
-    credential_fulfillment: credentialFullfillment,
+    credential_fulfillment: credentialFulfillment,
     presentation
   }
 }
