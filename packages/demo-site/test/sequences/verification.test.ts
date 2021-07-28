@@ -29,7 +29,7 @@ describe("verification", () => {
 
     const fulfillment = await createKycAmlFulfillment(
       user,
-      credentialSigner,
+      credentialSigner(),
       acceptedApplication
     )
 

@@ -36,7 +36,7 @@ describe("Submission validator", () => {
     const acceptedApplication = await validateCredentialSubmission(application)
     const fulfillment = await createKycAmlFulfillment(
       user,
-      credentialSigner,
+      credentialSigner(),
       acceptedApplication
     )
 
@@ -70,10 +70,6 @@ describe("Submission validator", () => {
   it("validates a CredentialApplication", async () => {
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
-    const user = await userFactory({
-      jumioScore: 55,
-      ofacScore: 2
-    })
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest

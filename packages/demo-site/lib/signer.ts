@@ -1,6 +1,14 @@
 import { CredentialSigner } from "@centre/verity"
 
-const did = process.env.ISSUER_DID
-const secret = process.env.ISSUER_SECRET
+let _credentialSigner: CredentialSigner
 
-export const credentialSigner = new CredentialSigner(did, secret)
+export function credentialSigner(): CredentialSigner {
+  if (!_credentialSigner) {
+    _credentialSigner = new CredentialSigner(
+      process.env.ISSUER_DID,
+      process.env.ISSUER_SECRET
+    )
+  }
+
+  return _credentialSigner
+}

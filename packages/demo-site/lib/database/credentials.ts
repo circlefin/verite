@@ -26,7 +26,12 @@ const setupIfNecessary = async () => {
   }
   const url = process.env.REVOCATION_URL
   REVOCATION_LISTS.push(
-    await generateRevocationList([], url, process.env.ISSUER, credentialSigner)
+    await generateRevocationList(
+      [],
+      url,
+      process.env.ISSUER,
+      credentialSigner()
+    )
   )
 }
 

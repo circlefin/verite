@@ -95,7 +95,7 @@ async function generateVc(clientDidKey: DidKey) {
 
   const fulfillment = await createKycAmlFulfillment(
     user,
-    credentialSigner,
+    credentialSigner(),
     acceptedApplication
   )
 
