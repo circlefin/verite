@@ -17,6 +17,7 @@ jobs:
           node-version: "16"
           cache: "npm"
       - run: npm install
+      - run: npm run migrations --workspace @centre/demo-site
       - run: npm run build:verity
       - run: npm run lint
       - run: npm run type-check

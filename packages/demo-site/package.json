@@ -10,7 +10,8 @@
     "lint": "next lint",
     "start": "next start",
     "test": "jest",
-    "type-check": "tsc --pretty --noEmit"
+    "type-check": "tsc --pretty --noEmit",
+    "migrations": "npx ts-node bin/run-migrations.mjs"
   },
   "dependencies": {
     "@centre/verity": "*",
@@ -25,6 +26,8 @@
     "qrcode.react": "^1.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

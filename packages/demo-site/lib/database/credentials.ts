@@ -1,4 +1,6 @@
 import {
+  asyncMap,
+  decodeVerifiableCredential,
   generateRevocationList,
   isRevocable,
   RevocableCredential,
@@ -6,6 +8,7 @@ import {
   RevocationListCredential
 } from "@centre/verity"
 import { findIndex, random, sample } from "lodash"
+import db from "./db"
 import { credentialSigner } from "lib/signer"
 
 export type DatabaseCredential = {
@@ -15,7 +18,6 @@ export type DatabaseCredential = {
 
 const MINIMUM_BITSTREAM_LENGTH = 16 * 1_024 * 8 // 16KB
 const REVOCATION_LISTS: RevocationListCredential[] = []
-const CREDENTIALS: DatabaseCredential[] = []
 
 // Generate a default revocation list credential when the app starts
 const setupIfNecessary = async () => {
@@ -28,19 +30,22 @@ const setupIfNecessary = async () => {
   )
 }
 
-export const storeRevocableCredential = (
+export const storeRevocableCredential = async (
   credentials: RevocableCredential[],
   userId: string
-): void => {
-  credentials.forEach((credential) => {
+): Promise<void> => {
+  await asyncMap(credentials, async (credential) => {
     if (!isRevocable(credential)) {
       return
     }
 
-    CREDENTIALS.push({
+    await (
+      await db()
+    ).run(
+      "INSERT INTO credentials (userId, jwt) VALUES (?, ?)",
       userId,
-      credential
-    })
+      credential.proof.jwt
+    )
   })
 }
 
@@ -52,12 +57,55 @@ export const allRevocationLists = async (): Promise<
   return REVOCATION_LISTS
 }
 
+interface CredentialRow {
+  userId: string
+  jwt: string
+}
+
 export const findCredentialsByUserId = async (
   userId: string
 ): Promise<DatabaseCredential[]> => {
   await setupIfNecessary()
 
-  return CREDENTIALS.filter((c) => c.userId === userId)
+  const result = await (
+    await db()
+  ).all<CredentialRow[]>(
+    "SELECT userId, jwt FROM credentials WHERE userId = ?",
+    userId
+  )
+
+  return await asyncMap(result, async (r) => {
+    return {
+      userId: r.userId,
+      credential: (await decodeVerifiableCredential(
+        r.jwt
+      )) as RevocableCredential
+    }
+  })
+}
+
+const findCredentialsByRevocationlist = async (
+  revocationList: RevocationListCredential
+): Promise<DatabaseCredential[]> => {
+  await setupIfNecessary()
+
+  const result = await (
+    await db()
+  ).all<CredentialRow[]>("SELECT userId, jwt FROM credentials")
+
+  return (
+    await asyncMap(result, async (r) => {
+      return {
+        userId: r.userId,
+        credential: (await decodeVerifiableCredential(
+          r.jwt
+        )) as RevocableCredential
+      }
+    })
+  ).filter(
+    ({ credential }) =>
+      credential.credentialStatus.statusListCredential === revocationList.id
+  )
 }
 
 export const getRevocationListById = async (
@@ -91,9 +139,8 @@ export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
   const revocationList = sample(REVOCATION_LISTS)
 
   // Find all credentials in the revocation list and map the index
-  const consumedIndexes = CREDENTIALS.filter(
-    ({ credential }) =>
-      credential.credentialStatus.statusListCredential === revocationList.id
+  const consumedIndexes = (
+    await findCredentialsByRevocationlist(revocationList)
   ).map(({ credential }) =>
     parseInt(credential.credentialStatus.statusListIndex, 10)
   )

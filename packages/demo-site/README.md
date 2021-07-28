@@ -2,10 +2,11 @@
 
 ## Getting Started
 
-### Installing dependencies
+### Setup / Installation
 
 ```
 npm install
+npm run migrations
 ```
 
 ### Running the server
