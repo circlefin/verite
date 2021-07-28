@@ -5,7 +5,7 @@ import {
 import { has } from "lodash"
 import {
   processVerificationSubmission,
-  messageToVerificationFailure
+  messageToValidationFailure
 } from "../validators"
 import { kycVerificationRequest } from "./requests"
 import { ProcessedVerificationSubmission, ValidationError } from "types"
@@ -34,7 +34,7 @@ export async function validateVerificationSubmission(
   ) {
     throw new ValidationError(
       "Missing required paths in Credential Application",
-      messageToVerificationFailure(
+      messageToValidationFailure(
         "Input doesn't have the required format for a Credential Application"
       )
     )
@@ -49,7 +49,7 @@ export async function validateVerificationSubmission(
   if (!presentationDefinition) {
     throw new ValidationError(
       "Invalid Presentation Definition ID",
-      messageToVerificationFailure(
+      messageToValidationFailure(
         "This issuer doesn't accept submissions associated with the presentation definition id"
       )
     )

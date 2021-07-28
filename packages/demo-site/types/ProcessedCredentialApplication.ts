@@ -5,7 +5,8 @@ import {
   Verifiable,
   W3CPresentation
 } from "@centre/verity"
-import { ValidationCheck } from "./Matches"
+import { ValidationCheck, ValidationCheckFormatter } from "./Matches"
+import { CredentialMatch, ValidationFailure } from "./ValidationResults"
 export class ProcessedCredentialApplication
   implements DecodedCredentialApplication
 {
@@ -16,27 +17,32 @@ export class ProcessedCredentialApplication
   }
   presentation_submission?: PresentationSubmission
   presentation: Verifiable<W3CPresentation>
-  validationChecks: Map<string, ValidationCheck[]>
+  validationChecks: ValidationCheck[]
+  formatter: ValidationCheckFormatter
 
   constructor(
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     credential_application: any,
     presentation: Verifiable<W3CPresentation>,
-    validationChecks: Map<string, ValidationCheck[]>,
+    validationChecks: ValidationCheck[],
     presentation_submission?: PresentationSubmission
   ) {
     this.credential_application = credential_application
     this.presentation = presentation
     this.validationChecks = validationChecks
     this.presentation_submission = presentation_submission
+    this.formatter = new ValidationCheckFormatter(validationChecks)
   }
 
   accepted(): boolean {
-    const accepted = Object.keys(this.validationChecks).every((key) => {
-      return this.validationChecks[key].every((c) => {
-        return c.passed()
-      })
-    })
-    return accepted
+    return this.formatter.accepted()
+  }
+
+  errors(): ValidationFailure[] {
+    return this.formatter.errors()
+  }
+
+  results(): CredentialMatch[] {
+    return this.formatter.results()
   }
 }
