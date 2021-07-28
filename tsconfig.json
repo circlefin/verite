@@ -8,9 +8,8 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "isolatedModules": true,
-    "baseUrl": ".",
     "paths": {
-      "@centre/*": ["packages/*"]
+      "@centre/*": ["./packages/*"]
     }
   },
   "exclude": ["node_modules"]
