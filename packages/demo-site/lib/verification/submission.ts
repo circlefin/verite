@@ -7,11 +7,8 @@ import {
   processVerificationSubmission,
   messageToValidationFailure
 } from "../validators"
-import { kycVerificationRequest } from "./requests"
+import { kycPresentationDefinition } from "./requests"
 import { ProcessedVerificationSubmission, ValidationError } from "types"
-
-const kycPresentationDefinition =
-  kycVerificationRequest().presentation_definition
 
 export const PRESENTATION_DEFINITIONS: PresentationDefinition[] = [
   kycPresentationDefinition

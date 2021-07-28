@@ -2,7 +2,7 @@
 
 import NextAuth from "next-auth"
 import Providers from "next-auth/providers"
-import type { User } from "lib/database"
+import { allUsers, User } from "lib/database"
 import { authenticateUser } from "lib/database"
 
 type Credentials = {
@@ -20,6 +20,8 @@ export default NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials: Credentials) {
+        const users = await allUsers()
+        console.log(users)
         return authenticateUser(credentials.email, credentials.password)
       }
     })

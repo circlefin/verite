@@ -1,6 +1,5 @@
-import { loadEnvConfig } from "@next/env"
+import { prisma } from "lib/database/prisma"
 
-export default async function loadEnvironmentVariables(): Promise<void> {
-  const projectDir = process.cwd()
-  loadEnvConfig(projectDir)
-}
+afterAll(async () => {
+  await prisma.$disconnect()
+})

@@ -8,7 +8,7 @@ import {
   RevocationListCredential
 } from "@centre/verity"
 import { findIndex, random, sample } from "lodash"
-import db from "./db"
+import { prisma } from "./prisma"
 import { credentialSigner } from "lib/signer"
 
 export type DatabaseCredential = {
@@ -39,13 +39,12 @@ export const storeRevocableCredential = async (
       return
     }
 
-    await (
-      await db()
-    ).run(
-      "INSERT INTO credentials (userId, jwt) VALUES (?, ?)",
-      userId,
-      credential.proof.jwt
-    )
+    await prisma.credential.create({
+      data: {
+        userId,
+        jwt: credential.proof.jwt
+      }
+    })
   })
 }
 
@@ -57,22 +56,16 @@ export const allRevocationLists = async (): Promise<
   return REVOCATION_LISTS
 }
 
-interface CredentialRow {
-  userId: string
-  jwt: string
-}
-
 export const findCredentialsByUserId = async (
   userId: string
 ): Promise<DatabaseCredential[]> => {
   await setupIfNecessary()
 
-  const result = await (
-    await db()
-  ).all<CredentialRow[]>(
-    "SELECT userId, jwt FROM credentials WHERE userId = ?",
-    userId
-  )
+  const result = await prisma.credential.findMany({
+    where: {
+      userId
+    }
+  })
 
   return await asyncMap(result, async (r) => {
     return {
@@ -89,12 +82,10 @@ const findCredentialsByRevocationlist = async (
 ): Promise<DatabaseCredential[]> => {
   await setupIfNecessary()
 
-  const result = await (
-    await db()
-  ).all<CredentialRow[]>("SELECT userId, jwt FROM credentials")
+  const results = await prisma.credential.findMany()
 
   return (
-    await asyncMap(result, async (r) => {
+    await asyncMap(results, async (r) => {
       return {
         userId: r.userId,
         credential: (await decodeVerifiableCredential(

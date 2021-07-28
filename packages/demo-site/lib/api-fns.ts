@@ -7,6 +7,8 @@ export type ApiErrorResponse = {
   errors?: ValidationFailure[]
 }
 
+export type ApiResponse<T> = NextApiResponse<T | ApiErrorResponse>
+
 export function apiError(
   res: NextApiResponse<ApiErrorResponse>,
   status: number,

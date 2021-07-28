@@ -9,11 +9,11 @@ import {
   VerificationError,
   W3CCredential
 } from "@centre/verity"
-import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
+import { userFactory } from "test/factories"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =
@@ -38,7 +38,7 @@ describe("issuance", () => {
     const kycManifest = findManifestById("KYCAMLAttestation")
 
     // 3. CLIENT: Requesting the credential
-    const user = await createUser("test@test.com", {
+    const user = await userFactory({
       jumioScore: 55,
       ofacScore: 2
     })
