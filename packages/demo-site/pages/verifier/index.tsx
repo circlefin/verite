@@ -1,6 +1,8 @@
 import { GetServerSideProps, NextPage } from "next"
 import QRCode from "qrcode.react"
 import VerifierLayout from "components/verifier/Layout"
+import { saveVerificationRequest } from "lib/database"
+import { generateKycVerificationRequest } from "lib/verification/requests"
 import { VerificationRequestWrapper } from "types"
 
 type Props = {
@@ -8,8 +10,11 @@ type Props = {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const verificationRequest = await generateKycVerificationRequest()
+  await saveVerificationRequest(verificationRequest)
+
   const verificationRequestWrapper: VerificationRequestWrapper = {
-    requestUrl: `${process.env.HOST}/api/verification/request`,
+    requestUrl: `${process.env.HOST}/api/verification/${verificationRequest.request.id}`,
     version: "1"
   }
 

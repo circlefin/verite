@@ -13,7 +13,7 @@ import {
   processCredentialApplication,
   processVerificationSubmission
 } from "lib/validators"
-import { kycVerificationRequest } from "lib/verification/requests"
+import { kycPresentationDefinition } from "lib/verification/requests"
 import { findPresentationDefinitionById } from "lib/verification/submission"
 import {
   CredentialResults,
@@ -44,10 +44,9 @@ describe("Submission validator", () => {
       fulfillment.presentation
     )
     const clientVC = fulfillmentVP.verifiableCredential[0]
-    const kycRequest = kycVerificationRequest()
     const submission = await createVerificationSubmission(
       clientDidKey,
-      kycRequest.presentation_definition,
+      kycPresentationDefinition,
       clientVC
     )
 

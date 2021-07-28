@@ -9,7 +9,7 @@ import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
-import { kycVerificationRequest } from "lib/verification/requests"
+import { generateKycVerificationRequest } from "lib/verification/requests"
 import { validateVerificationSubmission } from "lib/verification/submission"
 
 describe("verification", () => {
@@ -39,7 +39,7 @@ describe("verification", () => {
     const clientVC = fulfillmentVP.verifiableCredential[0]
 
     // 2. VERIFIER: Discovery of verification requirements
-    const kycRequest = kycVerificationRequest()
+    const kycRequest = generateKycVerificationRequest()
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
     const submission = await createVerificationSubmission(
