@@ -17,6 +17,7 @@
     "dev:verity": "npm run dev --workspace @centre/verity",
     "format": "npm run format --workspaces",
     "lint": "npm run lint --workspaces",
+    "migrations": "npm run migrations --workspace @centre/demo-site",
     "prepare": "npm run build:verity",
     "site": "npm run dev --workspace @centre/demo-site",
     "test": "npm test --workspaces",
