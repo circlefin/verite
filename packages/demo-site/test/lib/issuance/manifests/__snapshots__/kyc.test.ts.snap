@@ -84,18 +84,18 @@ Object {
       ],
       "styles": Object {
         "background": Object {
-          "color": "#ff0000",
+          "color": "#EC4899",
         },
         "hero": Object {
           "alt": "KYC+AML Visual",
           "uri": "http://localhost:3000/img/kyc-aml-hero.png",
         },
         "text": Object {
-          "color": "#d4d400",
+          "color": "#FFFFFF",
         },
         "thumbnail": Object {
           "alt": "Verity Logo",
-          "uri": "http://localhost:3000/img/logo.png",
+          "uri": "http://localhost:3000/img/kyc-aml-thumbnail.png",
         },
       },
     },

@@ -5,7 +5,7 @@ export const kycManifest: CredentialManifest = createKycAmlManifest(
   manifestIssuer,
   {
     thumbnail: {
-      uri: `${process.env.HOST}/img/logo.png`,
+      uri: `${process.env.HOST}/img/kyc-aml-thumbnail.png`,
       alt: "Verity Logo"
     },
     hero: {
@@ -13,10 +13,10 @@ export const kycManifest: CredentialManifest = createKycAmlManifest(
       alt: "KYC+AML Visual"
     },
     background: {
-      color: "#ff0000"
+      color: "#EC4899"
     },
     text: {
-      color: "#d4d400"
+      color: "#FFFFFF"
     }
   }
 )
