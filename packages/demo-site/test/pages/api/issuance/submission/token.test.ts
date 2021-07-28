@@ -4,10 +4,10 @@ import {
   randomDidKey
 } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
-import { allUsers, createUser, temporaryAuthToken } from "lib/database"
+import { allUsers, temporaryAuthToken } from "lib/database"
 import { findManifestById } from "lib/issuance/manifest"
-
 import handler from "pages/api/issuance/submission/[token]"
+import { userFactory } from "test/factories"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =
@@ -15,7 +15,7 @@ const expiredPresentation =
 
 describe("POST /issuance/submission/[token]", () => {
   it("returns a KYC credential", async () => {
-    const user = await createUser("test@test.com")
+    const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const manifest = findManifestById("KYCAMLAttestation")
@@ -41,7 +41,7 @@ describe("POST /issuance/submission/[token]", () => {
   })
 
   it("returns a Credit Score credential", async () => {
-    const user = await createUser("test@test.com")
+    const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const manifest = findManifestById("CreditScoreAttestation")
@@ -67,7 +67,7 @@ describe("POST /issuance/submission/[token]", () => {
   })
 
   it("returns an error if not a POST", async () => {
-    const user = await createUser("test@test.com")
+    const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const { req, res } = createMocks({
       method: "GET",
@@ -101,7 +101,7 @@ describe("POST /issuance/submission/[token]", () => {
   })
 
   it("rejects an invalid application", async () => {
-    const user = await createUser("test@test.com")
+    const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
@@ -138,8 +138,10 @@ describe("POST /issuance/submission/[token]", () => {
   })
 
   it("returns a KYC credential with known input/output", async () => {
-    const users = await allUsers()
-    const user = users[0]
+    const user = await userFactory({
+      jumioScore: 80,
+      ofacScore: 0
+    })
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const manifest = findManifestById("KYCAMLAttestation")

@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:/tmp/database.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Credential {
+  id     String @id @default(uuid())
+  userId String
+  jwt    String
+}
+
+model User {
+  id          String @id @default(uuid())
+  email       String @unique
+  password    String @default("testing")
+  role        String @default("member")
+  jumioScore  Int?
+  ofacScore   Int?
+  creditScore Int?
+}
+
+model VerificationRequest {
+  id      String @id @default(uuid())
+  payload String
+  status  String @default("pending")
+}

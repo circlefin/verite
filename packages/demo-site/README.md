@@ -6,7 +6,7 @@
 
 ```
 npm install
-npm run migrations
+npm run db:migrate
 ```
 
 ### Running the server

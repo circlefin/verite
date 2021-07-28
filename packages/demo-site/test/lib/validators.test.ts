@@ -4,7 +4,6 @@ import {
   decodeVerifiablePresentation,
   randomDidKey
 } from "@centre/verity"
-import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
@@ -15,6 +14,7 @@ import {
 } from "lib/validators"
 import { kycPresentationDefinition } from "lib/verification/requests"
 import { findPresentationDefinitionById } from "lib/verification/submission"
+import { userFactory } from "test/factories"
 import {
   CredentialResults,
   FieldConstraintEvaluation,
@@ -25,7 +25,7 @@ describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
-    const user = await createUser("test@test.com", {
+    const user = await userFactory({
       jumioScore: 55,
       ofacScore: 2
     })
@@ -70,7 +70,7 @@ describe("Submission validator", () => {
   it("validates a CredentialApplication", async () => {
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
-    const user = await createUser("test@test.com", {
+    const user = await userFactory({
       jumioScore: 55,
       ofacScore: 2
     })

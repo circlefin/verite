@@ -1,53 +1,57 @@
-import { remove } from "lodash"
-import { VerificationRequest } from "../../../verity/dist"
-
-type Status = "pending" | "approved" | "rejected"
-type DataStoreRecord = {
-  id: string
-  verificationRequest: VerificationRequest
-  status: Status
-}
-
-const DATA_STORE: DataStoreRecord[] = []
+import { VerificationRequest } from "@centre/verity"
+import { prisma } from "./prisma"
 
 export async function saveVerificationRequest(
   verificationRequest: VerificationRequest,
-  status: Status = "pending"
+  status = "pending"
 ): Promise<VerificationRequest> {
-  DATA_STORE.push({
-    id: verificationRequest.request.id,
-    verificationRequest,
-    status
+  await prisma.verificationRequest.create({
+    data: {
+      id: verificationRequest.request.id,
+      payload: JSON.stringify(verificationRequest),
+      status
+    }
   })
+
   return verificationRequest
 }
 
 export async function findVerificationRequest(
   id: string
 ): Promise<VerificationRequest | undefined> {
-  const row = findRow(id)
-  return row?.verificationRequest
+  const record = await prisma.verificationRequest.findUnique({
+    where: {
+      id
+    }
+  })
+
+  if (record) {
+    return JSON.parse(record.payload)
+  }
 }
 
 export async function fetchVerificationRequestStatus(
   id: string
-): Promise<Status | undefined> {
-  const row = findRow(id)
-  return row?.status
+): Promise<string | undefined> {
+  const record = await prisma.verificationRequest.findUnique({
+    where: {
+      id
+    }
+  })
+
+  return record?.status
 }
 
 export async function updateVerificationRequestStatus(
   id: string,
-  status: Status
+  status: string
 ): Promise<void> {
-  const row = findRow(id)
-  if (row) {
-    row.status = status
-  }
-  remove(DATA_STORE, (record) => record.id === id)
-  DATA_STORE.push(row)
-}
-
-function findRow(id: string): DataStoreRecord | undefined {
-  return DATA_STORE.find((record) => record.id === id)
+  await prisma.verificationRequest.update({
+    where: {
+      id
+    },
+    data: {
+      status
+    }
+  })
 }

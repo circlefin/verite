@@ -1,6 +1,5 @@
 import {
   createCredentialApplication,
-  createFullfillment,
   createVerificationSubmission,
   decodeVerifiablePresentation,
   DidKey,
@@ -8,7 +7,6 @@ import {
 } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import {
-  createUser,
   fetchVerificationRequestStatus,
   saveVerificationRequest
 } from "lib/database"
@@ -18,6 +16,7 @@ import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
 import { generateKycVerificationRequest } from "lib/verification/requests"
 import handler from "pages/api/verification/[id]/index"
+import { userFactory } from "test/factories"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {
@@ -84,7 +83,7 @@ describe("POST /verification/[id]", () => {
 // TODO: This block shoudl be easier to repro
 async function generateVc(clientDidKey: DidKey) {
   const kycManifest = findManifestById("KYCAMLAttestation")
-  const user = await createUser("test@test.com", {
+  const user = await userFactory({
     jumioScore: 55,
     ofacScore: 2
   })

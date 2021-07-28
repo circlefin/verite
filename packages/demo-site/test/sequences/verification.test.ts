@@ -4,20 +4,20 @@ import {
   decodeVerifiablePresentation,
   randomDidKey
 } from "@centre/verity"
-import { createUser } from "lib/database"
 import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
 import { findManifestById } from "lib/issuance/manifest"
 import { validateCredentialSubmission } from "lib/issuance/submission"
 import { credentialSigner } from "lib/signer"
 import { generateKycVerificationRequest } from "lib/verification/requests"
 import { validateVerificationSubmission } from "lib/verification/submission"
+import { userFactory } from "test/factories"
 
 describe("verification", () => {
   it("just works", async () => {
     // 0. PREREQ: Ensure client has a valid KYC credential
     const clientDidKey = await randomDidKey()
     const kycManifest = findManifestById("KYCAMLAttestation")
-    const user = await createUser("test@test.com", {
+    const user = await userFactory({
       jumioScore: 55,
       ofacScore: 2
     })
