@@ -1,4 +1,4 @@
-import { asyncMap } from "@centre/verity"
+import { asyncMap, generateRevocationList } from "@centre/verity"
 import { loadEnvConfig } from "@next/env"
 import { PrismaClient, User } from "@prisma/client"
 import { credentialSigner } from "../lib/signer"
@@ -36,6 +36,16 @@ async function main() {
       data: user
     })
   })
+
+  // Revocation List
+  const url = process.env.REVOCATION_URL
+  const issuer = process.env.ISSUER
+  console.log("==========")
+  console.log(url)
+  console.log(issuer)
+  console.log("==========")
+
+  await generateRevocationList([], url, issuer, credentialSigner())
 }
 
 main()
