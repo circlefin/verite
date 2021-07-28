@@ -8,17 +8,7 @@ import {
   RevocationListCredential
 } from "@centre/verity"
 import { findIndex, random, sample } from "lodash"
-import { open, Database } from "sqlite"
-import sqlite3 from "sqlite3"
-
-let db: Database<sqlite3.Database, sqlite3.Statement>
-;(async () => {
-  db = await open<sqlite3.Database, sqlite3.Statement>({
-    filename: "/tmp/database.db",
-    driver: sqlite3.Database
-  })
-})()
-
+import db from "./db"
 import { credentialSigner } from "lib/signer"
 
 export type DatabaseCredential = {
@@ -38,13 +28,6 @@ const setupIfNecessary = async () => {
   REVOCATION_LISTS.push(
     await generateRevocationList([], url, process.env.ISSUER, credentialSigner)
   )
-
-  if (!db) {
-    db = await open<sqlite3.Database, sqlite3.Statement>({
-      filename: "/tmp/database.db",
-      driver: sqlite3.Database
-    })
-  }
 }
 
 export const storeRevocableCredential = async (
@@ -56,7 +39,9 @@ export const storeRevocableCredential = async (
       return
     }
 
-    await db.run(
+    await (
+      await db()
+    ).run(
       "INSERT INTO credentials (userId, jwt) VALUES (?, ?)",
       userId,
       credential.proof.jwt
@@ -82,7 +67,9 @@ export const findCredentialsByUserId = async (
 ): Promise<DatabaseCredential[]> => {
   await setupIfNecessary()
 
-  const result = await db.all<CredentialRow[]>(
+  const result = await (
+    await db()
+  ).all<CredentialRow[]>(
     "SELECT userId, jwt FROM credentials WHERE userId = ?",
     userId
   )
@@ -102,9 +89,9 @@ const findCredentialsByRevocationlist = async (
 ): Promise<DatabaseCredential[]> => {
   await setupIfNecessary()
 
-  const result = await db.all<CredentialRow[]>(
-    "SELECT userId, jwt FROM credentials"
-  )
+  const result = await (
+    await db()
+  ).all<CredentialRow[]>("SELECT userId, jwt FROM credentials")
 
   return (
     await asyncMap(result, async (r) => {
