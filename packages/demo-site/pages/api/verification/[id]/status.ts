@@ -1,5 +1,5 @@
-import { apiHandler, notFound } from "lib/api-fns"
-import { fetchVerificationRequestStatus } from "lib/database/verificationRequests"
+import { apiHandler, notFound } from "../../../../lib/api-fns"
+import { fetchVerificationRequestStatus } from "../../../../lib/database/verificationRequests"
 
 type Resp = {
   status: string

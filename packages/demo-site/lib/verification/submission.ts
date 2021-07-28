@@ -3,12 +3,12 @@ import {
   PresentationDefinition
 } from "@centre/verity"
 import { has } from "lodash"
+import { ProcessedVerificationSubmission, ValidationError } from "../../types"
 import {
   processVerificationSubmission,
   messageToValidationFailure
 } from "../validators"
 import { kycPresentationDefinition } from "./requests"
-import { ProcessedVerificationSubmission, ValidationError } from "types"
 
 export const PRESENTATION_DEFINITIONS: PresentationDefinition[] = [
   kycPresentationDefinition

@@ -4,8 +4,8 @@ import { MenuIcon, XIcon, UserCircleIcon } from "@heroicons/react/outline"
 import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { FC, Fragment } from "react"
-import type { User } from "lib/database"
-import { isActive, classNames } from "lib/react-fns"
+import type { User } from "../lib/database"
+import { isActive, classNames } from "../lib/react-fns"
 
 type Props = {
   title: string

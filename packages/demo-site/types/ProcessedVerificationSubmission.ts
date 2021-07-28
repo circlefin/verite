@@ -5,8 +5,7 @@ import {
   W3CPresentation
 } from "@centre/verity"
 import { ValidationCheck, ValidationCheckFormatter } from "./Matches"
-import { CredentialMatch, ValidationFailure } from "types"
-
+import { CredentialMatch, ValidationFailure } from "./"
 export class ProcessedVerificationSubmission
   implements DecodedVerificationSubmission
 {

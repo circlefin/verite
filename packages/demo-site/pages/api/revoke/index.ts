@@ -4,9 +4,9 @@ import {
   revokeCredential,
   JWT
 } from "@centre/verity"
-import { apiHandler, notFound } from "lib/api-fns"
-import { allRevocationLists, saveRevocationList } from "lib/database"
-import { credentialSigner } from "lib/signer"
+import { apiHandler, notFound } from "../../../lib/api-fns"
+import { allRevocationLists, saveRevocationList } from "../../../lib/database"
+import { credentialSigner } from "../../../lib/signer"
 
 export default apiHandler<string>(async (req, res) => {
   const jwt = req.body as JWT

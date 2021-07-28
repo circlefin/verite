@@ -6,15 +6,15 @@ import {
 } from "@centre/verity"
 import { NextPage } from "next"
 import { useRouter } from "next/router"
-import AdminLayout from "components/admin/Layout"
-import { requireAdmin } from "lib/auth-fns"
+import AdminLayout from "../../../components/admin/Layout"
+import { requireAdmin } from "../../../lib/auth-fns"
 import {
   allRevocationLists,
   DatabaseCredential,
   findCredentialsByUserId,
   findUser
-} from "lib/database"
-import type { User } from "lib/database"
+} from "../../../lib/database"
+import type { User } from "../../../lib/database"
 
 type Props = {
   credentialList: {
@@ -99,7 +99,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
   const credentials = credentialList.map(({ credential, revoked }) => {
     return (
       <div key={credential.credential.credentialSubject.id}>
-        <pre className="whitespace-pre-wrap overflow-auto">
+        <pre className="overflow-auto whitespace-pre-wrap">
           {JSON.stringify(credential.credential)}
         </pre>
         <div>Revoked: {revoked ? "Yes" : "No"} </div>

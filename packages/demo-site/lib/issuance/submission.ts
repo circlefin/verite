@@ -1,11 +1,11 @@
 import { EncodedCredentialApplication } from "@centre/verity"
 import { has } from "lodash"
+import { ProcessedCredentialApplication, ValidationError } from "../../types"
 import {
   processCredentialApplication,
   messageToValidationFailure
 } from "../validators"
 import { findManifestById } from "./manifest"
-import { ProcessedCredentialApplication, ValidationError } from "types"
 
 export async function validateCredentialSubmission(
   application: EncodedCredentialApplication

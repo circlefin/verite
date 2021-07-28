@@ -1,5 +1,5 @@
 import { createMocks } from "node-mocks-http"
-import handler from "pages/api/issuance/manifests/[type]"
+import handler from "../../../../../pages/api/issuance/manifests/[type]"
 
 describe("GET /issuance/manifests/[type]", () => {
   it("returns the KYC/AML manifest", async () => {

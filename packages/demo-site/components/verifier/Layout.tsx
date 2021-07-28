@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Layout from "components/Layout"
+import Layout from "../Layout"
 
 type Props = {
   title: string

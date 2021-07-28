@@ -2,7 +2,7 @@ import {
   InputDescriptorConstraintField,
   VerifiedCredential
 } from "@centre/verity"
-import { CredentialMatch, PathEvaluation, ValidationFailure } from "types"
+import { CredentialMatch, PathEvaluation, ValidationFailure } from "./"
 
 // TODO
 export class PathMatches {

@@ -1,6 +1,6 @@
 import { FC } from "react"
+import Layout from "../Layout"
 import AttestationNavigation from "./AttestationNavigation"
-import Layout from "components/Layout"
 
 type Props = {
   title: string

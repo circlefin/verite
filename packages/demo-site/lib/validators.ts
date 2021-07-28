@@ -13,8 +13,6 @@ import {
 } from "@centre/verity"
 import Ajv from "ajv"
 import jsonpath from "jsonpath"
-import { vcSchema, vpSchema } from "./schemas"
-
 import {
   ProcessedCredentialApplication,
   ProcessedVerificationSubmission,
@@ -23,7 +21,8 @@ import {
   FieldConstraintEvaluation,
   PathEvaluation,
   CredentialResults
-} from "types"
+} from "../types"
+import { vcSchema, vpSchema } from "./schemas"
 
 const ajv = new Ajv()
 

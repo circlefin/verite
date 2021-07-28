@@ -1,4 +1,4 @@
-import { apiHandler } from "lib/api-fns"
+import { apiHandler } from "../../../../lib/api-fns"
 
 type ResponseType = {
   status: string
