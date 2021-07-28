@@ -39,7 +39,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
 
   const fulfillment: EncodedCredentialFulfillment = await createFulfillment(
     user,
-    credentialSigner,
+    credentialSigner(),
     acceptedApplication,
     await pickListAndIndex()
   )

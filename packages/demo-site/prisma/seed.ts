@@ -1,10 +1,15 @@
 import { asyncMap } from "@centre/verity"
+import { loadEnvConfig } from "@next/env"
 import { PrismaClient, User } from "@prisma/client"
+import { credentialSigner } from "../lib/signer"
+
 const prisma = new PrismaClient()
 
 type UserInput = Partial<User> & { email: string }
 
 async function main() {
+  loadEnvConfig(process.cwd(), /* dev: */ true)
+
   // Users
   const users: UserInput[] = [
     {

@@ -27,7 +27,7 @@ export default apiHandler<string>(async (req, res) => {
   const list = await unrevokeCredential(
     credential,
     revocationList,
-    credentialSigner
+    credentialSigner()
   )
 
   // Persist the new revocation list
