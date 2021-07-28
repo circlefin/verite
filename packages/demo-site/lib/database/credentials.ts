@@ -6,7 +6,7 @@ import {
   RevocationList2021Status,
   RevocationListCredential
 } from "@centre/verity"
-import { findIndex, random, sample } from "lodash"
+import { random, sample } from "lodash"
 import { prisma } from "./prisma"
 
 export type DatabaseCredential = {
@@ -15,7 +15,6 @@ export type DatabaseCredential = {
 }
 
 const MINIMUM_BITSTREAM_LENGTH = 16 * 1_024 * 8 // 16KB
-const REVOCATION_LISTS: RevocationListCredential[] = []
 
 export const storeRevocableCredential = async (
   credentials: RevocableCredential[],
@@ -38,7 +37,12 @@ export const storeRevocableCredential = async (
 export const allRevocationLists = async (): Promise<
   RevocationListCredential[]
 > => {
-  return REVOCATION_LISTS
+  const lists = await prisma.revocationList.findMany()
+  return await asyncMap(lists, async (list) => {
+    return (await decodeVerifiableCredential(
+      list.jwt
+    )) as RevocationListCredential
+  })
 }
 
 export const findCredentialsByUserId = async (
@@ -83,21 +87,26 @@ const findCredentialsByRevocationlist = async (
 export const getRevocationListById = async (
   id: string
 ): Promise<RevocationListCredential> => {
-  return REVOCATION_LISTS.find((list) => list.id === id)
+  const list = await prisma.revocationList.findFirst({
+    where: {
+      id
+    }
+  })
+  return (await decodeVerifiableCredential(
+    list.jwt
+  )) as RevocationListCredential
 }
 
 export const saveRevocationList = async (
   revocationList: RevocationListCredential
 ): Promise<void> => {
-  const index = findIndex(REVOCATION_LISTS, (list) => {
-    return list.id === revocationList.id
+  await prisma.revocationList.upsert({
+    where: {
+      id: revocationList.id
+    },
+    create: { id: revocationList.id, jwt: revocationList.proof.jwt },
+    update: { id: revocationList.id, jwt: revocationList.proof.jwt }
   })
-
-  if (index !== -1) {
-    REVOCATION_LISTS.splice(index, 1)
-  }
-
-  REVOCATION_LISTS.push(revocationList)
 }
 
 /**
@@ -105,7 +114,8 @@ export const saveRevocationList = async (
  */
 export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
   // Pick a random revocation list
-  const revocationList = sample(REVOCATION_LISTS)
+  const lists = await allRevocationLists()
+  const revocationList = sample(lists)
 
   // Find all credentials in the revocation list and map the index
   const consumedIndexes = (
