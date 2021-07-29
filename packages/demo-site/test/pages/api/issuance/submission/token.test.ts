@@ -4,7 +4,7 @@ import {
   randomDidKey
 } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
-import { allUsers, temporaryAuthToken } from "lib/database"
+import { temporaryAuthToken } from "lib/database"
 import { findManifestById } from "lib/issuance/manifest"
 import handler from "pages/api/issuance/submission/[token]"
 import { userFactory } from "test/factories"
@@ -17,7 +17,7 @@ describe("POST /issuance/submission/[token]", () => {
   it("returns a KYC credential", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = await randomDidKey()
+    const clientDid = randomDidKey()
     const manifest = findManifestById("KYCAMLAttestation")
     const credentialApplication = await createCredentialApplication(
       clientDid,

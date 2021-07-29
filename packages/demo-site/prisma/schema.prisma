@@ -16,6 +16,11 @@ model Credential {
   jwt    String
 }
 
+model RevocationList {
+  id  String @id @default(uuid())
+  jwt String
+}
+
 model User {
   id          String @id @default(uuid())
   email       String @unique

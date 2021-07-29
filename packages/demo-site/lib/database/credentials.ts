@@ -1,15 +1,13 @@
 import {
   asyncMap,
   decodeVerifiableCredential,
-  generateRevocationList,
   isRevocable,
   RevocableCredential,
   RevocationList2021Status,
   RevocationListCredential
 } from "@centre/verity"
-import { findIndex, random, sample } from "lodash"
+import { random, sample } from "lodash"
 import { prisma } from "./prisma"
-import { credentialSigner } from "lib/signer"
 
 export type DatabaseCredential = {
   userId: string
@@ -17,23 +15,6 @@ export type DatabaseCredential = {
 }
 
 const MINIMUM_BITSTREAM_LENGTH = 16 * 1_024 * 8 // 16KB
-const REVOCATION_LISTS: RevocationListCredential[] = []
-
-// Generate a default revocation list credential when the app starts
-const setupIfNecessary = async () => {
-  if (REVOCATION_LISTS.length !== 0) {
-    return
-  }
-  const url = process.env.REVOCATION_URL
-  REVOCATION_LISTS.push(
-    await generateRevocationList(
-      [],
-      url,
-      process.env.ISSUER,
-      credentialSigner()
-    )
-  )
-}
 
 export const storeRevocableCredential = async (
   credentials: RevocableCredential[],
@@ -56,16 +37,17 @@ export const storeRevocableCredential = async (
 export const allRevocationLists = async (): Promise<
   RevocationListCredential[]
 > => {
-  await setupIfNecessary()
-
-  return REVOCATION_LISTS
+  const lists = await prisma.revocationList.findMany()
+  return await asyncMap(lists, async (list) => {
+    return (await decodeVerifiableCredential(
+      list.jwt
+    )) as RevocationListCredential
+  })
 }
 
 export const findCredentialsByUserId = async (
   userId: string
 ): Promise<DatabaseCredential[]> => {
-  await setupIfNecessary()
-
   const result = await prisma.credential.findMany({
     where: {
       userId
@@ -85,8 +67,6 @@ export const findCredentialsByUserId = async (
 const findCredentialsByRevocationlist = async (
   revocationList: RevocationListCredential
 ): Promise<DatabaseCredential[]> => {
-  await setupIfNecessary()
-
   const results = await prisma.credential.findMany()
 
   return (
@@ -107,32 +87,35 @@ const findCredentialsByRevocationlist = async (
 export const getRevocationListById = async (
   id: string
 ): Promise<RevocationListCredential> => {
-  await setupIfNecessary()
-  return REVOCATION_LISTS.find((list) => list.id === id)
+  const list = await prisma.revocationList.findFirst({
+    where: {
+      id
+    }
+  })
+  return (await decodeVerifiableCredential(
+    list.jwt
+  )) as RevocationListCredential
 }
 
 export const saveRevocationList = async (
   revocationList: RevocationListCredential
 ): Promise<void> => {
-  const index = findIndex(REVOCATION_LISTS, (list) => {
-    return list.id === revocationList.id
+  await prisma.revocationList.upsert({
+    where: {
+      id: revocationList.id
+    },
+    create: { id: revocationList.id, jwt: revocationList.proof.jwt },
+    update: { id: revocationList.id, jwt: revocationList.proof.jwt }
   })
-
-  if (index !== -1) {
-    REVOCATION_LISTS.splice(index, 1)
-  }
-
-  REVOCATION_LISTS.push(revocationList)
 }
 
 /**
  * Each revocable credential requires that we provide it a unique index in a list.
  */
 export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
-  await setupIfNecessary()
-
   // Pick a random revocation list
-  const revocationList = sample(REVOCATION_LISTS)
+  const lists = await allRevocationLists()
+  const revocationList = sample(lists)
 
   // Find all credentials in the revocation list and map the index
   const consumedIndexes = (
