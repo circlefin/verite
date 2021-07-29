@@ -6,7 +6,6 @@ import { Bits } from "@fry/bits"
 import base64js from "base64-js"
 import { inflate, deflate } from "pako"
 
-// TODO: is this minimum or maximum?
 export const MINIMUM_BITSTREAM_LENGTH = 16 * 1_024 * 8 // 16KB
 
 /**
@@ -35,7 +34,7 @@ export const decompress = (input: string): Buffer => {
  * @returns a string of bits representing the input array
  */
 export const generateBitstring = (indicies: number[]): string => {
-  const bits = new Bits(16_384 * 8) // 16KB
+  const bits = new Bits(MINIMUM_BITSTREAM_LENGTH)
   indicies.forEach((index) => bits.setBit(index))
   return compress(bits.buffer)
 }
