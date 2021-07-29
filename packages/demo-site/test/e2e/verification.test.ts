@@ -1,3 +1,4 @@
+import { generateRevocationListStatus } from "@centre/demo-site/lib/database"
 import {
   createCredentialApplication,
   createVerificationSubmission,
@@ -10,7 +11,7 @@ import { validateCredentialSubmission } from "../../lib/issuance/submission"
 import { credentialSigner } from "../../lib/signer"
 import { generateKycVerificationRequest } from "../../lib/verification/requests"
 import { validateVerificationSubmission } from "../../lib/verification/submission"
-import { userFactory } from "../../test/factories"
+import { userFactory } from "../factories"
 
 describe("verification", () => {
   it("just works", async () => {
@@ -30,7 +31,8 @@ describe("verification", () => {
     const fulfillment = await createKycAmlFulfillment(
       user,
       credentialSigner(),
-      acceptedApplication
+      acceptedApplication,
+      await generateRevocationListStatus()
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(

@@ -18,7 +18,7 @@ export async function createKycAmlFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
   acceptedApplication: ProcessedCredentialApplication,
-  credentialStatus?: RevocationList2021Status
+  credentialStatus: RevocationList2021Status
 ): Promise<EncodedCredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
@@ -58,7 +58,7 @@ export async function createCreditScoreFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
   acceptedApplication: ProcessedCredentialApplication,
-  credentialStatus?: RevocationList2021Status
+  credentialStatus: RevocationList2021Status
 ): Promise<EncodedCredentialFulfillment> {
   const verifiablePresentation = acceptedApplication.presentation
 
@@ -84,8 +84,8 @@ export async function createFulfillment(
   user: User,
   credentialSigner: CredentialSigner,
   application: ProcessedCredentialApplication,
-  credentialStatus?: RevocationList2021Status
-): Promise<EncodedCredentialFulfillment> {
+  credentialStatus: RevocationList2021Status
+): Promise<EncodedCredentialFulfillment | undefined> {
   switch (application.credential_application.manifest_id) {
     case KYCAML_ATTESTATION_MANIFEST_ID:
       return createKycAmlFulfillment(
@@ -101,7 +101,5 @@ export async function createFulfillment(
         application,
         credentialStatus
       )
-    default:
-      return null
   }
 }

@@ -1,7 +1,4 @@
-import { Bits } from "@fry/bits"
-import base64js from "base64-js"
 import { has } from "lodash"
-import { inflate, deflate } from "pako"
 import {
   CredentialPayload,
   RevocableCredential,
@@ -10,20 +7,29 @@ import {
   Verifiable,
   W3CCredential
 } from "../types"
+import { expandBitstring, generateBitstring } from "./bitstring"
 import { CredentialSigner } from "./credential-signer"
 import { decodeVerifiableCredential } from "./credentials"
 
 /**
- * Generate a revocation list.
+ * Generate a revocation list to store revocation status of a credential.
+ *
+ * @param stutusList - the existing revocation status list to use as a base
+ * @param url - the revocation status list URL, which serves as the list ID
+ * @param issuer - the issuer did
+ * @param signer - the credential signer
+ * @param issueanceDate - the creation date of this revocation list
+ *
+ * @returns a revocation list credential consisting of the provided status list
  */
 export const generateRevocationList = async (
-  credentials: number[],
+  statusList: number[],
   url: string,
   issuer: string,
   signer: CredentialSigner,
   issuanceDate = new Date()
 ): Promise<RevocationListCredential> => {
-  const encodedList = generateBitstring(credentials)
+  const encodedList = generateBitstring(statusList)
 
   const vcPayload: RevocationList<CredentialPayload> = {
     "@context": [
@@ -47,6 +53,8 @@ export const generateRevocationList = async (
 
 /**
  * Revoke a credential in a revocation list.
+ *
+ * @returns a revocation list credential with the provided credential revoked
  */
 export const revokeCredential = async (
   credential: RevocableCredential,
@@ -67,6 +75,11 @@ export const revokeCredential = async (
 
 /**
  * Revoke a credential in a revocation list.
+ *
+ * @remarks This method is safe to call on a credential that is not revocable,
+ * and/or a credential that is not revoked.
+ *
+ * @returns a revocation list credential with the provided credential not revoked
  */
 export const unrevokeCredential = async (
   credential: RevocableCredential,
@@ -91,6 +104,8 @@ export const unrevokeCredential = async (
 
 /**
  * Given a verififable credential, check if it has been revoked.
+ *
+ * @returns true if the credential is revoked, false otherwise
  */
 export const isRevoked = async (
   credential: Verifiable<W3CCredential> | RevocableCredential,
@@ -112,73 +127,10 @@ export const isRevoked = async (
   return results.indexOf(index) !== -1
 }
 
-export const isRevokedIndex = async (
-  index: number,
-  statusList: RevocationListCredential
-): Promise<boolean> => {
-  const results = await expandBitstring(
-    statusList.credentialSubject.encodedList
-  )
-
-  return results.indexOf(index) !== -1
-}
-
-/**
- * Apply zlib compression with Base64 encoding
- */
-export const compress = (input: string | Buffer): string => {
-  const deflated = deflate(input)
-  const deflated2 = base64js.fromByteArray(deflated)
-  return deflated2
-}
-
-/**
- * Given the base64 encoded revocation list, decode and unzip it to a Buffer
- */
-export const decompress = (input: string): Buffer => {
-  const decoded = base64js.toByteArray(input)
-  return Buffer.from(inflate(decoded))
-}
-
-/**
- * Given a list of index values, generate the compressed bitstring
- */
-export const generateBitstring = (indicies: number[]): string => {
-  const bits = new Bits(16_384 * 8) // 16KB
-  indicies.forEach((index) => bits.setBit(index))
-  return compress(bits.buffer)
-}
-
-/**
- * Given a bitstring, expand to list of revoked indexes.
- */
-export const expandBitstring = async (string: string): Promise<number[]> => {
-  const buffer = await decompress(string)
-  const bools = expandBitstringToBooleans(buffer)
-  const result: number[] = []
-  bools.forEach((b, index) => {
-    if (b) {
-      result.push(index)
-    }
-  })
-  return result
-}
-
-/**
- * Map the bitstring to a list of booleans. This is a very simple approach and
- * not a very performant.
- */
-export const expandBitstringToBooleans = (bitstring: Buffer): boolean[] => {
-  const bits = new Bits(bitstring)
-  const results: boolean[] = []
-  for (let i = 0; i < bitstring.byteLength * 8; i++) {
-    results[i] = bits.testBit(i)
-  }
-  return results
-}
-
 /**
  * Determine if a given credential is revocable or not.
+ *
+ * @returns true if the credential is revocable, false otherwise
  */
 export const isRevocable = (
   credential: Verifiable<W3CCredential> | RevocableCredential
