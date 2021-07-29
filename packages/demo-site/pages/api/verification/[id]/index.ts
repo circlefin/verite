@@ -9,12 +9,12 @@ import {
   methodNotAllowed,
   notFound,
   validationError
-} from "lib/api-fns"
+} from "../../../../lib/api-fns"
 import {
   findVerificationRequest,
   updateVerificationRequestStatus
-} from "lib/database/verificationRequests"
-import { validateVerificationSubmission } from "lib/verification/submission"
+} from "../../../../lib/database/verificationRequests"
+import { validateVerificationSubmission } from "../../../../lib/verification/submission"
 
 type PostResponse = { status: string }
 

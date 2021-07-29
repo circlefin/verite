@@ -11,8 +11,8 @@ import {
   EncodedCredentialFulfillment
 } from "@centre/verity"
 
-import type { User } from "lib/database"
-import { ProcessedCredentialApplication } from "types"
+import { ProcessedCredentialApplication } from "../../types"
+import type { User } from "../database"
 
 export async function createKycAmlFulfillment(
   user: User,

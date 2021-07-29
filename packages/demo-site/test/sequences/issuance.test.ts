@@ -9,11 +9,11 @@ import {
   VerificationError,
   W3CCredential
 } from "@centre/verity"
-import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
-import { findManifestById } from "lib/issuance/manifest"
-import { validateCredentialSubmission } from "lib/issuance/submission"
-import { credentialSigner } from "lib/signer"
-import { userFactory } from "test/factories"
+import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
+import { findManifestById } from "../../lib/issuance/manifest"
+import { validateCredentialSubmission } from "../../lib/issuance/submission"
+import { credentialSigner } from "../../lib/signer"
+import { userFactory } from "../../test/factories"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =

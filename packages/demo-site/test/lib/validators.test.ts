@@ -4,22 +4,22 @@ import {
   decodeVerifiablePresentation,
   randomDidKey
 } from "@centre/verity"
-import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
-import { findManifestById } from "lib/issuance/manifest"
-import { validateCredentialSubmission } from "lib/issuance/submission"
-import { credentialSigner } from "lib/signer"
+import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
+import { findManifestById } from "../../lib/issuance/manifest"
+import { validateCredentialSubmission } from "../../lib/issuance/submission"
+import { credentialSigner } from "../../lib/signer"
 import {
   processCredentialApplication,
   processVerificationSubmission
-} from "lib/validators"
-import { kycPresentationDefinition } from "lib/verification/requests"
-import { findPresentationDefinitionById } from "lib/verification/submission"
-import { userFactory } from "test/factories"
+} from "../../lib/validators"
+import { kycPresentationDefinition } from "../../lib/verification/requests"
+import { findPresentationDefinitionById } from "../../lib/verification/submission"
+import { userFactory } from "../../test/factories"
 import {
   CredentialResults,
   FieldConstraintEvaluation,
   ValidationCheck
-} from "types"
+} from "../../types"
 
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {

@@ -9,14 +9,14 @@ import { createMocks } from "node-mocks-http"
 import {
   fetchVerificationRequestStatus,
   saveVerificationRequest
-} from "lib/database"
-import { createKycAmlFulfillment } from "lib/issuance/fulfillment"
-import { findManifestById } from "lib/issuance/manifest"
-import { validateCredentialSubmission } from "lib/issuance/submission"
-import { credentialSigner } from "lib/signer"
-import { generateKycVerificationRequest } from "lib/verification/requests"
-import handler from "pages/api/verification/[id]/index"
-import { userFactory } from "test/factories"
+} from "../../../../../lib/database"
+import { createKycAmlFulfillment } from "../../../../../lib/issuance/fulfillment"
+import { findManifestById } from "../../../../../lib/issuance/manifest"
+import { validateCredentialSubmission } from "../../../../../lib/issuance/submission"
+import { credentialSigner } from "../../../../../lib/signer"
+import { generateKycVerificationRequest } from "../../../../../lib/verification/requests"
+import handler from "../../../../../pages/api/verification/[id]/index"
+import { userFactory } from "../../../../../test/factories"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {

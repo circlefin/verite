@@ -1,11 +1,10 @@
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { GetServerSideProps, NextPage } from "next"
 import QRCode from "qrcode.react"
-import { useState } from "react"
 import useSWR from "swr"
-import VerifierLayout from "components/verifier/Layout"
-import { saveVerificationRequest } from "lib/database"
-import { generateKycVerificationRequest } from "lib/verification/requests"
+import VerifierLayout from "../../components/verifier/Layout"
+import { saveVerificationRequest } from "../../lib/database"
+import { generateKycVerificationRequest } from "../../lib/verification/requests"
 
 export type VerificationRequestWrapper = {
   requestUrl: string

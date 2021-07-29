@@ -1,9 +1,9 @@
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
-import Layout from "components/Layout"
-import { currentUser } from "lib/auth-fns"
-import type { User } from "lib/database"
+import Layout from "../components/Layout"
+import { currentUser } from "../lib/auth-fns"
+import type { User } from "../lib/database"
 
 type Props = {
   user?: User

@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
-import Layout from "components/Layout"
-import SignInForm from "components/SignInForm"
+import Layout from "../components/Layout"
+import SignInForm from "../components/SignInForm"
 
 type Props = {
   redirectTo: string

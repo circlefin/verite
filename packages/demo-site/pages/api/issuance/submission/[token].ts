@@ -9,13 +9,16 @@ import {
   methodNotAllowed,
   notFound,
   validationError
-} from "lib/api-fns"
-import { findUserFromTemporaryAuthToken } from "lib/database"
-import { pickListAndIndex, storeRevocableCredential } from "lib/database"
-import { createFulfillment } from "lib/issuance/fulfillment"
-import { validateCredentialSubmission } from "lib/issuance/submission"
-import { credentialSigner } from "lib/signer"
-import { ProcessedCredentialApplication } from "types"
+} from "../../../../lib/api-fns"
+import { findUserFromTemporaryAuthToken } from "../../../../lib/database"
+import {
+  pickListAndIndex,
+  storeRevocableCredential
+} from "../../../../lib/database"
+import { createFulfillment } from "../../../../lib/issuance/fulfillment"
+import { validateCredentialSubmission } from "../../../../lib/issuance/submission"
+import { credentialSigner } from "../../../../lib/signer"
+import { ProcessedCredentialApplication } from "../../../../types"
 
 export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   if (req.method !== "POST") {
