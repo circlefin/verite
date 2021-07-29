@@ -96,6 +96,7 @@ const doUnrevoke = async (credential: RevocableCredential) => {
 
 const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
   const router = useRouter()
+
   const credentials = credentialList.map(({ credential, revoked }) => {
     return (
       <div key={credential.credential.credentialSubject.id}>
@@ -119,6 +120,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
       </div>
     )
   })
+
   return (
     <AdminLayout title={user.email}>
       <div className="flex flex-col justify-center space-y-8">

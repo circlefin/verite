@@ -1,6 +1,7 @@
 import {
   InputDescriptorConstraintField,
-  VerifiedCredential
+  Verifiable,
+  W3CCredential
 } from "@centre/verity"
 import { CredentialMatch, PathEvaluation, ValidationFailure } from "./"
 
@@ -52,11 +53,11 @@ export class FieldConstraintEvaluation extends Evaluation<InputDescriptorConstra
 }
 
 export class CredentialResults {
-  credential: VerifiedCredential
+  credential: Verifiable<W3CCredential>
   constraintChecks: FieldConstraintEvaluation[]
 
   constructor(
-    credential: VerifiedCredential,
+    credential: Verifiable<W3CCredential>,
     constraintChecks: FieldConstraintEvaluation[]
   ) {
     this.credential = credential

@@ -20,8 +20,6 @@ export default NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials: Credentials) {
-        const users = await allUsers()
-        console.log(users)
         return authenticateUser(credentials.email, credentials.password)
       }
     })
