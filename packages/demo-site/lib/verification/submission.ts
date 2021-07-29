@@ -43,6 +43,7 @@ export async function validateVerificationSubmission(
   const presentationDefinition = findPresentationDefinitionById(
     verificationSubmission.presentation_submission.definition_id
   )
+
   if (!presentationDefinition) {
     throw new ValidationError(
       "Invalid Presentation Definition ID",
@@ -52,11 +53,10 @@ export async function validateVerificationSubmission(
     )
   }
 
-  const processed = await processVerificationSubmission(
+  return processVerificationSubmission(
     verificationSubmission,
     presentationDefinition
   )
-  return processed
 }
 
 function hasPaths(obj: Record<string, unknown>, keys: string[]) {

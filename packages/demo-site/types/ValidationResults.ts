@@ -1,4 +1,4 @@
-import { VerifiedCredential } from "@centre/verity"
+import { Verifiable, W3CCredential } from "@centre/verity"
 
 /**
  * Results of a path evaluation.
@@ -18,7 +18,7 @@ export type RuleEvaluationResult = {
 
 export type CredentialMatch = {
   inputDescriptorId: string
-  credential: VerifiedCredential
+  credential: Verifiable<W3CCredential>
   results: RuleEvaluationResult[]
 }
 

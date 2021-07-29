@@ -69,7 +69,7 @@ async function post(req: NextApiRequest, res: ApiResponse<PostResponse>) {
     await validateVerificationSubmission(submission)
   } catch (err) {
     await updateVerificationRequestStatus(
-      submission.presentation_submission?.id,
+      verificationRequest.request.id,
       "rejected"
     )
     return validationError(res, err)

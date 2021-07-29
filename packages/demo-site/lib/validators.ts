@@ -9,7 +9,10 @@ import {
   EncodedCredentialApplication,
   W3CCredential,
   W3CPresentation,
-  Verifiable
+  Verifiable,
+  RevocableCredential,
+  asyncSome,
+  isRevoked
 } from "@centre/verity"
 import Ajv from "ajv"
 import jsonpath from "jsonpath"
@@ -20,8 +23,10 @@ import {
   ValidationFailure,
   FieldConstraintEvaluation,
   PathEvaluation,
-  CredentialResults
+  CredentialResults,
+  ValidationError
 } from "../types"
+import { findRevocationListForCredential } from "./database"
 import { vcSchema, vpSchema } from "./schemas"
 
 const ajv = new Ajv()
@@ -92,58 +97,59 @@ export function validateInputDescriptors(
 ): ValidationCheck[] {
   return descriptors.reduce((map, descriptor) => {
     const credentialResults = descriptor.schema.reduce((matches, obj) => {
-      const candidates = creds[obj.uri]
-      matches = !candidates
-        ? matches
-        : matches.concat(
-            candidates.map((cred) => {
-              const constraints = descriptor.constraints
-              if (!constraints || !constraints.fields) {
-                return new CredentialResults(cred, [])
-              }
+      const candidates: Verifiable<W3CCredential>[] = creds[obj.uri]
 
-              const fieldChecks = new Array<FieldConstraintEvaluation>()
-              for (const field of constraints.fields) {
-                const pathEvaluations = new Array<PathEvaluation>()
-                const pathMatch = field.path.some((path) => {
-                  try {
-                    const values = jsonpath.query(cred, path)
-                    const hasMatch =
-                      !field.filter ||
-                      (values.length > 0 &&
-                        ajv.validate(field.filter, values[0]))
-                    pathEvaluations.push({
-                      path,
-                      match: hasMatch as boolean,
-                      value: values.length > 0 ? values[0] : null
-                    })
-                    return hasMatch as boolean
-                  } catch (err) {
-                    console.log(err)
-                    pathEvaluations.push({ path, match: false, value: null })
-                    return false
-                  }
+      if (!candidates) {
+        return matches
+      }
+
+      return matches.concat(
+        candidates.map((cred) => {
+          const constraints = descriptor.constraints
+          if (!constraints || !constraints.fields) {
+            return new CredentialResults(cred, [])
+          }
+
+          const fieldChecks = new Array<FieldConstraintEvaluation>()
+          for (const field of constraints.fields) {
+            const pathEvaluations = new Array<PathEvaluation>()
+            const pathMatch = field.path.some((path) => {
+              try {
+                const values = jsonpath.query(cred, path)
+                const hasMatch =
+                  !field.filter ||
+                  (values.length > 0 && ajv.validate(field.filter, values[0]))
+                pathEvaluations.push({
+                  path,
+                  match: hasMatch as boolean,
+                  value: values.length > 0 ? values[0] : null
                 })
-                const match = pathMatch ? pathEvaluations.slice(-1)[0] : null
-                fieldChecks.push(
-                  new FieldConstraintEvaluation(
-                    field,
-                    match,
-                    pathMatch ? null : pathEvaluations
-                  )
-                )
-                // all field checks must pass; quit early
-                if (!pathMatch) {
-                  break
-                }
+                return hasMatch as boolean
+              } catch (err) {
+                console.log(err)
+                pathEvaluations.push({ path, match: false, value: null })
+                return false
               }
-              return new CredentialResults(cred, fieldChecks)
             })
-          )
-      return matches
+            const match = pathMatch ? pathEvaluations.slice(-1)[0] : null
+            fieldChecks.push(
+              new FieldConstraintEvaluation(
+                field,
+                match,
+                pathMatch ? null : pathEvaluations
+              )
+            )
+            // all field checks must pass; quit early
+            if (!pathMatch) {
+              break
+            }
+          }
+          return new CredentialResults(cred, fieldChecks)
+        })
+      )
     }, [])
-    map.push(new ValidationCheck(descriptor.id, credentialResults))
-    return map
+
+    return map.concat(new ValidationCheck(descriptor.id, credentialResults))
   }, new Array<ValidationCheck>())
 }
 
@@ -166,6 +172,7 @@ export async function processVerificationSubmission(
   const presentation = await decodeVerifiablePresentation(
     submission.presentation
   )
+
   const converted: DecodedVerificationSubmission = {
     presentation_submission: submission.presentation_submission,
     presentation
@@ -189,11 +196,35 @@ export async function processVerificationSubmission(
     mapped,
     definition.input_descriptors
   )
+
+  await ensureNotRevoked(presentation)
+
   return new ProcessedVerificationSubmission(
     converted.presentation,
     evaluations,
     converted.presentation_submission
   )
+}
+
+async function ensureNotRevoked(
+  presentation: Verifiable<W3CPresentation>
+): Promise<void> {
+  const credentials =
+    (presentation.verifiableCredential as RevocableCredential[]) || []
+
+  const anyRevoked = await asyncSome(credentials, async (credential) => {
+    const statusList = await findRevocationListForCredential(credential)
+    return isRevoked(credential, statusList)
+  })
+
+  if (anyRevoked) {
+    throw new ValidationError(
+      "Revoked Credentials",
+      messageToValidationFailure(
+        "At least one of the provided verified credential have been revoked"
+      )
+    )
+  }
 }
 
 export async function processCredentialApplication(
