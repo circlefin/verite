@@ -20,7 +20,8 @@ module.exports = {
           order: "asc"
         }
       }
-    ]
+    ],
+    "no-warning-comments": "warn"
   },
   settings: {
     "import/parsers": {
