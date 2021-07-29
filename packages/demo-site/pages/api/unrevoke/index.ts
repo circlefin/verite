@@ -5,7 +5,10 @@ import {
   unrevokeCredential
 } from "@centre/verity"
 import { apiHandler, notFound } from "../../../lib/api-fns"
-import { allRevocationLists, saveRevocationList } from "../../../lib/database"
+import {
+  findRevocationListForCredential,
+  saveRevocationList
+} from "../../../lib/database"
 import { credentialSigner } from "../../../lib/signer"
 
 export default apiHandler<string>(async (req, res) => {
@@ -19,9 +22,7 @@ export default apiHandler<string>(async (req, res) => {
   }
 
   // Find the credential's revocation list
-  const url = credential.credentialStatus.statusListCredential
-  const revocationLists = await allRevocationLists()
-  const revocationList = revocationLists.find((l) => l.id === url)
+  const revocationList = await findRevocationListForCredential(credential)
 
   // Unrevoke the credential
   const list = await unrevokeCredential(

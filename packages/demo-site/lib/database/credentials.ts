@@ -45,6 +45,14 @@ export const allRevocationLists = async (): Promise<
   })
 }
 
+export const findRevocationListForCredential = async (
+  credential: RevocableCredential
+): Promise<RevocationListCredential | undefined> => {
+  const url = credential.credentialStatus.statusListCredential
+  const revocationLists = await allRevocationLists()
+  return revocationLists.find((list) => list.id === url)
+}
+
 export const findCredentialsByUserId = async (
   userId: string
 ): Promise<DatabaseCredential[]> => {
