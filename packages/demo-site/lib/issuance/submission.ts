@@ -1,6 +1,7 @@
-import { EncodedCredentialApplication } from "@centre/verity"
+import type { EncodedCredentialApplication } from "@centre/verity"
 import { has } from "lodash"
-import { ProcessedCredentialApplication, ValidationError } from "../../types"
+import type { ProcessedCredentialApplication } from "../../types"
+import { ValidationError } from "../../types"
 import {
   processCredentialApplication,
   messageToValidationFailure

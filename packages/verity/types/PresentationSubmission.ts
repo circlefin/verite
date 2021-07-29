@@ -1,4 +1,4 @@
-import { DescriptorMap } from "./DescriptorMap"
+import type { DescriptorMap } from "./DescriptorMap"
 
 export type PresentationSubmission = {
   id: string

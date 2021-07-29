@@ -1,8 +1,5 @@
-import {
-  CredentialSigner,
-  decodeVerifiableCredential,
-  JwtCredentialPayload
-} from ".."
+import { CredentialSigner, decodeVerifiableCredential } from "../lib/utils"
+import type { JwtCredentialPayload } from "../types"
 
 describe("VC signing", () => {
   it("signs a VC", async () => {

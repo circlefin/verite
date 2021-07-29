@@ -1,14 +1,16 @@
 import { v4 as uuidv4 } from "uuid"
-import {
+import type {
   DescriptorMap,
   EncodedCredentialFulfillment,
   GenericCredentialApplication,
   JwtCredentialPayload,
   JWT
-} from "../types"
-import { asyncMap } from "./async-fns"
-import { CredentialSigner } from "./credential-signer"
-import { verifiablePresentationPayload } from "./credentials"
+} from "../../types"
+import {
+  asyncMap,
+  CredentialSigner,
+  verifiablePresentationPayload
+} from "../utils"
 
 export async function generateFulfillment(
   credentialSigner: CredentialSigner,

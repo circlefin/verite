@@ -1,9 +1,8 @@
-import {
-  asyncMap,
-  isRevoked,
+import type {
   RevocableCredential,
   RevocationListCredential
 } from "@centre/verity"
+import { asyncMap, isRevoked } from "@centre/verity"
 import { NextPage } from "next"
 import { useRouter } from "next/router"
 import AdminLayout from "../../../components/admin/Layout"

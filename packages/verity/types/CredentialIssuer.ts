@@ -1,4 +1,4 @@
-import { EntityStyle } from "./EntityStyle"
+import type { EntityStyle } from "./EntityStyle"
 
 export type CredentialIssuer = {
   id: string

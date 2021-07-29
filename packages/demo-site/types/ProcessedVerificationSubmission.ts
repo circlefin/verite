@@ -1,11 +1,12 @@
-import {
+import type {
   DecodedVerificationSubmission,
   PresentationSubmission,
   Verifiable,
   W3CPresentation
 } from "@centre/verity"
-import { ValidationCheck, ValidationCheckFormatter } from "./Matches"
-import { CredentialMatch, ValidationFailure } from "./"
+import type { ValidationCheck } from "./Matches"
+import { ValidationCheckFormatter } from "./Matches"
+import type { CredentialMatch, ValidationFailure } from "./ValidationResults"
 export class ProcessedVerificationSubmission
   implements DecodedVerificationSubmission
 {

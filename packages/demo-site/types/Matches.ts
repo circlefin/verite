@@ -1,9 +1,13 @@
-import {
+import type {
   InputDescriptorConstraintField,
   Verifiable,
   W3CCredential
 } from "@centre/verity"
-import { CredentialMatch, PathEvaluation, ValidationFailure } from "./"
+import type {
+  CredentialMatch,
+  PathEvaluation,
+  ValidationFailure
+} from "./ValidationResults"
 
 // TODO
 export class PathMatches {

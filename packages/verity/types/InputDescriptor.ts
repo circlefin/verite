@@ -1,6 +1,6 @@
 // https://identity.foundation/presentation-exchange/#input-descriptor-object
 
-import { Schema } from "./Schema"
+import type { Schema } from "./Schema"
 
 export enum InputDescriptorConstraintStatusDirective {
   REQUIRED = "required",

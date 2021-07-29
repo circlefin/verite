@@ -1,8 +1,8 @@
-import {
-  InputDescriptorConstraintStatusDirective,
+import type {
   PresentationDefinition,
   VerificationRequest
 } from "@centre/verity"
+import { InputDescriptorConstraintStatusDirective } from "@centre/verity"
 import { compact } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 

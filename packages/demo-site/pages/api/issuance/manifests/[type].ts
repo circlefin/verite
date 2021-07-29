@@ -1,4 +1,4 @@
-import { CredentialManifest } from "@centre/verity"
+import type { CredentialManifest } from "@centre/verity"
 import { apiHandler, notFound } from "../../../../lib/api-fns"
 import { MANIFEST_MAP } from "../../../../lib/issuance/manifest"
 

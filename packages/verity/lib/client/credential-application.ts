@@ -1,14 +1,18 @@
 import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
-import {
+import type {
   EncodedCredentialApplication,
   CredentialManifest,
   DescriptorMap,
   DidKey
-} from "../types"
-import { verifiablePresentationPayload } from "./credentials"
-import { didKeyToIssuer } from "./didKey"
+} from "../../types"
+import { didKeyToIssuer, verifiablePresentationPayload } from "../utils"
 
+/**
+ * Generates a Credential Application as response to a Credential Manifest
+ *
+ * @returns an encoded & signed application that can be submitted to the issuer
+ */
 export async function createCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest

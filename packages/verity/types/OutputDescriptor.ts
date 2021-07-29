@@ -1,8 +1,8 @@
 // https://identity.foundation/credential-manifest/#output-descriptor
 
-import { DataDisplay } from "./DataDisplay"
-import { EntityStyle } from "./EntityStyle"
-import { Schema } from "./Schema"
+import type { DataDisplay } from "./DataDisplay"
+import type { EntityStyle } from "./EntityStyle"
+import type { Schema } from "./Schema"
 
 export type OutputDescriptor = {
   id: string

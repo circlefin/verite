@@ -1,10 +1,10 @@
-import {
+import type {
   CredentialIssuer,
   CredentialManifest,
   EntityStyle,
   OutputDescriptor,
   PresentationDefinition
-} from "../types"
+} from "../../types"
 
 export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreAttestation"
 export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"

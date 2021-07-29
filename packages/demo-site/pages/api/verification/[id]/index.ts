@@ -1,4 +1,4 @@
-import {
+import type {
   EncodedVerificationSubmission,
   VerificationRequest
 } from "@centre/verity"

@@ -1,6 +1,6 @@
-import { DescriptorMap } from "./DescriptorMap"
-import { JWT } from "./Jwt"
-import { Verifiable, W3CPresentation } from "./W3C"
+import type { DescriptorMap } from "./DescriptorMap"
+import type { JWT } from "./Jwt"
+import type { Verifiable, W3CPresentation } from "./W3C"
 
 type NarrowCredentialFulfillment = {
   credential_fulfillment: {

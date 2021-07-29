@@ -1,8 +1,8 @@
 import {
   decodeVerifiableCredential,
-  decodeVerifiablePresentation,
-  VerificationError
-} from ".."
+  decodeVerifiablePresentation
+} from "../lib/utils"
+import { VerificationError } from "../types"
 
 // tslint:disable-next-line: max-line-length
 const signedVc =

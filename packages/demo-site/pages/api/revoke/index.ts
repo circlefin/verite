@@ -1,9 +1,5 @@
-import {
-  decodeVerifiableCredential,
-  RevocableCredential,
-  revokeCredential,
-  JWT
-} from "@centre/verity"
+import type { RevocableCredential, JWT } from "@centre/verity"
+import { revokeCredential, decodeVerifiableCredential } from "@centre/verity"
 import { apiHandler, notFound } from "../../../lib/api-fns"
 import { allRevocationLists, saveRevocationList } from "../../../lib/database"
 import { credentialSigner } from "../../../lib/signer"

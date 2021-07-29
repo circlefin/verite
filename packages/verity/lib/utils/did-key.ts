@@ -5,16 +5,18 @@ import { EdDSASigner } from "did-jwt"
 import { Resolvable, DIDResolutionResult } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
-import { DidKey, Issuer } from "../types"
+import type { DidKey, Issuer } from "../../types"
 
-type DidKeyParams = {
+type GenerateDidKeyParams = {
   secureRandom: () => Uint8Array
 }
 
 /**
- * Returns a did:key for a given a seed function.
+ * Generate a `DidKey` for a given a seed function.
+ *
+ * @returns a `DidKey` object containing public and private keys.
  */
-export function generateDidKey({ secureRandom }: DidKeyParams): DidKey {
+export function generateDidKey({ secureRandom }: GenerateDidKeyParams): DidKey {
   const key = ed25519.generateKeyPair({
     isAvailable: true,
     randomBytes: secureRandom
@@ -40,6 +42,10 @@ export function generateDidKey({ secureRandom }: DidKeyParams): DidKey {
 
 /**
  * Returns a did:key with a random seed.
+ *
+ * @remarks This method should be used for testing purposes only.
+ *
+ * @returns a did:key with a random seed
  */
 export function randomDidKey(): DidKey {
   const secureRandom = () => new Uint8Array(randomBytes(32))
@@ -47,7 +53,9 @@ export function randomDidKey(): DidKey {
 }
 
 /**
- * Returns an `Issuer` instance for a given did:key
+ * Convert a `DidKey` object to an `Issuer` instance
+ *
+ * @returns an `Issuer` instance using the `DidKey` private key
  */
 export function didKeyToIssuer(didKey: DidKey): Issuer {
   return {
@@ -58,9 +66,9 @@ export function didKeyToIssuer(didKey: DidKey): Issuer {
 }
 
 /**
- * did:key resolver that adheres to the `did-resolver` API.
+ * A did:key resolver that adheres to the `did-resolver` API.
  *
- * The interfaces look near identical, but Typescript is requiring we do this.
+ * @remark This resolver is used to verify the signature of a did:key JWT.
  */
 export const didKeyResolver: Resolvable = {
   resolve: async (didUrl: string): Promise<DIDResolutionResult> => {
