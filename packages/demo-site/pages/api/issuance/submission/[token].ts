@@ -12,7 +12,7 @@ import {
 } from "../../../../lib/api-fns"
 import { findUserFromTemporaryAuthToken } from "../../../../lib/database"
 import {
-  pickListAndIndex,
+  generateRevocationListStatus,
   storeRevocableCredential
 } from "../../../../lib/database"
 import { createFulfillment } from "../../../../lib/issuance/fulfillment"
@@ -44,7 +44,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     user,
     credentialSigner(),
     acceptedApplication,
-    await pickListAndIndex()
+    await generateRevocationListStatus()
   )
 
   if (!fulfillment) {

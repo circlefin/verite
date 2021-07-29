@@ -1,4 +1,5 @@
 import {
+  MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
   decodeVerifiableCredential,
   isRevocable,
@@ -13,8 +14,6 @@ export type DatabaseCredential = {
   userId: string
   credential: RevocableCredential
 }
-
-const MINIMUM_BITSTREAM_LENGTH = 16 * 1_024 * 8 // 16KB
 
 export const storeRevocableCredential = async (
   credentials: RevocableCredential[],
@@ -38,6 +37,7 @@ export const allRevocationLists = async (): Promise<
   RevocationListCredential[]
 > => {
   const lists = await prisma.revocationList.findMany()
+
   return await asyncMap(lists, async (list) => {
     return (await decodeVerifiableCredential(
       list.jwt
@@ -122,31 +122,37 @@ export const saveRevocationList = async (
 }
 
 /**
+ * Select a random revocation list and a random index from that list
+ * to store the revocation status.
+ *
  * Each revocable credential requires that we provide it a unique index in a list.
+ *
+ * @returns a revocation list status containing a list and index
  */
-export const pickListAndIndex = async (): Promise<RevocationList2021Status> => {
-  // Pick a random revocation list
-  const lists = await allRevocationLists()
-  const revocationList = sample(lists)
+export const generateRevocationListStatus =
+  async (): Promise<RevocationList2021Status> => {
+    // Pick a random revocation list
+    const lists = await allRevocationLists()
+    const revocationList = sample(lists)
 
-  // Find all credentials in the revocation list and map the index
-  const consumedIndexes = (
-    await findCredentialsByRevocationlist(revocationList)
-  ).map(({ credential }) =>
-    parseInt(credential.credentialStatus.statusListIndex, 10)
-  )
+    // Find all credentials in the revocation list and map the index
+    const consumedIndexes = (
+      await findCredentialsByRevocationlist(revocationList)
+    ).map(({ credential }) =>
+      parseInt(credential.credentialStatus.statusListIndex, 10)
+    )
 
-  // Try up to 10 times for now
-  for (let i = 0; i < MINIMUM_BITSTREAM_LENGTH; i++) {
-    const randomIndex = random(0, MINIMUM_BITSTREAM_LENGTH - 1)
-    const index = consumedIndexes.indexOf(randomIndex)
-    if (index === -1) {
-      return {
-        id: `${revocationList.id}#${randomIndex}`,
-        type: "RevocationList2021Status",
-        statusListIndex: randomIndex.toString(),
-        statusListCredential: revocationList.id
+    // Try up to 10 times for now
+    for (let i = 0; i < MINIMUM_BITSTREAM_LENGTH; i++) {
+      const randomIndex = random(0, MINIMUM_BITSTREAM_LENGTH - 1)
+      const index = consumedIndexes.indexOf(randomIndex)
+      if (index === -1) {
+        return {
+          id: `${revocationList.id}#${randomIndex}`,
+          type: "RevocationList2021Status",
+          statusListIndex: randomIndex.toString(),
+          statusListCredential: revocationList.id
+        }
       }
     }
   }
-}

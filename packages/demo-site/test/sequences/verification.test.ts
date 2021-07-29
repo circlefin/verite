@@ -1,3 +1,4 @@
+import { generateRevocationListStatus } from "@centre/demo-site/lib/database"
 import {
   createCredentialApplication,
   createVerificationSubmission,
@@ -30,7 +31,8 @@ describe("verification", () => {
     const fulfillment = await createKycAmlFulfillment(
       user,
       credentialSigner(),
-      acceptedApplication
+      acceptedApplication,
+      await generateRevocationListStatus()
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(

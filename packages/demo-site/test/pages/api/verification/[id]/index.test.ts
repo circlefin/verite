@@ -8,6 +8,7 @@ import {
 import { createMocks } from "node-mocks-http"
 import {
   fetchVerificationRequestStatus,
+  generateRevocationListStatus,
   saveVerificationRequest
 } from "../../../../../lib/database"
 import { createKycAmlFulfillment } from "../../../../../lib/issuance/fulfillment"
@@ -96,7 +97,8 @@ async function generateVc(clientDidKey: DidKey) {
   const fulfillment = await createKycAmlFulfillment(
     user,
     credentialSigner(),
-    acceptedApplication
+    acceptedApplication,
+    await generateRevocationListStatus()
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(
