@@ -1,3 +1,4 @@
+import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
 import {
   CredentialPayload,
@@ -109,22 +110,50 @@ export const unrevokeCredential = async (
  */
 export const isRevoked = async (
   credential: Verifiable<W3CCredential> | RevocableCredential,
-  statusList: RevocationListCredential
+  revocationStatusList?: RevocationListCredential
 ): Promise<boolean> => {
   // If there is no credentialStatus, assume not revoked
   if (!isRevocable(credential)) {
     return false
   }
 
+  const revocableCredential = credential as RevocableCredential
+  const statusList =
+    revocationStatusList || (await fetchStatusList(revocableCredential))
+
+  if (!statusList) {
+    return false
+  }
+
   const results = await expandBitstring(
     statusList.credentialSubject.encodedList
   )
+
   const index = parseInt(
     (credential as RevocableCredential).credentialStatus.statusListIndex,
     10
   )
 
   return results.indexOf(index) !== -1
+}
+
+/**
+ * Performs an HTTP request to fetch the revocation status list for a credential.
+ *
+ * @returns the encoded status list, if present
+ */
+export async function fetchStatusList(
+  credential: RevocableCredential
+): Promise<RevocationListCredential | undefined> {
+  const url = credential.credentialStatus.statusListCredential
+
+  try {
+    const response = await fetch(url)
+
+    if (response.status === 200) {
+      return response.json()
+    }
+  } catch (e) {}
 }
 
 /**

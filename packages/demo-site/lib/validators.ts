@@ -213,8 +213,7 @@ async function ensureNotRevoked(
     (presentation.verifiableCredential as RevocableCredential[]) || []
 
   const anyRevoked = await asyncSome(credentials, async (credential) => {
-    const statusList = await findRevocationListForCredential(credential)
-    return isRevoked(credential, statusList)
+    return isRevoked(credential)
   })
 
   if (anyRevoked) {

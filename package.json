@@ -11,6 +11,7 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "build:verity": "npm run build --workspace @centre/verity",
+    "check": "run-s type-check lint test",
     "clean": "npm run clean --workspaces",
     "db:migrate": "npm run db:migrate --workspace @centre/demo-site",
     "db:reset": "npm run db:reset --workspace @centre/demo-site",
