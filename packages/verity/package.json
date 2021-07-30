@@ -20,6 +20,7 @@
     "base64-js": "^1.5.1",
     "did-jwt-vc": "^2.1.6",
     "did-resolver": "^3.1.0",
+    "isomorphic-unfetch": "^3.1.0",
     "lodash": "^4.17.21",
     "multibase": "^4.0.4",
     "multicodec": "^3.1.0",

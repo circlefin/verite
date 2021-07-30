@@ -2,7 +2,7 @@
 
 import NextAuth from "next-auth"
 import Providers from "next-auth/providers"
-import { allUsers, User } from "../../../lib/database"
+import { User } from "../../../lib/database"
 import { authenticateUser } from "../../../lib/database"
 
 type Credentials = {
