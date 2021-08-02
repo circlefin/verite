@@ -1,5 +1,5 @@
-import { scanDataForManifest } from "@centre/verity"
-import type { ManifestUrlWrapper } from "@centre/verity"
+import { challengeTokenUrlWrapper } from "@centre/verity"
+import type { ChallengeTokenUrlWrapper } from "@centre/verity"
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import IssuerLayout from "../../components/issuer/Layout"
@@ -8,27 +8,26 @@ import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
 
 type Props = {
-  manifestUrlWrapper: ManifestUrlWrapper
+  qrCodeData: ChallengeTokenUrlWrapper
   user: User
 }
 
 export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
-  const manifestUrlWrapper = scanDataForManifest(
-    `${process.env.HOST}/api/issuance/manifests/credit-score`,
-    `${process.env.HOST}/api/issuance/submission/${authToken}`
+  const qrCodeData = challengeTokenUrlWrapper(
+    `${process.env.HOST}/api/manifests/credit-score${authToken}`
   )
 
   return {
     props: {
-      manifestUrlWrapper,
+      qrCodeData,
       user
     }
   }
 })
 
-const CreditScorePage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
+const CreditScorePage: NextPage<Props> = ({ qrCodeData, user }) => {
   return (
     <IssuerLayout title="Credit Score">
       <div className="flex flex-col justify-center space-y-8">
@@ -43,14 +42,14 @@ const CreditScorePage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
           </div>
         </dl>
         <QRCode
-          value={JSON.stringify(manifestUrlWrapper)}
+          value={JSON.stringify(qrCodeData)}
           className="w-48 h-48 mx-auto"
           renderAs="svg"
         />
         <textarea
           className="container h-40 mx-auto font-mono text-sm border-2"
           readOnly
-          value={JSON.stringify(manifestUrlWrapper, null, 4)}
+          value={JSON.stringify(qrCodeData, null, 4)}
         />
       </div>
     </IssuerLayout>

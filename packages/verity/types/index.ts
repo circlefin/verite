@@ -1,4 +1,5 @@
 export * from "./ChainAddressOwner"
+export * from "./ChallengeTokenUrl"
 export * from "./ClaimFormatDesignation"
 export * from "./CounterpartyPerson"
 export * from "./CredentialIssuer"
