@@ -1,10 +1,9 @@
 import { verifyCredential, verifyPresentation } from "did-jwt-vc"
-import {
+import type {
   JWT,
   JwtCredentialPayload,
   JwtPresentationPayload,
   RevocationList2021Status,
-  VerificationError,
   VerifiableCredential,
   RevocableCredential,
   RevocationListCredential,
@@ -12,8 +11,9 @@ import {
   W3CCredential,
   W3CPresentation,
   RevocablePresentation
-} from "../types"
-import { didKeyResolver } from "./didKey"
+} from "../../types"
+import { VerificationError } from "../../types"
+import { didKeyResolver } from "./did-key"
 
 export function verifiablePresentationPayload(
   subject: string,

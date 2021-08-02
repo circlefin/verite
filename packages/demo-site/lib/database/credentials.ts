@@ -1,11 +1,13 @@
+import type {
+  RevocableCredential,
+  RevocationList2021Status,
+  RevocationListCredential
+} from "@centre/verity"
 import {
   MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
   decodeVerifiableCredential,
-  isRevocable,
-  RevocableCredential,
-  RevocationList2021Status,
-  RevocationListCredential
+  isRevocable
 } from "@centre/verity"
 import { random, sample } from "lodash"
 import { prisma } from "./prisma"

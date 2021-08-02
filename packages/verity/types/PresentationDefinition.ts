@@ -1,5 +1,5 @@
-import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
-import { InputDescriptor } from "./InputDescriptor"
+import type { ClaimFormatDesignation } from "./ClaimFormatDesignation"
+import type { InputDescriptor } from "./InputDescriptor"
 
 // https://identity.foundation/presentation-exchange/#presentation-definition
 export type PresentationDefinition = {

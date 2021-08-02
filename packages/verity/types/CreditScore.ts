@@ -1,4 +1,4 @@
-import { ChainAddressOwner } from "./ChainAddressOwner"
+import type { ChainAddressOwner } from "./ChainAddressOwner"
 
 export type CreditScore = {
   "@type": "CreditScore"

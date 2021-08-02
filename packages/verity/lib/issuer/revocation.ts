@@ -1,16 +1,19 @@
 import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
-import {
+import type {
   CredentialPayload,
   RevocableCredential,
   RevocationList,
   RevocationListCredential,
   Verifiable,
   W3CCredential
-} from "../types"
-import { expandBitstring, generateBitstring } from "./bitstring"
-import { CredentialSigner } from "./credential-signer"
-import { decodeVerifiableCredential } from "./credentials"
+} from "../../types"
+import {
+  CredentialSigner,
+  decodeVerifiableCredential,
+  expandBitstring,
+  generateBitstring
+} from "../utils"
 
 /**
  * Generate a revocation list to store revocation status of a credential.

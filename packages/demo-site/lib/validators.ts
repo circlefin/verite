@@ -1,7 +1,6 @@
-import {
+import type {
   CredentialManifest,
   DecodedVerificationSubmission,
-  decodeVerifiablePresentation,
   InputDescriptor,
   PresentationDefinition,
   EncodedVerificationSubmission,
@@ -10,23 +9,24 @@ import {
   W3CCredential,
   W3CPresentation,
   Verifiable,
-  RevocableCredential,
+  RevocableCredential
+} from "@centre/verity"
+import {
   asyncSome,
+  decodeVerifiablePresentation,
   isRevoked
 } from "@centre/verity"
 import Ajv from "ajv"
 import jsonpath from "jsonpath"
+import type { ValidationFailure, PathEvaluation } from "../types"
 import {
+  CredentialResults,
+  FieldConstraintEvaluation,
   ProcessedCredentialApplication,
   ProcessedVerificationSubmission,
   ValidationCheck,
-  ValidationFailure,
-  FieldConstraintEvaluation,
-  PathEvaluation,
-  CredentialResults,
   ValidationError
 } from "../types"
-import { findRevocationListForCredential } from "./database"
 import { vcSchema, vpSchema } from "./schemas"
 
 const ajv = new Ajv()

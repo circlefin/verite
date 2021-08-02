@@ -1,9 +1,5 @@
-import {
-  decodeVerifiableCredential,
-  RevocableCredential,
-  JWT,
-  unrevokeCredential
-} from "@centre/verity"
+import type { RevocableCredential, JWT } from "@centre/verity"
+import { decodeVerifiableCredential, unrevokeCredential } from "@centre/verity"
 import { apiHandler, notFound } from "../../../lib/api-fns"
 import {
   findRevocationListForCredential,

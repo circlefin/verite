@@ -3,10 +3,12 @@ import {
   createCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey,
+  VerificationError
+} from "@centre/verity"
+import type {
   Revocable,
   RevocablePresentation,
   Verifiable,
-  VerificationError,
   W3CCredential
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"

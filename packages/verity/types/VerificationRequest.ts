@@ -1,4 +1,4 @@
-import { PresentationDefinition } from "./PresentationDefinition"
+import type { PresentationDefinition } from "./PresentationDefinition"
 
 export type VerificationRequest = {
   "@context": string[]

@@ -3,14 +3,14 @@ import {
   createVerifiableCredentialJwt,
   createVerifiablePresentationJwt
 } from "did-jwt-vc"
-import {
+import type {
   CredentialPayload,
   Issuer,
   JwtCredentialPayload,
   JwtPresentationPayload,
   PresentationPayload,
   JWT
-} from "../types"
+} from "../../types"
 
 export class CredentialSigner {
   did: string

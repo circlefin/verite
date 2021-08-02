@@ -1,9 +1,10 @@
-import {
+import type {
   EncodedVerificationSubmission,
   PresentationDefinition
 } from "@centre/verity"
 import { has } from "lodash"
-import { ProcessedVerificationSubmission, ValidationError } from "../../types"
+import type { ProcessedVerificationSubmission } from "../../types"
+import { ValidationError } from "../../types"
 import {
   processVerificationSubmission,
   messageToValidationFailure

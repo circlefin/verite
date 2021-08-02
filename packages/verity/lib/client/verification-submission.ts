@@ -1,15 +1,14 @@
 import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
-import {
+import type {
   DescriptorMap,
   DidKey,
   PresentationDefinition,
   EncodedVerificationSubmission,
   Verifiable,
   W3CCredential
-} from "../types"
-import { verifiablePresentationPayload } from "./credentials"
-import { didKeyToIssuer } from "./didKey"
+} from "../../types"
+import { didKeyToIssuer, verifiablePresentationPayload } from "../utils"
 
 export async function createVerificationSubmission(
   didKey: DidKey,

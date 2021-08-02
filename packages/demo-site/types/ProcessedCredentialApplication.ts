@@ -1,12 +1,13 @@
-import {
+import type {
   ClaimFormatDesignation,
   DecodedCredentialApplication,
   PresentationSubmission,
   Verifiable,
   W3CPresentation
 } from "@centre/verity"
-import { ValidationCheck, ValidationCheckFormatter } from "./Matches"
-import { CredentialMatch, ValidationFailure } from "./ValidationResults"
+import type { ValidationCheck } from "./Matches"
+import { ValidationCheckFormatter } from "./Matches"
+import type { CredentialMatch, ValidationFailure } from "./ValidationResults"
 export class ProcessedCredentialApplication
   implements DecodedCredentialApplication
 {

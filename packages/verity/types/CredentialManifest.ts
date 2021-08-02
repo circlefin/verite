@@ -1,9 +1,9 @@
 // https://identity.foundation/credential-manifest/#general-composition
 
-import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
-import { CredentialIssuer } from "./CredentialIssuer"
-import { OutputDescriptor } from "./OutputDescriptor"
-import { PresentationDefinition } from "./PresentationDefinition"
+import type { ClaimFormatDesignation } from "./ClaimFormatDesignation"
+import type { CredentialIssuer } from "./CredentialIssuer"
+import type { OutputDescriptor } from "./OutputDescriptor"
+import type { PresentationDefinition } from "./PresentationDefinition"
 
 export type CredentialManifest = {
   id: string

@@ -1,4 +1,4 @@
-import { Verifiable, W3CCredential, W3CPresentation } from "./W3C"
+import type { Verifiable, W3CCredential, W3CPresentation } from "./W3C"
 
 export type RevocationList2021Status = {
   id: string

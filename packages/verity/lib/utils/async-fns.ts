@@ -1,5 +1,7 @@
 /**
  * Perform an async `Array.prototype.map()` operation
+ *
+ * @returns an array of the results of the async operation
  */
 export function asyncMap<T, P>(
   arr: T[],
@@ -9,7 +11,9 @@ export function asyncMap<T, P>(
 }
 
 /**
- * Perform an asycn `Array.prototype.some()` operation
+ * Perform an async `Array.prototype.some()` operation
+ *
+ * @returns true if any of the items in the array pass the test, false otherwise
  */
 export async function asyncSome<T>(
   arr: T[],

@@ -1,4 +1,4 @@
-import { VerificationRequest } from "@centre/verity"
+import type { VerificationRequest } from "@centre/verity"
 import { prisma } from "./prisma"
 
 export async function saveVerificationRequest(

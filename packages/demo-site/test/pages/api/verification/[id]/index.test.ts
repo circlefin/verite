@@ -2,9 +2,9 @@ import {
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
-  DidKey,
   randomDidKey
 } from "@centre/verity"
+import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import {
   fetchVerificationRequestStatus,

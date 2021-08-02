@@ -1,4 +1,4 @@
-import { KYCAMLProvider } from "./KycAmlProvider"
+import type { KYCAMLProvider } from "./KycAmlProvider"
 
 export type KYCAMLAttestation = {
   "@type": "KYCAMLAttestation"

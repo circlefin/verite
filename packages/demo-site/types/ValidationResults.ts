@@ -1,4 +1,4 @@
-import { Verifiable, W3CCredential } from "@centre/verity"
+import type { Verifiable, W3CCredential } from "@centre/verity"
 
 /**
  * Results of a path evaluation.

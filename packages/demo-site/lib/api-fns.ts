@@ -1,5 +1,6 @@
 import { NextApiHandler, NextApiResponse } from "next"
-import { ValidationError, ValidationFailure } from "../types"
+import type { ValidationFailure } from "../types"
+import { ValidationError } from "../types"
 
 export type ApiErrorResponse = {
   status: number

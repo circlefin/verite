@@ -1,4 +1,5 @@
-import { createKycAmlManifest, CredentialManifest } from "@centre/verity"
+import { createKycAmlManifest } from "@centre/verity"
+import type { CredentialManifest } from "@centre/verity"
 import { manifestIssuer } from "./issuer"
 
 export const kycManifest: CredentialManifest = createKycAmlManifest(

@@ -4,7 +4,7 @@ import IssuerLayout from "../../components/issuer/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
-import { ManifestUrlWrapper } from "../../types"
+import type { ManifestUrlWrapper } from "../../types"
 
 type Props = {
   manifestUrlWrapper: ManifestUrlWrapper

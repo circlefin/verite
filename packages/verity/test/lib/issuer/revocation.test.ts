@@ -1,21 +1,25 @@
 import { Bits } from "@fry/bits"
 import {
-  asyncMap,
-  CredentialSigner,
-  CredentialPayload,
   generateRevocationList,
+  isRevoked,
+  revokeCredential,
+  unrevokeCredential
+} from "../../../lib/issuer"
+import {
+  asyncMap,
+  compress,
+  CredentialSigner,
+  decompress,
   decodeVerifiableCredential,
   expandBitstring,
   expandBitstringToBooleans,
-  generateBitstring,
-  compress,
-  decompress,
-  isRevoked,
-  revokeCredential,
-  unrevokeCredential,
-  Revocable
-} from "../index"
-import { RevocableCredential } from "../types"
+  generateBitstring
+} from "../../../lib/utils"
+import type {
+  CredentialPayload,
+  Revocable,
+  RevocableCredential
+} from "../../../types"
 
 /**
  * Helper to create a Buffer with the bits set to 1 at the indices given.
