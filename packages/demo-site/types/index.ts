@@ -1,5 +1,4 @@
 export * from "./ProcessedCredentialApplication"
 export * from "./ProcessedVerificationSubmission"
-export * from "./ManifestUrlWrapper"
 export * from "./Matches"
 export * from "./ValidationResults"

@@ -1,10 +1,11 @@
+import { scanDataForManifest } from "@centre/verity"
+import type { ManifestUrlWrapper } from "@centre/verity"
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import IssuerLayout from "../../components/issuer/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
-import type { ManifestUrlWrapper } from "../../types"
 
 type Props = {
   manifestUrlWrapper: ManifestUrlWrapper
@@ -14,11 +15,10 @@ type Props = {
 export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
-  const manifestUrlWrapper: ManifestUrlWrapper = {
-    manifestUrl: `${process.env.HOST}/api/issuance/manifests/credit-score`,
-    submissionUrl: `${process.env.HOST}/api/issuance/submission/${authToken}`,
-    version: "1"
-  }
+  const manifestUrlWrapper = scanDataForManifest(
+    `${process.env.HOST}/api/issuance/manifests/credit-score`,
+    `${process.env.HOST}/api/issuance/submission/${authToken}`
+  )
 
   return {
     props: {
