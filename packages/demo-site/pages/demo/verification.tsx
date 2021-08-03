@@ -1,4 +1,11 @@
-import type { VerificationRequest } from "@centre/verity"
+import {
+  challengeTokenUrlWrapper,
+  verificationRequestWrapper
+} from "@centre/verity"
+import type {
+  ChallengeTokenUrlWrapper,
+  VerificationRequestWrapper
+} from "@centre/verity"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import DemoLayout from "../../components/demo/Layout"
@@ -7,14 +14,9 @@ import { requireAuth } from "../../lib/auth-fns"
 import { saveVerificationRequest } from "../../lib/database"
 import { generateKycVerificationRequest } from "../../lib/verification/requests"
 
-export type VerificationRequestWrapper = {
-  requestUrl: string
-  version: string
-}
-
 type Props = {
-  verificationRequest: VerificationRequest
-  verificationRequestWrapper: VerificationRequestWrapper
+  qrCodeData: ChallengeTokenUrlWrapper
+  responseData: VerificationRequestWrapper
   id: string
 }
 
@@ -23,26 +25,22 @@ export const getServerSideProps: GetServerSideProps<Props> = requireAuth(
     const verificationRequest = generateKycVerificationRequest()
     await saveVerificationRequest(verificationRequest)
 
-    const verificationRequestWrapper: VerificationRequestWrapper = {
-      requestUrl: `${process.env.HOST}/api/verification/${verificationRequest.request.id}`,
-      version: "1"
-    }
+    const qrCodeData = challengeTokenUrlWrapper(
+      `${process.env.HOST}/api/verification/${verificationRequest.request.id}`
+    )
+    const responseData = verificationRequestWrapper(verificationRequest)
 
     return {
       props: {
         id: verificationRequest.request.id,
-        verificationRequestWrapper,
-        verificationRequest
+        qrCodeData,
+        responseData
       }
     }
   }
 )
 
-const DemoPage: NextPage<Props> = ({
-  id,
-  verificationRequest,
-  verificationRequestWrapper
-}) => {
+const DemoPage: NextPage<Props> = ({ id, qrCodeData, responseData }) => {
   return (
     <DemoLayout title="Demo: Verification">
       <p>
@@ -62,13 +60,13 @@ const DemoPage: NextPage<Props> = ({
       </p>
 
       <div className="mt-4">
-        <QRCodeOrStatus id={id} qrcodeData={verificationRequestWrapper} />
+        <QRCodeOrStatus id={id} qrcodeData={qrCodeData} />
       </div>
 
       <div className="mt-4">
         <button
           type="button"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           <Link href="revocation">Next Demo: Revocation</Link>
         </button>
@@ -97,8 +95,8 @@ const DemoPage: NextPage<Props> = ({
         defined by the service such that it can be notified of the result.
       </p>
 
-      <div className="container mt-8 mx-auto font-mono text-sm border-2 overflow-scroll">
-        <pre>{JSON.stringify(verificationRequest, null, 4)}</pre>
+      <div className="container mx-auto mt-8 overflow-scroll font-mono text-sm border-2">
+        <pre>{JSON.stringify(responseData, null, 4)}</pre>
       </div>
     </DemoLayout>
   )

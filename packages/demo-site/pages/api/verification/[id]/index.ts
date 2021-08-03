@@ -1,6 +1,7 @@
+import { verificationRequestWrapper } from "@centre/verity"
 import type {
   EncodedVerificationSubmission,
-  VerificationRequest
+  VerificationRequestWrapper
 } from "@centre/verity"
 import { NextApiRequest } from "next"
 import {
@@ -18,7 +19,7 @@ import { validateVerificationSubmission } from "../../../../lib/verification/sub
 
 type PostResponse = { status: string }
 
-export default apiHandler<VerificationRequest | PostResponse>(
+export default apiHandler<VerificationRequestWrapper | PostResponse>(
   async (req, res) => {
     if (req.method === "GET") {
       return get(req, res)
@@ -37,7 +38,10 @@ export default apiHandler<VerificationRequest | PostResponse>(
  *
  * Returns a VerificationRequest based on `id`
  */
-async function get(req: NextApiRequest, res: ApiResponse<VerificationRequest>) {
+async function get(
+  req: NextApiRequest,
+  res: ApiResponse<VerificationRequestWrapper>
+) {
   const verificationRequest = await findVerificationRequest(
     req.query.id as string
   )
@@ -46,7 +50,7 @@ async function get(req: NextApiRequest, res: ApiResponse<VerificationRequest>) {
     return notFound(res)
   }
 
-  res.json(verificationRequest)
+  res.json(verificationRequestWrapper(verificationRequest))
 }
 
 /**

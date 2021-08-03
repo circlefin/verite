@@ -1,3 +1,5 @@
+import { challengeTokenUrlWrapper, manifestWrapper } from "@centre/verity"
+import type { ChallengeTokenUrlWrapper, ManifestWrapper } from "@centre/verity"
 import { NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
@@ -5,35 +7,39 @@ import DemoLayout from "../../components/demo/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import { MANIFEST_MAP } from "../../lib/issuance/manifest"
-import type { ManifestUrlWrapper } from "../../types"
 
 type Props = {
-  manifestUrlWrapper: ManifestUrlWrapper
+  qrCodeData: ChallengeTokenUrlWrapper
+  responseData: ManifestWrapper
 }
 
 export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
-  const manifestUrlWrapper: ManifestUrlWrapper = {
-    manifestUrl: `${process.env.HOST}/api/issuance/manifests/kyc`,
-    submissionUrl: `${process.env.HOST}/api/issuance/submission/${authToken}`,
-    version: "1"
-  }
+  const qrCodeData = challengeTokenUrlWrapper(
+    `${process.env.HOST}/api/manifests/kyc/${authToken}`
+  )
+  const manifest = MANIFEST_MAP["kyc"]
+  const responseData = manifestWrapper(
+    manifest,
+    `${process.env.HOST}/api/issuance/submission/${authToken}`
+  )
 
   return {
     props: {
-      manifestUrlWrapper
+      qrCodeData,
+      responseData
     }
   }
 })
 
-const DemoPage: NextPage<Props> = ({ manifestUrlWrapper }) => {
+const DemoPage: NextPage<Props> = ({ qrCodeData, responseData }) => {
   const nextDemoButton = (
     <div className="mt-4">
       <Link href="verification" passHref>
         <button
           type="button"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           Next Demo: Verification
         </button>
@@ -74,12 +80,12 @@ const DemoPage: NextPage<Props> = ({ manifestUrlWrapper }) => {
 
       <div>
         <QRCode
-          value={JSON.stringify(manifestUrlWrapper)}
+          value={JSON.stringify(qrCodeData)}
           className="w-48 h-48 mt-8"
           renderAs="svg"
         />
-        <div className="container mt-8 mx-auto font-mono text-sm border-2 overflow-scroll">
-          <pre>{JSON.stringify(manifestUrlWrapper, null, 4)}</pre>
+        <div className="container mx-auto mt-8 overflow-scroll font-mono text-sm border-2">
+          <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
         </div>
       </div>
 
@@ -130,9 +136,9 @@ const DemoPage: NextPage<Props> = ({ manifestUrlWrapper }) => {
         For project Verity, the only input necessary is an empty Verifiable
         Presentation used to verify proof of identifier ownership of the DID.
       </p>
-      <div className="container mx-auto font-mono text-sm border-2 overflow-scroll mt-4">
+      <div className="container mx-auto mt-4 overflow-scroll font-mono text-sm border-2">
         {/* TODO: Why are there undefined values in this? */}
-        <pre>{JSON.stringify(MANIFEST_MAP["kyc"], null, 4)}</pre>
+        <pre>{JSON.stringify(responseData, null, 4)}</pre>
       </div>
 
       {nextDemoButton}
