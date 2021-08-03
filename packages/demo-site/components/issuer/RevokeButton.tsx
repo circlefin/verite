@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 
 type Props = {
   credential: RevocableCredential
-  revoked: boolean
+  defaultRevoked?: boolean | undefined
 }
 
 const doRevoke = async (credential: RevocableCredential) => {
@@ -28,13 +28,18 @@ const doUnrevoke = async (credential: RevocableCredential) => {
   })
 }
 
-export default function RevokeButton({ credential }: Props): JSX.Element {
-  const [revoked, setRevoked] = useState<boolean>()
+export default function RevokeButton({
+  credential,
+  defaultRevoked
+}: Props): JSX.Element {
+  const [revoked, setRevoked] = useState<boolean>(defaultRevoked)
   useEffect(() => {
     ;(async () => {
-      setRevoked(await isRevoked(credential, undefined))
+      if (defaultRevoked === undefined) {
+        setRevoked(await isRevoked(credential, undefined))
+      }
     })()
-  }, [credential])
+  }, [credential, defaultRevoked])
 
   if (revoked == undefined) {
     return (
