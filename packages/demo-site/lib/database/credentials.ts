@@ -78,6 +78,19 @@ export const findCredentialsByUserId = async (
   })
 }
 
+export const findNewestCredential = async (): Promise<
+  RevocableCredential | undefined
+> => {
+  const result = await prisma.credential.findFirst({
+    orderBy: {
+      createdAt: "desc"
+    }
+  })
+  if (result) {
+    return (await decodeVerifiableCredential(result.jwt)) as RevocableCredential
+  }
+}
+
 const findCredentialsByRevocationlist = async (
   revocationList: RevocationListCredential
 ): Promise<DatabaseCredential[]> => {
