@@ -73,6 +73,19 @@ const Home: NextPage<Props> = ({ user }) => {
               </Link>
             </li>
           )}
+          <li>
+            <Link href={`/demo`}>
+              <a className="flex justify-between py-4 hover:bg-gray-50">
+                <div className="ml-3">
+                  <p className="text-sm text-gray-900">Demo / Walkthrough</p>
+                </div>
+                <ChevronRightIcon
+                  className="w-5 h-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </a>
+            </Link>
+          </li>
         </ul>
       </div>
     </Layout>
