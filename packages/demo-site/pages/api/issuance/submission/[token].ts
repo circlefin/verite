@@ -3,7 +3,10 @@ import type {
   EncodedCredentialFulfillment,
   RevocableCredential
 } from "@centre/verity"
-import { decodeVerifiablePresentation } from "@centre/verity"
+import {
+  decodeVerifiablePresentation,
+  ProcessedCredentialApplication
+} from "@centre/verity"
 import {
   apiHandler,
   methodNotAllowed,
@@ -18,7 +21,6 @@ import {
 import { createFulfillment } from "../../../../lib/issuance/fulfillment"
 import { validateCredentialSubmission } from "../../../../lib/issuance/submission"
 import { credentialSigner } from "../../../../lib/signer"
-import type { ProcessedCredentialApplication } from "../../../../types"
 
 export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   if (req.method !== "POST") {

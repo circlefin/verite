@@ -1,3 +1,5 @@
+import Ajv from "ajv"
+import jsonpath from "jsonpath"
 import type {
   CredentialManifest,
   DecodedVerificationSubmission,
@@ -9,24 +11,20 @@ import type {
   W3CCredential,
   W3CPresentation,
   Verifiable,
-  RevocableCredential
-} from "@centre/verity"
-import {
-  asyncSome,
-  decodeVerifiablePresentation,
-  isRevoked
-} from "@centre/verity"
-import Ajv from "ajv"
-import jsonpath from "jsonpath"
-import type { ValidationFailure, PathEvaluation } from "../types"
+  RevocableCredential,
+  ValidationFailure,
+  PathEvaluation
+} from "../../types"
+import { ValidationError } from "../errors"
+import { isRevoked } from "../issuer"
+import { asyncSome, decodeVerifiablePresentation } from "../utils"
 import {
   CredentialResults,
   FieldConstraintEvaluation,
-  ProcessedCredentialApplication,
-  ProcessedVerificationSubmission,
-  ValidationCheck,
-  ValidationError
-} from "../types"
+  ValidationCheck
+} from "./Matches"
+import { ProcessedCredentialApplication } from "./ProcessedCredentialApplication"
+import { ProcessedVerificationSubmission } from "./ProcessedVerificationSubmission"
 import { vcSchema, vpSchema } from "./schemas"
 
 const ajv = new Ajv()
@@ -47,17 +45,22 @@ export function messageToValidationFailure(message: string): ValidationFailure {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ajvErrorToVerificationFailures(errors: any): ValidationFailure[] {
+function ajvErrorToVerificationFailures(
+  errors?: Ajv.ErrorObject[] | null
+): ValidationFailure[] {
+  if (!errors) {
+    return []
+  }
+
   const convertedErrors = errors.map((e) => {
     return {
       status: 400, // TODO
-      title: `${e.keyword} json schema validation failure`,
-      detail: `${e.dataPath ? e.dataPath : "input"} ${e.message}`,
-      source: {
-        path: e.dataPath
-      },
-      original: e
+      message: `${e.keyword} json schema validation failure`,
+      details: `${e.dataPath ? e.dataPath : "input"} ${e.message}`
+      // source: {
+      //   path: e.dataPath
+      // },
+      // original: e
     }
   })
   return convertedErrors
@@ -93,11 +96,15 @@ export function validateVp(
 
 export function validateInputDescriptors(
   creds: Map<string, Verifiable<W3CCredential>[]>,
-  descriptors: InputDescriptor[]
+  descriptors?: InputDescriptor[]
 ): ValidationCheck[] {
+  if (!descriptors) {
+    return []
+  }
+
   return descriptors.reduce((map, descriptor) => {
     const credentialResults = descriptor.schema.reduce((matches, obj) => {
-      const candidates: Verifiable<W3CCredential>[] = creds[obj.uri]
+      const candidates = creds.get(obj.uri)
 
       if (!candidates) {
         return matches
@@ -131,12 +138,12 @@ export function validateInputDescriptors(
                 return false
               }
             })
-            const match = pathMatch ? pathEvaluations.slice(-1)[0] : null
+            const match = pathMatch ? pathEvaluations.slice(-1)[0] : undefined
             fieldChecks.push(
               new FieldConstraintEvaluation(
                 field,
                 match,
-                pathMatch ? null : pathEvaluations
+                pathMatch ? undefined : pathEvaluations
               )
             )
             // all field checks must pass; quit early
@@ -147,22 +154,31 @@ export function validateInputDescriptors(
           return new CredentialResults(cred, fieldChecks)
         })
       )
-    }, [])
+    }, new Array<CredentialResults>())
 
     return map.concat(new ValidationCheck(descriptor.id, credentialResults))
   }, new Array<ValidationCheck>())
 }
 
 function mapInputsToDescriptors(
-  submission: DecodedVerificationSubmission,
-  definition: PresentationDefinition
+  submission: DecodedVerificationSubmission | DecodedCredentialApplication,
+  definition?: PresentationDefinition
 ) {
+  const result = new Map<string, Verifiable<W3CCredential>[]>()
+  if (!definition || !submission.presentation_submission) {
+    return result
+  }
+
   return submission.presentation_submission.descriptor_map.reduce((map, d) => {
     const match = definition.input_descriptors.find((id) => id.id === d.id)
+    if (!match) {
+      return map
+    }
+
     const values = jsonpath.query(submission, d.path)
-    map[match.schema[0].uri] = values
+    map.set(match.schema[0].uri, values)
     return map
-  }, new Map<string, Verifiable<W3CCredential>[]>())
+  }, result)
 }
 
 export async function processVerificationSubmission(
@@ -245,7 +261,7 @@ export async function processCredentialApplication(
 
   const evaluations = validateInputDescriptors(
     mapped,
-    manifest.presentation_definition.input_descriptors
+    manifest.presentation_definition?.input_descriptors
   )
 
   return new ProcessedCredentialApplication(

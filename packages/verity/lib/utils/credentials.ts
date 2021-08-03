@@ -12,7 +12,7 @@ import type {
   W3CPresentation,
   RevocablePresentation
 } from "../../types"
-import { VerificationError } from "../../types"
+import { VerificationError } from "../errors"
 import { didKeyResolver } from "./did-key"
 
 export function verifiablePresentationPayload(

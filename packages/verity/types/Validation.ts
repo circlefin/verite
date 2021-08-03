@@ -1,4 +1,4 @@
-import type { Verifiable, W3CCredential } from "@centre/verity"
+import type { Verifiable, W3CCredential } from "./W3C"
 
 /**
  * Results of a path evaluation.
@@ -6,7 +6,6 @@ import type { Verifiable, W3CCredential } from "@centre/verity"
 export type PathEvaluation = {
   path: string
   match: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any
 }
 
@@ -24,9 +23,9 @@ export type CredentialMatch = {
 
 export type ValidationFailure = {
   status?: number
-  //source?: {
-  //  pointer: string // or path...
-  //}
+  // source?: {
+  //   path: string // or path...
+  // }
   message: string
   details: string
   detailedResults?: RuleEvaluationResult[]
@@ -35,20 +34,4 @@ export type ValidationFailure = {
 export type EvalationResults = {
   errors?: ValidationFailure[]
   matches?: RuleEvaluationResult[]
-}
-
-export class ValidationError extends Error {
-  failures: ValidationFailure[]
-  cause?: Error
-
-  constructor(
-    message: string,
-    failures: ValidationFailure | ValidationFailure[],
-    cause?: Error
-  ) {
-    super(message)
-    this.name = "ValidationError"
-    this.failures = Array.isArray(failures) ? failures : [failures]
-    this.cause = cause
-  }
 }

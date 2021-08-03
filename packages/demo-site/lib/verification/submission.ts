@@ -1,14 +1,14 @@
 import type {
   EncodedVerificationSubmission,
-  PresentationDefinition
+  PresentationDefinition,
+  ProcessedVerificationSubmission
 } from "@centre/verity"
-import { has } from "lodash"
-import type { ProcessedVerificationSubmission } from "../../types"
-import { ValidationError } from "../../types"
 import {
   processVerificationSubmission,
-  messageToValidationFailure
-} from "../validators"
+  messageToValidationFailure,
+  ValidationError
+} from "@centre/verity"
+import { has } from "lodash"
 import { kycPresentationDefinition } from "./requests"
 
 export const PRESENTATION_DEFINITIONS: PresentationDefinition[] = [
