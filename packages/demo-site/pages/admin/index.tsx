@@ -21,6 +21,15 @@ const AdminPage: NextPage<Props> = ({ users }) => {
   return (
     <AdminLayout title="Admin">
       <div className="flex flex-col justify-center space-y-8">
+        <p>
+          This is an example admin tool used by Issuers to manage their
+          credentials. This tool might be used day-to-day by a compliance
+          analyst.
+        </p>
+        <p>
+          When investigating a particular user, an analyst wouuld be able to
+          inspect the details of a User, including all their issued credentials.
+        </p>
         <ul className="divide-y divide-gray-200">
           {users.map((user) => (
             <li key={user.email}>

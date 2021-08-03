@@ -1,10 +1,10 @@
+import RevokeButton from "@centre/demo-site/components/issuer/RevokeButton"
 import type {
   RevocableCredential,
   RevocationListCredential
 } from "@centre/verity"
 import { asyncMap, isRevoked } from "@centre/verity"
 import { NextPage } from "next"
-import { useRouter } from "next/router"
 import AdminLayout from "../../../components/admin/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
 import {
@@ -71,60 +71,78 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
   }
 })
 
-const doRevoke = async (credential: RevocableCredential) => {
-  const url = "/api/revoke"
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain"
-    },
-    body: credential.proof.jwt
-  })
-}
+function CredentialTable({ credentials }) {
+  return (
+    <div className="flex flex-col">
+      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Issued
+                  </th>
 
-const doUnrevoke = async (credential: RevocableCredential) => {
-  const url = "/api/unrevoke"
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain"
-    },
-    body: credential.proof.jwt
-  })
+                  <th scope="col" className="relative px-6 py-3">
+                    <span className="sr-only">Revoke</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {credentials.map((credential, personIdx) => (
+                  <tr
+                    key={credential.credential.credential.credentialSubject.id}
+                    className={personIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {credential.credential.credential.type[1]}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {
+                        credential.credential.credential.credentialSubject
+                          .KYCAMLAttestation.approvalDate
+                      }
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <RevokeButton
+                        credential={credential.credential.credential}
+                        defaultRevoked={credential.revoked}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
-  const router = useRouter()
-
-  const credentials = credentialList.map(({ credential, revoked }) => {
-    return (
-      <div key={credential.credential.credentialSubject.id}>
-        <pre className="overflow-auto whitespace-pre-wrap">
-          {JSON.stringify(credential.credential)}
-        </pre>
-        <div>Revoked: {revoked ? "Yes" : "No"} </div>
-        <div>
-          <button
-            onClick={async () => {
-              revoked
-                ? await doUnrevoke(credential.credential)
-                : await doRevoke(credential.credential)
-              router.reload()
-            }}
-            className="block w-full px-4 py-2 text-sm text-left text-gray-700"
-          >
-            {revoked ? "Unrevoke" : "Revoke"}
-          </button>
-        </div>
-      </div>
-    )
-  })
+  const activeCredentials = credentialList.filter(({ revoked }) => !revoked)
+  const revokedCredentials = credentialList.filter(({ revoked }) => revoked)
 
   return (
     <AdminLayout title={user.email}>
       <div className="flex flex-col justify-center space-y-8">
         <h1>{user.email}</h1>
-        <div>{credentials}</div>
+        <div>Active Credentials</div>
+        <CredentialTable credentials={activeCredentials} />
+
+        <div>Revoked Credentials</div>
+        <CredentialTable credentials={revokedCredentials} />
       </div>
     </AdminLayout>
   )
