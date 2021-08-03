@@ -1,6 +1,8 @@
 import { challengeTokenUrlWrapper } from "@centre/verity"
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
+import { ArrowCircleRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
+import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
 import IssuerLayout from "../../components/issuer/Layout"
@@ -56,18 +58,68 @@ const KycAmlPage: NextPage<Props> = ({
   const credential = (data) => {
     if (!data || data.status === 404) {
       return (
-        <div>
-          Using the Verity app, scan the QR code above to request credentials.
-        </div>
-      )
-    } else {
-      return (
-        <div>
+        <>
+          <dl className="flex flex-row mx-auto space-x-2 sm:space-x-5">
+            {stats.map((item) => (
+              <div
+                key={item.name}
+                className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 sm:px-8 flex-0"
+              >
+                <dt className="text-sm font-medium text-gray-500 truncate">
+                  {item.name}
+                </dt>
+                <dd className="mt-1 text-3xl font-semibold text-gray-900">
+                  {item.stat}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <div>
+            Using the Verity app, scan this QR code and request credentials.
+          </div>
+          <QRCode
+            value={JSON.stringify(qrCodeData)}
+            className="w-48 h-48 mx-auto"
+            renderAs="svg"
+          />
+          <div>QR Code Data</div>
           <textarea
             className="container h-40 mx-auto font-mono text-sm border-2"
             readOnly
-            value={JSON.stringify(data, null, 4)}
+            value={JSON.stringify(qrCodeData, null, 4)}
           />
+
+          <div>Credential Manifest</div>
+          <div className="container mx-auto font-mono text-sm border-2 overflow-x-scroll">
+            <pre>{JSON.stringify(manifest, null, 4)}</pre>
+          </div>
+        </>
+      )
+    } else {
+      return (
+        <div className="space-y-4">
+          <div>
+            You&apos;ve successfully issued a credential. You can see the
+            Verifiable Credential below.
+          </div>
+          <div>
+            <Link href="/verifier/" passHref>
+              <button
+                type="button"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Next Demo: Verification
+                <ArrowCircleRightIcon
+                  className="ml-2 -mr-1 h-5 w-5"
+                  aria-hidden="true"
+                />
+              </button>
+            </Link>
+          </div>
+          <div>Credential</div>
+          <div className="container mx-auto font-mono text-sm border-2 overflow-x-scroll">
+            <pre>{JSON.stringify(data.credential, null, 4)}</pre>
+          </div>
         </div>
       )
     }
@@ -81,41 +133,6 @@ const KycAmlPage: NextPage<Props> = ({
   return (
     <IssuerLayout title="KYC/AML Attestation">
       <div className="flex flex-col justify-center space-y-8">
-        <dl className="flex flex-row mx-auto space-x-2 sm:space-x-5">
-          {stats.map((item) => (
-            <div
-              key={item.name}
-              className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 sm:px-8 flex-0"
-            >
-              <dt className="text-sm font-medium text-gray-500 truncate">
-                {item.name}
-              </dt>
-              <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                {item.stat}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <QRCode
-          value={JSON.stringify(qrCodeData)}
-          className="w-48 h-48 mx-auto"
-          renderAs="svg"
-        />
-        <div>QR Code Data</div>
-        <textarea
-          className="container h-40 mx-auto font-mono text-sm border-2"
-          readOnly
-          value={JSON.stringify(qrCodeData, null, 4)}
-        />
-
-        <div>Credential Manifest</div>
-        <textarea
-          className="container h-40 mx-auto font-mono text-sm border-2"
-          readOnly
-          value={JSON.stringify(manifest, null, 4)}
-        />
-
-        <div>Credential</div>
         {credential(data)}
       </div>
     </IssuerLayout>
