@@ -1,10 +1,12 @@
 import RevokeButton from "@centre/demo-site/components/issuer/RevokeButton"
+import { credentialSigner } from "@centre/demo-site/lib/signer"
 import type {
   RevocableCredential,
   RevocationListCredential
 } from "@centre/verity"
 import { asyncMap, isRevoked } from "@centre/verity"
 import { NextPage } from "next"
+import router from "next/router"
 import AdminLayout from "../../../components/admin/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
 import {
@@ -14,6 +16,7 @@ import {
   findUser
 } from "../../../lib/database"
 import type { User } from "../../../lib/database"
+import revoke from "../../api/revoke"
 
 type Props = {
   credentialList: {
@@ -130,14 +133,56 @@ function CredentialTable({ credentials }) {
   )
 }
 
+const doRevoke = async (credential: RevocableCredential) => {
+  const url = "/api/revoke"
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain"
+    },
+    body: credential.proof.jwt
+  })
+}
+
 const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
   const activeCredentials = credentialList.filter(({ revoked }) => !revoked)
   const revokedCredentials = credentialList.filter(({ revoked }) => revoked)
 
+  const kycCreds = activeCredentials
+    .filter((credential) => {
+      return credential.credential.credential.type[1] === "KYCAMLAttestation"
+    })
+    .map((credential) => {
+      return credential.credential.credential
+    })
+
   return (
     <AdminLayout title={user.email}>
-      <div className="flex flex-col justify-center space-y-8">
+      <div className="space-y-8">
         <h1>{user.email}</h1>
+        <button
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onClick={async () => {
+            for (const cred of kycCreds) {
+              await doRevoke(cred)
+            }
+            router.reload()
+          }}
+        >
+          Revoke KYC Credentials
+        </button>
+
+        <button
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onClick={async () => {
+            for (const cred of kycCreds) {
+              await doRevoke(cred)
+            }
+            router.reload()
+          }}
+        >
+          Revoke Credit Score Credentials
+        </button>
         <div>Active Credentials</div>
         <CredentialTable credentials={activeCredentials} />
 

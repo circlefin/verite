@@ -78,6 +78,17 @@ export const findCredentialsByUserId = async (
   })
 }
 
+export const findCredentialsByUserIdAndType = async (
+  userId: string,
+  type: string
+): Promise<RevocableCredential[]> => {
+  const credentials = (await findCredentialsByUserId(userId))
+    .filter((credential) => credential.credential.type[1] === type)
+    .map((c) => c.credential)
+
+  return credentials
+}
+
 /**
  * Finds the newest credential. Useful for demo purposes.
  *
