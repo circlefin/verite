@@ -78,10 +78,21 @@ export const findCredentialsByUserId = async (
   })
 }
 
-export const findNewestCredential = async (): Promise<
-  RevocableCredential | undefined
-> => {
+/**
+ * Finds the newest credential. Useful for demo purposes.
+ *
+ * @param createdAt will restrict search to only credentials older than this date, defaults to epoch
+ * @returns a decoded credential
+ */
+export const findNewestCredential = async (
+  createdAt: Date = new Date(0)
+): Promise<RevocableCredential | undefined> => {
   const result = await prisma.credential.findFirst({
+    where: {
+      createdAt: {
+        gt: createdAt
+      }
+    },
     orderBy: {
       createdAt: "desc"
     }
