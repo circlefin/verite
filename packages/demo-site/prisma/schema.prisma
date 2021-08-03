@@ -11,9 +11,10 @@ generator client {
 }
 
 model Credential {
-  id     String @id @default(uuid())
-  userId String
-  jwt    String
+  id        String @id @default(uuid())
+  userId    String
+  jwt       String
+  createdAt DateTime @default(now())
 }
 
 model RevocationList {
