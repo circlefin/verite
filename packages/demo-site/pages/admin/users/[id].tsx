@@ -1,10 +1,10 @@
 import RevokeButton from "@centre/demo-site/components/issuer/RevokeButton"
-import { credentialSigner } from "@centre/demo-site/lib/signer"
 import type {
   RevocableCredential,
   RevocationListCredential
 } from "@centre/verity"
 import { asyncMap, isRevoked } from "@centre/verity"
+import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import router from "next/router"
 import AdminLayout from "../../../components/admin/Layout"
@@ -102,18 +102,18 @@ function CredentialTable({ credentials }) {
                 </tr>
               </thead>
               <tbody>
-                {credentials.map((credential, personIdx) => (
+                {credentials.map((credential, index) => (
                   <tr
-                    key={credential.credential.credential.credentialSubject.id}
-                    className={personIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    key={index}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {credential.credential.credential.type[1]}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {
-                        credential.credential.credential.credentialSubject
-                          .KYCAMLAttestation.approvalDate
+                        credential?.credential?.credential?.credentialSubject
+                          ?.KYCAMLAttestation?.approvalDate
                       }
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -145,8 +145,24 @@ const doRevoke = async (credential: RevocableCredential) => {
 }
 
 const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
-  const activeCredentials = credentialList.filter(({ revoked }) => !revoked)
-  const revokedCredentials = credentialList.filter(({ revoked }) => revoked)
+  const activeCredentials = reverse(
+    sortBy(
+      credentialList.filter(({ revoked }) => !revoked),
+      (i) => {
+        i?.credential?.credential?.credentialSubject?.KYCAMLAttestation
+          ?.approvalDate
+      }
+    )
+  )
+  const revokedCredentials = reverse(
+    sortBy(
+      credentialList.filter(({ revoked }) => revoked),
+      (i) => {
+        i?.credential?.credential?.credentialSubject?.KYCAMLAttestation
+          ?.approvalDate
+      }
+    )
+  )
 
   const kycCreds = activeCredentials
     .filter((credential) => {
@@ -156,33 +172,52 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
       return credential.credential.credential
     })
 
+  const creditScoreCreds = activeCredentials
+    .filter((credential) => {
+      return (
+        credential.credential.credential.type[1] === "CreditScoreAttestation"
+      )
+    })
+    .map((credential) => {
+      return credential.credential.credential
+    })
+
   return (
     <AdminLayout title={user.email}>
       <div className="space-y-8">
-        <h1>{user.email}</h1>
-        <button
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          onClick={async () => {
-            for (const cred of kycCreds) {
-              await doRevoke(cred)
-            }
-            router.reload()
-          }}
-        >
-          Revoke KYC Credentials
-        </button>
-
-        <button
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          onClick={async () => {
-            for (const cred of kycCreds) {
-              await doRevoke(cred)
-            }
-            router.reload()
-          }}
-        >
-          Revoke Credit Score Credentials
-        </button>
+        <div>
+          When revoking a user&apos;s credentials, it is recommended to revoke
+          all credentials of the same type. This ensures no previously issued
+          credentials can still be used.
+        </div>
+        <div>
+          <button
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onClick={async () => {
+              // Dev Note: Ideally, your API would handle this in bulk, but for simplicity we loop over them one by one }
+              for (const credential of kycCreds) {
+                await doRevoke(credential)
+              }
+              router.reload()
+            }}
+          >
+            Revoke KYC Credentials
+          </button>
+        </div>
+        <div>
+          <button
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onClick={async () => {
+              // Dev Note: Ideally, your API would handle this in bulk, but for simplicity we loop over them one by one
+              for (const credential of creditScoreCreds) {
+                await doRevoke(credential)
+              }
+              router.reload()
+            }}
+          >
+            Revoke Credit Score Credentials
+          </button>
+        </div>
         <div>Active Credentials</div>
         <CredentialTable credentials={activeCredentials} />
 
