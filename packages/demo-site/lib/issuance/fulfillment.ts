@@ -1,9 +1,3 @@
-import type {
-  CreditScore,
-  KYCAMLAttestation,
-  RevocationList2021Status,
-  EncodedCredentialFulfillment
-} from "@centre/verity"
 import {
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
   generateFulfillment,
@@ -12,7 +6,13 @@ import {
   kycAmlVerifiableCredentialPayload,
   CredentialSigner
 } from "@centre/verity"
-import type { ProcessedCredentialApplication } from "../../types"
+import type {
+  CreditScore,
+  KYCAMLAttestation,
+  RevocationList2021Status,
+  EncodedCredentialFulfillment
+} from "@centre/verity"
+import type { ProcessedCredentialApplication } from "@centre/verity"
 import type { User } from "../database"
 
 export async function createKycAmlFulfillment(

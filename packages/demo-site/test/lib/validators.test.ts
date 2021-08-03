@@ -3,24 +3,20 @@ import {
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
-  randomDidKey
+  processCredentialApplication,
+  processVerificationSubmission,
+  randomDidKey,
+  CredentialResults,
+  FieldConstraintEvaluation,
+  ValidationCheck
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
 import { findManifestById } from "../../lib/issuance/manifest"
 import { validateCredentialSubmission } from "../../lib/issuance/submission"
 import { credentialSigner } from "../../lib/signer"
-import {
-  processCredentialApplication,
-  processVerificationSubmission
-} from "../../lib/validators"
 import { kycPresentationDefinition } from "../../lib/verification/requests"
 import { findPresentationDefinitionById } from "../../lib/verification/submission"
 import { userFactory } from "../../test/factories"
-import {
-  CredentialResults,
-  FieldConstraintEvaluation,
-  ValidationCheck
-} from "../../types"
 
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
@@ -59,7 +55,7 @@ describe("Submission validator", () => {
     expect(result.accepted()).toBeTruthy()
 
     const errors = result.errors()
-    expect(errors).toBeNull()
+    expect(errors).toEqual([])
 
     const results = result.results()
     expect(results).toHaveLength(1)

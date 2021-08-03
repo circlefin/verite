@@ -1,34 +1,27 @@
 import type {
-  ClaimFormatDesignation,
-  DecodedCredentialApplication,
+  DecodedVerificationSubmission,
   PresentationSubmission,
   Verifiable,
-  W3CPresentation
-} from "@centre/verity"
+  W3CPresentation,
+  CredentialMatch,
+  ValidationFailure
+} from "../../types"
 import type { ValidationCheck } from "./Matches"
 import { ValidationCheckFormatter } from "./Matches"
-import type { CredentialMatch, ValidationFailure } from "./ValidationResults"
-export class ProcessedCredentialApplication
-  implements DecodedCredentialApplication
+
+export class ProcessedVerificationSubmission
+  implements DecodedVerificationSubmission
 {
-  credential_application: {
-    id: string
-    manifest_id: string
-    format: ClaimFormatDesignation
-  }
   presentation_submission?: PresentationSubmission
   presentation: Verifiable<W3CPresentation>
   validationChecks: ValidationCheck[]
   formatter: ValidationCheckFormatter
 
   constructor(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    credential_application: any,
     presentation: Verifiable<W3CPresentation>,
     validationChecks: ValidationCheck[],
     presentation_submission?: PresentationSubmission
   ) {
-    this.credential_application = credential_application
     this.presentation = presentation
     this.validationChecks = validationChecks
     this.presentation_submission = presentation_submission

@@ -1,34 +1,34 @@
+import { challengeTokenUrlWrapper } from "@centre/verity"
+import type { ChallengeTokenUrlWrapper } from "@centre/verity"
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import IssuerLayout from "../../components/issuer/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
-import type { ManifestUrlWrapper } from "../../types"
 
 type Props = {
-  manifestUrlWrapper: ManifestUrlWrapper
+  qrCodeData: ChallengeTokenUrlWrapper
   user: User
 }
 
 export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
-  const manifestUrlWrapper: ManifestUrlWrapper = {
-    manifestUrl: `${process.env.HOST}/api/issuance/manifests/kyc`,
-    submissionUrl: `${process.env.HOST}/api/issuance/submission/${authToken}`,
-    version: "1"
-  }
+
+  const qrCodeData = challengeTokenUrlWrapper(
+    `${process.env.HOST}/api/manifests/kyc/${authToken}`
+  )
 
   return {
     props: {
-      manifestUrlWrapper,
+      qrCodeData,
       user
     }
   }
 })
 
-const KycAmlPage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
+const KycAmlPage: NextPage<Props> = ({ qrCodeData, user }) => {
   const stats = [
     { name: "Jumio Score", stat: user.jumioScore },
     { name: "OFAC Score", stat: user.ofacScore }
@@ -53,14 +53,14 @@ const KycAmlPage: NextPage<Props> = ({ manifestUrlWrapper, user }) => {
           ))}
         </dl>
         <QRCode
-          value={JSON.stringify(manifestUrlWrapper)}
+          value={JSON.stringify(qrCodeData)}
           className="w-48 h-48 mx-auto"
           renderAs="svg"
         />
         <textarea
           className="container h-40 mx-auto font-mono text-sm border-2"
           readOnly
-          value={JSON.stringify(manifestUrlWrapper, null, 4)}
+          value={JSON.stringify(qrCodeData, null, 4)}
         />
       </div>
     </IssuerLayout>

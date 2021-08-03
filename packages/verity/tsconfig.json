@@ -5,15 +5,9 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true
   },
-  "include": [
-    "lib/**/*.ts",
-    "types/**/*.ts",
-    "client.ts",
-    "index.ts",
-    "issuer.ts",
-    "utils.ts"
-  ],
+  "include": ["lib/**/*.ts", "types/**/*.ts", "index.ts"],
   "exclude": ["node_modules"]
 }

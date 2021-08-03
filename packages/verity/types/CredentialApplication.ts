@@ -4,12 +4,14 @@ import type { PresentationSubmission } from "./PresentationSubmission"
 import type { Verifiable, W3CPresentation } from "./W3C"
 
 type NarrowCredentialApplication = {
-  credential_application: {
-    id: string
-    manifest_id: string
-    format: ClaimFormatDesignation
-  }
+  credential_application: CredentialApplicationHeader
   presentation_submission?: PresentationSubmission
+}
+
+export type CredentialApplicationHeader = {
+  id: string
+  manifest_id: string
+  format: ClaimFormatDesignation
 }
 
 export type GenericCredentialApplication = NarrowCredentialApplication & {

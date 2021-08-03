@@ -1,21 +1,17 @@
 import type {
+  CredentialMatch,
   InputDescriptorConstraintField,
+  PathEvaluation,
+  ValidationFailure,
   Verifiable,
   W3CCredential
-} from "@centre/verity"
-import type {
-  CredentialMatch,
-  PathEvaluation,
-  ValidationFailure
-} from "./ValidationResults"
+} from "../../types"
 
-// TODO
+// TODO(kim)
 export class PathMatches {
   path: string
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   matchedValue: any
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(path: string, matchedValue: any) {
     this.path = path
     this.matchedValue = matchedValue
@@ -34,25 +30,25 @@ class Evaluation<T> {
 }
 
 export class FieldConstraintEvaluation extends Evaluation<InputDescriptorConstraintField> {
-  _match: PathEvaluation
-  _failures: PathEvaluation[]
+  _match?: PathEvaluation
+  _failures?: PathEvaluation[]
   constructor(
     constraint: InputDescriptorConstraintField,
-    match: PathEvaluation,
-    failures: PathEvaluation[]
+    match?: PathEvaluation,
+    failures?: PathEvaluation[]
   ) {
     super(constraint)
     this._match = match
     this._failures = failures
   }
   passed(): boolean {
-    return this._failures === null || this._failures.length === 0
+    return this.failures().length === 0
   }
-  match(): PathEvaluation {
+  match(): PathEvaluation | undefined {
     return this._match
   }
   failures(): PathEvaluation[] {
-    return this._failures
+    return this._failures || []
   }
 }
 
@@ -87,7 +83,7 @@ export class ValidationCheck {
   }
 
   results(): CredentialMatch[] {
-    if (!this.passed()) return null
+    if (!this.passed()) return []
     return this.credentialResults
       .filter((c) => c.passed())
       .flatMap((d) => {
@@ -105,7 +101,7 @@ export class ValidationCheck {
   }
 
   errors(): ValidationFailure[] {
-    if (this.passed()) return null
+    if (this.passed()) return []
     return this.credentialResults
       .filter((c) => !c.passed())
       .flatMap((d) => {
@@ -133,12 +129,12 @@ export class ValidationCheckFormatter {
   }
 
   errors(): ValidationFailure[] {
-    if (this.accepted()) return null
+    if (this.accepted()) return []
     return this.checks.flatMap((c) => c.errors())
   }
 
   results(): CredentialMatch[] {
-    if (!this.accepted()) return null
+    if (!this.accepted()) return []
     return this.checks.flatMap((c) => c.results())
   }
 }

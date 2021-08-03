@@ -1,6 +1,6 @@
+import type { ValidationFailure } from "@centre/verity"
+import { ValidationError } from "@centre/verity"
 import { NextApiHandler, NextApiResponse } from "next"
-import type { ValidationFailure } from "../types"
-import { ValidationError } from "../types"
 
 export type ApiErrorResponse = {
   status: number
