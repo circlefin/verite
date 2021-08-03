@@ -2,7 +2,8 @@
 CREATE TABLE "Credential" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
-    "jwt" TEXT NOT NULL
+    "jwt" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -21,6 +22,12 @@ CREATE TABLE "VerificationRequest" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "payload" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'pending'
+);
+
+-- CreateTable
+CREATE TABLE "RevocationList" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "jwt" TEXT NOT NULL
 );
 
 -- CreateIndex
