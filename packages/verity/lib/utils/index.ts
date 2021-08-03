@@ -1,6 +1,6 @@
 export * from "./async-fns"
 export * from "./bitstring"
-export * from "./credential-signer"
 export * from "./credentials"
 export * from "./did-key"
 export * from "./has-paths"
+export * from "./sign-fns"

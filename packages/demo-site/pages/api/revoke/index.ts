@@ -1,8 +1,7 @@
-import type { RevocableCredential, JWT } from "@centre/verity"
+import { RevocableCredential, JWT, buildIssuer } from "@centre/verity"
 import { revokeCredential, decodeVerifiableCredential } from "@centre/verity"
 import { apiHandler, notFound } from "../../../lib/api-fns"
 import { allRevocationLists, saveRevocationList } from "../../../lib/database"
-import { credentialSigner } from "../../../lib/signer"
 
 export default apiHandler<string>(async (req, res) => {
   const jwt = req.body as JWT
@@ -23,7 +22,7 @@ export default apiHandler<string>(async (req, res) => {
   const list = await revokeCredential(
     credential,
     revocationList,
-    credentialSigner()
+    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
   )
 
   // Persist the new revocation list

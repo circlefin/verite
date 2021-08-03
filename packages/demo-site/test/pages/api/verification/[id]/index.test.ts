@@ -1,4 +1,5 @@
 import {
+  buildIssuer,
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
@@ -14,7 +15,6 @@ import {
 } from "../../../../../lib/database"
 import { createKycAmlFulfillment } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
-import { credentialSigner } from "../../../../../lib/signer"
 import { generateKycVerificationRequest } from "../../../../../lib/verification/requests"
 import handler from "../../../../../pages/api/verification/[id]/index"
 import { userFactory } from "../../../../../test/factories"
@@ -81,7 +81,7 @@ describe("POST /verification/[id]", () => {
   })
 })
 
-// TODO: This block shoudl be easier to repro
+// TODO: This block should be easier to repro
 async function generateVc(clientDidKey: DidKey) {
   const kycManifest = await findManifestById("KYCAMLAttestation")
   const user = await userFactory({
@@ -99,7 +99,7 @@ async function generateVc(clientDidKey: DidKey) {
 
   const fulfillment = await createKycAmlFulfillment(
     user,
-    credentialSigner(),
+    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     acceptedApplication,
     await generateRevocationListStatus()
   )

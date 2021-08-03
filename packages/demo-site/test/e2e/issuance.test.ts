@@ -4,7 +4,8 @@ import {
   decodeVerifiablePresentation,
   randomDidKey,
   VerificationError,
-  validateCredentialSubmission
+  validateCredentialSubmission,
+  buildIssuer
 } from "@centre/verity"
 import type {
   Revocable,
@@ -14,7 +15,6 @@ import type {
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
 import { findManifestById } from "../../lib/manifest"
-import { credentialSigner } from "../../lib/signer"
 import { userFactory } from "../factories"
 
 // tslint:disable-next-line: max-line-length
@@ -23,11 +23,15 @@ const expiredPresentation =
 
 describe("issuance", () => {
   it("just works", async () => {
+    const issuer = buildIssuer(
+      process.env.ISSUER_DID,
+      process.env.ISSUER_SECRET
+    )
     // 0. ISSUER: The issuer gets a DID
-    expect(credentialSigner().did).toEqual(
+    expect(issuer.did).toEqual(
       "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
     )
-    expect(credentialSigner().signingConfig.alg).toEqual("EdDSA")
+    expect(issuer.alg).toEqual("EdDSA")
 
     // 1. CLIENT: The subject gets a DID
     const clientDidKey = await randomDidKey()
@@ -65,7 +69,7 @@ describe("issuance", () => {
     // 5. ISSUER: Delivering the VC
     const fulfillment = await createKycAmlFulfillment(
       user,
-      credentialSigner(),
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
       acceptedApplication,
       {
         id: "http://example.com/revocation-list#42",

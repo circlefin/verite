@@ -1,4 +1,5 @@
 import {
+  buildIssuer,
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
@@ -9,7 +10,6 @@ import {
 import { generateRevocationListStatus } from "../..//lib/database"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
 import { findManifestById } from "../../lib/manifest"
-import { credentialSigner } from "../../lib/signer"
 import { generateKycVerificationRequest } from "../../lib/verification/requests"
 import { findPresentationDefinitionById } from "../../lib/verification/submission"
 import { userFactory } from "../factories"
@@ -34,7 +34,7 @@ describe("verification", () => {
 
     const fulfillment = await createKycAmlFulfillment(
       user,
-      credentialSigner(),
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
       acceptedApplication,
       await generateRevocationListStatus()
     )

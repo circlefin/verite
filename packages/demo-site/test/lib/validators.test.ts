@@ -8,12 +8,12 @@ import {
   CredentialResults,
   FieldConstraintEvaluation,
   ValidationCheck,
-  validateCredentialSubmission
+  validateCredentialSubmission,
+  buildIssuer
 } from "@centre/verity"
 import { generateRevocationListStatus } from "../../lib/database"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
 import { findManifestById } from "../../lib/manifest"
-import { credentialSigner } from "../../lib/signer"
 import { kycPresentationDefinition } from "../../lib/verification/requests"
 import { findPresentationDefinitionById } from "../../lib/verification/submission"
 import { userFactory } from "../../test/factories"
@@ -36,7 +36,7 @@ describe("Submission validator", () => {
     )
     const fulfillment = await createKycAmlFulfillment(
       user,
-      credentialSigner(),
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
       acceptedApplication,
       await generateRevocationListStatus()
     )
