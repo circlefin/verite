@@ -1,4 +1,7 @@
-import { verificationRequestWrapper } from "@centre/verity"
+import {
+  validateVerificationSubmission,
+  verificationRequestWrapper
+} from "@centre/verity"
 import type {
   EncodedVerificationSubmission,
   VerificationRequestWrapper
@@ -15,7 +18,7 @@ import {
   findVerificationRequest,
   updateVerificationRequestStatus
 } from "../../../../lib/database/verificationRequests"
-import { validateVerificationSubmission } from "../../../../lib/verification/submission"
+import { findPresentationDefinitionById } from "../../../../lib/verification/submission"
 
 type PostResponse = { status: string }
 
@@ -70,7 +73,10 @@ async function post(req: NextApiRequest, res: ApiResponse<PostResponse>) {
 
   try {
     // TODO: Verify submission matches VerificationRequest (e.g. id check?)
-    await validateVerificationSubmission(submission)
+    await validateVerificationSubmission(
+      submission,
+      findPresentationDefinitionById
+    )
   } catch (err) {
     await updateVerificationRequestStatus(
       verificationRequest.request.id,

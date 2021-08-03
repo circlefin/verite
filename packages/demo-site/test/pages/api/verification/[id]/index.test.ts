@@ -2,7 +2,8 @@ import {
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
-  randomDidKey
+  randomDidKey,
+  validateCredentialSubmission
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
@@ -12,7 +13,6 @@ import {
   saveVerificationRequest
 } from "../../../../../lib/database"
 import { createKycAmlFulfillment } from "../../../../../lib/issuance/fulfillment"
-import { validateCredentialSubmission } from "../../../../../lib/issuance/submission"
 import { findManifestById } from "../../../../../lib/manifest"
 import { credentialSigner } from "../../../../../lib/signer"
 import { generateKycVerificationRequest } from "../../../../../lib/verification/requests"
@@ -83,7 +83,7 @@ describe("POST /verification/[id]", () => {
 
 // TODO: This block shoudl be easier to repro
 async function generateVc(clientDidKey: DidKey) {
-  const kycManifest = findManifestById("KYCAMLAttestation")
+  const kycManifest = await findManifestById("KYCAMLAttestation")
   const user = await userFactory({
     jumioScore: 55,
     ofacScore: 2
@@ -92,7 +92,10 @@ async function generateVc(clientDidKey: DidKey) {
     clientDidKey,
     kycManifest
   )
-  const acceptedApplication = await validateCredentialSubmission(application)
+  const acceptedApplication = await validateCredentialSubmission(
+    application,
+    findManifestById
+  )
 
   const fulfillment = await createKycAmlFulfillment(
     user,

@@ -9,6 +9,8 @@ export const MANIFEST_MAP: Record<string, CredentialManifest> = {
 
 export const MANIFESTS: CredentialManifest[] = Object.values(MANIFEST_MAP)
 
-export function findManifestById(id: string): CredentialManifest | undefined {
+export async function findManifestById(
+  id: string
+): Promise<CredentialManifest | undefined> {
   return MANIFESTS.find((m) => m.id === id)
 }

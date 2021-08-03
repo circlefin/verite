@@ -5,7 +5,8 @@ import type {
 } from "@centre/verity"
 import {
   decodeVerifiablePresentation,
-  ProcessedCredentialApplication
+  ProcessedCredentialApplication,
+  validateCredentialSubmission
 } from "@centre/verity"
 import {
   apiHandler,
@@ -19,7 +20,7 @@ import {
   storeRevocableCredential
 } from "../../../../lib/database"
 import { createFulfillment } from "../../../../lib/issuance/fulfillment"
-import { validateCredentialSubmission } from "../../../../lib/issuance/submission"
+import { findManifestById } from "../../../../lib/manifest"
 import { credentialSigner } from "../../../../lib/signer"
 
 export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
@@ -37,7 +38,10 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   let acceptedApplication: ProcessedCredentialApplication
 
   try {
-    acceptedApplication = await validateCredentialSubmission(application)
+    acceptedApplication = await validateCredentialSubmission(
+      application,
+      findManifestById
+    )
   } catch (err) {
     return validationError(res, err)
   }

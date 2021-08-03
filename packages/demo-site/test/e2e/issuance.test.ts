@@ -3,7 +3,8 @@ import {
   createCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey,
-  VerificationError
+  VerificationError,
+  validateCredentialSubmission
 } from "@centre/verity"
 import type {
   Revocable,
@@ -12,7 +13,6 @@ import type {
   W3CCredential
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { validateCredentialSubmission } from "../../lib/issuance/submission"
 import { findManifestById } from "../../lib/manifest"
 import { credentialSigner } from "../../lib/signer"
 import { userFactory } from "../factories"
@@ -37,7 +37,7 @@ describe("issuance", () => {
     expect(clientDidKey.id.startsWith(clientDidKey.controller)).toBe(true)
 
     // 2. ISSUER: Discovery of available credentials
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
 
     // 3. CLIENT: Requesting the credential
     const user = await userFactory({
@@ -56,7 +56,10 @@ describe("issuance", () => {
     expect(application.presentation_submission.definition_id).toEqual(
       kycManifest.presentation_definition.id
     )
-    const acceptedApplication = await validateCredentialSubmission(application)
+    const acceptedApplication = await validateCredentialSubmission(
+      application,
+      findManifestById
+    )
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
@@ -121,7 +124,7 @@ describe("issuance", () => {
     expect.assertions(1)
 
     const clientDidKey = await randomDidKey()
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest
@@ -131,7 +134,7 @@ describe("issuance", () => {
     application.presentation = expiredPresentation
 
     await expect(
-      validateCredentialSubmission(application)
+      validateCredentialSubmission(application, findManifestById)
     ).rejects.toThrowError(VerificationError)
   })
 })

@@ -1,17 +1,17 @@
-import type {
-  EncodedCredentialApplication,
-  ProcessedCredentialApplication
-} from "@centre/verity"
+import { CredentialManifest, EncodedCredentialApplication } from "../../types"
+import { ValidationError } from "../errors"
+import { hasPaths } from "../utils/has-paths"
+import { ProcessedCredentialApplication } from "./ProcessedCredentialApplication"
 import {
-  processCredentialApplication,
   messageToValidationFailure,
-  ValidationError
-} from "@centre/verity"
-import { has } from "lodash"
-import { findManifestById } from "../manifest"
+  processCredentialApplication
+} from "./validators"
+
+type FindManifestById = (id?: string) => Promise<CredentialManifest | undefined>
 
 export async function validateCredentialSubmission(
-  application: EncodedCredentialApplication
+  application: EncodedCredentialApplication,
+  findManifestById: FindManifestById
 ): Promise<ProcessedCredentialApplication> {
   if (
     !hasPaths(application, [
@@ -31,9 +31,10 @@ export async function validateCredentialSubmission(
   /**
    * Ensure there is a valid manifest with this manifest_id
    */
-  const manifest = findManifestById(
+  const manifest = await findManifestById(
     application.credential_application.manifest_id
   )
+
   if (!manifest) {
     throw new ValidationError(
       "Invalid Manifest ID",
@@ -46,8 +47,4 @@ export async function validateCredentialSubmission(
   const processed = await processCredentialApplication(application, manifest)
 
   return processed
-}
-
-function hasPaths(obj: Record<string, unknown>, keys: string[]) {
-  return keys.every((key) => has(obj, key))
 }

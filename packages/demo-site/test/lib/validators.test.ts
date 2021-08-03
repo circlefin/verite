@@ -1,4 +1,3 @@
-import { generateRevocationListStatus } from "@centre/demo-site/lib/database"
 import {
   createCredentialApplication,
   createVerificationSubmission,
@@ -8,10 +7,11 @@ import {
   randomDidKey,
   CredentialResults,
   FieldConstraintEvaluation,
-  ValidationCheck
+  ValidationCheck,
+  validateCredentialSubmission
 } from "@centre/verity"
+import { generateRevocationListStatus } from "../../lib/database"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { validateCredentialSubmission } from "../../lib/issuance/submission"
 import { findManifestById } from "../../lib/manifest"
 import { credentialSigner } from "../../lib/signer"
 import { kycPresentationDefinition } from "../../lib/verification/requests"
@@ -21,7 +21,7 @@ import { userFactory } from "../../test/factories"
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
     const clientDidKey = await randomDidKey()
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
     const user = await userFactory({
       jumioScore: 55,
       ofacScore: 2
@@ -30,7 +30,10 @@ describe("Submission validator", () => {
       clientDidKey,
       kycManifest
     )
-    const acceptedApplication = await validateCredentialSubmission(application)
+    const acceptedApplication = await validateCredentialSubmission(
+      application,
+      findManifestById
+    )
     const fulfillment = await createKycAmlFulfillment(
       user,
       credentialSigner(),
@@ -48,7 +51,7 @@ describe("Submission validator", () => {
       clientVC
     )
 
-    const presDef = findPresentationDefinitionById(
+    const presDef = await findPresentationDefinitionById(
       "KYCAMLPresentationDefinition"
     )
     const result = await processVerificationSubmission(submission, presDef)
@@ -67,7 +70,7 @@ describe("Submission validator", () => {
 
   it("validates a CredentialApplication", async () => {
     const clientDidKey = await randomDidKey()
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest

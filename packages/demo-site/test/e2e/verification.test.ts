@@ -1,23 +1,24 @@
-import { generateRevocationListStatus } from "@centre/demo-site/lib/database"
 import {
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
-  randomDidKey
+  randomDidKey,
+  validateCredentialSubmission,
+  validateVerificationSubmission
 } from "@centre/verity"
+import { generateRevocationListStatus } from "../..//lib/database"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { validateCredentialSubmission } from "../../lib/issuance/submission"
 import { findManifestById } from "../../lib/manifest"
 import { credentialSigner } from "../../lib/signer"
 import { generateKycVerificationRequest } from "../../lib/verification/requests"
-import { validateVerificationSubmission } from "../../lib/verification/submission"
+import { findPresentationDefinitionById } from "../../lib/verification/submission"
 import { userFactory } from "../factories"
 
 describe("verification", () => {
   it("just works", async () => {
     // 0. PREREQ: Ensure client has a valid KYC credential
     const clientDidKey = await randomDidKey()
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
     const user = await userFactory({
       jumioScore: 55,
       ofacScore: 2
@@ -26,7 +27,10 @@ describe("verification", () => {
       clientDidKey,
       kycManifest
     )
-    const acceptedApplication = await validateCredentialSubmission(application)
+    const acceptedApplication = await validateCredentialSubmission(
+      application,
+      findManifestById
+    )
 
     const fulfillment = await createKycAmlFulfillment(
       user,
@@ -59,7 +63,10 @@ describe("verification", () => {
     ])
 
     // 4. VERIFIER: Verifies submission
-    const result = await validateVerificationSubmission(submission)
+    const result = await validateVerificationSubmission(
+      submission,
+      findPresentationDefinitionById
+    )
     expect(result).toBeDefined()
   })
 
@@ -68,7 +75,7 @@ describe("verification", () => {
     expect.assertions(1)
 
     const clientDidKey = await randomDidKey()
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest
