@@ -12,8 +12,8 @@ import type {
   W3CCredential
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { findManifestById } from "../../lib/issuance/manifest"
 import { validateCredentialSubmission } from "../../lib/issuance/submission"
+import { findManifestById } from "../../lib/manifest"
 import { credentialSigner } from "../../lib/signer"
 import { userFactory } from "../factories"
 

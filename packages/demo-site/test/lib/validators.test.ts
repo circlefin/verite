@@ -11,8 +11,8 @@ import {
   ValidationCheck
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { findManifestById } from "../../lib/issuance/manifest"
 import { validateCredentialSubmission } from "../../lib/issuance/submission"
+import { findManifestById } from "../../lib/manifest"
 import { credentialSigner } from "../../lib/signer"
 import { kycPresentationDefinition } from "../../lib/verification/requests"
 import { findPresentationDefinitionById } from "../../lib/verification/submission"

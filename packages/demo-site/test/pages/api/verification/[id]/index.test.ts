@@ -12,8 +12,8 @@ import {
   saveVerificationRequest
 } from "../../../../../lib/database"
 import { createKycAmlFulfillment } from "../../../../../lib/issuance/fulfillment"
-import { findManifestById } from "../../../../../lib/issuance/manifest"
 import { validateCredentialSubmission } from "../../../../../lib/issuance/submission"
+import { findManifestById } from "../../../../../lib/manifest"
 import { credentialSigner } from "../../../../../lib/signer"
 import { generateKycVerificationRequest } from "../../../../../lib/verification/requests"
 import handler from "../../../../../pages/api/verification/[id]/index"

@@ -8,7 +8,7 @@ import {
   ValidationError
 } from "@centre/verity"
 import { has } from "lodash"
-import { findManifestById } from "./manifest"
+import { findManifestById } from "../manifest"
 
 export async function validateCredentialSubmission(
   application: EncodedCredentialApplication

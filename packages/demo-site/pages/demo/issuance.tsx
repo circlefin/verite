@@ -6,7 +6,7 @@ import QRCode from "qrcode.react"
 import DemoLayout from "../../components/demo/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
-import { MANIFEST_MAP } from "../../lib/issuance/manifest"
+import { MANIFEST_MAP } from "../../lib/manifest"
 
 type Props = {
   qrCodeData: ChallengeTokenUrlWrapper

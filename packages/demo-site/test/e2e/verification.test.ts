@@ -6,8 +6,8 @@ import {
   randomDidKey
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { findManifestById } from "../../lib/issuance/manifest"
 import { validateCredentialSubmission } from "../../lib/issuance/submission"
+import { findManifestById } from "../../lib/manifest"
 import { credentialSigner } from "../../lib/signer"
 import { generateKycVerificationRequest } from "../../lib/verification/requests"
 import { validateVerificationSubmission } from "../../lib/verification/submission"
