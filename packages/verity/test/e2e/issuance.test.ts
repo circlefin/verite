@@ -1,21 +1,21 @@
+// import { createKycAmlFulfillment } from "../../../demo-site/lib/issuance/fulfillment"
+// import { findManifestById } from "../../../demo-site/lib/manifest"
+// import { userFactory } from "../../../demo-site/test/factories"
 import {
   asyncMap,
   createCredentialApplication,
   decodeVerifiablePresentation,
-  randomDidKey,
   VerificationError,
   validateCredentialSubmission,
   buildIssuer
-} from "@centre/verity"
+} from "../../lib"
 import type {
   Revocable,
   RevocablePresentation,
   Verifiable,
   W3CCredential
-} from "@centre/verity"
-import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { findManifestById } from "../../lib/manifest"
-import { userFactory } from "../factories"
+} from "../../types"
+import { randomDidKey } from "../support/did-fns"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =

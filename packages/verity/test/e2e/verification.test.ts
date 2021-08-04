@@ -3,16 +3,16 @@ import {
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
-  randomDidKey,
   validateCredentialSubmission,
   validateVerificationSubmission
-} from "@centre/verity"
-import { generateRevocationListStatus } from "../..//lib/database"
-import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { findManifestById } from "../../lib/manifest"
-import { generateKycVerificationRequest } from "../../lib/verification/requests"
-import { findPresentationDefinitionById } from "../../lib/verification/submission"
-import { userFactory } from "../factories"
+} from "../../lib"
+import { randomDidKey } from "../support"
+// import { generateRevocationListStatus } from "../../lib/database"
+// import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
+// import { findManifestById } from "../../lib/manifest"
+// import { generateKycVerificationRequest } from "../../lib/verification/requests"
+// import { findPresentationDefinitionById } from "../../lib/verification/submission"
+// import { userFactory } from "../factories"
 
 describe("verification", () => {
   it("just works", async () => {
