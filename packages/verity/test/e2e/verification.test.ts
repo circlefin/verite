@@ -1,60 +1,49 @@
+import { createCredentialApplication } from "../../lib/client/credential-application"
+import { createVerificationSubmission } from "../../lib/client/verification-submission"
 import {
-  buildIssuer,
-  createCredentialApplication,
-  createVerificationSubmission,
-  decodeVerifiablePresentation,
-  validateCredentialSubmission,
-  validateVerificationSubmission
-} from "../../lib"
-import { randomDidKey } from "../support"
-// import { generateRevocationListStatus } from "../../lib/database"
-// import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-// import { findManifestById } from "../../lib/manifest"
-// import { generateKycVerificationRequest } from "../../lib/verification/requests"
-// import { findPresentationDefinitionById } from "../../lib/verification/submission"
-// import { userFactory } from "../factories"
+  buildAndSignKycAmlFulfillment,
+  kycAmlAttestation
+} from "../../lib/issuer/fulfillment"
+import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
+import { validateCredentialSubmission } from "../../lib/validators/validateCredentialSubmission"
+import { validateVerificationSubmission } from "../../lib/validators/validateVerificationSubmission"
+import {
+  generateKycVerificationRequest,
+  kycPresentationDefinition
+} from "../../lib/verification-requests"
+import {
+  DidKey,
+  KYCAMLProvider,
+  RevocableCredential,
+  RevocationList2021Status
+} from "../../types"
+import { randomDidKey } from "../support/did-fns"
+import { generateManifestAndIssuer } from "../support/manifest-fns"
 
 describe("verification", () => {
-  it("just works", async () => {
-    // 0. PREREQ: Ensure client has a valid KYC credential
+  it("accepts and validates a verification submission containing credentials", async () => {
+    // 1. Ensure client has Verifiable Credentials
+    const verifierDidKey = await randomDidKey()
     const clientDidKey = await randomDidKey()
-    const kycManifest = await findManifestById("KYCAMLAttestation")
-    const user = await userFactory({
-      jumioScore: 55,
-      ofacScore: 2
-    })
-    const application = await createCredentialApplication(
-      clientDidKey,
-      kycManifest
+    const verifiableCredentials = await getClientVerifiableCredential(
+      clientDidKey
     )
-    const acceptedApplication = await validateCredentialSubmission(
-      application,
-      findManifestById
-    )
-
-    const fulfillment = await createKycAmlFulfillment(
-      user,
-      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-      acceptedApplication,
-      await generateRevocationListStatus()
-    )
-
-    const fulfillmentVP = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
-    const clientVC = fulfillmentVP.verifiableCredential[0]
 
     // 2. VERIFIER: Discovery of verification requirements
-    const kycRequest = generateKycVerificationRequest()
+    const kycRequest = generateKycVerificationRequest(
+      verifierDidKey.controller,
+      "https://test.host/verify",
+      verifierDidKey.controller
+    )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
     const submission = await createVerificationSubmission(
       clientDidKey,
       kycRequest.presentation_definition,
-      clientVC
+      verifiableCredentials
     )
 
-    expect(submission.presentation_submission.descriptor_map).toEqual([
+    expect(submission.presentation_submission!.descriptor_map).toEqual([
       {
         id: "kycaml_input",
         format: "jwt_vc",
@@ -65,27 +54,50 @@ describe("verification", () => {
     // 4. VERIFIER: Verifies submission
     const result = await validateVerificationSubmission(
       submission,
-      findPresentationDefinitionById
+      async () => kycPresentationDefinition
     )
+
     expect(result).toBeDefined()
-  })
-
-  it("rejects an expired input", async () => {
-    /*
-    expect.assertions(1)
-
-    const clientDidKey = await randomDidKey()
-    const kycManifest = await findManifestById("KYCAMLAttestation")
-    const application = await createCredentialApplication(
-      clientDidKey,
-      kycManifest
+    expect(result.presentation).toBeDefined()
+    expect(result.presentation_submission!.definition_id).toEqual(
+      kycPresentationDefinition.id
     )
-
-    // overwrite with expired VP
-    application.presentation = expiredPresentation
-
-    await expect(
-      validateCredentialSubmission(application)
-    ).rejects.toThrowError(VerificationError)*/
   })
 })
+
+async function getClientVerifiableCredential(
+  clientDidKey: DidKey
+): Promise<RevocableCredential[]> {
+  const { manifest, issuer } = await generateManifestAndIssuer()
+
+  // 0. PREREQ: Ensure client has a valid KYC credential
+  const application = await createCredentialApplication(clientDidKey, manifest)
+  const acceptedApplication = await validateCredentialSubmission(
+    application,
+    async () => manifest
+  )
+
+  const revocationList: RevocationList2021Status = {
+    id: "http://example.com/revocation-list#42",
+    type: "RevocationList2021Status",
+    statusListIndex: "42",
+    statusListCredential: "http://example.com/revocation-list"
+  }
+  const kycServiceProvider: KYCAMLProvider = {
+    "@type": "KYCAMLProvider",
+    name: "Some Service",
+    score: 200
+  }
+  const fulfillment = await buildAndSignKycAmlFulfillment(
+    issuer,
+    acceptedApplication,
+    revocationList,
+    kycAmlAttestation([kycServiceProvider])
+  )
+
+  const fulfillmentVP = await decodeVerifiablePresentation(
+    fulfillment.presentation
+  )
+
+  return fulfillmentVP.verifiableCredential as RevocableCredential[]
+}

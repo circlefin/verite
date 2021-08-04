@@ -1,10 +1,7 @@
-import type {
-  PresentationDefinition,
-  VerificationRequest
-} from "@centre/verity"
-import { InputDescriptorConstraintStatusDirective } from "@centre/verity"
 import { compact } from "lodash"
 import { v4 as uuidv4 } from "uuid"
+import { InputDescriptorConstraintStatusDirective } from "../types"
+import type { PresentationDefinition, VerificationRequest } from "../types"
 
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 const KYC_PRESENTATION_DEFINITION_ID = "KYCAMLPresentationDefinition"
@@ -37,8 +34,8 @@ export const kycPresentationDefinition: PresentationDefinition = {
               type: "string",
               pattern: compact([
                 "did:web:verity.id",
-                "did:web:coinbase.com",
-                process.env.ISSUER_DID
+                "did:web:coinbase.com"
+                // TODO: Include local issuer DID (make customizable)
               ]).join("|")
             }
           }
@@ -49,7 +46,12 @@ export const kycPresentationDefinition: PresentationDefinition = {
 }
 
 // TODO(kim)
-export const generateKycVerificationRequest = (): VerificationRequest => {
+export const generateKycVerificationRequest = (
+  from: string,
+  replyUrl: string,
+  replyTo: string,
+  callbackUrl?: string
+): VerificationRequest => {
   const now = Date.now()
   const expires = now + ONE_MONTH
   const id = uuidv4()
@@ -62,12 +64,12 @@ export const generateKycVerificationRequest = (): VerificationRequest => {
     type: ["VerifiablePresentation", "PresentationDefinition"],
     request: {
       id,
-      from: process.env.VERIFIER_DID,
+      from: from,
       created_time: now,
       expires_time: expires,
-      reply_url: `${process.env.HOST}/api/verification/${id}`,
-      reply_to: [process.env.VERIFIER_DID],
-      callback_url: `${process.env.HOST}/api/verification/${id}/callback`,
+      reply_url: replyUrl,
+      reply_to: [replyTo],
+      callback_url: callbackUrl,
       challenge: "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e61" // TODO: Challenge
     },
     presentation_definition: kycPresentationDefinition

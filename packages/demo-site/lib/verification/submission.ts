@@ -1,5 +1,5 @@
 import type { PresentationDefinition } from "@centre/verity"
-import { kycPresentationDefinition } from "./requests"
+import { kycPresentationDefinition } from "@centre/verity"
 
 export const PRESENTATION_DEFINITIONS: PresentationDefinition[] = [
   kycPresentationDefinition
