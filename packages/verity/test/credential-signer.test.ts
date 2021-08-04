@@ -1,9 +1,13 @@
-import { CredentialSigner, decodeVerifiableCredential } from "../lib/utils"
+import {
+  buildIssuer,
+  decodeVerifiableCredential,
+  signVerifiableCredential
+} from "../lib/utils"
 import type { JwtCredentialPayload } from "../types"
 
 describe("VC signing", () => {
   it("signs a VC", async () => {
-    const credentialSigner = new CredentialSigner(
+    const signer = buildIssuer(
       "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
       "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
     )
@@ -22,7 +26,7 @@ describe("VC signing", () => {
         }
       }
     }
-    const result = await credentialSigner.signVerifiableCredential(vcPayload)
+    const result = await signVerifiableCredential(signer, vcPayload)
     const decoded = await decodeVerifiableCredential(result)
     expect(decoded.type.length).toEqual(1)
     expect(decoded.type[0]).toEqual("VerifiableCredential")

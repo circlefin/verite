@@ -1,7 +1,7 @@
-import { temporaryAuthToken } from "@centre/demo-site/lib/database"
-import { userFactory } from "@centre/demo-site/test/factories"
 import { createMocks } from "node-mocks-http"
+import { temporaryAuthToken } from "../../../../../lib/database"
 import handler from "../../../../../pages/api/manifests/[type]/[token]"
+import { userFactory } from "../../../../../test/factories"
 
 describe("GET /api/manifests/[...type]", () => {
   it("returns the KYC/AML manifest", async () => {

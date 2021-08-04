@@ -3,7 +3,9 @@ import {
   createCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey,
-  VerificationError
+  VerificationError,
+  validateCredentialSubmission,
+  buildIssuer
 } from "@centre/verity"
 import type {
   Revocable,
@@ -12,9 +14,7 @@ import type {
   W3CCredential
 } from "@centre/verity"
 import { createKycAmlFulfillment } from "../../lib/issuance/fulfillment"
-import { findManifestById } from "../../lib/issuance/manifest"
-import { validateCredentialSubmission } from "../../lib/issuance/submission"
-import { credentialSigner } from "../../lib/signer"
+import { findManifestById } from "../../lib/manifest"
 import { userFactory } from "../factories"
 
 // tslint:disable-next-line: max-line-length
@@ -23,11 +23,15 @@ const expiredPresentation =
 
 describe("issuance", () => {
   it("just works", async () => {
+    const issuer = buildIssuer(
+      process.env.ISSUER_DID,
+      process.env.ISSUER_SECRET
+    )
     // 0. ISSUER: The issuer gets a DID
-    expect(credentialSigner().did).toEqual(
+    expect(issuer.did).toEqual(
       "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
     )
-    expect(credentialSigner().signingConfig.alg).toEqual("EdDSA")
+    expect(issuer.alg).toEqual("EdDSA")
 
     // 1. CLIENT: The subject gets a DID
     const clientDidKey = await randomDidKey()
@@ -37,7 +41,7 @@ describe("issuance", () => {
     expect(clientDidKey.id.startsWith(clientDidKey.controller)).toBe(true)
 
     // 2. ISSUER: Discovery of available credentials
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
 
     // 3. CLIENT: Requesting the credential
     const user = await userFactory({
@@ -56,13 +60,16 @@ describe("issuance", () => {
     expect(application.presentation_submission.definition_id).toEqual(
       kycManifest.presentation_definition.id
     )
-    const acceptedApplication = await validateCredentialSubmission(application)
+    const acceptedApplication = await validateCredentialSubmission(
+      application,
+      findManifestById
+    )
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
     const fulfillment = await createKycAmlFulfillment(
       user,
-      credentialSigner(),
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
       acceptedApplication,
       {
         id: "http://example.com/revocation-list#42",
@@ -121,7 +128,7 @@ describe("issuance", () => {
     expect.assertions(1)
 
     const clientDidKey = await randomDidKey()
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
     const application = await createCredentialApplication(
       clientDidKey,
       kycManifest
@@ -131,7 +138,7 @@ describe("issuance", () => {
     application.presentation = expiredPresentation
 
     await expect(
-      validateCredentialSubmission(application)
+      validateCredentialSubmission(application, findManifestById)
     ).rejects.toThrowError(VerificationError)
   })
 })

@@ -1,4 +1,4 @@
-import { kycManifest } from "../../../../lib/issuance/manifests/kyc"
+import { kycManifest } from "../../../../lib/manifest/kyc"
 
 describe("Tests KYC Manifest", () => {
   it("tests for breaking KYC Manifest schema changes", async () => {

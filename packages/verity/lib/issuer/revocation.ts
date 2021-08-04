@@ -2,6 +2,7 @@ import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
 import type {
   CredentialPayload,
+  Issuer,
   RevocableCredential,
   RevocationList,
   RevocationListCredential,
@@ -9,10 +10,10 @@ import type {
   W3CCredential
 } from "../../types"
 import {
-  CredentialSigner,
   decodeVerifiableCredential,
   expandBitstring,
-  generateBitstring
+  generateBitstring,
+  signVerifiableCredential
 } from "../utils"
 
 /**
@@ -22,7 +23,7 @@ import {
  * @param url - the revocation status list URL, which serves as the list ID
  * @param issuer - the issuer did
  * @param signer - the credential signer
- * @param issueanceDate - the creation date of this revocation list
+ * @param issuanceDate - the creation date of this revocation list
  *
  * @returns a revocation list credential consisting of the provided status list
  */
@@ -30,7 +31,7 @@ export const generateRevocationList = async (
   statusList: number[],
   url: string,
   issuer: string,
-  signer: CredentialSigner,
+  signer: Issuer,
   issuanceDate = new Date()
 ): Promise<RevocationListCredential> => {
   const encodedList = generateBitstring(statusList)
@@ -51,7 +52,7 @@ export const generateRevocationList = async (
     }
   }
 
-  const vcJwt = await signer.signVerifiableCredential(vcPayload)
+  const vcJwt = await signVerifiableCredential(signer, vcPayload)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }
 
@@ -63,7 +64,7 @@ export const generateRevocationList = async (
 export const revokeCredential = async (
   credential: RevocableCredential,
   statusList: RevocationListCredential,
-  signer: CredentialSigner
+  signer: Issuer
 ): Promise<RevocationListCredential> => {
   // If a credential does not have a credential status, it cannot be revoked.
   if (!isRevocable(credential)) {
@@ -88,7 +89,7 @@ export const revokeCredential = async (
 export const unrevokeCredential = async (
   credential: RevocableCredential,
   statusList: RevocationListCredential,
-  signer: CredentialSigner
+  signer: Issuer
 ): Promise<RevocationListCredential> => {
   // If a credential does not have a credential status, it cannot be revoked.
   if (!isRevocable(credential)) {

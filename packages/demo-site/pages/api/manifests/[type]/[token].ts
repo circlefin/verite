@@ -1,7 +1,7 @@
 import type { ManifestWrapper } from "@centre/verity"
 import { manifestWrapper } from "@centre/verity"
 import { apiHandler, notFound } from "../../../../lib/api-fns"
-import { MANIFEST_MAP } from "../../../../lib/issuance/manifest"
+import { MANIFEST_MAP } from "../../../../lib/manifest"
 
 export default apiHandler<ManifestWrapper>(async (req, res) => {
   const manifestName = req.query.type as string

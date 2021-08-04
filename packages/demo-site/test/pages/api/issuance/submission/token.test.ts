@@ -5,7 +5,7 @@ import {
 } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import { temporaryAuthToken } from "../../../../../lib/database"
-import { findManifestById } from "../../../../../lib/issuance/manifest"
+import { findManifestById } from "../../../../../lib/manifest"
 import handler from "../../../../../pages/api/issuance/submission/[token]"
 import { userFactory } from "../../../../factories"
 
@@ -18,7 +18,7 @@ describe("POST /issuance/submission/[token]", () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = randomDidKey()
-    const manifest = findManifestById("KYCAMLAttestation")
+    const manifest = await findManifestById("KYCAMLAttestation")
     const credentialApplication = await createCredentialApplication(
       clientDid,
       manifest
@@ -44,7 +44,7 @@ describe("POST /issuance/submission/[token]", () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
-    const manifest = findManifestById("CreditScoreAttestation")
+    const manifest = await findManifestById("CreditScoreAttestation")
     const credentialApplication = await createCredentialApplication(
       clientDid,
       manifest
@@ -104,7 +104,7 @@ describe("POST /issuance/submission/[token]", () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
-    const kycManifest = findManifestById("KYCAMLAttestation")
+    const kycManifest = await findManifestById("KYCAMLAttestation")
     const credentialApplication = await createCredentialApplication(
       clientDid,
       kycManifest
@@ -144,7 +144,7 @@ describe("POST /issuance/submission/[token]", () => {
     })
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
-    const manifest = findManifestById("KYCAMLAttestation")
+    const manifest = await findManifestById("KYCAMLAttestation")
     const credentialApplication = await createCredentialApplication(
       clientDid,
       manifest

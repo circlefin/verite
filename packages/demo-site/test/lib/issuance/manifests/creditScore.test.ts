@@ -1,4 +1,4 @@
-import { creditScoreManifest } from "../../../../lib/issuance/manifests/creditScore"
+import { creditScoreManifest } from "../../../../lib/manifest/creditScore"
 
 describe("Tests Credit Score Manifest", () => {
   it("tests for breaking Credit Score Manifest schema changes", async () => {

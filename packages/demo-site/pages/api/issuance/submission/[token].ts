@@ -4,8 +4,10 @@ import type {
   RevocableCredential
 } from "@centre/verity"
 import {
+  buildIssuer,
   decodeVerifiablePresentation,
-  ProcessedCredentialApplication
+  ProcessedCredentialApplication,
+  validateCredentialSubmission
 } from "@centre/verity"
 import {
   apiHandler,
@@ -19,8 +21,7 @@ import {
   storeRevocableCredential
 } from "../../../../lib/database"
 import { createFulfillment } from "../../../../lib/issuance/fulfillment"
-import { validateCredentialSubmission } from "../../../../lib/issuance/submission"
-import { credentialSigner } from "../../../../lib/signer"
+import { findManifestById } from "../../../../lib/manifest"
 
 export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   if (req.method !== "POST") {
@@ -37,14 +38,17 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   let acceptedApplication: ProcessedCredentialApplication
 
   try {
-    acceptedApplication = await validateCredentialSubmission(application)
+    acceptedApplication = await validateCredentialSubmission(
+      application,
+      findManifestById
+    )
   } catch (err) {
     return validationError(res, err)
   }
 
   const fulfillment: EncodedCredentialFulfillment = await createFulfillment(
     user,
-    credentialSigner(),
+    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     acceptedApplication,
     await generateRevocationListStatus()
   )

@@ -3,17 +3,18 @@ import type {
   DescriptorMap,
   EncodedCredentialFulfillment,
   GenericCredentialApplication,
+  Issuer,
   JwtCredentialPayload,
   JWT
 } from "../../types"
+import { asyncMap, verifiablePresentationPayload } from "../utils"
 import {
-  asyncMap,
-  CredentialSigner,
-  verifiablePresentationPayload
-} from "../utils"
+  signVerifiableCredential,
+  signVerifiablePresentation
+} from "../utils/sign-fns"
 
 export async function generateFulfillment(
-  credentialSigner: CredentialSigner,
+  signer: Issuer,
   application: GenericCredentialApplication,
   credentials: JwtCredentialPayload | JwtCredentialPayload[]
 ): Promise<EncodedCredentialFulfillment> {
@@ -35,15 +36,13 @@ export async function generateFulfillment(
   const jwtCredentials: JWT[] = await asyncMap<JwtCredentialPayload, JWT>(
     [credentials].flat(),
     (credential) => {
-      return credentialSigner.signVerifiableCredential(credential)
+      return signVerifiableCredential(signer, credential)
     }
   )
 
-  const presentation = await credentialSigner.signVerifiablePresentation(
-    verifiablePresentationPayload(
-      credentialSigner.signingConfig.did,
-      jwtCredentials
-    )
+  const presentation = await signVerifiablePresentation(
+    signer,
+    verifiablePresentationPayload(signer.did, jwtCredentials)
   )
 
   return {

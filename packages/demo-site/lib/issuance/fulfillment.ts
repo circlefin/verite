@@ -3,21 +3,21 @@ import {
   generateFulfillment,
   KYCAML_ATTESTATION_MANIFEST_ID,
   creditScoreVerifiableCredentialPayload,
-  kycAmlVerifiableCredentialPayload,
-  CredentialSigner
+  kycAmlVerifiableCredentialPayload
 } from "@centre/verity"
 import type {
   CreditScore,
   KYCAMLAttestation,
   RevocationList2021Status,
-  EncodedCredentialFulfillment
+  EncodedCredentialFulfillment,
+  Issuer
 } from "@centre/verity"
 import type { ProcessedCredentialApplication } from "@centre/verity"
 import type { User } from "../database"
 
 export async function createKycAmlFulfillment(
   user: User,
-  credentialSigner: CredentialSigner,
+  signer: Issuer,
   acceptedApplication: ProcessedCredentialApplication,
   credentialStatus: RevocationList2021Status
 ): Promise<EncodedCredentialFulfillment> {
@@ -45,7 +45,7 @@ export async function createKycAmlFulfillment(
   }
 
   return generateFulfillment(
-    credentialSigner,
+    signer,
     acceptedApplication,
     kycAmlVerifiableCredentialPayload(
       verifiablePresentation.holder,
@@ -57,7 +57,7 @@ export async function createKycAmlFulfillment(
 
 export async function createCreditScoreFulfillment(
   user: User,
-  credentialSigner: CredentialSigner,
+  signer: Issuer,
   acceptedApplication: ProcessedCredentialApplication,
   credentialStatus: RevocationList2021Status
 ): Promise<EncodedCredentialFulfillment> {
@@ -71,7 +71,7 @@ export async function createCreditScoreFulfillment(
   }
 
   return generateFulfillment(
-    credentialSigner,
+    signer,
     acceptedApplication,
     creditScoreVerifiableCredentialPayload(
       verifiablePresentation.holder,
@@ -83,7 +83,7 @@ export async function createCreditScoreFulfillment(
 
 export async function createFulfillment(
   user: User,
-  credentialSigner: CredentialSigner,
+  signer: Issuer,
   application: ProcessedCredentialApplication,
   credentialStatus: RevocationList2021Status
 ): Promise<EncodedCredentialFulfillment | undefined> {
@@ -91,14 +91,14 @@ export async function createFulfillment(
     case KYCAML_ATTESTATION_MANIFEST_ID:
       return createKycAmlFulfillment(
         user,
-        credentialSigner,
+        signer,
         application,
         credentialStatus
       )
     case CREDIT_SCORE_ATTESTATION_MANIFEST_ID:
       return createCreditScoreFulfillment(
         user,
-        credentialSigner,
+        signer,
         application,
         credentialStatus
       )

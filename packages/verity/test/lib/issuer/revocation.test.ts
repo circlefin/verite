@@ -8,15 +8,17 @@ import {
 import {
   asyncMap,
   compress,
-  CredentialSigner,
   decompress,
   decodeVerifiableCredential,
   expandBitstring,
   expandBitstringToBooleans,
-  generateBitstring
+  generateBitstring,
+  buildIssuer,
+  signVerifiableCredential
 } from "../../../lib/utils"
 import type {
   CredentialPayload,
+  Issuer,
   Revocable,
   RevocableCredential
 } from "../../../types"
@@ -57,7 +59,7 @@ const vectors = [
 
 const credentialFactory = async (
   index: number,
-  signer: CredentialSigner
+  signer: Issuer
 ): Promise<RevocableCredential> => {
   const vcPayload: Revocable<CredentialPayload> = {
     "@context": ["https://www.w3.org/2018/credentials/v1"],
@@ -76,7 +78,7 @@ const credentialFactory = async (
       statusListCredential: "http://example.com/revocation"
     }
   }
-  const vcJwt = await signer.signVerifiableCredential(vcPayload)
+  const vcJwt = await signVerifiableCredential(signer, vcPayload)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocableCredential>
 }
 
@@ -84,7 +86,7 @@ const statusListFactory = async (credentials: number[]) => {
   const revoke = credentials
   const url = "https://example.com/credentials/status/3" // Need to create a list
   const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-  const signer = new CredentialSigner(
+  const signer = buildIssuer(
     "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
     "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
   )
@@ -123,7 +125,7 @@ describe("Status List 2021", () => {
       const revoke = [3]
       const url = "https://example.com/credentials/status/3" // Need to create a list
       const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-      const signer = new CredentialSigner(
+      const signer = buildIssuer(
         "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
         "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
       )
@@ -148,7 +150,7 @@ describe("Status List 2021", () => {
           foo: "bar"
         }
       }
-      const vcJwt = await signer.signVerifiableCredential(vcPayload)
+      const vcJwt = await signVerifiableCredential(signer, vcPayload)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, statusList)
@@ -159,7 +161,7 @@ describe("Status List 2021", () => {
       const revokedCredentials: number[] = []
       const url = "https://example.com/credentials/status/3" // Need to create a list
       const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-      const signer = new CredentialSigner(
+      const signer = buildIssuer(
         "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
         "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
       )
@@ -191,7 +193,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await signer.signVerifiableCredential(vcPayload)
+      const vcJwt = await signVerifiableCredential(signer, vcPayload)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, statusList)
@@ -202,7 +204,7 @@ describe("Status List 2021", () => {
       const revoke = [3]
       const url = "https://example.com/credentials/status/3" // Need to create a list
       const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-      const signer = new CredentialSigner(
+      const signer = buildIssuer(
         "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
         "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
       )
@@ -234,7 +236,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await signer.signVerifiableCredential(vcPayload)
+      const vcJwt = await signVerifiableCredential(signer, vcPayload)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, statusList)
@@ -244,7 +246,7 @@ describe("Status List 2021", () => {
 
   describe("revokeCredential", () => {
     it("updates the status list credential", async () => {
-      const signer = new CredentialSigner(
+      const signer = buildIssuer(
         "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
         "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
       )
