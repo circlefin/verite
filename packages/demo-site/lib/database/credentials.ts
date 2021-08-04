@@ -10,7 +10,8 @@ import {
   isRevocable
 } from "@centre/verity"
 import { random, sample } from "lodash"
-import { prisma } from "./prisma"
+import { prisma, Credential, User } from "./prisma"
+import { findUser } from "./users"
 
 export type DatabaseCredential = {
   userId: string
@@ -57,6 +58,19 @@ export const findRevocationListForCredential = async (
   const url = credential.credentialStatus.statusListCredential
   const revocationLists = await allRevocationLists()
   return revocationLists.find((list) => list.id === url)
+}
+
+export const findUserByCredential = async (
+  jwt: string
+): Promise<User | undefined> => {
+  const data = await prisma.credential.findFirst({
+    where: { jwt }
+  })
+  if (data) {
+    const userId = data.userId
+    const user = await findUser(userId)
+    return user
+  }
 }
 
 export const findCredentialsByUserId = async (

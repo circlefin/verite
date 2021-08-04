@@ -7,15 +7,17 @@ import {
 } from "@centre/verity"
 import { isRevoked } from "@centre/verity"
 import { NextPage } from "next"
+import Link from "next/link"
 import { useState } from "react"
 import AdminLayout from "../../../components/admin/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
-import { findUser } from "../../../lib/database"
+import { findUserByCredential, User } from "../../../lib/database"
 
 type Props = {
   credential: RevocableCredential
   revocationList: RevocationListCredential
   revoked: boolean
+  user: User
 }
 
 export const getServerSideProps = requireAdmin<Props>(async (context) => {
@@ -36,11 +38,14 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
   const revocationList = await fetchStatusList(credential)
   const revoked = await isRevoked(credential, revocationList)
 
+  const user = await findUserByCredential(jwt)
+
   return {
     props: {
       credential: JSON.parse(JSON.stringify(credential)),
       revocationList: JSON.parse(JSON.stringify(revocationList)),
-      revoked
+      revoked,
+      user
     }
   }
 })
@@ -48,14 +53,28 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
 const AdminCredentialPage: NextPage<Props> = ({
   credential,
   revocationList,
-  revoked
+  revoked,
+  user
 }) => {
   // Revocation List can change if we revoke the credential so we need to store state
   const [list, setList] = useState<RevocationListCredential>(revocationList)
 
   return (
-    <AdminLayout title="Foo">
+    <AdminLayout title="Credential Details">
       <div className="space-y-8">
+        <div>
+          User: <Link href={`/admin/users/${user.id}`}>{user.email}</Link>
+        </div>
+        <div>
+          Note: We can only reconcile this credential to a specific user in the
+          system because we stored it when issuing the credential.
+        </div>
+        <div>
+          You can revoke the credential using the button below. Notice that
+          credentials are immutable. After revoking the credential, the
+          revocation list credential is updated. You will see the `encodedList`
+          property change.
+        </div>
         <div>
           <RevokeButton
             credential={credential}
@@ -72,7 +91,7 @@ const AdminCredentialPage: NextPage<Props> = ({
           </pre>
         </div>
 
-        <div>Status List 2021</div>
+        <div>Revocation List Credential</div>
         <div>
           <pre className="overflow-x-scroll">
             {JSON.stringify(list, null, 4)}
