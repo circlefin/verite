@@ -1,11 +1,9 @@
 import {
-  buildAndSignKycAmlFulfillment,
   buildIssuer,
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
   generateKycVerificationRequest,
-  randomDidKey,
   validateCredentialSubmission
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
@@ -15,13 +13,20 @@ import {
   generateRevocationListStatus,
   saveVerificationRequest
 } from "../../../../../lib/database"
+import { buildAndSignFulfillmentForUser } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
 import handler from "../../../../../pages/api/verification/[id]/index"
 import { userFactory } from "../../../../../test/factories"
+import { randomDidKey } from "../../../../support/did-fns"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {
-    const verificationRequest = generateKycVerificationRequest()
+    const verificationRequest = generateKycVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/callback`
+    )
     await saveVerificationRequest(verificationRequest)
 
     const { req, res } = createMocks({
@@ -50,7 +55,12 @@ describe("GET /verification/[id]", () => {
 
 describe("POST /verification/[id]", () => {
   it("validates the submission and updates the verification status", async () => {
-    const verificationRequest = generateKycVerificationRequest()
+    const verificationRequest = generateKycVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/callback`
+    )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
     const clientVC = await generateVc(clientDidKey)
@@ -97,7 +107,7 @@ async function generateVc(clientDidKey: DidKey) {
     findManifestById
   )
 
-  const fulfillment = await buildAndSignKycAmlFulfillment(
+  const fulfillment = await buildAndSignFulfillmentForUser(
     user,
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     acceptedApplication,

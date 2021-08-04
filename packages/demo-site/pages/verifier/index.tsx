@@ -7,6 +7,7 @@ import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { GetServerSideProps, NextPage } from "next"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
+import { v4 as uuidv4 } from "uuid"
 import VerifierLayout from "../../components/verifier/Layout"
 import { saveVerificationRequest } from "../../lib/database"
 
@@ -16,7 +17,13 @@ type Props = {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const verificationRequest = await generateKycVerificationRequest()
+  const id = uuidv4()
+  const verificationRequest = await generateKycVerificationRequest(
+    process.env.VERIFIER_DID,
+    `${process.env.HOST}/api/verification/${id}`,
+    process.env.VERIFIER_DID,
+    `${process.env.HOST}/api/verification/${id}/callback`
+  )
   await saveVerificationRequest(verificationRequest)
 
   const qrCodeData = challengeTokenUrlWrapper(

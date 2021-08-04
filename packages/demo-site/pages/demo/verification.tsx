@@ -9,6 +9,7 @@ import type {
 } from "@centre/verity"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
+import { v4 as uuidv4 } from "uuid"
 import DemoLayout from "../../components/demo/Layout"
 import QRCodeOrStatus from "../../components/issuer/QRCodeOrStatus"
 import { requireAuth } from "../../lib/auth-fns"
@@ -22,7 +23,13 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps<Props> = requireAuth(
   async () => {
-    const verificationRequest = generateKycVerificationRequest()
+    const id = uuidv4()
+    const verificationRequest = generateKycVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/${id}`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/${id}/callback`
+    )
     await saveVerificationRequest(verificationRequest)
 
     const qrCodeData = challengeTokenUrlWrapper(

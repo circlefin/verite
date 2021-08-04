@@ -49,7 +49,7 @@ export const kycPresentationDefinition: PresentationDefinition = {
 export const generateKycVerificationRequest = (
   from: string,
   replyUrl: string,
-  replyTo: string,
+  replyTo?: string,
   callbackUrl?: string
 ): VerificationRequest => {
   const now = Date.now()
@@ -68,7 +68,7 @@ export const generateKycVerificationRequest = (
       created_time: now,
       expires_time: expires,
       reply_url: replyUrl,
-      reply_to: [replyTo],
+      reply_to: [replyTo || from],
       callback_url: callbackUrl,
       challenge: "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e61" // TODO: Challenge
     },

@@ -1,13 +1,13 @@
 import {
   createCredentialApplication,
-  decodeVerifiablePresentation,
-  randomDidKey
+  decodeVerifiablePresentation
 } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import { temporaryAuthToken } from "../../../../../lib/database"
 import { findManifestById } from "../../../../../lib/manifest"
 import handler from "../../../../../pages/api/issuance/submission/[token]"
 import { userFactory } from "../../../../factories"
+import { randomDidKey } from "../../../../support/did-fns"
 
 // tslint:disable-next-line: max-line-length
 const expiredPresentation =
