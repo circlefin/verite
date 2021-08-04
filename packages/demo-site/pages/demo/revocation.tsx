@@ -76,7 +76,7 @@ const DemoPage: NextPage<Props> = ({
       </p>
 
       <p className="mt-4">
-        <RevokeButton credential={credential} revoked={true} />
+        <RevokeButton credential={credential} defaultRevoked={true} />
       </p>
 
       <p className="mt-4">
