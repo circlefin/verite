@@ -6,6 +6,7 @@ import type {
 import { asyncMap, isRevoked } from "@centre/verity"
 import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
+import Link from "next/link"
 import router from "next/router"
 import AdminLayout from "../../../components/admin/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
@@ -16,7 +17,6 @@ import {
   findUser
 } from "../../../lib/database"
 import type { User } from "../../../lib/database"
-import revoke from "../../api/revoke"
 
 type Props = {
   credentialList: {
@@ -117,10 +117,11 @@ function CredentialTable({ credentials }) {
                       }
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <RevokeButton
-                        credential={credential.credential.credential}
-                        defaultRevoked={credential.revoked}
-                      />
+                      <Link
+                        href={`/admin/credentials/${credential?.credential?.credential?.proof?.jwt}`}
+                      >
+                        Details
+                      </Link>
                     </td>
                   </tr>
                 ))}
