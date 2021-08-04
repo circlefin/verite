@@ -7,16 +7,9 @@
 
 ## Getting Started
 
-### Install
-
 ```
 npm install
-```
-
-### Setup
-
-```
-npm run prisma generate
+npm run db:migrate
 ```
 
 ### Configuring your Local Environment
@@ -109,19 +102,19 @@ npm run format
 Run database migration script:
 
 ```
-db:migrate
+npm run db:migrate
 ```
 
 Reset local database:
 
 ```
-db:reset
+npm run db:reset
 ```
 
 Seed local database:
 
 ```
-db:seed
+npm run db:seed
 ```
 
 Inspect local database contents
