@@ -13,7 +13,7 @@ import type {
   RevocablePresentation
 } from "../../types"
 import { VerificationError } from "../errors"
-import { didKeyResolver } from "./did-key"
+import { didKeyResolver } from "./did-fns"
 
 export function verifiablePresentationPayload(
   subject: string,

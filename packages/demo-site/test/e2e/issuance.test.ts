@@ -69,7 +69,7 @@ describe("issuance", () => {
     // 5. ISSUER: Delivering the VC
     const fulfillment = await createKycAmlFulfillment(
       user,
-      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
+      issuer,
       acceptedApplication,
       {
         id: "http://example.com/revocation-list#42",
