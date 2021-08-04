@@ -14,6 +14,7 @@ import type {
   RevocationList2021Status
 } from "../../types"
 import { randomDidKey } from "../support/did-fns"
+import { sampleRevocationList } from "../support/revocation-fns"
 
 describe("issuance", () => {
   it("issues verified credentails", async () => {
@@ -41,12 +42,6 @@ describe("issuance", () => {
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
-    const revocationList: RevocationList2021Status = {
-      id: "http://example.com/revocation-list#42",
-      type: "RevocationList2021Status",
-      statusListIndex: "42",
-      statusListCredential: "http://example.com/revocation-list"
-    }
     const kycServiceProvider: KYCAMLProvider = {
       "@type": "KYCAMLProvider",
       name: "Some Service",
@@ -55,7 +50,7 @@ describe("issuance", () => {
     const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
-      revocationList,
+      sampleRevocationList,
       kycAmlAttestation([kycServiceProvider])
     )
 

@@ -1,8 +1,10 @@
 import {
+  buildAndSignKycAmlFulfillment,
   buildIssuer,
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
+  generateKycVerificationRequest,
   randomDidKey,
   validateCredentialSubmission
 } from "@centre/verity"
@@ -13,9 +15,7 @@ import {
   generateRevocationListStatus,
   saveVerificationRequest
 } from "../../../../../lib/database"
-import { createKycAmlFulfillment } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
-import { generateKycVerificationRequest } from "../../../../../lib/verification/requests"
 import handler from "../../../../../pages/api/verification/[id]/index"
 import { userFactory } from "../../../../../test/factories"
 
@@ -97,7 +97,7 @@ async function generateVc(clientDidKey: DidKey) {
     findManifestById
   )
 
-  const fulfillment = await createKycAmlFulfillment(
+  const fulfillment = await buildAndSignKycAmlFulfillment(
     user,
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     acceptedApplication,

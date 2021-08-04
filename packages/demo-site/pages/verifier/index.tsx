@@ -1,4 +1,7 @@
-import { challengeTokenUrlWrapper } from "@centre/verity"
+import {
+  challengeTokenUrlWrapper,
+  generateKycVerificationRequest
+} from "@centre/verity"
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { GetServerSideProps, NextPage } from "next"
@@ -6,7 +9,6 @@ import QRCode from "qrcode.react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
 import { saveVerificationRequest } from "../../lib/database"
-import { generateKycVerificationRequest } from "../../lib/verification/requests"
 
 type Props = {
   qrCodeData: ChallengeTokenUrlWrapper

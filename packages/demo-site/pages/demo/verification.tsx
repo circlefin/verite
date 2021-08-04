@@ -1,5 +1,6 @@
 import {
   challengeTokenUrlWrapper,
+  generateKycVerificationRequest,
   verificationRequestWrapper
 } from "@centre/verity"
 import type {
@@ -12,7 +13,6 @@ import DemoLayout from "../../components/demo/Layout"
 import QRCodeOrStatus from "../../components/issuer/QRCodeOrStatus"
 import { requireAuth } from "../../lib/auth-fns"
 import { saveVerificationRequest } from "../../lib/database"
-import { generateKycVerificationRequest } from "../../lib/verification/requests"
 
 type Props = {
   qrCodeData: ChallengeTokenUrlWrapper

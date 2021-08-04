@@ -19,6 +19,7 @@ import {
 } from "../../types"
 import { randomDidKey } from "../support/did-fns"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
+import { sampleRevocationList } from "../support/revocation-fns"
 
 describe("verification", () => {
   it("accepts and validates a verification submission containing credentials", async () => {
@@ -77,12 +78,6 @@ async function getClientVerifiableCredential(
     async () => manifest
   )
 
-  const revocationList: RevocationList2021Status = {
-    id: "http://example.com/revocation-list#42",
-    type: "RevocationList2021Status",
-    statusListIndex: "42",
-    statusListCredential: "http://example.com/revocation-list"
-  }
   const kycServiceProvider: KYCAMLProvider = {
     "@type": "KYCAMLProvider",
     name: "Some Service",
@@ -91,7 +86,7 @@ async function getClientVerifiableCredential(
   const fulfillment = await buildAndSignKycAmlFulfillment(
     issuer,
     acceptedApplication,
-    revocationList,
+    sampleRevocationList,
     kycAmlAttestation([kycServiceProvider])
   )
 

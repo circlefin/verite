@@ -8,6 +8,7 @@ import { didKeyToIssuer } from "../../../lib/utils/did-fns"
 import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
 import { RevocationList2021Status } from "../../../types"
 import { randomDidKey } from "../../support/did-fns"
+import { sampleRevocationList } from "../../support/revocation-fns"
 
 describe("buildAndSignKycAmlFulfillment", () => {
   it("builds and signs a kyc/aml fulfillment", async () => {
@@ -24,17 +25,11 @@ describe("buildAndSignKycAmlFulfillment", () => {
       credentialApplication,
       async () => manifest
     )
-    const revocationList: RevocationList2021Status = {
-      id: "http://example.com/revocation-list#42",
-      type: "RevocationList2021Status",
-      statusListIndex: "42",
-      statusListCredential: "http://example.com/revocation-list"
-    }
 
     const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
-      revocationList,
+      sampleRevocationList,
       kycAmlAttestation([])
     )
     expect(fulfillment.credential_fulfillment).toBeDefined()
