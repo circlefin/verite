@@ -1,87 +1,45 @@
 import {
+  buildAndSignKycAmlFulfillment,
+  buildAndSignCreditScoreFulfillment,
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
-  generateFulfillment,
   KYCAML_ATTESTATION_MANIFEST_ID,
-  creditScoreVerifiableCredentialPayload,
-  kycAmlVerifiableCredentialPayload
+  kycAmlAttestation
 } from "@centre/verity"
 import type {
   CreditScore,
-  KYCAMLAttestation,
-  RevocationList2021Status,
   EncodedCredentialFulfillment,
-  Issuer
+  Issuer,
+  KYCAMLAttestation,
+  ProcessedCredentialApplication,
+  RevocationList2021Status
 } from "@centre/verity"
-import type { ProcessedCredentialApplication } from "@centre/verity"
 import type { User } from "../database"
 
-export async function createKycAmlFulfillment(
-  user: User,
-  signer: Issuer,
-  acceptedApplication: ProcessedCredentialApplication,
-  credentialStatus: RevocationList2021Status
-): Promise<EncodedCredentialFulfillment> {
-  const verifiablePresentation = acceptedApplication.presentation
-
-  const body: KYCAMLAttestation = {
-    "@type": "KYCAMLAttestation",
-    authorityId: "did:web:verity.id",
-    approvalDate: new Date().toJSON(),
-    authorityName: "Verity",
-    authorityUrl: "https://verity.id",
-    authorityCallbackUrl: "https://identity.verity.id",
-    serviceProviders: [
-      {
-        "@type": "KYCAMLProvider",
-        name: "Jumio",
-        score: user.jumioScore
-      },
-      {
-        "@type": "KYCAMLProvider",
-        name: "OFAC-SDN",
-        score: user.ofacScore
-      }
-    ]
-  }
-
-  return generateFulfillment(
-    signer,
-    acceptedApplication,
-    kycAmlVerifiableCredentialPayload(
-      verifiablePresentation.holder,
-      body,
-      credentialStatus
-    )
-  )
+function kycAmlServiceProvidersForUser(user: User): KYCAMLAttestation {
+  return kycAmlAttestation([
+    {
+      "@type": "KYCAMLProvider",
+      name: "Jumio",
+      score: user.jumioScore
+    },
+    {
+      "@type": "KYCAMLProvider",
+      name: "OFAC-SDN",
+      score: user.ofacScore
+    }
+  ])
 }
 
-export async function createCreditScoreFulfillment(
-  user: User,
-  signer: Issuer,
-  acceptedApplication: ProcessedCredentialApplication,
-  credentialStatus: RevocationList2021Status
-): Promise<EncodedCredentialFulfillment> {
-  const verifiablePresentation = acceptedApplication.presentation
-
-  const body: CreditScore = {
+function creditScoreForUser(user: User): CreditScore {
+  return {
     "@type": "CreditScore",
     score: user.creditScore,
     scoreType: "Credit Rating",
     provider: "Experian"
   }
-
-  return generateFulfillment(
-    signer,
-    acceptedApplication,
-    creditScoreVerifiableCredentialPayload(
-      verifiablePresentation.holder,
-      body,
-      credentialStatus
-    )
-  )
 }
 
-export async function createFulfillment(
+export async function buildAndSignFulfillmentForUser(
   user: User,
   signer: Issuer,
   application: ProcessedCredentialApplication,
@@ -89,18 +47,18 @@ export async function createFulfillment(
 ): Promise<EncodedCredentialFulfillment | undefined> {
   switch (application.credential_application.manifest_id) {
     case KYCAML_ATTESTATION_MANIFEST_ID:
-      return createKycAmlFulfillment(
-        user,
+      return buildAndSignKycAmlFulfillment(
         signer,
         application,
-        credentialStatus
+        credentialStatus,
+        kycAmlServiceProvidersForUser(user)
       )
     case CREDIT_SCORE_ATTESTATION_MANIFEST_ID:
-      return createCreditScoreFulfillment(
-        user,
+      return buildAndSignCreditScoreFulfillment(
         signer,
         application,
-        credentialStatus
+        credentialStatus,
+        creditScoreForUser(user)
       )
   }
 }

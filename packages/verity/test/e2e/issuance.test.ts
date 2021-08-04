@@ -1,95 +1,70 @@
-// import { createKycAmlFulfillment } from "../../../demo-site/lib/issuance/fulfillment"
-// import { findManifestById } from "../../../demo-site/lib/manifest"
-// import { userFactory } from "../../../demo-site/test/factories"
 import {
-  asyncMap,
   createCredentialApplication,
   decodeVerifiablePresentation,
-  VerificationError,
   validateCredentialSubmission,
-  buildIssuer
+  didKeyToIssuer,
+  createKycAmlManifest,
+  buildAndSignKycAmlFulfillment,
+  kycAmlAttestation
 } from "../../lib"
 import type {
-  Revocable,
+  KYCAMLProvider,
+  RevocableCredential,
   RevocablePresentation,
-  Verifiable,
-  W3CCredential
+  RevocationList2021Status
 } from "../../types"
 import { randomDidKey } from "../support/did-fns"
 
-// tslint:disable-next-line: max-line-length
-const expiredPresentation =
-  "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
-
 describe("issuance", () => {
-  it("just works", async () => {
-    const issuer = buildIssuer(
-      process.env.ISSUER_DID,
-      process.env.ISSUER_SECRET
-    )
+  it("issues verified credentails", async () => {
     // 0. ISSUER: The issuer gets a DID
-    expect(issuer.did).toEqual(
-      "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-    )
-    expect(issuer.alg).toEqual("EdDSA")
+    const issuerDidKey = await randomDidKey()
+    const issuer = didKeyToIssuer(issuerDidKey)
 
-    // 1. CLIENT: The subject gets a DID
+    // 1. CLIENT: The client gets a DID
     const clientDidKey = await randomDidKey()
-    expect(clientDidKey.publicKey).toBeDefined()
-    expect(clientDidKey.privateKey).toBeDefined()
-    expect(clientDidKey.controller.startsWith("did:key")).toBe(true)
-    expect(clientDidKey.id.startsWith(clientDidKey.controller)).toBe(true)
 
-    // 2. ISSUER: Discovery of available credentials
-    const kycManifest = await findManifestById("KYCAMLAttestation")
+    // 2. ISSUER: Generates a QR code for the client
+    const credentialIssuer = { id: issuer.did, name: "Verity" }
+    const manifest = createKycAmlManifest(credentialIssuer)
 
-    // 3. CLIENT: Requesting the credential
-    const user = await userFactory({
-      jumioScore: 55,
-      ofacScore: 2
-    })
-    const application = await createCredentialApplication(
+    // 3. CLIENT: Client generates a credential application
+    const credentialApplication = await createCredentialApplication(
       clientDidKey,
-      kycManifest
+      manifest
     )
-    expect(application.credential_application).toBeDefined()
-    expect(application.credential_application.manifest_id).toEqual(
-      "KYCAMLAttestation"
-    )
-    expect(application.presentation_submission).toBeDefined()
-    expect(application.presentation_submission.definition_id).toEqual(
-      kycManifest.presentation_definition.id
-    )
+
     const acceptedApplication = await validateCredentialSubmission(
-      application,
-      findManifestById
+      credentialApplication,
+      async () => manifest
     )
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
-    const fulfillment = await createKycAmlFulfillment(
-      user,
+    const revocationList: RevocationList2021Status = {
+      id: "http://example.com/revocation-list#42",
+      type: "RevocationList2021Status",
+      statusListIndex: "42",
+      statusListCredential: "http://example.com/revocation-list"
+    }
+    const kycServiceProvider: KYCAMLProvider = {
+      "@type": "KYCAMLProvider",
+      name: "Some Service",
+      score: 200
+    }
+    const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
-      {
-        id: "http://example.com/revocation-list#42",
-        type: "RevocationList2021Status",
-        statusListIndex: "42",
-        statusListCredential: "http://example.com/revocation-list"
-      }
-    )
-    expect(fulfillment.credential_fulfillment).toBeDefined()
-    expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
-      "KYCAMLAttestation"
+      revocationList,
+      kycAmlAttestation([kycServiceProvider])
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
       fulfillment.presentation
     )) as RevocablePresentation
 
-    await asyncMap<Revocable<Verifiable<W3CCredential>>, void>(
-      verifiablePresentation.verifiableCredential,
-      async (verifiableCredential) => {
+    verifiablePresentation.verifiableCredential!.forEach(
+      (verifiableCredential: RevocableCredential) => {
         expect(verifiableCredential.type).toEqual([
           "VerifiableCredential",
           "KYCAMLAttestation"
@@ -99,16 +74,7 @@ describe("issuance", () => {
         const credentialSubject = verifiableCredential.credentialSubject
         expect(credentialSubject.id).toEqual(clientDidKey.controller)
         expect(credentialSubject.KYCAMLAttestation.serviceProviders).toEqual([
-          {
-            "@type": "KYCAMLProvider",
-            name: "Jumio",
-            score: user.jumioScore
-          },
-          {
-            "@type": "KYCAMLProvider",
-            name: "OFAC-SDN",
-            score: user.ofacScore
-          }
+          kycServiceProvider
         ])
 
         const credentialStatus = verifiableCredential.credentialStatus
@@ -122,23 +88,5 @@ describe("issuance", () => {
         )
       }
     )
-  })
-
-  it("rejects an expired input", async () => {
-    expect.assertions(1)
-
-    const clientDidKey = await randomDidKey()
-    const kycManifest = await findManifestById("KYCAMLAttestation")
-    const application = await createCredentialApplication(
-      clientDidKey,
-      kycManifest
-    )
-
-    // overwrite with expired VP
-    application.presentation = expiredPresentation
-
-    await expect(
-      validateCredentialSubmission(application, findManifestById)
-    ).rejects.toThrowError(VerificationError)
   })
 })

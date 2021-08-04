@@ -5,6 +5,7 @@ import type {
   OutputDescriptor,
   PresentationDefinition
 } from "../../types"
+import { hasPaths } from "../utils/has-paths"
 
 export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreAttestation"
 export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"
@@ -177,4 +178,15 @@ export function createCreditScoreManifest(
     issuer,
     outputDescriptors
   )
+}
+
+export function validateManifestFormat(
+  manifest: CredentialManifest | Record<string, unknown>
+): boolean {
+  return hasPaths(manifest, [
+    "id",
+    "version",
+    "issuer.id",
+    "output_descriptors[0]"
+  ])
 }

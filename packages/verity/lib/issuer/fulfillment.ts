@@ -5,15 +5,26 @@ import type {
   GenericCredentialApplication,
   Issuer,
   JwtCredentialPayload,
-  JWT
+  JWT,
+  RevocationList2021Status,
+  KYCAMLProvider,
+  KYCAMLAttestation,
+  CreditScore,
+  DecodedCredentialApplication
 } from "../../types"
-import { asyncMap, verifiablePresentationPayload } from "../utils"
+import { asyncMap } from "../utils/async-fns"
+import {
+  creditScoreVerifiableCredentialPayload,
+  kycAmlVerifiableCredentialPayload,
+  verifiablePresentationPayload
+} from "../utils/credentials"
 import {
   signVerifiableCredential,
   signVerifiablePresentation
 } from "../utils/sign-fns"
+import { ProcessedCredentialApplication } from "../validators/ProcessedCredentialApplication"
 
-export async function generateFulfillment(
+async function buildAndSignFulfillment(
   signer: Issuer,
   application: GenericCredentialApplication,
   credentials: JwtCredentialPayload | JwtCredentialPayload[]
@@ -48,5 +59,62 @@ export async function generateFulfillment(
   return {
     credential_fulfillment: credentialFulfillment,
     presentation
+  }
+}
+
+export async function buildAndSignKycAmlFulfillment(
+  signer: Issuer,
+  acceptedApplication:
+    | ProcessedCredentialApplication
+    | DecodedCredentialApplication,
+  credentialStatus: RevocationList2021Status,
+  body: KYCAMLAttestation
+): Promise<EncodedCredentialFulfillment> {
+  const verifiablePresentation = acceptedApplication.presentation
+
+  return buildAndSignFulfillment(
+    signer,
+    acceptedApplication,
+    kycAmlVerifiableCredentialPayload(
+      verifiablePresentation.holder,
+      body,
+      credentialStatus
+    )
+  )
+}
+
+export async function buildAndSignCreditScoreFulfillment(
+  signer: Issuer,
+  acceptedApplication:
+    | ProcessedCredentialApplication
+    | DecodedCredentialApplication,
+  credentialStatus: RevocationList2021Status,
+  creditScore: CreditScore
+): Promise<EncodedCredentialFulfillment> {
+  const verifiablePresentation = acceptedApplication.presentation
+
+  return buildAndSignFulfillment(
+    signer,
+    acceptedApplication,
+    creditScoreVerifiableCredentialPayload(
+      verifiablePresentation.holder,
+      creditScore,
+      credentialStatus
+    )
+  )
+}
+
+// TODO(mv) allow custominzing the authority info (maybe superclass?)
+export function kycAmlAttestation(
+  serviceProviders?: KYCAMLProvider[]
+): KYCAMLAttestation {
+  return {
+    "@type": "KYCAMLAttestation",
+    authorityId: "did:web:verity.id",
+    approvalDate: new Date().toJSON(),
+    authorityName: "Verity",
+    authorityUrl: "https://verity.id",
+    authorityCallbackUrl: "https://identity.verity.id",
+    serviceProviders: serviceProviders
   }
 }
