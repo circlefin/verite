@@ -22,7 +22,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
     process.env.VERIFIER_DID,
     `${process.env.HOST}/api/verification/${id}`,
     process.env.VERIFIER_DID,
-    `${process.env.HOST}/api/verification/${id}/callback`
+    `${process.env.HOST}/api/verification/${id}/callback`,
+    [process.env.ISSUER_DID],
+    id
   )
   await saveVerificationRequest(verificationRequest)
 

@@ -56,11 +56,11 @@ export const generateKycVerificationRequest = (
   replyUrl: string,
   replyTo: string,
   callbackUrl?: string,
-  trustedAuthorities: string[] = []
+  trustedAuthorities: string[] = [],
+  id = uuidv4()
 ): VerificationRequest => {
   const now = Date.now()
   const expires = now + ONE_MONTH
-  const id = uuidv4()
 
   return {
     "@context": [
