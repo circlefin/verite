@@ -1,9 +1,11 @@
-import { GetServerSideProps, NextPage } from "next"
 import {
   fetchStatusList,
+  generateKycVerificationRequest,
   RevocableCredential,
   RevocationListCredential
-} from "../../../verity"
+} from "@centre/verity"
+import { GetServerSideProps, NextPage } from "next"
+import { v4 as uuidv4 } from "uuid"
 import DemoLayout from "../../components/demo/Layout"
 import QRCodeOrStatus from "../../components/issuer/QRCodeOrStatus"
 import RevokeButton from "../../components/issuer/RevokeButton"
@@ -12,7 +14,6 @@ import {
   findNewestCredential,
   saveVerificationRequest
 } from "../../lib/database"
-import { generateKycVerificationRequest } from "../../lib/verification/requests"
 
 export type VerificationRequestWrapper = {
   requestUrl: string
@@ -28,7 +29,15 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps<Props> = requireAuth(
   async () => {
-    const verificationRequest = generateKycVerificationRequest()
+    const id = uuidv4()
+    const verificationRequest = generateKycVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/${id}`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/${id}/callback`,
+      [process.env.ISSUER_DID],
+      id
+    )
     await saveVerificationRequest(verificationRequest)
 
     const verificationRequestWrapper: VerificationRequestWrapper = {
@@ -110,7 +119,7 @@ const DemoPage: NextPage<Props> = ({
         Here is the credential with the `credentialStatus` property.
       </p>
 
-      <div className="container mt-8 mx-auto font-mono text-sm border-2 overflow-scroll">
+      <div className="container mx-auto mt-8 overflow-scroll font-mono text-sm border-2">
         <pre>{JSON.stringify(credential, null, 4)}</pre>
       </div>
 
@@ -119,7 +128,7 @@ const DemoPage: NextPage<Props> = ({
         Verifiable Credential. The bitstring is actually zlib compressed and
         base64 encoded bitstring.
       </p>
-      <div className="container mt-8 mx-auto font-mono text-sm border-2 overflow-scroll">
+      <div className="container mx-auto mt-8 overflow-scroll font-mono text-sm border-2">
         <pre>{JSON.stringify(revocationList, null, 4)}</pre>
       </div>
     </DemoLayout>

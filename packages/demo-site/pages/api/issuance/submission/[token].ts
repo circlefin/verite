@@ -20,7 +20,7 @@ import {
   generateRevocationListStatus,
   storeRevocableCredential
 } from "../../../../lib/database"
-import { createFulfillment } from "../../../../lib/issuance/fulfillment"
+import { buildAndSignFulfillmentForUser } from "../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../lib/manifest"
 
 export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
@@ -46,12 +46,13 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     return validationError(res, err)
   }
 
-  const fulfillment: EncodedCredentialFulfillment = await createFulfillment(
-    user,
-    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    acceptedApplication,
-    await generateRevocationListStatus()
-  )
+  const fulfillment: EncodedCredentialFulfillment =
+    await buildAndSignFulfillmentForUser(
+      user,
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
+      acceptedApplication,
+      await generateRevocationListStatus()
+    )
 
   if (!fulfillment) {
     return notFound(res)

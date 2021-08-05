@@ -1,4 +1,7 @@
-import { challengeTokenUrlWrapper } from "@centre/verity"
+import {
+  challengeTokenUrlWrapper,
+  generateKycVerificationRequest
+} from "@centre/verity"
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
@@ -6,9 +9,9 @@ import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
+import { v4 as uuidv4 } from "uuid"
 import VerifierLayout from "../../components/verifier/Layout"
 import { saveVerificationRequest } from "../../lib/database"
-import { generateKycVerificationRequest } from "../../lib/verification/requests"
 
 type Props = {
   qrCodeData: ChallengeTokenUrlWrapper
@@ -16,7 +19,15 @@ type Props = {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const verificationRequest = await generateKycVerificationRequest()
+  const id = uuidv4()
+  const verificationRequest = await generateKycVerificationRequest(
+    process.env.VERIFIER_DID,
+    `${process.env.HOST}/api/verification/${id}`,
+    process.env.VERIFIER_DID,
+    `${process.env.HOST}/api/verification/${id}/callback`,
+    [process.env.ISSUER_DID],
+    id
+  )
   await saveVerificationRequest(verificationRequest)
 
   const qrCodeData = challengeTokenUrlWrapper(

@@ -3,6 +3,7 @@ import {
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
+  generateKycVerificationRequest,
   randomDidKey,
   validateCredentialSubmission
 } from "@centre/verity"
@@ -13,15 +14,19 @@ import {
   generateRevocationListStatus,
   saveVerificationRequest
 } from "../../../../../lib/database"
-import { createKycAmlFulfillment } from "../../../../../lib/issuance/fulfillment"
+import { buildAndSignFulfillmentForUser } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
-import { generateKycVerificationRequest } from "../../../../../lib/verification/requests"
 import handler from "../../../../../pages/api/verification/[id]/index"
 import { userFactory } from "../../../../../test/factories"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {
-    const verificationRequest = generateKycVerificationRequest()
+    const verificationRequest = generateKycVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/callback`
+    )
     await saveVerificationRequest(verificationRequest)
 
     const { req, res } = createMocks({
@@ -50,7 +55,12 @@ describe("GET /verification/[id]", () => {
 
 describe("POST /verification/[id]", () => {
   it("validates the submission and updates the verification status", async () => {
-    const verificationRequest = generateKycVerificationRequest()
+    const verificationRequest = generateKycVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/callback`
+    )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
     const clientVC = await generateVc(clientDidKey)
@@ -97,7 +107,7 @@ async function generateVc(clientDidKey: DidKey) {
     findManifestById
   )
 
-  const fulfillment = await createKycAmlFulfillment(
+  const fulfillment = await buildAndSignFulfillmentForUser(
     user,
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     acceptedApplication,
