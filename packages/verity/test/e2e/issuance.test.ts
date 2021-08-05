@@ -4,15 +4,10 @@ import {
   validateCredentialSubmission,
   didKeyToIssuer,
   createKycAmlManifest,
-  buildAndSignKycAmlFulfillment,
-  kycAmlAttestation
+  buildAndSignKycAmlFulfillment
 } from "../../lib"
-import type {
-  KYCAMLProvider,
-  RevocableCredential,
-  RevocablePresentation,
-  RevocationList2021Status
-} from "../../types"
+import type { RevocableCredential, RevocablePresentation } from "../../types"
+import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
 import { randomDidKey } from "../support/did-fns"
 
@@ -42,16 +37,11 @@ describe("issuance", () => {
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
-    const kycServiceProvider: KYCAMLProvider = {
-      "@type": "KYCAMLProvider",
-      name: "Some Service",
-      score: 200
-    }
     const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
       revocationListFixture,
-      kycAmlAttestation([kycServiceProvider])
+      kycAmlAttestationFixture
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
@@ -68,9 +58,9 @@ describe("issuance", () => {
 
         const credentialSubject = verifiableCredential.credentialSubject
         expect(credentialSubject.id).toEqual(clientDidKey.controller)
-        expect(credentialSubject.KYCAMLAttestation.serviceProviders).toEqual([
-          kycServiceProvider
-        ])
+        expect(credentialSubject.KYCAMLAttestation.serviceProviders).toEqual(
+          kycAmlAttestationFixture.serviceProviders
+        )
 
         const credentialStatus = verifiableCredential.credentialStatus
         expect(credentialStatus.id).toEqual(

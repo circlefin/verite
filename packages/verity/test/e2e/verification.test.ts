@@ -1,22 +1,15 @@
 import { createCredentialApplication } from "../../lib/client/credential-application"
 import { createVerificationSubmission } from "../../lib/client/verification-submission"
-import {
-  buildAndSignKycAmlFulfillment,
-  kycAmlAttestation
-} from "../../lib/issuer/fulfillment"
+import { buildAndSignKycAmlFulfillment } from "../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { validateCredentialSubmission } from "../../lib/validators/validateCredentialSubmission"
 import { validateVerificationSubmission } from "../../lib/validators/validateVerificationSubmission"
 import { generateKycVerificationRequest } from "../../lib/verification-requests"
-import {
-  DidKey,
-  KYCAMLProvider,
-  RevocableCredential,
-  RevocationList2021Status
-} from "../../types"
+import { DidKey, RevocableCredential } from "../../types"
+import { kycAmlAttestationFixture } from "../fixtures/attestations"
+import { revocationListFixture } from "../fixtures/revocation-list"
 import { randomDidKey } from "../support/did-fns"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
-import { revocationListFixture } from "../support/revocation-fns"
 
 describe("verification", () => {
   it("accepts and validates a verification submission containing credentials", async () => {
@@ -75,16 +68,11 @@ async function getClientVerifiableCredential(
     async () => manifest
   )
 
-  const kycServiceProvider: KYCAMLProvider = {
-    "@type": "KYCAMLProvider",
-    name: "Some Service",
-    score: 200
-  }
   const fulfillment = await buildAndSignKycAmlFulfillment(
     issuer,
     acceptedApplication,
     revocationListFixture,
-    kycAmlAttestation([kycServiceProvider])
+    kycAmlAttestationFixture
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(

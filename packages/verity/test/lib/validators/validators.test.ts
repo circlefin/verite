@@ -16,9 +16,10 @@ import {
   processVerificationSubmission
 } from "../../../lib/validators/validators"
 import { generateKycVerificationRequest } from "../../../lib/verification-requests"
+import { revocationListFixture } from "../../fixtures/revocation-list"
+import { generateVerifiableCredential } from "../../fixtures/verifiable-credential"
 import { randomDidKey } from "../../support/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
-import { revocationListFixture } from "../../support/revocation-fns"
 
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
@@ -146,13 +147,13 @@ describe("Submission validator", () => {
     expect(acceptedApplication.accepted()).toBeTruthy()
   })
 
-  /* TODO: CredentialResults can not be given null
   it("checks validation formatting for successful matches", async () => {
     const inputDescriptorConstraintField = {
       path: ["path1", "path2", "path3"],
       purpose: "checks that input is suitable"
     }
     const success = { path: "string1", match: true, value: "test1" }
+    const vc = await generateVerifiableCredential()
 
     const fieldConstraintEvaluation = new FieldConstraintEvaluation(
       inputDescriptorConstraintField,
@@ -160,7 +161,7 @@ describe("Submission validator", () => {
     )
 
     const validationCheck = new ValidationCheck("id1", [
-      new CredentialResults(null, [fieldConstraintEvaluation])
+      new CredentialResults(vc, [fieldConstraintEvaluation])
     ])
     const match = validationCheck.results()
 
@@ -178,15 +179,16 @@ describe("Submission validator", () => {
       { path: "string1", match: false, value: "test1" },
       { path: "string1", match: false, value: "test2" }
     ]
+    const vc = await generateVerifiableCredential()
 
     const fieldConstraintEvaluation = new FieldConstraintEvaluation(
       inputDescriptorConstraintField,
-      null,
+      undefined,
       peArray
     )
 
     const validationCheck = new ValidationCheck("id1", [
-      new CredentialResults(null, [fieldConstraintEvaluation])
+      new CredentialResults(vc, [fieldConstraintEvaluation])
     ])
 
     const errors = validationCheck.errors()
@@ -194,5 +196,4 @@ describe("Submission validator", () => {
       "Credential failed to meet criteria specified by input descriptor id1"
     )
   })
-  */
 })
