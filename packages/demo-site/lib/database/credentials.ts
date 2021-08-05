@@ -10,7 +10,8 @@ import {
   isRevocable
 } from "@centre/verity"
 import { random, sample } from "lodash"
-import { prisma } from "./prisma"
+import { prisma, Credential, User } from "./prisma"
+import { findUser } from "./users"
 
 export type DatabaseCredential = {
   userId: string
@@ -59,6 +60,19 @@ export const findRevocationListForCredential = async (
   return revocationLists.find((list) => list.id === url)
 }
 
+export const findUserByCredential = async (
+  jwt: string
+): Promise<User | undefined> => {
+  const data = await prisma.credential.findFirst({
+    where: { jwt }
+  })
+  if (data) {
+    const userId = data.userId
+    const user = await findUser(userId)
+    return user
+  }
+}
+
 export const findCredentialsByUserId = async (
   userId: string
 ): Promise<DatabaseCredential[]> => {
@@ -78,10 +92,32 @@ export const findCredentialsByUserId = async (
   })
 }
 
-export const findNewestCredential = async (): Promise<
-  RevocableCredential | undefined
-> => {
+export const findCredentialsByUserIdAndType = async (
+  userId: string,
+  type: string
+): Promise<RevocableCredential[]> => {
+  const credentials = (await findCredentialsByUserId(userId))
+    .filter((credential) => credential.credential.type[1] === type)
+    .map((c) => c.credential)
+
+  return credentials
+}
+
+/**
+ * Finds the newest credential. Useful for demo purposes.
+ *
+ * @param createdAt will restrict search to only credentials older than this date, defaults to epoch
+ * @returns a decoded credential
+ */
+export const findNewestCredential = async (
+  createdAt: Date = new Date(0)
+): Promise<RevocableCredential | undefined> => {
   const result = await prisma.credential.findFirst({
+    where: {
+      createdAt: {
+        gt: createdAt
+      }
+    },
     orderBy: {
       createdAt: "desc"
     }
