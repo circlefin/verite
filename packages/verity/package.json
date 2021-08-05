@@ -26,8 +26,8 @@
     "lodash": "^4.17.21",
     "multibase": "^4.0.4",
     "multicodec": "^3.1.0",
-    "pako": "^1.0.11",
-    "schema-dts": "^0.9.0",
+    "pako": "^2.0.4",
+    "schema-dts": "^0.10.0",
     "semver": "^7.3.5",
     "uuid": "^8.3.2"
   },
