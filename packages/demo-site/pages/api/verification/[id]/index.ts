@@ -11,14 +11,12 @@ import {
   apiHandler,
   ApiResponse,
   methodNotAllowed,
-  notFound,
-  validationError
+  notFound
 } from "../../../../lib/api-fns"
 import {
   findVerificationRequest,
   updateVerificationRequestStatus
 } from "../../../../lib/database/verificationRequests"
-import { findPresentationDefinitionById } from "../../../../lib/verification/submission"
 
 type PostResponse = { status: string }
 
@@ -82,7 +80,8 @@ async function post(req: NextApiRequest, res: ApiResponse<PostResponse>) {
       verificationRequest.request.id,
       "rejected"
     )
-    return validationError(res, err)
+
+    throw err
   }
 
   await updateVerificationRequestStatus(

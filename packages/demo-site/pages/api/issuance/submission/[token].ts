@@ -1,4 +1,6 @@
-import type {
+import {
+  buildAndSignFulfillment,
+  decodeCredentialApplication,
   EncodedCredentialApplication,
   EncodedCredentialFulfillment,
   RevocableCredential
@@ -8,15 +10,9 @@ import {
   revokeCredential,
   decodeVerifiablePresentation,
   getManifestIdFromCredentialApplication,
-  ProcessedCredentialApplication,
   validateCredentialApplication
 } from "@centre/verity"
-import {
-  apiHandler,
-  methodNotAllowed,
-  notFound,
-  validationError
-} from "../../../../lib/api-fns"
+import { apiHandler, methodNotAllowed, notFound } from "../../../../lib/api-fns"
 import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {
   allRevocationLists,
@@ -25,15 +21,22 @@ import {
   generateRevocationListStatus,
   storeRevocableCredential
 } from "../../../../lib/database"
-import { buildAndSignFulfillmentForUser } from "../../../../lib/issuance/fulfillment"
+import { fulfillmentDataForUser } from "../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../lib/manifest"
 
+/**
+ * Handle a POST request to containing an empty Verifiable Presentation proving
+ * ownership of a client did.  The endpoint checks the validity of the Verifiable
+ * Presentation, and issues a separate Verifiable Presentation containing
+ * the Verifiable Credentials for this given user.
+ */
 export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
+  // Only allow POST requests to this endpoint
   if (req.method !== "POST") {
     return methodNotAllowed(res)
   }
 
-  // Find the user from a temporary auth token
+  // Find the user record from a temporary auth token
   // We need to use a temporary auth token because this submission endpoint
   // may not be called directly from the user's browser (e.g. via mobile wallet)
   const user = await findUserFromTemporaryAuthToken(req.query.token as string)
@@ -41,38 +44,34 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     return notFound(res)
   }
 
-  const application: EncodedCredentialApplication = req.body
+  const credentialApplication: EncodedCredentialApplication = req.body
+
+  // Validate the format of the Verifiable Presentation.
+  // TODO: This validation step is largely unnecessary, as the Verifiable
+  // Presentation is empty. We simply need to validate the signature.
   const manifest = await findManifestById(
-    getManifestIdFromCredentialApplication(application)
+    getManifestIdFromCredentialApplication(credentialApplication)
   )
+  await validateCredentialApplication(credentialApplication, manifest)
 
-  let acceptedApplication: ProcessedCredentialApplication
-
-  try {
-    acceptedApplication = await validateCredentialApplication(
-      application,
-      manifest
-    )
-  } catch (err) {
-    return validationError(res, err)
-  }
+  // Decode the Verifiable Presentation and check the signature
+  const decodedCredentialApplication = await decodeCredentialApplication(
+    credentialApplication
+  )
 
   // Before we issue a new credential of this type to a user, revoke all their
   // previous credentials of the same type.
   await revokeUserCredentials(user, manifest.id)
 
-  const fulfillment: EncodedCredentialFulfillment =
-    await buildAndSignFulfillmentForUser(
-      user,
-      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-      acceptedApplication,
-      await generateRevocationListStatus()
-    )
+  // Generate new credentials for the user
+  const fulfillment = await buildAndSignFulfillment(
+    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
+    decodedCredentialApplication,
+    await generateRevocationListStatus(),
+    fulfillmentDataForUser(user, manifest)
+  )
 
-  if (!fulfillment) {
-    return notFound(res)
-  }
-
+  // Save the credentials to the database
   await persistGeneratedCredentials(user, fulfillment)
 
   res.json(fulfillment)

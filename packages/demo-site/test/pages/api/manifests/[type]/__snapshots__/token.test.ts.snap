@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET /api/manifests/[...type] returns the CreditScore manifest 1`] = `
+exports[`GET /api/manifests/[type]/[token] returns the CreditScore manifest 1`] = `
 Object {
   "format": Object {
     "jwt_vc": Object {
@@ -121,7 +121,7 @@ Object {
 }
 `;
 
-exports[`GET /api/manifests/[...type] returns the KYC/AML manifest 1`] = `
+exports[`GET /api/manifests/[type]/[token] returns the KYC/AML manifest 1`] = `
 Object {
   "format": Object {
     "jwt_vc": Object {

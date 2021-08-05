@@ -1,9 +1,10 @@
+import { kycAmlAttestation } from "../../../lib/attestation"
 import { createVerificationSubmission } from "../../../lib/client/verification-submission"
-import { createCredentialApplication } from "../../../lib/credential-application-fns"
 import {
-  buildAndSignKycAmlFulfillment,
-  kycAmlAttestation
-} from "../../../lib/issuer/fulfillment"
+  createCredentialApplication,
+  decodeCredentialApplication
+} from "../../../lib/credential-application-fns"
+import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import {
@@ -18,8 +19,8 @@ import {
 } from "../../../lib/validators/validators"
 import { generateKycVerificationRequest } from "../../../lib/verification-requests"
 import { revocationListFixture } from "../../fixtures/revocation-list"
-import { generateVerifiableCredential } from "../../fixtures/verifiable-credential"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
+import { generateVerifiableCredential } from "../../support/verifiable-credential-fns"
 
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
@@ -31,14 +32,13 @@ describe("Submission validator", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialApplication(
-      application,
-      manifest
-    )
+    await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignKycAmlFulfillment(
+    const decodedApplication = await decodeCredentialApplication(application)
+
+    const fulfillment = await buildAndSignFulfillment(
       issuer,
-      acceptedApplication,
+      decodedApplication,
       revocationListFixture,
       kycAmlAttestation([])
     )
@@ -89,14 +89,13 @@ describe("Submission validator", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialApplication(
-      application,
-      manifest
-    )
+    await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignKycAmlFulfillment(
+    const decodedApplication = await decodeCredentialApplication(application)
+
+    const fulfillment = await buildAndSignFulfillment(
       issuer,
-      acceptedApplication,
+      decodedApplication,
       revocationListFixture,
       kycAmlAttestation([])
     )

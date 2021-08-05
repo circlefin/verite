@@ -1,8 +1,9 @@
-import { createCredentialApplication } from "../../../lib/credential-application-fns"
+import { kycAmlAttestation } from "../../../lib/attestation"
 import {
-  buildAndSignKycAmlFulfillment,
-  kycAmlAttestation
-} from "../../../lib/issuer/fulfillment"
+  createCredentialApplication,
+  decodeCredentialApplication
+} from "../../../lib/credential-application-fns"
+import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import { createKycAmlManifest } from "../../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
@@ -19,14 +20,13 @@ describe("buildAndSignKycAmlFulfillment", () => {
       clientDidKey,
       manifest
     )
-    const acceptedApplication = await validateCredentialApplication(
-      credentialApplication,
-      manifest
+    const decodedApplication = await decodeCredentialApplication(
+      credentialApplication
     )
 
-    const fulfillment = await buildAndSignKycAmlFulfillment(
+    const fulfillment = await buildAndSignFulfillment(
       issuer,
-      acceptedApplication,
+      decodedApplication,
       revocationListFixture,
       kycAmlAttestation([])
     )

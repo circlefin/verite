@@ -5,9 +5,14 @@ import type {
   CredentialManifest,
   DescriptorMap,
   DidKey,
-  GenericCredentialApplication
+  GenericCredentialApplication,
+  DecodedCredentialApplication
 } from "../types"
-import { didKeyToIssuer, verifiablePresentationPayload } from "./utils"
+import {
+  decodeVerifiablePresentation,
+  didKeyToIssuer,
+  verifiablePresentationPayload
+} from "./utils"
 
 /**
  * Fetches the manifest id from a credential application
@@ -62,5 +67,25 @@ export async function createCredentialApplication(
     credential_application: credentialApplication,
     presentation_submission: presentationSubmission,
     presentation: vp
+  }
+}
+
+/**
+ * Decode an encoded Credential Application.
+ *
+ * A Credential Application contains an encoded Verifiable Presentation in it's
+ * `presentation` field. This method decodes the Verifiable Presentation and
+ * returns the decoded application.
+ */
+export async function decodeCredentialApplication(
+  credentialApplication: EncodedCredentialApplication
+): Promise<DecodedCredentialApplication> {
+  const decodedPresentation = await decodeVerifiablePresentation(
+    credentialApplication.presentation
+  )
+
+  return {
+    ...credentialApplication,
+    presentation: decodedPresentation
   }
 }
