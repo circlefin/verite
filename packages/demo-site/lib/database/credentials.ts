@@ -10,7 +10,7 @@ import {
   isRevocable
 } from "@centre/verity"
 import { random, sample } from "lodash"
-import { prisma, Credential, User } from "./prisma"
+import { prisma, User } from "./prisma"
 import { findUser } from "./users"
 
 export type DatabaseCredential = {
