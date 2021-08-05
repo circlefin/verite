@@ -1,5 +1,5 @@
-import { createCredentialApplication } from "../../lib/client/credential-application"
 import { createVerificationSubmission } from "../../lib/client/verification-submission"
+import { createCredentialApplication } from "../../lib/credential-application-fns"
 import { buildAndSignKycAmlFulfillment } from "../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
@@ -65,7 +65,7 @@ async function getClientVerifiableCredential(
   const application = await createCredentialApplication(clientDidKey, manifest)
   const acceptedApplication = await validateCredentialApplication(
     application,
-    async () => manifest
+    manifest
   )
 
   const fulfillment = await buildAndSignKycAmlFulfillment(

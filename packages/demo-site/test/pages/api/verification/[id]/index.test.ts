@@ -104,7 +104,7 @@ async function generateVc(clientDidKey: DidKey) {
   )
   const acceptedApplication = await validateCredentialApplication(
     application,
-    findManifestById
+    kycManifest
   )
 
   const fulfillment = await buildAndSignFulfillmentForUser(

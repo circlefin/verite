@@ -7,12 +7,24 @@ import {
   processCredentialApplication
 } from "./validators"
 
-type FindManifestById = (id?: string) => Promise<CredentialManifest | undefined>
-
+/**
+ * Validate the format and contents of a Credential Application against the
+ * associated Credential Manifest.
+ */
 export async function validateCredentialApplication(
   application: EncodedCredentialApplication,
-  findManifestById: FindManifestById
+  manifest?: CredentialManifest
 ): Promise<ProcessedCredentialApplication> {
+  if (!manifest) {
+    throw new ValidationError(
+      "Invalid Manifest ID",
+      messageToValidationFailure(
+        "This issuer doesn't issue credentials for the specified Manifest ID"
+      )
+    )
+  }
+
+  // Ensure the application has the correct paths
   if (
     !hasPaths(application, [
       "credential_application",
@@ -24,22 +36,6 @@ export async function validateCredentialApplication(
       "Missing required paths in Credential Application",
       messageToValidationFailure(
         "Input doesn't have the required format for a Credential Application"
-      )
-    )
-  }
-
-  /**
-   * Ensure there is a valid manifest with this manifest_id
-   */
-  const manifest = await findManifestById(
-    application.credential_application.manifest_id
-  )
-
-  if (!manifest) {
-    throw new ValidationError(
-      "Invalid Manifest ID",
-      messageToValidationFailure(
-        "This issuer doesn't issue credentials for the specified Manifest ID"
       )
     )
   }

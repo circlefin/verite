@@ -32,7 +32,7 @@ describe("issuance", () => {
 
     const acceptedApplication = await validateCredentialApplication(
       credentialApplication,
-      async () => manifest
+      manifest
     )
 
     // 4. ISSUER: Creating the VC

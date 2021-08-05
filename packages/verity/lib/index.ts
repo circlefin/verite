@@ -1,4 +1,5 @@
 export * from "./client"
+export * from "./credential-application-fns"
 export * from "./errors"
 export * from "./issuer"
 export * from "./utils"

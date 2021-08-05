@@ -6,6 +6,7 @@ import type {
 import {
   buildIssuer,
   decodeVerifiablePresentation,
+  getManifestIdFromCredentialApplication,
   ProcessedCredentialApplication,
   validateCredentialApplication
 } from "@centre/verity"
@@ -37,12 +38,16 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   }
 
   const application: EncodedCredentialApplication = req.body
+  const manifest = await findManifestById(
+    getManifestIdFromCredentialApplication(application)
+  )
+
   let acceptedApplication: ProcessedCredentialApplication
 
   try {
     acceptedApplication = await validateCredentialApplication(
       application,
-      findManifestById
+      manifest
     )
   } catch (err) {
     return validationError(res, err)

@@ -4,9 +4,19 @@ import type {
   EncodedCredentialApplication,
   CredentialManifest,
   DescriptorMap,
-  DidKey
-} from "../../types"
-import { didKeyToIssuer, verifiablePresentationPayload } from "../utils"
+  DidKey,
+  GenericCredentialApplication
+} from "../types"
+import { didKeyToIssuer, verifiablePresentationPayload } from "./utils"
+
+/**
+ * Fetches the manifest id from a credential application
+ */
+export function getManifestIdFromCredentialApplication(
+  application: GenericCredentialApplication
+): string {
+  return application.credential_application.manifest_id
+}
 
 /**
  * Generates a Credential Application as response to a Credential Manifest

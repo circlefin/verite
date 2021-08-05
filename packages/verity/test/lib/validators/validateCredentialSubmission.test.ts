@@ -1,4 +1,4 @@
-import { createCredentialApplication } from "../../../lib/client/credential-application"
+import { createCredentialApplication } from "../../../lib/credential-application-fns"
 import { VerificationError } from "../../../lib/errors"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
@@ -22,7 +22,7 @@ describe("validateCredentialApplication", () => {
     application.presentation = expiredPresentation
 
     await expect(
-      validateCredentialApplication(application, async () => manifest)
+      validateCredentialApplication(application, manifest)
     ).rejects.toThrowError(VerificationError)
   })
 })

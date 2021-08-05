@@ -1,4 +1,4 @@
-import { createCredentialApplication } from "../../../lib/client/credential-application"
+import { createCredentialApplication } from "../../../lib/credential-application-fns"
 import {
   buildAndSignKycAmlFulfillment,
   kycAmlAttestation
@@ -21,7 +21,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
     )
     const acceptedApplication = await validateCredentialApplication(
       credentialApplication,
-      async () => manifest
+      manifest
     )
 
     const fulfillment = await buildAndSignKycAmlFulfillment(
