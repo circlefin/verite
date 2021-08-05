@@ -5,7 +5,7 @@ import {
   decodeVerifiablePresentation,
   generateKycVerificationRequest,
   randomDidKey,
-  validateCredentialSubmission
+  validateCredentialApplication
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
@@ -102,9 +102,9 @@ async function generateVc(clientDidKey: DidKey) {
     clientDidKey,
     kycManifest
   )
-  const acceptedApplication = await validateCredentialSubmission(
+  const acceptedApplication = await validateCredentialApplication(
     application,
-    findManifestById
+    kycManifest
   )
 
   const fulfillment = await buildAndSignFulfillmentForUser(

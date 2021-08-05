@@ -1,5 +1,5 @@
-import { createCredentialApplication } from "../../../lib/client/credential-application"
 import { createVerificationSubmission } from "../../../lib/client/verification-submission"
+import { createCredentialApplication } from "../../../lib/credential-application-fns"
 import {
   buildAndSignKycAmlFulfillment,
   kycAmlAttestation
@@ -11,7 +11,7 @@ import {
   FieldConstraintEvaluation,
   ValidationCheck
 } from "../../../lib/validators/Matches"
-import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
+import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
 import {
   processCredentialApplication,
   processVerificationSubmission
@@ -31,9 +31,9 @@ describe("Submission validator", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialSubmission(
+    const acceptedApplication = await validateCredentialApplication(
       application,
-      async () => manifest
+      manifest
     )
 
     const fulfillment = await buildAndSignKycAmlFulfillment(
@@ -89,9 +89,9 @@ describe("Submission validator", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialSubmission(
+    const acceptedApplication = await validateCredentialApplication(
       application,
-      async () => manifest
+      manifest
     )
 
     const fulfillment = await buildAndSignKycAmlFulfillment(

@@ -1,6 +1,6 @@
-import { createCredentialApplication } from "../../../lib/client/credential-application"
-import { createKycAmlManifest } from "../../../lib/issuer/manifest"
-import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { createCredentialApplication } from "../../lib/credential-application-fns"
+import { createKycAmlManifest } from "../../lib/issuer/manifest"
+import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
 
 describe("createCredentialApplication", () => {
   it("builds a valid credential application", async () => {

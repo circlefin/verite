@@ -75,7 +75,7 @@ async function post(req: NextApiRequest, res: ApiResponse<PostResponse>) {
     // TODO: Verify submission matches VerificationRequest (e.g. id check?)
     await validateVerificationSubmission(
       submission,
-      findPresentationDefinitionById
+      verificationRequest.presentation_definition
     )
   } catch (err) {
     await updateVerificationRequestStatus(

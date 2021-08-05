@@ -10,14 +10,22 @@ import {
   processVerificationSubmission
 } from "./validators"
 
-type FindPresentationDefinitionById = (
-  id?: string
-) => Promise<PresentationDefinition | undefined>
-
 export async function validateVerificationSubmission(
   verificationSubmission: EncodedVerificationSubmission,
-  findPresentationDefinitionById: FindPresentationDefinitionById
+  presentationDefinition?: PresentationDefinition
 ): Promise<ProcessedVerificationSubmission> {
+  /**
+   * Ensure there is a valid presentation definition
+   */
+  if (!presentationDefinition) {
+    throw new ValidationError(
+      "Invalid Presentation Definition ID",
+      messageToValidationFailure(
+        "This issuer doesn't accept submissions associated with the presentation definition id"
+      )
+    )
+  }
+
   if (
     !hasPaths(verificationSubmission, [
       "presentation_submission",
@@ -28,22 +36,6 @@ export async function validateVerificationSubmission(
       "Missing required paths in Credential Application",
       messageToValidationFailure(
         "Input doesn't have the required format for a Credential Application"
-      )
-    )
-  }
-
-  /**
-   * Ensure there is a valid presentation definition
-   */
-  const presentationDefinition = await findPresentationDefinitionById(
-    verificationSubmission.presentation_submission?.definition_id
-  )
-
-  if (!presentationDefinition) {
-    throw new ValidationError(
-      "Invalid Presentation Definition ID",
-      messageToValidationFailure(
-        "This issuer doesn't accept submissions associated with the presentation definition id"
       )
     )
   }
