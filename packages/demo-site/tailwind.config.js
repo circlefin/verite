@@ -8,5 +8,8 @@ module.exports = {
   variants: {
     extend: {}
   },
-  plugins: [require("tailwindcss-font-inter")]
+  plugins: [
+    require("tailwindcss-font-inter"),
+    require("@tailwindcss/typography")
+  ]
 }
