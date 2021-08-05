@@ -18,7 +18,7 @@ import {
 import { generateKycVerificationRequest } from "../../../lib/verification-requests"
 import { randomDidKey } from "../../support/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
-import { sampleRevocationList } from "../../support/revocation-fns"
+import { revocationListFixture } from "../../support/revocation-fns"
 
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
@@ -38,7 +38,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
-      sampleRevocationList,
+      revocationListFixture,
       kycAmlAttestation([])
     )
 
@@ -96,7 +96,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
-      sampleRevocationList,
+      revocationListFixture,
       kycAmlAttestation([])
     )
 

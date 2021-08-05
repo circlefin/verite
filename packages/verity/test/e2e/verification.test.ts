@@ -16,7 +16,7 @@ import {
 } from "../../types"
 import { randomDidKey } from "../support/did-fns"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
-import { sampleRevocationList } from "../support/revocation-fns"
+import { revocationListFixture } from "../support/revocation-fns"
 
 describe("verification", () => {
   it("accepts and validates a verification submission containing credentials", async () => {
@@ -83,7 +83,7 @@ async function getClientVerifiableCredential(
   const fulfillment = await buildAndSignKycAmlFulfillment(
     issuer,
     acceptedApplication,
-    sampleRevocationList,
+    revocationListFixture,
     kycAmlAttestation([kycServiceProvider])
   )
 

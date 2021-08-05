@@ -8,7 +8,7 @@ import { didKeyToIssuer } from "../../../lib/utils/did-fns"
 import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
 import { RevocationList2021Status } from "../../../types"
 import { randomDidKey } from "../../support/did-fns"
-import { sampleRevocationList } from "../../support/revocation-fns"
+import { revocationListFixture } from "../../support/revocation-fns"
 
 describe("buildAndSignKycAmlFulfillment", () => {
   it("builds and signs a kyc/aml fulfillment", async () => {
@@ -29,7 +29,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
-      sampleRevocationList,
+      revocationListFixture,
       kycAmlAttestation([])
     )
     expect(fulfillment.credential_fulfillment).toBeDefined()

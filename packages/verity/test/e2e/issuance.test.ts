@@ -13,8 +13,8 @@ import type {
   RevocablePresentation,
   RevocationList2021Status
 } from "../../types"
+import { revocationListFixture } from "../fixtures/revocation-list"
 import { randomDidKey } from "../support/did-fns"
-import { sampleRevocationList } from "../support/revocation-fns"
 
 describe("issuance", () => {
   it("issues verified credentails", async () => {
@@ -50,7 +50,7 @@ describe("issuance", () => {
     const fulfillment = await buildAndSignKycAmlFulfillment(
       issuer,
       acceptedApplication,
-      sampleRevocationList,
+      revocationListFixture,
       kycAmlAttestation([kycServiceProvider])
     )
 
