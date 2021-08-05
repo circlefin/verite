@@ -74,35 +74,47 @@ const KycAmlPage: NextPage<Props> = ({
               </div>
             ))}
           </dl>
-          <div>
+          <p>
             Using the Verity app, scan this QR code and request credentials.
-          </div>
+          </p>
           <QRCode
             value={JSON.stringify(qrCodeData)}
             className="w-48 h-48 mx-auto"
             renderAs="svg"
           />
-          <div>QR Code Data</div>
-          <textarea
-            className="container h-40 mx-auto font-mono text-sm border-2"
-            readOnly
-            value={JSON.stringify(qrCodeData, null, 4)}
-          />
+          <h2>QR Code Data</h2>
+          <p>
+            <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
+          </p>
 
-          <div>Credential Manifest</div>
-          <div className="container mx-auto font-mono text-sm border-2 overflow-x-scroll">
+          <h2>Credential Manifest</h2>
+          <p>
+            After following the url in `challengeTokenUrl`, the mobile
+            application will receive the following, which instructs the client
+            where and how to make the request to issue a new credential.
+          </p>
+
+          <p>
+            Read more about{" "}
+            <Link href="https://identity.foundation/credential-manifest/">
+              Credential Manifest
+            </Link>
+            .
+          </p>
+
+          <p>
             <pre>{JSON.stringify(manifest, null, 4)}</pre>
-          </div>
+          </p>
         </>
       )
     } else {
       return (
         <div className="space-y-4">
-          <div>
+          <p>
             You&apos;ve successfully issued a credential. You can see the
             Verifiable Credential below.
-          </div>
-          <div>
+          </p>
+          <p>
             <Link href="/verifier/" passHref>
               <button
                 type="button"
@@ -115,11 +127,11 @@ const KycAmlPage: NextPage<Props> = ({
                 />
               </button>
             </Link>
-          </div>
-          <div>Credential</div>
-          <div className="container mx-auto font-mono text-sm border-2 overflow-x-scroll">
+          </p>
+          <h2>Credential</h2>
+          <p>
             <pre>{JSON.stringify(data.credential, null, 4)}</pre>
-          </div>
+          </p>
         </div>
       )
     }
@@ -132,9 +144,7 @@ const KycAmlPage: NextPage<Props> = ({
 
   return (
     <IssuerLayout title="KYC/AML Attestation">
-      <div className="flex flex-col justify-center space-y-8">
-        {credential(data)}
-      </div>
+      <div className="prose">{credential(data)}</div>
     </IssuerLayout>
   )
 }

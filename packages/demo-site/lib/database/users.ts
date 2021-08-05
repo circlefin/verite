@@ -6,7 +6,11 @@ const JWT_ALGORITHM = "HS256"
 const JWT_EXPIRES_IN = "1h"
 
 export async function allUsers(): Promise<User[]> {
-  return prisma.user.findMany()
+  return prisma.user.findMany({
+    orderBy: {
+      email: "asc"
+    }
+  })
 }
 
 export async function findUser(id: string): Promise<User | undefined> {

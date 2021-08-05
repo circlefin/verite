@@ -61,42 +61,45 @@ const AdminCredentialPage: NextPage<Props> = ({
 
   return (
     <AdminLayout title="Credential Details">
-      <div className="space-y-8">
-        <div>
+      <div className="prose">
+        <h2>
           User: <Link href={`/admin/users/${user.id}`}>{user.email}</Link>
-        </div>
-        <div>
+        </h2>
+        <p>
           Note: We can only reconcile this credential to a specific user in the
-          system because we stored it when issuing the credential.
-        </div>
-        <div>
+          system because we stored it when issuing the credential. No one else
+          would know their email address or other identifying information. See
+          the credential below.
+        </p>
+        <p>
           You can revoke the credential using the button below. Notice that
           credentials are immutable. After revoking the credential, the
           revocation list credential is updated. You will see the `encodedList`
           property change.
-        </div>
-        <div>
+        </p>
+        <p>
           <RevokeButton
             credential={credential}
             defaultRevoked={revoked}
             onToggle={async (revocationList) => setList(revocationList)}
           />
-        </div>
+        </p>
 
-        <div>Credential</div>
+        <h2>Credential</h2>
 
-        <div>
+        <p>
           <pre className="overflow-x-scroll">
             {JSON.stringify(credential, null, 4)}
           </pre>
-        </div>
+        </p>
 
-        <div>Revocation List Credential</div>
-        <div>
+        <h2>Revocation List Credential</h2>
+
+        <p>
           <pre className="overflow-x-scroll">
             {JSON.stringify(list, null, 4)}
           </pre>
-        </div>
+        </p>
       </div>
     </AdminLayout>
   )

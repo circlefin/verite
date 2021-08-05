@@ -32,12 +32,10 @@ export const getServerSideProps = requireAuth(async () => {
 const IssuerPage: NextPage = () => {
   return (
     <IssuerLayout title="Issuer" hideNavigation={true}>
-      <h2 className="text-lg font-medium text-gray-900">
-        Request a Verifiable Credential
-      </h2>
-      <p className="mt-1 text-sm text-gray-500">
-        Select the type of credential you would like to receive.
-      </p>
+      <div className="prose">
+        <h2>Request a Verifiable Credential</h2>
+        <p>Select the type of credential you would like to receive.</p>
+      </div>
       <ul
         role="list"
         className="mt-6 border-t border-b border-gray-200 divide-y divide-gray-200"
