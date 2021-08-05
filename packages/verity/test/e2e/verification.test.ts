@@ -7,10 +7,7 @@ import {
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { validateCredentialSubmission } from "../../lib/validators/validateCredentialSubmission"
 import { validateVerificationSubmission } from "../../lib/validators/validateVerificationSubmission"
-import {
-  generateKycVerificationRequest,
-  kycPresentationDefinition
-} from "../../lib/verification-requests"
+import { generateKycVerificationRequest } from "../../lib/verification-requests"
 import {
   DidKey,
   KYCAMLProvider,
@@ -55,13 +52,13 @@ describe("verification", () => {
     // 4. VERIFIER: Verifies submission
     const result = await validateVerificationSubmission(
       submission,
-      async () => kycPresentationDefinition
+      async () => kycRequest.presentation_definition
     )
 
     expect(result).toBeDefined()
     expect(result.presentation).toBeDefined()
     expect(result.presentation_submission!.definition_id).toEqual(
-      kycPresentationDefinition.id
+      kycRequest.presentation_definition.id
     )
   })
 })

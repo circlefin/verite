@@ -15,7 +15,7 @@ import {
   processCredentialApplication,
   processVerificationSubmission
 } from "../../../lib/validators/validators"
-import { kycPresentationDefinition } from "../../../lib/verification-requests"
+import { generateKycVerificationRequest } from "../../../lib/verification-requests"
 import { randomDidKey } from "../../support/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 import { sampleRevocationList } from "../../support/revocation-fns"
@@ -23,6 +23,7 @@ import { sampleRevocationList } from "../../support/revocation-fns"
 describe("Submission validator", () => {
   it("validates a Verification Submission", async () => {
     const clientDidKey = await randomDidKey()
+    const verifierDidKey = await randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
     const application = await createCredentialApplication(
       clientDidKey,
@@ -45,18 +46,27 @@ describe("Submission validator", () => {
       fulfillment.presentation
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const kycRequest = generateKycVerificationRequest(
+      verifierDidKey.controller,
+      "https://test.host/verify",
+      verifierDidKey.controller,
+      "https://other.host/callback",
+      [issuer.did]
+    )
+
     const submission = await createVerificationSubmission(
       clientDidKey,
-      kycPresentationDefinition,
+      kycRequest.presentation_definition,
       clientVC
     )
 
     const result = await processVerificationSubmission(
       submission,
-      kycPresentationDefinition
+      kycRequest.presentation_definition
     )
-    console.log(result)
-    expect(result.accepted()).toBeTruthy()
+
+    expect(result.accepted()).toBe(true)
 
     const errors = result.errors()
     expect(errors).toEqual([])
@@ -67,6 +77,57 @@ describe("Submission validator", () => {
     expect(match.inputDescriptorId).toEqual("kycaml_input")
     expect(match.results).toHaveLength(1)
     expect(match.results[0].match!.path).toEqual("$.issuer.id")
+  })
+
+  it("rejects if the issuer is not trusted", async () => {
+    const clientDidKey = await randomDidKey()
+    const verifierDidKey = await randomDidKey()
+    const { manifest, issuer } = await generateManifestAndIssuer()
+    const application = await createCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+
+    const acceptedApplication = await validateCredentialSubmission(
+      application,
+      async () => manifest
+    )
+
+    const fulfillment = await buildAndSignKycAmlFulfillment(
+      issuer,
+      acceptedApplication,
+      sampleRevocationList,
+      kycAmlAttestation([])
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(
+      fulfillment.presentation
+    )
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const kycRequest = generateKycVerificationRequest(
+      verifierDidKey.controller,
+      "https://test.host/verify",
+      verifierDidKey.controller,
+      "https://other.host/callback",
+      ["NOT TRUSTED"]
+    )
+
+    const submission = await createVerificationSubmission(
+      clientDidKey,
+      kycRequest.presentation_definition,
+      clientVC
+    )
+
+    const result = await processVerificationSubmission(
+      submission,
+      kycRequest.presentation_definition
+    )
+
+    expect(result.accepted()).toBe(false)
+    expect(result.errors()[0].details).toEqual(
+      "Credential did not match constraint: We can only verify KYC credentials attested by a trusted authority."
+    )
   })
 
   it("validates a CredentialApplication", async () => {
