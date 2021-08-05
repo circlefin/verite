@@ -14,6 +14,7 @@ import VerifierLayout from "../../components/verifier/Layout"
 import { saveVerificationRequest } from "../../lib/database"
 
 type Props = {
+  challenge: Record<string, unknown>
   qrCodeData: ChallengeTokenUrlWrapper
   id: string
 }
@@ -34,8 +35,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
     `${process.env.HOST}/api/verification/${verificationRequest.request.id}`
   )
 
+  const response = await fetch(qrCodeData.challengeTokenUrl)
+  const challenge = await response.json()
+
   return {
     props: {
+      challenge,
       id: verificationRequest.request.id,
       qrCodeData
     }
@@ -66,16 +71,15 @@ function QRCodeOrStatus({
         className="w-48 h-48 mx-auto"
         renderAs="svg"
       />
-      <textarea
-        className="container h-40 mx-auto font-mono text-sm border-2"
-        readOnly
-        value={JSON.stringify(qrCodeData, null, 4)}
-      />
+      <h2>QR Code Data</h2>
+      <p>
+        <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
+      </p>
     </>
   )
 }
 
-const VerifierPage: NextPage<Props> = ({ id, qrCodeData }) => {
+const VerifierPage: NextPage<Props> = ({ challenge, id, qrCodeData }) => {
   const { data } = useSWR(`/api/verification/${id}/status`, fetcher, {
     refreshInterval: 1000
   })
@@ -83,17 +87,42 @@ const VerifierPage: NextPage<Props> = ({ id, qrCodeData }) => {
 
   return (
     <VerifierLayout title="KYC/AML Verification">
-      <div className="space-y-8">
+      <div className="prose">
+        {status === "pending" ? (
+          <p>Scan this QR code using the Verity app.</p>
+        ) : null}
+
         <QRCodeOrStatus qrCodeData={qrCodeData} status={status} />
 
-        {status === "approved" ? <div>Your credential is verified.</div> : null}
+        {status === "pending" ? (
+          <>
+            <h2>Verification Presentation Request</h2>
+            <p>
+              After following the url in `challengeTokenUrl`, the mobile
+              application will receive the following, which instructs the client
+              where and how to make the request to verify the credential.
+            </p>
+            <p>
+              Read more about{" "}
+              <Link href="https://identity.foundation/presentation-exchange/">
+                Presentation Exchange
+              </Link>
+              .
+            </p>
+            <p>
+              <pre>{JSON.stringify(challenge, null, 4)}</pre>
+            </p>
+          </>
+        ) : null}
+
+        {status === "approved" ? <p>Your credential is verified.</p> : null}
 
         {status === "rejected" ? (
-          <div>Your credential was not verified.</div>
+          <p>Your credential was not verified.</p>
         ) : null}
 
         {status === "approved" || status === "rejected" ? (
-          <div>
+          <p>
             <Link href="/admin" passHref>
               <button
                 type="button"
@@ -106,7 +135,7 @@ const VerifierPage: NextPage<Props> = ({ id, qrCodeData }) => {
                 />
               </button>
             </Link>
-          </div>
+          </p>
         ) : null}
       </div>
     </VerifierLayout>
