@@ -9,7 +9,7 @@ import {
 
 type FindManifestById = (id?: string) => Promise<CredentialManifest | undefined>
 
-export async function validateCredentialSubmission(
+export async function validateCredentialApplication(
   application: EncodedCredentialApplication,
   findManifestById: FindManifestById
 ): Promise<ProcessedCredentialApplication> {

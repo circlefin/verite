@@ -11,7 +11,7 @@ import {
   FieldConstraintEvaluation,
   ValidationCheck
 } from "../../../lib/validators/Matches"
-import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
+import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
 import {
   processCredentialApplication,
   processVerificationSubmission
@@ -31,7 +31,7 @@ describe("Submission validator", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialSubmission(
+    const acceptedApplication = await validateCredentialApplication(
       application,
       async () => manifest
     )
@@ -89,7 +89,7 @@ describe("Submission validator", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialSubmission(
+    const acceptedApplication = await validateCredentialApplication(
       application,
       async () => manifest
     )

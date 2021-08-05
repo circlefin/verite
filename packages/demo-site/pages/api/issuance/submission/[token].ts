@@ -7,7 +7,7 @@ import {
   buildIssuer,
   decodeVerifiablePresentation,
   ProcessedCredentialApplication,
-  validateCredentialSubmission
+  validateCredentialApplication
 } from "@centre/verity"
 import {
   apiHandler,
@@ -40,7 +40,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   let acceptedApplication: ProcessedCredentialApplication
 
   try {
-    acceptedApplication = await validateCredentialSubmission(
+    acceptedApplication = await validateCredentialApplication(
       application,
       findManifestById
     )

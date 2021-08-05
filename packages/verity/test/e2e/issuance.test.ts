@@ -1,7 +1,7 @@
 import {
   createCredentialApplication,
   decodeVerifiablePresentation,
-  validateCredentialSubmission,
+  validateCredentialApplication,
   didKeyToIssuer,
   createKycAmlManifest,
   buildAndSignKycAmlFulfillment,
@@ -30,7 +30,7 @@ describe("issuance", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialSubmission(
+    const acceptedApplication = await validateCredentialApplication(
       credentialApplication,
       async () => manifest
     )

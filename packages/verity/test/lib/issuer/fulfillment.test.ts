@@ -5,7 +5,7 @@ import {
 } from "../../../lib/issuer/fulfillment"
 import { createKycAmlManifest } from "../../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
-import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
+import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 
 describe("buildAndSignKycAmlFulfillment", () => {
@@ -19,7 +19,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
       clientDidKey,
       manifest
     )
-    const acceptedApplication = await validateCredentialSubmission(
+    const acceptedApplication = await validateCredentialApplication(
       credentialApplication,
       async () => manifest
     )

@@ -1,10 +1,10 @@
 import { createCredentialApplication } from "../../../lib/client/credential-application"
 import { VerificationError } from "../../../lib/errors"
 import { randomDidKey } from "../../../lib/utils/did-fns"
-import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
+import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
-describe("validateCredentialSubmission", () => {
+describe("validateCredentialApplication", () => {
   it("rejects an expired input", async () => {
     expect.assertions(1)
 
@@ -22,7 +22,7 @@ describe("validateCredentialSubmission", () => {
     application.presentation = expiredPresentation
 
     await expect(
-      validateCredentialSubmission(application, async () => manifest)
+      validateCredentialApplication(application, async () => manifest)
     ).rejects.toThrowError(VerificationError)
   })
 })
