@@ -4,6 +4,7 @@ import {
   createVerificationSubmission,
   decodeVerifiablePresentation,
   generateKycVerificationRequest,
+  randomDidKey,
   validateCredentialSubmission
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
@@ -17,7 +18,6 @@ import { buildAndSignFulfillmentForUser } from "../../../../../lib/issuance/fulf
 import { findManifestById } from "../../../../../lib/manifest"
 import handler from "../../../../../pages/api/verification/[id]/index"
 import { userFactory } from "../../../../../test/factories"
-import { randomDidKey } from "../../../../support/did-fns"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {

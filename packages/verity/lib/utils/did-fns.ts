@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import * as ed25519 from "@stablelib/ed25519"
 import * as didKeyEd25519 from "@transmute/did-key-ed25519"
 import { EdDSASigner } from "did-jwt"
@@ -37,6 +38,18 @@ export function generateDidKey({ secureRandom }: GenerateDidKeyParams): DidKey {
     publicKey: key.publicKey,
     privateKey: key.secretKey
   }
+}
+
+/**
+ * Returns a did:key with a random seed.
+ *
+ * @remarks This method should be used for testing purposes only.
+ *
+ * @returns a did:key with a random seed
+ */
+export function randomDidKey(): DidKey {
+  const secureRandom = () => new Uint8Array(randomBytes(32))
+  return generateDidKey({ secureRandom })
 }
 
 /**

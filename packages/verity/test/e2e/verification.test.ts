@@ -2,13 +2,13 @@ import { createCredentialApplication } from "../../lib/client/credential-applica
 import { createVerificationSubmission } from "../../lib/client/verification-submission"
 import { buildAndSignKycAmlFulfillment } from "../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
+import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialSubmission } from "../../lib/validators/validateCredentialSubmission"
 import { validateVerificationSubmission } from "../../lib/validators/validateVerificationSubmission"
 import { generateKycVerificationRequest } from "../../lib/verification-requests"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
-import { randomDidKey } from "../support/did-fns"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
 
 describe("verification", () => {

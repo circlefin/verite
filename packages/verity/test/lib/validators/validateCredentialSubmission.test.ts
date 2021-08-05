@@ -1,7 +1,7 @@
 import { createCredentialApplication } from "../../../lib/client/credential-application"
 import { VerificationError } from "../../../lib/errors"
+import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
-import { randomDidKey } from "../../support/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("validateCredentialSubmission", () => {

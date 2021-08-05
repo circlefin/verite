@@ -4,12 +4,12 @@ import {
   validateCredentialSubmission,
   didKeyToIssuer,
   createKycAmlManifest,
-  buildAndSignKycAmlFulfillment
+  buildAndSignKycAmlFulfillment,
+  randomDidKey
 } from "../../lib"
 import type { RevocableCredential, RevocablePresentation } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
-import { randomDidKey } from "../support/did-fns"
 
 describe("issuance", () => {
   it("issues verified credentails", async () => {

@@ -1,5 +1,8 @@
-import { didKeyToIssuer, generateDidKey } from "../../../lib/utils/did-fns"
-import { randomDidKey } from "../../support/did-fns"
+import {
+  didKeyToIssuer,
+  generateDidKey,
+  randomDidKey
+} from "../../../lib/utils/did-fns"
 
 describe("generateDidKey()", () => {
   it("generates a DiKey from the given input", async () => {

@@ -5,6 +5,7 @@ import {
   kycAmlAttestation
 } from "../../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
+import { randomDidKey } from "../../../lib/utils/did-fns"
 import {
   CredentialResults,
   FieldConstraintEvaluation,
@@ -18,7 +19,6 @@ import {
 import { generateKycVerificationRequest } from "../../../lib/verification-requests"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateVerifiableCredential } from "../../fixtures/verifiable-credential"
-import { randomDidKey } from "../../support/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("Submission validator", () => {

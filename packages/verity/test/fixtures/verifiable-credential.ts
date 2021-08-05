@@ -2,9 +2,10 @@ import {
   decodeVerifiableCredential,
   kycAmlVerifiableCredentialPayload
 } from "../../lib/utils/credentials"
+import { randomDidKey } from "../../lib/utils/did-fns"
 import { signVerifiableCredential } from "../../lib/utils/sign-fns"
 import { Issuer, Verifiable, W3CCredential } from "../../types"
-import { randomDidKey, randomIssuer } from "../support/did-fns"
+import { randomIssuer } from "../support/issuer-fns"
 import { kycAmlAttestationFixture } from "./attestations"
 import { revocationListFixture } from "./revocation-list"
 

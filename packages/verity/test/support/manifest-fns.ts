@@ -1,8 +1,7 @@
 import { createKycAmlManifest } from "../../lib/issuer/manifest"
-import { didKeyToIssuer } from "../../lib/utils/did-fns"
+import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { CredentialManifest } from "../../types/CredentialManifest"
 import { Issuer } from "../../types/W3C"
-import { randomDidKey } from "./did-fns"
 
 type GenerateManifestAndIssuer = {
   manifest: CredentialManifest

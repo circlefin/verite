@@ -4,10 +4,9 @@ import {
   kycAmlAttestation
 } from "../../../lib/issuer/fulfillment"
 import { createKycAmlManifest } from "../../../lib/issuer/manifest"
-import { didKeyToIssuer } from "../../../lib/utils/did-fns"
+import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialSubmission } from "../../../lib/validators/validateCredentialSubmission"
 import { revocationListFixture } from "../../fixtures/revocation-list"
-import { randomDidKey } from "../../support/did-fns"
 
 describe("buildAndSignKycAmlFulfillment", () => {
   it("builds and signs a kyc/aml fulfillment", async () => {

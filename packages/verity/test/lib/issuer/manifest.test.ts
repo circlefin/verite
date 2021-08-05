@@ -4,8 +4,7 @@ import {
   createKycAmlManifest,
   validateManifestFormat
 } from "../../../lib/issuer/manifest"
-import { didKeyToIssuer } from "../../../lib/utils/did-fns"
-import { randomDidKey } from "../../support/did-fns"
+import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 
 describe("createKycAmlManifest", () => {
   it("builds a KYC/AML manifest", async () => {
