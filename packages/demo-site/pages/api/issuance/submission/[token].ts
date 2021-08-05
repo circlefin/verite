@@ -15,7 +15,7 @@ import {
   notFound,
   validationError
 } from "../../../../lib/api-fns"
-import { findUserFromTemporaryAuthToken } from "../../../../lib/database"
+import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {
   generateRevocationListStatus,
   storeRevocableCredential
@@ -28,8 +28,10 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     return methodNotAllowed(res)
   }
 
-  const { token } = req.query
-  const user = await findUserFromTemporaryAuthToken(token as string)
+  // Find the user from a temporary auth token
+  // We need to use a temporary auth token because this submission endpoint
+  // may not be called directly from the user's browser (e.g. via mobile wallet)
+  const user = await findUserFromTemporaryAuthToken(req.query.token as string)
   if (!user) {
     return notFound(res)
   }
@@ -58,7 +60,18 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     return notFound(res)
   }
 
-  // Persist the decoded credential
+  await persistGeneratedCredentials(user, fulfillment)
+
+  res.json(fulfillment)
+})
+
+/**
+ * Persist the verifiable credential to the database, associated with the user.
+ */
+async function persistGeneratedCredentials(
+  user: User,
+  fulfillment: EncodedCredentialFulfillment
+): Promise<void> {
   const decodedPresentation = await decodeVerifiablePresentation(
     fulfillment.presentation
   )
@@ -66,7 +79,5 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   const decodedCredential =
     decodedPresentation.verifiableCredential as RevocableCredential[]
 
-  storeRevocableCredential(decodedCredential, user.id)
-
-  res.json(fulfillment)
-})
+  await storeRevocableCredential(decodedCredential, user.id)
+}

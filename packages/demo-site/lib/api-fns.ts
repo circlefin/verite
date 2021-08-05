@@ -43,7 +43,13 @@ export function validationError(
 }
 
 /**
- * Wrapper for API requests which handles API Errors and basic logging
+ * Wrapper for API requests which handles API Errors and includes basic logging
+ *
+ * @remark This method is a wrapper around your existing api handler
+ *
+ * @example
+ * export default apiHandler(async (req, res) => { ... })
+ * export default apiHandler<ResponseType>(async (req, res) => { ... })
  */
 export function apiHandler<T>(
   handler: NextApiHandler<T | ApiErrorResponse>

@@ -2,6 +2,14 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next"
 import { getSession } from "next-auth/client"
 import { findUser, User } from "./database"
 
+/**
+ * Require authentication for a next.js page GetServerSideProps method
+ *
+ * @remark This method is a wrapper around your existing getServerSideProps method
+ *
+ * @example
+ * export const getServerSideProps = requireAuth(async (context) => { ... })
+ */
 export function requireAuth<T>(
   getServerSideProps: GetServerSideProps<T>
 ): GetServerSideProps<T> {
@@ -21,6 +29,14 @@ export function requireAuth<T>(
   }
 }
 
+/**
+ * Require admin authentication for a next.js page GetServerSideProps method.
+ *
+ * @remark This method is a wrapper around your existing getServerSideProps method
+ *
+ * @example
+ * export const getServerSideProps = requireAdmin(async (context) => { ... })
+ */
 export function requireAdmin<T>(
   getServerSideProps: GetServerSideProps<T>
 ): GetServerSideProps<T> {
@@ -40,6 +56,12 @@ export function requireAdmin<T>(
   })
 }
 
+/**
+ * Load the current user for a next.js page GetServerSideProps method
+ *
+ * @example
+ * const user = await currentUser(context)
+ */
 export async function currentUser(
   context: GetServerSidePropsContext
 ): Promise<User | null> {
