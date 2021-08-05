@@ -45,7 +45,7 @@ describe("verification", () => {
     // 4. VERIFIER: Verifies submission
     const result = await validateVerificationSubmission(
       submission,
-      async () => kycRequest.presentation_definition
+      kycRequest.presentation_definition
     )
 
     expect(result).toBeDefined()
