@@ -5,6 +5,7 @@ import type {
 } from "@centre/verity"
 import {
   buildIssuer,
+  revokeCredential,
   decodeVerifiablePresentation,
   getManifestIdFromCredentialApplication,
   ProcessedCredentialApplication,
@@ -18,6 +19,9 @@ import {
 } from "../../../../lib/api-fns"
 import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {
+  allRevocationLists,
+  saveRevocationList,
+  findCredentialsByUserIdAndType,
   generateRevocationListStatus,
   storeRevocableCredential
 } from "../../../../lib/database"
@@ -53,6 +57,10 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     return validationError(res, err)
   }
 
+  // Before we issue a new credential of this type to a user, revoke all their
+  // previous credentials of the same type.
+  await revokeUserCredentials(user, manifest.id)
+
   const fulfillment: EncodedCredentialFulfillment =
     await buildAndSignFulfillmentForUser(
       user,
@@ -85,4 +93,31 @@ async function persistGeneratedCredentials(
     decodedPresentation.verifiableCredential as RevocableCredential[]
 
   await storeRevocableCredential(decodedCredential, user.id)
+}
+
+/**
+ * Revokes all the credentials for a given user and type.
+ *
+ * @param user
+ * @param type
+ */
+async function revokeUserCredentials(user: User, type: string) {
+  const credentials = await findCredentialsByUserIdAndType(user.id, type)
+
+  for (const credential of credentials) {
+    // Find the credential's revocation list
+    const url = credential.credentialStatus.statusListCredential
+    const revocationLists = await allRevocationLists()
+    const revocationList = revocationLists.find((l) => l.id === url)
+
+    // Revoke the credential
+    const list = await revokeCredential(
+      credential,
+      revocationList,
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+    )
+
+    // Persist the new revocation list
+    await saveRevocationList(list)
+  }
 }
