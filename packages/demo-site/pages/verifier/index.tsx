@@ -1,145 +1,81 @@
-import {
-  challengeTokenUrlWrapper,
-  generateKycVerificationRequest
-} from "@centre/verity"
-import type { ChallengeTokenUrlWrapper } from "@centre/verity"
-import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
-import { ArrowCircleRightIcon } from "@heroicons/react/solid"
-import { GetServerSideProps, NextPage } from "next"
+import { CalculatorIcon, UsersIcon } from "@heroicons/react/outline"
+import { ChevronRightIcon } from "@heroicons/react/solid"
+import { NextPage } from "next"
 import Link from "next/link"
-import QRCode from "qrcode.react"
-import useSWR from "swr"
-import { v4 as uuidv4 } from "uuid"
-import VerifierLayout from "../../components/verifier/Layout"
-import { saveVerificationRequest } from "../../lib/database"
+import IssuerLayout from "../../components/issuer/Layout"
+import { requireAuth } from "../../lib/auth-fns"
 
-type Props = {
-  challenge: Record<string, unknown>
-  qrCodeData: ChallengeTokenUrlWrapper
-  id: string
-}
+const items = [
+  {
+    name: "KYC/AML Attestation",
+    description:
+      "Proof that your account has been verified and passed KYC/AML checks",
+    href: "/verifier/kyc",
+    iconColor: "bg-pink-500",
+    icon: UsersIcon
+  },
+  {
+    name: "Credit Score",
+    description: "Proof of your current credit score.",
+    href: "/verifier/credit-score",
+    iconColor: "bg-purple-500",
+    icon: CalculatorIcon
+  }
+]
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const id = uuidv4()
-  const verificationRequest = await generateKycVerificationRequest(
-    process.env.VERIFIER_DID,
-    `${process.env.HOST}/api/verification/${id}`,
-    process.env.VERIFIER_DID,
-    `${process.env.HOST}/api/verification/${id}/callback`,
-    [process.env.ISSUER_DID],
-    id
-  )
-  await saveVerificationRequest(verificationRequest)
-
-  const qrCodeData = challengeTokenUrlWrapper(
-    `${process.env.HOST}/api/verification/${verificationRequest.request.id}`
-  )
-
-  const response = await fetch(qrCodeData.challengeTokenUrl)
-  const challenge = await response.json()
-
+export const getServerSideProps = requireAuth(async () => {
   return {
-    props: {
-      challenge,
-      id: verificationRequest.request.id,
-      qrCodeData
-    }
+    props: {}
   }
-}
+})
 
-type QRCodeOrStatusProps = {
-  qrCodeData: ChallengeTokenUrlWrapper
-  status: string | null
-}
-
-const fetcher = (url) => fetch(url).then((res) => res.json())
-
-function QRCodeOrStatus({
-  qrCodeData,
-  status
-}: QRCodeOrStatusProps): JSX.Element {
-  if (status === "approved") {
-    return <BadgeCheckIcon className="w-48 h-48 mx-auto text-green-400" />
-  } else if (status === "rejected") {
-    return <XCircleIcon className="w-48 h-48 mx-auto text-red-400" />
-  }
-
+const IssuerPage: NextPage = () => {
   return (
-    <>
-      <QRCode
-        value={JSON.stringify(qrCodeData)}
-        className="w-48 h-48 mx-auto"
-        renderAs="svg"
-      />
-      <h2>QR Code Data</h2>
-      <p>
-        <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
-      </p>
-    </>
-  )
-}
-
-const VerifierPage: NextPage<Props> = ({ challenge, id, qrCodeData }) => {
-  const { data } = useSWR(`/api/verification/${id}/status`, fetcher, {
-    refreshInterval: 1000
-  })
-  const status = data && data.status
-
-  return (
-    <VerifierLayout title="KYC/AML Verification">
+    <IssuerLayout title="Verifier" hideNavigation={true}>
       <div className="prose">
-        {status === "pending" ? (
-          <p>Scan this QR code using the Verity app.</p>
-        ) : null}
-
-        <QRCodeOrStatus qrCodeData={qrCodeData} status={status} />
-
-        {status === "pending" ? (
-          <>
-            <h2>Verification Presentation Request</h2>
-            <p>
-              After following the url in `challengeTokenUrl`, the mobile
-              application will receive the following, which instructs the client
-              where and how to make the request to verify the credential.
-            </p>
-            <p>
-              Read more about{" "}
-              <Link href="https://identity.foundation/presentation-exchange/">
-                Presentation Exchange
-              </Link>
-              .
-            </p>
-            <p>
-              <pre>{JSON.stringify(challenge, null, 4)}</pre>
-            </p>
-          </>
-        ) : null}
-
-        {status === "approved" ? <p>Your credential is verified.</p> : null}
-
-        {status === "rejected" ? (
-          <p>Your credential was not verified.</p>
-        ) : null}
-
-        {status === "approved" || status === "rejected" ? (
-          <p>
-            <Link href="/admin" passHref>
-              <button
-                type="button"
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Next Demo: Revocation
-                <ArrowCircleRightIcon
-                  className="ml-2 -mr-1 h-5 w-5"
+        <h2>Verify a Credential</h2>
+        <p>Select the type of credential you would like to verify.</p>
+      </div>
+      <ul
+        role="list"
+        className="mt-6 border-t border-b border-gray-200 divide-y divide-gray-200"
+      >
+        {items.map((item, itemIdx) => (
+          <li key={itemIdx}>
+            <div className="relative flex items-start py-4 space-x-3 group hover:bg-gray-50">
+              <div className="flex-shrink-0">
+                <span
+                  className={`${item.iconColor} inline-flex items-center justify-center h-10 w-10 rounded-lg`}
+                >
+                  <item.icon
+                    className="w-6 h-6 text-white"
+                    aria-hidden="true"
+                  />
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-gray-900">
+                  <Link href={item.href}>
+                    <a>
+                      <span className="absolute inset-0" aria-hidden="true" />
+                      {item.name}
+                    </a>
+                  </Link>
+                </div>
+                <p className="text-sm text-gray-500">{item.description}</p>
+              </div>
+              <div className="self-center flex-shrink-0">
+                <ChevronRightIcon
+                  className="w-5 h-5 text-gray-400 group-hover:text-gray-500"
                   aria-hidden="true"
                 />
-              </button>
-            </Link>
-          </p>
-        ) : null}
-      </div>
-    </VerifierLayout>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </IssuerLayout>
   )
 }
 
-export default VerifierPage
+export default IssuerPage

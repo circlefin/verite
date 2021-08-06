@@ -81,3 +81,78 @@ export const generateKycVerificationRequest = (
     presentation_definition: kycPresentationDefinition(trustedAuthorities)
   }
 }
+
+function creditScorePresentationDefinition(
+  trustedAuthorities: string[] = []
+): PresentationDefinition {
+  return {
+    id: KYC_PRESENTATION_DEFINITION_ID,
+    input_descriptors: [
+      {
+        id: "creditScore_input",
+        name: "Proof of Credit Score",
+        purpose: "Please provide a valid credential from a Credit Score issuer",
+        schema: [
+          {
+            uri: "https://verity.id/schemas/identity/1.0.0/CreditScoreAttestation",
+            required: true
+          }
+        ],
+        constraints: {
+          statuses: {
+            active: {
+              directive: InputDescriptorConstraintStatusDirective.REQUIRED
+            }
+          },
+          fields: [
+            {
+              path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"],
+              purpose:
+                "We can only verify Credit Score credentials attested by a trusted authority.",
+              filter: {
+                type: "string",
+                pattern: compact([
+                  "did:web:verity.id",
+                  "did:web:coinbase.com",
+                  ...trustedAuthorities
+                ]).join("|")
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+export const generateCreditScoreVerificationRequest = (
+  from: string,
+  replyUrl: string,
+  replyTo: string,
+  callbackUrl?: string,
+  trustedAuthorities: string[] = [],
+  id = uuidv4()
+): VerificationRequest => {
+  const now = Date.now()
+  const expires = now + ONE_MONTH
+
+  return {
+    "@context": [
+      "https://www.w3.org/2018/credentials/v1",
+      "https://identity.foundation/presentation-exchange/definition/v1"
+    ],
+    type: ["VerifiablePresentation", "PresentationDefinition"],
+    request: {
+      id,
+      from: from,
+      created_time: now,
+      expires_time: expires,
+      reply_url: replyUrl,
+      reply_to: [replyTo],
+      callback_url: callbackUrl,
+      challenge: "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e61" // TODO: Challenge
+    },
+    presentation_definition:
+      creditScorePresentationDefinition(trustedAuthorities)
+  }
+}
