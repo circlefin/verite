@@ -5,10 +5,7 @@ import {
 import { ValidationError } from "../errors"
 import { hasPaths } from "../utils/has-paths"
 import { ProcessedVerificationSubmission } from "./ProcessedVerificationSubmission"
-import {
-  messageToValidationFailure,
-  processVerificationSubmission
-} from "./validators"
+import { processVerificationSubmission } from "./validators"
 
 export async function validateVerificationSubmission(
   verificationSubmission: EncodedVerificationSubmission,
@@ -20,9 +17,7 @@ export async function validateVerificationSubmission(
   if (!presentationDefinition) {
     throw new ValidationError(
       "Invalid Presentation Definition ID",
-      messageToValidationFailure(
-        "This issuer doesn't accept submissions associated with the presentation definition id"
-      )
+      "This issuer doesn't accept submissions associated with the presentation definition id"
     )
   }
 
@@ -34,9 +29,7 @@ export async function validateVerificationSubmission(
   ) {
     throw new ValidationError(
       "Missing required paths in Credential Application",
-      messageToValidationFailure(
-        "Input doesn't have the required format for a Credential Application"
-      )
+      "Input doesn't have the required format for a Credential Application"
     )
   }
 

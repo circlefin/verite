@@ -1,17 +1,11 @@
-import { ValidationFailure } from "../types"
-
 export class ValidationError extends Error {
-  failures: ValidationFailure[]
+  details: string
   cause?: Error
 
-  constructor(
-    message: string,
-    failures: ValidationFailure | ValidationFailure[],
-    cause?: Error
-  ) {
+  constructor(message: string, details: string, cause?: Error) {
     super(message)
     this.name = "ValidationError"
-    this.failures = Array.isArray(failures) ? failures : [failures]
+    this.details = details
     this.cause = cause
   }
 }

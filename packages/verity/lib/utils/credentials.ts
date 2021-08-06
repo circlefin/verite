@@ -1,9 +1,7 @@
 import { verifyCredential, verifyPresentation } from "did-jwt-vc"
 import type {
   JWT,
-  JwtCredentialPayload,
   JwtPresentationPayload,
-  RevocationList2021Status,
   VerifiableCredential,
   RevocableCredential,
   RevocationListCredential,
@@ -28,60 +26,6 @@ export function verifiablePresentationPayload(
       verifiableCredential: [vcJwt].flat()
     }
   }
-}
-
-export function verifiableCredentialPayload(
-  type: string,
-  subject: string,
-  attestation: Record<string, unknown>,
-  credentialStatus?: RevocationList2021Status
-): JwtCredentialPayload {
-  const payload = {
-    sub: subject,
-    vc: {
-      "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        "https://verity.id/identity"
-      ],
-      type: ["VerifiableCredential", type],
-      credentialSubject: {
-        [type]: attestation,
-        id: subject
-      }
-    }
-  }
-
-  if (credentialStatus) {
-    Object.assign(payload, { credentialStatus: credentialStatus })
-  }
-
-  return payload
-}
-
-export function kycAmlVerifiableCredentialPayload(
-  subject: string,
-  attestation: Record<string, unknown>,
-  credentialStatus: RevocationList2021Status
-): JwtCredentialPayload {
-  return verifiableCredentialPayload(
-    "KYCAMLAttestation",
-    subject,
-    attestation,
-    credentialStatus
-  )
-}
-
-export function creditScoreVerifiableCredentialPayload(
-  subject: string,
-  attestation: Record<string, unknown>,
-  credentialStatus: RevocationList2021Status
-): JwtCredentialPayload {
-  return verifiableCredentialPayload(
-    "CreditScoreAttestation",
-    subject,
-    attestation,
-    credentialStatus
-  )
 }
 
 /**

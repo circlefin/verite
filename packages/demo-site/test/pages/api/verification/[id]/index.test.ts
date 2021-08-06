@@ -1,11 +1,13 @@
 import {
   buildIssuer,
+  buildAndSignFulfillment,
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
   generateKycVerificationRequest,
   randomDidKey,
-  validateCredentialApplication
+  validateCredentialApplication,
+  decodeCredentialApplication
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
@@ -14,7 +16,7 @@ import {
   generateRevocationListStatus,
   saveVerificationRequest
 } from "../../../../../lib/database"
-import { buildAndSignFulfillmentForUser } from "../../../../../lib/issuance/fulfillment"
+import { fulfillmentDataForUser } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
 import handler from "../../../../../pages/api/verification/[id]/index"
 import { userFactory } from "../../../../../test/factories"
@@ -93,25 +95,21 @@ describe("POST /verification/[id]", () => {
 
 // TODO: This block should be easier to repro
 async function generateVc(clientDidKey: DidKey) {
-  const kycManifest = await findManifestById("KYCAMLAttestation")
+  const manifest = await findManifestById("KYCAMLAttestation")
   const user = await userFactory({
     jumioScore: 55,
     ofacScore: 2
   })
-  const application = await createCredentialApplication(
-    clientDidKey,
-    kycManifest
-  )
-  const acceptedApplication = await validateCredentialApplication(
-    application,
-    kycManifest
-  )
+  const application = await createCredentialApplication(clientDidKey, manifest)
+  await validateCredentialApplication(application, manifest)
 
-  const fulfillment = await buildAndSignFulfillmentForUser(
-    user,
+  const decodedApplication = await decodeCredentialApplication(application)
+
+  const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    acceptedApplication,
-    await generateRevocationListStatus()
+    decodedApplication,
+    await generateRevocationListStatus(),
+    fulfillmentDataForUser(user, manifest)
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(

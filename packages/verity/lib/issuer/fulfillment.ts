@@ -1,120 +1,82 @@
+import {
+  createVerifiableCredentialJwt,
+  createVerifiablePresentationJwt,
+  CredentialPayload
+} from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 import type {
   DescriptorMap,
   EncodedCredentialFulfillment,
-  GenericCredentialApplication,
   Issuer,
-  JwtCredentialPayload,
-  JWT,
   RevocationList2021Status,
-  KYCAMLProvider,
   KYCAMLAttestation,
-  CreditScore,
-  DecodedCredentialApplication
+  DecodedCredentialApplication,
+  CreditScoreAttestation,
+  CredentialIssuer
 } from "../../types"
-import { asyncMap } from "../utils/async-fns"
-import {
-  creditScoreVerifiableCredentialPayload,
-  kycAmlVerifiableCredentialPayload,
-  verifiablePresentationPayload
-} from "../utils/credentials"
-import {
-  signVerifiableCredential,
-  signVerifiablePresentation
-} from "../utils/sign-fns"
-import { ProcessedCredentialApplication } from "../validators/ProcessedCredentialApplication"
+import { verifiablePresentationPayload } from "../utils/credentials"
 
-async function buildAndSignFulfillment(
+export function buildVerifiableCredentialPayload(
+  issuer: CredentialIssuer, // TODO: Can we auto-gen this?
+  subject: string,
+  attestation: KYCAMLAttestation | CreditScoreAttestation,
+  credentialStatus?: RevocationList2021Status
+): CredentialPayload {
+  const type = attestation["@type"]
+
+  return {
+    "@context": [
+      "https://www.w3.org/2018/credentials/v1",
+      "https://verity.id/identity"
+    ],
+    type: ["VerifiableCredential", type],
+    credentialSubject: {
+      id: subject,
+      [type]: attestation
+    },
+    issuanceDate: new Date(),
+    issuer,
+    credentialStatus
+  }
+}
+
+export async function buildAndSignFulfillment(
   signer: Issuer,
-  application: GenericCredentialApplication,
-  credentials: JwtCredentialPayload | JwtCredentialPayload[]
+  application: DecodedCredentialApplication,
+  credentialStatus: RevocationList2021Status,
+  attestation: KYCAMLAttestation | CreditScoreAttestation
 ): Promise<EncodedCredentialFulfillment> {
-  const credentialFulfillment = {
-    id: uuidv4(),
-    manifest_id: application.credential_application.manifest_id,
-    descriptor_map:
-      application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
-        (d, i) => {
-          return {
-            id: d.id,
-            format: "jwt_vc",
-            path: `$.presentation.credential[${i}]`
+  const vcPayload = buildVerifiableCredentialPayload(
+    { id: signer.did },
+    application.presentation.holder,
+    attestation,
+    credentialStatus
+  )
+  const encodedCredentials = await createVerifiableCredentialJwt(
+    vcPayload,
+    signer
+  )
+
+  const encodedPresentation = await createVerifiablePresentationJwt(
+    verifiablePresentationPayload(signer.did, encodedCredentials),
+    signer
+  )
+
+  return {
+    credential_fulfillment: {
+      id: uuidv4(),
+      manifest_id: application.credential_application.manifest_id,
+      descriptor_map:
+        application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
+          (d, i) => {
+            return {
+              id: d.id,
+              format: "jwt_vc",
+              path: `$.presentation.credential[${i}]`
+            }
           }
-        }
-      ) || []
-  }
-
-  const jwtCredentials: JWT[] = await asyncMap<JwtCredentialPayload, JWT>(
-    [credentials].flat(),
-    (credential) => {
-      return signVerifiableCredential(signer, credential)
-    }
-  )
-
-  const presentation = await signVerifiablePresentation(
-    signer,
-    verifiablePresentationPayload(signer.did, jwtCredentials)
-  )
-
-  return {
-    credential_fulfillment: credentialFulfillment,
-    presentation
-  }
-}
-
-export async function buildAndSignKycAmlFulfillment(
-  signer: Issuer,
-  acceptedApplication:
-    | ProcessedCredentialApplication
-    | DecodedCredentialApplication,
-  credentialStatus: RevocationList2021Status,
-  body: KYCAMLAttestation
-): Promise<EncodedCredentialFulfillment> {
-  const verifiablePresentation = acceptedApplication.presentation
-
-  return buildAndSignFulfillment(
-    signer,
-    acceptedApplication,
-    kycAmlVerifiableCredentialPayload(
-      verifiablePresentation.holder,
-      body,
-      credentialStatus
-    )
-  )
-}
-
-export async function buildAndSignCreditScoreFulfillment(
-  signer: Issuer,
-  acceptedApplication:
-    | ProcessedCredentialApplication
-    | DecodedCredentialApplication,
-  credentialStatus: RevocationList2021Status,
-  creditScore: CreditScore
-): Promise<EncodedCredentialFulfillment> {
-  const verifiablePresentation = acceptedApplication.presentation
-
-  return buildAndSignFulfillment(
-    signer,
-    acceptedApplication,
-    creditScoreVerifiableCredentialPayload(
-      verifiablePresentation.holder,
-      creditScore,
-      credentialStatus
-    )
-  )
-}
-
-// TODO(mv) allow custominzing the authority info (maybe superclass?)
-export function kycAmlAttestation(
-  serviceProviders?: KYCAMLProvider[]
-): KYCAMLAttestation {
-  return {
-    "@type": "KYCAMLAttestation",
-    authorityId: "did:web:verity.id",
-    approvalDate: new Date().toJSON(),
-    authorityName: "Verity",
-    authorityUrl: "https://verity.id",
-    authorityCallbackUrl: "https://identity.verity.id",
-    serviceProviders: serviceProviders
+        ) || []
+    },
+    presentation: encodedPresentation
   }
 }

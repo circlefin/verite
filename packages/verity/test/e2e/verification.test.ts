@@ -1,6 +1,9 @@
 import { createVerificationSubmission } from "../../lib/client/verification-submission"
-import { createCredentialApplication } from "../../lib/credential-application-fns"
-import { buildAndSignKycAmlFulfillment } from "../../lib/issuer/fulfillment"
+import {
+  createCredentialApplication,
+  decodeCredentialApplication
+} from "../../lib/credential-application-fns"
+import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validateCredentialApplication"
@@ -63,14 +66,13 @@ async function getClientVerifiableCredential(
 
   // 0. PREREQ: Ensure client has a valid KYC credential
   const application = await createCredentialApplication(clientDidKey, manifest)
-  const acceptedApplication = await validateCredentialApplication(
-    application,
-    manifest
-  )
+  await validateCredentialApplication(application, manifest)
 
-  const fulfillment = await buildAndSignKycAmlFulfillment(
+  const decodedApplication = await decodeCredentialApplication(application)
+
+  const fulfillment = await buildAndSignFulfillment(
     issuer,
-    acceptedApplication,
+    decodedApplication,
     revocationListFixture,
     kycAmlAttestationFixture
   )

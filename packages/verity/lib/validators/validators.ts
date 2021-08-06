@@ -15,6 +15,7 @@ import type {
   ValidationFailure,
   PathEvaluation
 } from "../../types"
+import { decodeCredentialApplication } from "../credential-application-fns"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
 import { asyncSome, decodeVerifiablePresentation } from "../utils"
@@ -29,40 +30,20 @@ import { vcSchema, vpSchema } from "./schemas"
 
 const ajv = new Ajv()
 
-export function errorToValidationFailure(err: Error): ValidationFailure {
-  return {
-    status: 400,
-    message: err.name,
-    details: err.message
-  }
-}
-
-export function messageToValidationFailure(message: string): ValidationFailure {
-  return {
-    status: 400,
-    message: "Validation Failure",
-    details: message
-  }
-}
-
 function ajvErrorToVerificationFailures(
   errors?: Ajv.ErrorObject[] | null
-): ValidationFailure[] {
+): ValidationError[] {
   if (!errors) {
     return []
   }
 
   const convertedErrors = errors.map((e) => {
-    return {
-      status: 400, // TODO
-      message: `${e.keyword} json schema validation failure`,
-      details: `${e.dataPath ? e.dataPath : "input"} ${e.message}`
-      // source: {
-      //   path: e.dataPath
-      // },
-      // original: e
-    }
+    return new ValidationError(
+      `${e.keyword} json schema validation failure`,
+      `${e.dataPath ? e.dataPath : "input"} ${e.message}`
+    )
   })
+
   return convertedErrors
 }
 
@@ -235,9 +216,7 @@ async function ensureNotRevoked(
   if (anyRevoked) {
     throw new ValidationError(
       "Revoked Credentials",
-      messageToValidationFailure(
-        "At least one of the provided verified credential have been revoked"
-      )
+      "At least one of the provided verified credential have been revoked"
     )
   }
 }
@@ -246,16 +225,10 @@ export async function processCredentialApplication(
   application: EncodedCredentialApplication,
   manifest: CredentialManifest
 ): Promise<ProcessedCredentialApplication> {
-  const presentation = await decodeVerifiablePresentation(
-    application.presentation
-  )
-  const converted: DecodedCredentialApplication = {
-    ...application,
-    presentation
-  }
+  const decoded = await decodeCredentialApplication(application)
 
   const mapped = mapInputsToDescriptors(
-    converted,
+    decoded,
     manifest.presentation_definition
   )
 
@@ -265,9 +238,9 @@ export async function processCredentialApplication(
   )
 
   return new ProcessedCredentialApplication(
-    converted.credential_application,
-    converted.presentation,
+    decoded.credential_application,
+    decoded.presentation,
     evaluations,
-    converted.presentation_submission
+    decoded.presentation_submission
   )
 }

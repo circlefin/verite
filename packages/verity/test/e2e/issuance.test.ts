@@ -1,12 +1,11 @@
 import {
   createCredentialApplication,
-  decodeVerifiablePresentation,
-  validateCredentialApplication,
-  didKeyToIssuer,
-  createKycAmlManifest,
-  buildAndSignKycAmlFulfillment,
-  randomDidKey
-} from "../../lib"
+  decodeCredentialApplication
+} from "../../lib/credential-application-fns"
+import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
+import { createKycAmlManifest } from "../../lib/issuer/manifest"
+import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
+import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import type { RevocableCredential, RevocablePresentation } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
@@ -30,16 +29,18 @@ describe("issuance", () => {
       manifest
     )
 
-    const acceptedApplication = await validateCredentialApplication(
-      credentialApplication,
-      manifest
+    // TODO(mv): should we validate this??
+    // await validateCredentialApplication(credentialApplication, manifest)
+
+    const decodedApplication = await decodeCredentialApplication(
+      credentialApplication
     )
 
     // 4. ISSUER: Creating the VC
     // 5. ISSUER: Delivering the VC
-    const fulfillment = await buildAndSignKycAmlFulfillment(
+    const fulfillment = await buildAndSignFulfillment(
       issuer,
-      acceptedApplication,
+      decodedApplication,
       revocationListFixture,
       kycAmlAttestationFixture
     )

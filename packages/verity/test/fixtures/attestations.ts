@@ -1,5 +1,4 @@
-import { KYCAMLAttestation } from "../../types/KycAmlAttestation"
-import { KYCAMLProvider } from "../../types/KycAmlProvider"
+import { KYCAMLAttestation, KYCAMLProvider } from "../../types/Attestations"
 
 export const kycServiceProviderFixture: KYCAMLProvider = {
   "@type": "KYCAMLProvider",

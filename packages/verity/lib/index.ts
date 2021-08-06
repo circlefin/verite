@@ -1,3 +1,4 @@
+export * from "./attestation"
 export * from "./client"
 export * from "./credential-application-fns"
 export * from "./errors"

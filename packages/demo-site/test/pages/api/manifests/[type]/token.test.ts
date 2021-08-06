@@ -3,7 +3,7 @@ import { temporaryAuthToken } from "../../../../../lib/database"
 import handler from "../../../../../pages/api/manifests/[type]/[token]"
 import { userFactory } from "../../../../../test/factories"
 
-describe("GET /api/manifests/[...type]", () => {
+describe("GET /api/manifests/[type]/[token]", () => {
   it("returns the KYC/AML manifest", async () => {
     expect.assertions(4)
 
