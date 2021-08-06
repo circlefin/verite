@@ -1,13 +1,11 @@
 import Ajv from "ajv"
 import jsonpath from "jsonpath"
 import type {
-  CredentialManifest,
   DecodedVerificationSubmission,
   InputDescriptor,
   PresentationDefinition,
   EncodedVerificationSubmission,
   DecodedCredentialApplication,
-  EncodedCredentialApplication,
   W3CCredential,
   W3CPresentation,
   Verifiable,
@@ -15,7 +13,6 @@ import type {
   ValidationFailure,
   PathEvaluation
 } from "../../types"
-import { decodeCredentialApplication } from "../credential-application-fns"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
 import { asyncSome, decodeVerifiablePresentation } from "../utils"
@@ -24,7 +21,6 @@ import {
   FieldConstraintEvaluation,
   ValidationCheck
 } from "./Matches"
-import { ProcessedCredentialApplication } from "./ProcessedCredentialApplication"
 import { ProcessedVerificationSubmission } from "./ProcessedVerificationSubmission"
 import { vcSchema, vpSchema } from "./schemas"
 
@@ -219,28 +215,4 @@ async function ensureNotRevoked(
       "At least one of the provided verified credential have been revoked"
     )
   }
-}
-
-export async function processCredentialApplication(
-  application: EncodedCredentialApplication,
-  manifest: CredentialManifest
-): Promise<ProcessedCredentialApplication> {
-  const decoded = await decodeCredentialApplication(application)
-
-  const mapped = mapInputsToDescriptors(
-    decoded,
-    manifest.presentation_definition
-  )
-
-  const evaluations = validateInputDescriptors(
-    mapped,
-    manifest.presentation_definition?.input_descriptors
-  )
-
-  return new ProcessedCredentialApplication(
-    decoded.credential_application,
-    decoded.presentation,
-    evaluations,
-    decoded.presentation_submission
-  )
 }

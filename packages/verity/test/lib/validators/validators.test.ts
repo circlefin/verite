@@ -13,10 +13,7 @@ import {
   ValidationCheck
 } from "../../../lib/validators/Matches"
 import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
-import {
-  processCredentialApplication,
-  processVerificationSubmission
-} from "../../../lib/validators/validators"
+import { processVerificationSubmission } from "../../../lib/validators/validators"
 import { generateKycVerificationRequest } from "../../../lib/verification-requests"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
@@ -128,22 +125,6 @@ describe("Submission validator", () => {
     expect(result.errors()[0].details).toEqual(
       "Credential did not match constraint: We can only verify KYC credentials attested by a trusted authority."
     )
-  })
-
-  it("validates a CredentialApplication", async () => {
-    const clientDidKey = await randomDidKey()
-    const { manifest } = await generateManifestAndIssuer()
-    const application = await createCredentialApplication(
-      clientDidKey,
-      manifest
-    )
-
-    const acceptedApplication = await processCredentialApplication(
-      application,
-      manifest
-    )
-
-    expect(acceptedApplication.accepted()).toBeTruthy()
   })
 
   it("checks validation formatting for successful matches", async () => {
