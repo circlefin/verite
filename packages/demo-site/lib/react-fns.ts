@@ -9,8 +9,7 @@ export function isActive(href: string, inclusive = true): boolean {
   const router = useRouter()
 
   if (inclusive) {
-    return router.pathname.startsWith(href)
+    return router.pathname.startsWith(href) || router.asPath.startsWith(href)
   }
-
   return router.pathname === href
 }
