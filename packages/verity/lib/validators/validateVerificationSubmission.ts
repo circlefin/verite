@@ -1,16 +1,20 @@
 import {
-  EncodedVerificationSubmission,
-  PresentationDefinition
+  DecodedVerificationSubmission,
+  PresentationDefinition,
+  RevocableCredential,
+  Verifiable,
+  W3CPresentation
 } from "../../types"
 import { ValidationError } from "../errors"
+import { isRevoked } from "../issuer/revocation"
+import { asyncSome } from "../utils/async-fns"
 import { hasPaths } from "../utils/has-paths"
-import { ProcessedVerificationSubmission } from "./ProcessedVerificationSubmission"
-import { processVerificationSubmission } from "./validators"
+import { validatePresentationSubmission } from "./validators"
 
 export async function validateVerificationSubmission(
-  verificationSubmission: EncodedVerificationSubmission,
+  verificationSubmission: DecodedVerificationSubmission,
   presentationDefinition?: PresentationDefinition
-): Promise<ProcessedVerificationSubmission> {
+): Promise<void> {
   /**
    * Ensure there is a valid presentation definition
    */
@@ -33,8 +37,25 @@ export async function validateVerificationSubmission(
     )
   }
 
-  return processVerificationSubmission(
-    verificationSubmission,
-    presentationDefinition
-  )
+  await ensureNotRevoked(verificationSubmission.presentation)
+
+  validatePresentationSubmission(verificationSubmission, presentationDefinition)
+}
+
+async function ensureNotRevoked(
+  presentation: Verifiable<W3CPresentation>
+): Promise<void> {
+  const credentials =
+    (presentation.verifiableCredential as RevocableCredential[]) || []
+
+  const anyRevoked = await asyncSome(credentials, async (credential) => {
+    return isRevoked(credential)
+  })
+
+  if (anyRevoked) {
+    throw new ValidationError(
+      "Revoked Credentials",
+      "At least one of the provided verified credential have been revoked"
+    )
+  }
 }

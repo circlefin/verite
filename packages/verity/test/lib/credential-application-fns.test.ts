@@ -2,7 +2,7 @@ import {
   createCredentialApplication,
   decodeCredentialApplication
 } from "../../lib/credential-application-fns"
-import { VerificationError } from "../../lib/errors"
+import { ValidationError } from "../../lib/errors"
 import { createKycAmlManifest } from "../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
@@ -51,7 +51,7 @@ describe("decodeCredentialApplication", () => {
     application.presentation = expiredPresentation
 
     await expect(decodeCredentialApplication(application)).rejects.toThrowError(
-      VerificationError
+      ValidationError
     )
   })
 })

@@ -10,7 +10,7 @@ import type {
   W3CPresentation,
   RevocablePresentation
 } from "../../types"
-import { VerificationError } from "../errors"
+import { ValidationError } from "../errors"
 import { didKeyResolver } from "./did-fns"
 
 export function verifiablePresentationPayload(
@@ -40,8 +40,9 @@ export async function decodeVerifiableCredential(
     const res = await verifyCredential(vcJwt, didKeyResolver)
     return res.verifiableCredential
   } catch (err) {
-    throw new VerificationError(
+    throw new ValidationError(
       "Input wasn't a valid Verifiable Credential",
+      err.message,
       err
     )
   }
@@ -57,8 +58,9 @@ export async function decodeVerifiablePresentation(
     const res = await verifyPresentation(vpJwt, didKeyResolver)
     return res.verifiablePresentation
   } catch (err) {
-    throw new VerificationError(
+    throw new ValidationError(
       "Input wasn't a valid Verifiable Presentation",
+      err.message,
       err
     )
   }

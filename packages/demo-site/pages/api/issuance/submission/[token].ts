@@ -3,7 +3,8 @@ import {
   decodeCredentialApplication,
   EncodedCredentialApplication,
   EncodedCredentialFulfillment,
-  RevocableCredential
+  RevocableCredential,
+  ValidationError
 } from "@centre/verity"
 import {
   buildIssuer,
@@ -46,18 +47,24 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
 
   const credentialApplication: EncodedCredentialApplication = req.body
 
-  // Validate the format of the Verifiable Presentation.
-  // TODO: This validation step is largely unnecessary, as the Verifiable
-  // Presentation is empty. We simply need to validate the signature.
+  // Ensure we have a valid manifest
   const manifest = await findManifestById(
     getManifestIdFromCredentialApplication(credentialApplication)
   )
-  await validateCredentialApplication(credentialApplication, manifest)
+  if (!manifest) {
+    throw new ValidationError(
+      "Invalid Manifest ID",
+      "This issuer doesn't issue credentials for the specified Manifest ID"
+    )
+  }
 
   // Decode the Verifiable Presentation and check the signature
   const decodedCredentialApplication = await decodeCredentialApplication(
     credentialApplication
   )
+
+  // Validate the format and contents of the credential application
+  validateCredentialApplication(decodedCredentialApplication)
 
   // Before we issue a new credential of this type to a user, revoke all their
   // previous credentials of the same type.

@@ -1,4 +1,5 @@
 import {
+  decodeVerificationSubmission,
   validateVerificationSubmission,
   verificationRequestWrapper
 } from "@centre/verity"
@@ -70,9 +71,10 @@ async function post(req: NextApiRequest, res: ApiResponse<PostResponse>) {
   }
 
   try {
+    const decoded = await decodeVerificationSubmission(submission)
     // TODO: Verify submission matches VerificationRequest (e.g. id check?)
     await validateVerificationSubmission(
-      submission,
+      decoded,
       verificationRequest.presentation_definition
     )
   } catch (err) {

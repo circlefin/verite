@@ -79,7 +79,11 @@ describe("POST /issuance/submission/[token]", () => {
     expect(res.statusCode).toBe(405)
     expect(res._getJSONData()).toEqual({
       status: 405,
-      message: "Method not allowed"
+      errors: [
+        {
+          message: "Method not allowed"
+        }
+      ]
     })
   })
 
@@ -95,7 +99,11 @@ describe("POST /issuance/submission/[token]", () => {
     expect(res.statusCode).toBe(404)
     expect(res._getJSONData()).toEqual({
       status: 404,
-      message: "Not found"
+      errors: [
+        {
+          message: "Not found"
+        }
+      ]
     })
   })
 
@@ -119,21 +127,17 @@ describe("POST /issuance/submission/[token]", () => {
     await handler(req, res)
 
     expect(res.statusCode).toBe(400)
-
-    // TOOD: check response; this example should look like the following
-    /*
-    {
-      "status": 400,
-      "message": "Input wasn't a valid Verifiable Presentation",
-      "errors": [
+    expect(res._getJSONData()).toMatchObject({
+      status: 400,
+      errors: [
         {
-          "status": 400,
-          "title": "Error",
-          "detail": "invalid_jwt: JWT has expired: exp: 1626215411 < now: 1626316738"
+          message: "Input wasn't a valid Verifiable Presentation",
+          details: expect.stringMatching(
+            /invalid_jwt: JWT has expired: exp: (.*) < now: (.*)/
+          )
         }
       ]
-    }
-    */
+    })
   })
 
   it("returns a KYC credential with known input/output", async () => {

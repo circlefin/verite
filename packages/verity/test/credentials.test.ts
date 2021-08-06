@@ -1,4 +1,4 @@
-import { VerificationError } from "../lib/errors"
+import { ValidationError } from "../lib/errors"
 import {
   decodeVerifiableCredential,
   decodeVerifiablePresentation
@@ -25,14 +25,14 @@ describe("VC decoding", () => {
   it("rejects an expired VC", async () => {
     expect.assertions(1)
     await expect(decodeVerifiableCredential(expiredVc)).rejects.toThrowError(
-      VerificationError
+      ValidationError
     )
   })
 
   it("rejects an expired VP", async () => {
     expect.assertions(1)
     await expect(decodeVerifiablePresentation(expiredVp)).rejects.toThrowError(
-      VerificationError
+      ValidationError
     )
   })
 })

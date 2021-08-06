@@ -27,7 +27,8 @@ describe("GET /verification/[id]", () => {
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification`,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/callback`
+      `${process.env.HOST}/api/verification/callback`,
+      [process.env.ISSUER_DID]
     )
     await saveVerificationRequest(verificationRequest)
 
@@ -61,7 +62,8 @@ describe("POST /verification/[id]", () => {
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/`,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/callback`
+      `${process.env.HOST}/api/verification/callback`,
+      [process.env.ISSUER_DID]
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
@@ -82,9 +84,8 @@ describe("POST /verification/[id]", () => {
 
     await handler(req, res)
 
-    const response = res._getJSONData()
     expect(res.statusCode).toBe(200)
-    expect(response).toEqual({ status: "ok" })
+    expect(res._getJSONData()).toEqual({ status: "ok" })
 
     const status = await fetchVerificationRequestStatus(
       verificationRequest.request.id
@@ -101,9 +102,10 @@ async function generateVc(clientDidKey: DidKey) {
     ofacScore: 2
   })
   const application = await createCredentialApplication(clientDidKey, manifest)
-  await validateCredentialApplication(application, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)
+
+  validateCredentialApplication(decodedApplication)
 
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),

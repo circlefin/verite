@@ -1,7 +1,12 @@
+import { ValidationError, ValidationErrorArray } from "@centre/verity"
 import { NextApiHandler, NextApiResponse } from "next"
 
 export type ApiErrorResponse = {
   status: number
+  errors: ApiError[]
+}
+
+export type ApiError = {
   message: string
   details?: string
 }
@@ -11,22 +16,35 @@ export type ApiResponse<T> = NextApiResponse<T | ApiErrorResponse>
 export function apiError(
   res: NextApiResponse<ApiErrorResponse>,
   status: number,
-  message: string,
-  details?: string
+  error: Error | ValidationError | ValidationErrorArray
 ): void {
+  const errors: Array<ValidationError | Error> =
+    error instanceof ValidationErrorArray ? error.errors : [error]
+  const errorMessages = errors.map((e) => {
+    if (e instanceof ValidationError) {
+      return {
+        message: e.message,
+        details: e.details
+      }
+    }
+
+    return {
+      message: e.message
+    }
+  })
+
   res.status(status).json({
     status,
-    message,
-    details
+    errors: errorMessages
   })
 }
 
 export function notFound(res: NextApiResponse<ApiErrorResponse>): void {
-  apiError(res, 404, "Not found")
+  apiError(res, 404, new Error("Not found"))
 }
 
 export function methodNotAllowed(res: NextApiResponse<ApiErrorResponse>): void {
-  apiError(res, 405, "Method not allowed")
+  apiError(res, 405, new Error("Method not allowed"))
 }
 
 /**
@@ -51,7 +69,7 @@ export function apiHandler<T>(
       // Call the original API method
       await handler(req, res)
     } catch (e) {
-      apiError(res, 400, e.message, e.details)
+      apiError(res, 400, e)
     }
   }
 }

@@ -10,12 +10,12 @@ export class ValidationError extends Error {
   }
 }
 
-export class VerificationError extends Error {
-  cause?: Error
+export class ValidationErrorArray extends Error {
+  errors: ValidationError[]
 
-  constructor(message: string, cause?: Error) {
-    super(message)
-    this.name = "VerificationError"
-    this.cause = cause
+  constructor(errors: ValidationError[]) {
+    super()
+    this.name = "ValidationErrorArray"
+    this.errors = errors
   }
 }

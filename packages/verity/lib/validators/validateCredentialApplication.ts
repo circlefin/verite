@@ -1,4 +1,4 @@
-import { CredentialManifest, EncodedCredentialApplication } from "../../types"
+import { DecodedCredentialApplication } from "../../types"
 import { ValidationError } from "../errors"
 import { hasPaths } from "../utils/has-paths"
 
@@ -8,18 +8,9 @@ import { hasPaths } from "../utils/has-paths"
  *
  * @throws {ValidationError} If the credential application is invalid.
  */
-export async function validateCredentialApplication(
-  application: EncodedCredentialApplication,
-  manifest?: CredentialManifest
-): Promise<void> {
-  if (!manifest) {
-    throw new ValidationError(
-      "Invalid Manifest ID",
-      "This issuer doesn't issue credentials for the specified Manifest ID"
-    )
-  }
-
-  // Ensure the application has the correct paths
+export function validateCredentialApplication(
+  application: DecodedCredentialApplication
+): void {
   if (
     !hasPaths(application, [
       "credential_application",
