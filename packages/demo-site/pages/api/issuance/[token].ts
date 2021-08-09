@@ -12,17 +12,18 @@ import {
   getManifestIdFromCredentialApplication,
   validateCredentialApplication
 } from "@centre/verity"
-import { apiHandler, methodNotAllowed, notFound } from "../../../../lib/api-fns"
-import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
+import { apiHandler, requireMethod } from "../../../lib/api-fns"
+import { findUserFromTemporaryAuthToken, User } from "../../../lib/database"
 import {
   allRevocationLists,
   saveRevocationList,
   findCredentialsByUserIdAndType,
   generateRevocationListStatus,
   storeRevocableCredential
-} from "../../../../lib/database"
-import { fulfillmentDataForUser } from "../../../../lib/issuance/fulfillment"
-import { findManifestById } from "../../../../lib/manifest"
+} from "../../../lib/database"
+import { NotFoundError } from "../../../lib/errors"
+import { fulfillmentDataForUser } from "../../../lib/issuance/fulfillment"
+import { findManifestById } from "../../../lib/manifest"
 
 /**
  * Handle a POST request to containing an empty Verifiable Presentation proving
@@ -31,17 +32,14 @@ import { findManifestById } from "../../../../lib/manifest"
  * the Verifiable Credentials for this given user.
  */
 export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
-  // Only allow POST requests to this endpoint
-  if (req.method !== "POST") {
-    return methodNotAllowed(res)
-  }
+  requireMethod(req, "POST")
 
   // Find the user record from a temporary auth token
   // We need to use a temporary auth token because this submission endpoint
   // may not be called directly from the user's browser (e.g. via mobile wallet)
   const user = await findUserFromTemporaryAuthToken(req.query.token as string)
   if (!user) {
-    return notFound(res)
+    throw new NotFoundError()
   }
 
   const credentialApplication: EncodedCredentialApplication = req.body

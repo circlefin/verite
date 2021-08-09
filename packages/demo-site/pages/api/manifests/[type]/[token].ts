@@ -1,6 +1,7 @@
 import type { ManifestWrapper } from "@centre/verity"
 import { manifestWrapper } from "@centre/verity"
-import { apiHandler, notFound } from "../../../../lib/api-fns"
+import { NotFoundError } from "../../../..//lib/errors"
+import { apiHandler } from "../../../../lib/api-fns"
 import { MANIFEST_MAP } from "../../../../lib/manifest"
 
 export default apiHandler<ManifestWrapper>(async (req, res) => {
@@ -9,13 +10,10 @@ export default apiHandler<ManifestWrapper>(async (req, res) => {
   const manifest = MANIFEST_MAP[manifestName]
 
   if (!manifest) {
-    return notFound(res)
+    throw new NotFoundError()
   }
 
   res.json(
-    manifestWrapper(
-      manifest,
-      `${process.env.HOST}/api/issuance/submission/${token}`
-    )
+    manifestWrapper(manifest, `${process.env.HOST}/api/issuance/${token}`)
   )
 })
