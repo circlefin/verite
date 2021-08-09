@@ -1,8 +1,3 @@
-import {
-  challengeTokenUrlWrapper,
-  generateCreditScoreVerificationRequest,
-  generateKycVerificationRequest
-} from "@centre/verity"
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
@@ -10,9 +5,7 @@ import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
-import { v4 as uuidv4 } from "uuid"
 import VerifierLayout from "../../components/verifier/Layout"
-import { saveVerificationRequest } from "../../lib/database"
 
 type Props = {
   challenge: Record<string, unknown>
@@ -24,55 +17,14 @@ type Props = {
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
-  const type = context.params.type
-  if (type !== "kyc" && type !== "credit-score") {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/verifier"
-      }
-    }
-  }
-
-  let verificationRequest
-  if (type === "kyc") {
-    const id = uuidv4()
-    verificationRequest = await generateKycVerificationRequest(
-      process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/${id}/submission`,
-      process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/${id}/callback`,
-      [process.env.ISSUER_DID],
-      id
-    )
-  } else if (type === "credit-score") {
-    const id = uuidv4()
-    verificationRequest = await generateCreditScoreVerificationRequest(
-      process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/${id}/submission`,
-      process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/${id}/callback`,
-      [process.env.ISSUER_DID],
-      600,
-      id
-    )
-  }
-  await saveVerificationRequest(verificationRequest)
-
-  const qrCodeData = challengeTokenUrlWrapper(
-    `${process.env.HOST}/api/verification/${verificationRequest.request.id}`
+  const response = await fetch(
+    `${process.env.HOST}/api/verification/create?type=${context.params.type}`,
+    { method: "POST" }
   )
-
-  const response = await fetch(qrCodeData.challengeTokenUrl)
-  const challenge = await response.json()
+  const json = await response.json()
 
   return {
-    props: {
-      challenge,
-      id: verificationRequest.request.id,
-      qrCodeData,
-      type
-    }
+    props: json
   }
 }
 
@@ -101,9 +53,7 @@ function QRCodeOrStatus({
         renderAs="svg"
       />
       <h2>QR Code Data</h2>
-      <p>
-        <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
-      </p>
+      <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
     </>
   )
 }
@@ -114,7 +64,7 @@ const VerifierPage: NextPage<Props> = ({ challenge, id, qrCodeData, type }) => {
   })
   const status = data && data.status
 
-  let title
+  let title: string
   if (type === "kyc") {
     title = "KYC/AML Verification"
   } else if (type === "credit-score") {
@@ -145,9 +95,8 @@ const VerifierPage: NextPage<Props> = ({ challenge, id, qrCodeData, type }) => {
               </Link>
               .
             </p>
-            <p>
-              <pre>{JSON.stringify(challenge, null, 4)}</pre>
-            </p>
+
+            <pre>{JSON.stringify(challenge, null, 4)}</pre>
           </>
         ) : null}
 
