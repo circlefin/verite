@@ -1,32 +1,28 @@
-import { NextApiHandler, NextApiResponse } from "next"
+import { promisify } from "util"
+import { ValidationError, VerificationError } from "@centre/verity/dist"
+import Cors from "cors"
+import { NextApiHandler, NextApiRequest } from "next"
+import { MethodNotAllowedError } from "./errors"
 
-export type ApiErrorResponse = {
+const cors = promisify(
+  Cors({
+    methods: ["GET", "HEAD"]
+  })
+)
+
+type ApiErrorResponse = {
   status: number
   message: string
   details?: string
 }
 
-export type ApiResponse<T> = NextApiResponse<T | ApiErrorResponse>
-
-export function apiError(
-  res: NextApiResponse<ApiErrorResponse>,
-  status: number,
-  message: string,
-  details?: string
-): void {
-  res.status(status).json({
-    status,
-    message,
-    details
-  })
-}
-
-export function notFound(res: NextApiResponse<ApiErrorResponse>): void {
-  apiError(res, 404, "Not found")
-}
-
-export function methodNotAllowed(res: NextApiResponse<ApiErrorResponse>): void {
-  apiError(res, 405, "Method not allowed")
+/**
+ * Require a certain method to be used in for an API route
+ */
+export function requireMethod(req: NextApiRequest, method: string): void {
+  if (req.method.toLowerCase() !== method.toLowerCase()) {
+    throw new MethodNotAllowedError(`Only ${method} requests are allowed`)
+  }
 }
 
 /**
@@ -42,6 +38,8 @@ export function apiHandler<T>(
   handler: NextApiHandler<T | ApiErrorResponse>
 ): NextApiHandler<T | ApiErrorResponse> {
   return async (req, res) => {
+    await cors(req, res)
+
     // Log the HTTP request, but not in test environments
     if (process.env.NODE_ENV !== "test") {
       console.info(`> ${req.method} ${req.url}`)
@@ -51,7 +49,27 @@ export function apiHandler<T>(
       // Call the original API method
       await handler(req, res)
     } catch (e) {
-      apiError(res, 400, e.message, e.details)
+      const status = errorStatusCode(e)
+      const message = e.message || "Something went wrong"
+      const details = e.details
+
+      res.status(status).json({
+        status,
+        message,
+        details
+      })
     }
   }
+}
+
+function errorStatusCode(error): number {
+  if (error.status) {
+    return error.status
+  }
+
+  if (error instanceof VerificationError || error instanceof ValidationError) {
+    return 400
+  }
+
+  return 500
 }

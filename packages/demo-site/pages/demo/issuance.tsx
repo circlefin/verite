@@ -22,7 +22,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const manifest = MANIFEST_MAP["kyc"]
   const responseData = manifestWrapper(
     manifest,
-    `${process.env.HOST}/api/issuance/submission/${authToken}`
+    `${process.env.HOST}/api/issuance/${authToken}`
   )
 
   return {

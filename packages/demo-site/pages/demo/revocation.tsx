@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps<Props> = requireAuth(
     const id = uuidv4()
     const verificationRequest = generateKycVerificationRequest(
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/${id}`,
+      `${process.env.HOST}/api/verification/${id}/submission`,
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/${id}/callback`,
       [process.env.ISSUER_DID],

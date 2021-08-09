@@ -1,6 +1,7 @@
 import { RevocableCredential } from "@centre/verity/dist"
-import { apiHandler, notFound } from "../../../lib/api-fns"
+import { apiHandler } from "../../../lib/api-fns"
 import { findNewestCredential } from "../../../lib/database/credentials"
+import { NotFoundError } from "../../../lib/errors"
 
 type Resp = {
   credential: RevocableCredential
@@ -12,7 +13,7 @@ export default apiHandler<Resp>(async (req, res) => {
   const credential = await findNewestCredential(createdAt)
 
   if (!credential) {
-    return notFound(res)
+    throw new NotFoundError()
   }
 
   res.json({ credential })
