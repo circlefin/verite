@@ -6,7 +6,6 @@ import {
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import { createKycAmlManifest } from "../../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
-import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 
 describe("buildAndSignKycAmlFulfillment", () => {
