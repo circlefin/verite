@@ -53,6 +53,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/${id}/callback`,
       [process.env.ISSUER_DID],
+      600,
       id
     )
   }

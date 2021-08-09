@@ -83,7 +83,8 @@ export const generateKycVerificationRequest = (
 }
 
 function creditScorePresentationDefinition(
-  trustedAuthorities: string[] = []
+  trustedAuthorities: string[] = [],
+  minimumCreditScore = 0
 ): PresentationDefinition {
   return {
     id: KYC_PRESENTATION_DEFINITION_ID,
@@ -117,6 +118,18 @@ function creditScorePresentationDefinition(
                   ...trustedAuthorities
                 ]).join("|")
               }
+            },
+            {
+              path: [
+                "$.credentialSubject.CreditScoreAttestation[*].score",
+                "$.vc.credentialSubject.CreditScoreAttestation[*].score",
+                "$.CreditScoreAttestation[*].score"
+              ],
+              purpose: `We can only verify Credit Score credentials that are above ${minimumCreditScore}.`,
+              filter: {
+                type: "number",
+                exclusiveMinimum: minimumCreditScore
+              }
             }
           ]
         }
@@ -131,6 +144,7 @@ export const generateCreditScoreVerificationRequest = (
   replyTo: string,
   callbackUrl?: string,
   trustedAuthorities: string[] = [],
+  minimumCreditScore = 0,
   id = uuidv4()
 ): VerificationRequest => {
   const now = Date.now()
@@ -152,7 +166,9 @@ export const generateCreditScoreVerificationRequest = (
       callback_url: callbackUrl,
       challenge: "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e61" // TODO: Challenge
     },
-    presentation_definition:
-      creditScorePresentationDefinition(trustedAuthorities)
+    presentation_definition: creditScorePresentationDefinition(
+      trustedAuthorities,
+      minimumCreditScore
+    )
   }
 }

@@ -105,10 +105,14 @@ export class ValidationCheck {
     return this.credentialResults
       .filter((c) => !c.passed())
       .flatMap((d) => {
+        const failedChecks = d.constraintChecks.filter(
+          (check) => !check.passed()
+        )
+
         return {
           message: `Credential failed to meet criteria specified by input descriptor ${this.descriptorId}`,
-          details: `Credential did not match constraint: ${d.constraintChecks[0].constraint.purpose}`,
-          detailedResults: d.constraintChecks?.flatMap((f) => {
+          details: `Credential did not match constraint: ${failedChecks[0].constraint.purpose}`,
+          detailedResults: failedChecks.flatMap((f) => {
             return {
               constraint: f.constraint,
               failures: f.failures()

@@ -1,4 +1,7 @@
-import { kycAmlAttestation } from "../../../lib/attestation"
+import {
+  creditScoreAttestation,
+  kycAmlAttestation
+} from "../../../lib/attestation"
 import { createVerificationSubmission } from "../../../lib/client/verification-submission"
 import {
   createCredentialApplication,
@@ -17,7 +20,10 @@ import {
   processCredentialApplication,
   processVerificationSubmission
 } from "../../../lib/validators/validators"
-import { generateKycVerificationRequest } from "../../../lib/verification-requests"
+import {
+  generateCreditScoreVerificationRequest,
+  generateKycVerificationRequest
+} from "../../../lib/verification-requests"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 import { generateVerifiableCredential } from "../../support/verifiable-credential-fns"
@@ -127,6 +133,57 @@ describe("Submission validator", () => {
     expect(result.accepted()).toBe(false)
     expect(result.errors()[0].details).toEqual(
       "Credential did not match constraint: We can only verify KYC credentials attested by a trusted authority."
+    )
+  })
+
+  it("rejects if the credit score is too low", async () => {
+    const clientDidKey = await randomDidKey()
+    const verifierDidKey = await randomDidKey()
+    const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
+    const application = await createCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+
+    await validateCredentialApplication(application, manifest)
+
+    const decodedApplication = await decodeCredentialApplication(application)
+
+    const fulfillment = await buildAndSignFulfillment(
+      issuer,
+      decodedApplication,
+      revocationListFixture,
+      creditScoreAttestation(200) // 200 lower than required 400
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(
+      fulfillment.presentation
+    )
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const kycRequest = generateCreditScoreVerificationRequest(
+      verifierDidKey.controller,
+      "https://test.host/verify",
+      verifierDidKey.controller,
+      "https://other.host/callback",
+      [issuer.did],
+      400 // minimum credit score required
+    )
+
+    const submission = await createVerificationSubmission(
+      clientDidKey,
+      kycRequest.presentation_definition,
+      clientVC
+    )
+
+    const result = await processVerificationSubmission(
+      submission,
+      kycRequest.presentation_definition
+    )
+
+    expect(result.accepted()).toBe(false)
+    expect(result.errors()[0].details).toEqual(
+      "Credential did not match constraint: We can only verify Credit Score credentials that are above 400."
     )
   })
 
