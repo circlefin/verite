@@ -12,7 +12,6 @@ import type {
   W3CPresentation,
   Verifiable,
   RevocableCredential,
-  ValidationFailure,
   PathEvaluation
 } from "../../types"
 import { decodeCredentialApplication } from "../credential-application-fns"
@@ -26,54 +25,8 @@ import {
 } from "./Matches"
 import { ProcessedCredentialApplication } from "./ProcessedCredentialApplication"
 import { ProcessedVerificationSubmission } from "./ProcessedVerificationSubmission"
-import { vcSchema, vpSchema } from "./schemas"
 
 const ajv = new Ajv()
-
-function ajvErrorToVerificationFailures(
-  errors?: Ajv.ErrorObject[] | null
-): ValidationError[] {
-  if (!errors) {
-    return []
-  }
-
-  const convertedErrors = errors.map((e) => {
-    return new ValidationError(
-      `${e.keyword} json schema validation failure`,
-      `${e.dataPath ? e.dataPath : "input"} ${e.message}`
-    )
-  })
-
-  return convertedErrors
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function validateSchema(
-  input: Verifiable<W3CCredential | W3CPresentation>,
-  schema: Record<string, unknown>,
-  errors: ValidationFailure[]
-): boolean {
-  const validate = ajv.compile(schema)
-  const valid = validate(input)
-  if (!valid) {
-    errors.push(...ajvErrorToVerificationFailures(validate.errors))
-  }
-  return valid as boolean
-}
-
-export function validateVc(
-  vc: Verifiable<W3CCredential>,
-  errors: ValidationFailure[]
-): boolean {
-  return validateSchema(vc, vcSchema, errors)
-}
-
-export function validateVp(
-  vp: Verifiable<W3CPresentation>,
-  errors: ValidationFailure[]
-): boolean {
-  return validateSchema(vp, vpSchema, errors)
-}
 
 export function validateInputDescriptors(
   creds: Map<string, Verifiable<W3CCredential>[]>,
