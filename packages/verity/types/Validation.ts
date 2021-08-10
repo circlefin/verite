@@ -9,7 +9,7 @@ export type PathEvaluation = {
   value?: any
 }
 
-export type RuleEvaluationResult = {
+type RuleEvaluationResult = {
   constraint: any
   match?: PathEvaluation
   failures?: PathEvaluation[]
@@ -29,9 +29,4 @@ export type ValidationFailure = {
   message: string
   details: string
   detailedResults?: RuleEvaluationResult[]
-}
-
-export type EvalationResults = {
-  errors?: ValidationFailure[]
-  matches?: RuleEvaluationResult[]
 }
