@@ -141,6 +141,8 @@ export async function processVerificationSubmission(
     presentation
   }
 
+  await ensureNotRevoked(presentation)
+
   const mapped = mapInputsToDescriptors(converted, definition)
 
   // check conforms to expected schema: disabled for now
@@ -160,8 +162,6 @@ export async function processVerificationSubmission(
     definition.input_descriptors
   )
 
-  await ensureNotRevoked(presentation)
-
   return new ProcessedVerificationSubmission(
     converted.presentation,
     evaluations,
@@ -172,12 +172,12 @@ export async function processVerificationSubmission(
 async function ensureNotRevoked(
   presentation: Verifiable<W3CPresentation>
 ): Promise<void> {
-  const credentials =
-    (presentation.verifiableCredential as RevocableCredential[]) || []
-
-  const anyRevoked = await asyncSome(credentials, async (credential) => {
-    return isRevoked(credential)
-  })
+  const anyRevoked = await asyncSome(
+    presentation.verifiableCredential || [],
+    async (credential) => {
+      return isRevoked(credential)
+    }
+  )
 
   if (anyRevoked) {
     throw new ValidationError(
