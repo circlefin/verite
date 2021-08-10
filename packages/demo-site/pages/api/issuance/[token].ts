@@ -45,8 +45,6 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   const credentialApplication: EncodedCredentialApplication = req.body
 
   // Validate the format of the Verifiable Presentation.
-  // TODO: This validation step is largely unnecessary, as the Verifiable
-  // Presentation is empty. We simply need to validate the signature.
   const manifest = await findManifestById(
     getManifestIdFromCredentialApplication(credentialApplication)
   )

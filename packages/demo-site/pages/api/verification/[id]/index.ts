@@ -1,7 +1,4 @@
-import {
-  validateVerificationSubmission,
-  verificationRequestWrapper
-} from "@centre/verity"
+import { verificationRequestWrapper } from "@centre/verity"
 import type { VerificationRequestWrapper } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findVerificationRequest } from "../../../../lib/database/verificationRequests"

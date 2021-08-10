@@ -1,11 +1,11 @@
-import { validateVerificationSubmission } from "@centre/verity"
+import { processVerificationSubmission } from "@centre/verity"
 import type { EncodedVerificationSubmission } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import {
   findVerificationRequest,
   updateVerificationRequestStatus
 } from "../../../../lib/database/verificationRequests"
-import { NotFoundError } from "../../../../lib/errors"
+import { NotFoundError, ProcessingError } from "../../../../lib/errors"
 
 type PostResponse = { status: string }
 
@@ -27,11 +27,14 @@ export default apiHandler<PostResponse>(async (req, res) => {
   }
 
   try {
-    // TODO: Verify submission matches VerificationRequest (e.g. id check?)
-    await validateVerificationSubmission(
+    const processedSubmission = await processVerificationSubmission(
       submission,
       verificationRequest.presentation_definition
     )
+
+    if (!processedSubmission.accepted()) {
+      throw new ProcessingError(processedSubmission.errors())
+    }
   } catch (err) {
     await updateVerificationRequestStatus(
       verificationRequest.request.id,

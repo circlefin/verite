@@ -79,8 +79,12 @@ describe("POST /issuance/[token]", () => {
     expect(res.statusCode).toBe(405)
     expect(res._getJSONData()).toEqual({
       status: 405,
-      message: "Method not allowed",
-      details: "Only POST requests are allowed"
+      errors: [
+        {
+          message: "Method not allowed",
+          details: "Only POST requests are allowed"
+        }
+      ]
     })
   })
 
@@ -96,7 +100,11 @@ describe("POST /issuance/[token]", () => {
     expect(res.statusCode).toBe(404)
     expect(res._getJSONData()).toEqual({
       status: 404,
-      message: "Not found"
+      errors: [
+        {
+          message: "Not found"
+        }
+      ]
     })
   })
 

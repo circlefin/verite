@@ -7,7 +7,7 @@ import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validateCredentialApplication"
-import { validateVerificationSubmission } from "../../lib/validators/validateVerificationSubmission"
+import { processVerificationSubmission } from "../../lib/validators/validators"
 import { generateKycVerificationRequest } from "../../lib/verification-requests"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
@@ -46,7 +46,7 @@ describe("verification", () => {
     ])
 
     // 4. VERIFIER: Verifies submission
-    const result = await validateVerificationSubmission(
+    const result = await processVerificationSubmission(
       submission,
       kycRequest.presentation_definition
     )
