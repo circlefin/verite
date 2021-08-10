@@ -80,6 +80,7 @@ function validateInputDescriptors(
               break
             }
           }
+
           return new CredentialResults(cred, fieldChecks)
         })
       )

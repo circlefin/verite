@@ -7,7 +7,8 @@ import {
   generateKycVerificationRequest,
   randomDidKey,
   validateCredentialApplication,
-  decodeCredentialApplication
+  decodeCredentialApplication,
+  generateCreditScoreVerificationRequest
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
@@ -31,9 +32,8 @@ describe("POST /verification/[id]/submission", () => {
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
-    const clientVC = await generateVc(clientDidKey)
+    const clientVC = await generateKycAmlVc(clientDidKey)
 
-    // 3. CLIENT: Create verification submission (wraps a presentation submission)
     const submission = await createVerificationSubmission(
       clientDidKey,
       verificationRequest.presentation_definition,
@@ -57,10 +57,55 @@ describe("POST /verification/[id]/submission", () => {
     )
     expect(status).toBe("approved")
   })
+
+  it("rejects and returns errors on an invalid input", async () => {
+    const verificationRequest = generateCreditScoreVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/submission`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/callback`
+    )
+    await saveVerificationRequest(verificationRequest)
+    const clientDidKey = await randomDidKey()
+    const clientVC = await generateKycAmlVc(clientDidKey)
+
+    const submission = await createVerificationSubmission(
+      clientDidKey,
+      verificationRequest.presentation_definition,
+      clientVC
+    )
+
+    const { req, res } = createMocks({
+      method: "POST",
+      query: { id: verificationRequest.request.id },
+      body: submission
+    })
+
+    await handler(req, res)
+
+    expect(res.statusCode).toBe(400)
+    const response = res._getJSONData()
+    expect(response).toEqual({
+      status: 400,
+      errors: [
+        {
+          message:
+            "Credential failed to meet criteria specified by input descriptor creditScore_input",
+          details:
+            "Credential did not match constraint: The Credit Score Attestation requires the field: 'score'."
+        }
+      ]
+    })
+
+    const status = await fetchVerificationRequestStatus(
+      verificationRequest.request.id
+    )
+    expect(status).toBe("rejected")
+  })
 })
 
 // TODO: This block should be easier to repro
-async function generateVc(clientDidKey: DidKey) {
+async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLAttestation")
   const user = await userFactory({
     jumioScore: 55,

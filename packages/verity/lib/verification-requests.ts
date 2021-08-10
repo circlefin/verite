@@ -27,7 +27,7 @@ export function kycPresentationDefinition(
         `$.vc.credentialSubject.KYCAMLAttestation.${key}`,
         `$.KYCAMLAttestation.${key}`
       ],
-      purpose: `The KYC/AML Attestation is missing the field: '${key}'.`,
+      purpose: `The KYC/AML Attestation requires the field: '${key}'.`,
       predicate: "required",
       filter: {
         type: requiredFields[key]
@@ -125,7 +125,7 @@ function creditScorePresentationDefinition(
         `$.vc.credentialSubject.CreditScoreAttestation.${key}`,
         `$.CreditScoreAttestation.${key}`
       ],
-      purpose: `The Credit Score Attestation is missing the field: '${key}'.`,
+      purpose: `The Credit Score Attestation requires the field: '${key}'.`,
       predicate: "required",
       filter: {
         type: requiredFields[key]

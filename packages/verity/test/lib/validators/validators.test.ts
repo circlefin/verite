@@ -239,7 +239,7 @@ describe("Submission validator", () => {
 
     expect(result.accepted()).toBe(false)
     expect(result.errors()[0].details).toEqual(
-      "Credential did not match constraint: The Credit Score Attestation is missing the field: 'score'."
+      "Credential did not match constraint: The Credit Score Attestation requires the field: 'score'."
     )
   })
 

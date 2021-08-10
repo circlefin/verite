@@ -1,8 +1,12 @@
 import { promisify } from "util"
-import { ValidationError, VerificationError } from "@centre/verity/dist"
+import {
+  ValidationError,
+  ValidationFailure,
+  VerificationError
+} from "@centre/verity/dist"
 import Cors from "cors"
 import { NextApiHandler, NextApiRequest } from "next"
-import { MethodNotAllowedError } from "./errors"
+import { MethodNotAllowedError, ProcessingError } from "./errors"
 
 const cors = promisify(
   Cors({
@@ -10,10 +14,20 @@ const cors = promisify(
   })
 )
 
-type ApiErrorResponse = {
-  status: number
+type ApiError = {
   message: string
   details?: string
+}
+
+type ApiErrorResponse = {
+  status: number
+  errors: ApiError[]
+}
+
+type AnyError = Error & {
+  status?: number
+  details?: string
+  failures?: ValidationFailure[]
 }
 
 /**
@@ -50,19 +64,36 @@ export function apiHandler<T>(
       await handler(req, res)
     } catch (e) {
       const status = errorStatusCode(e)
-      const message = e.message || "Something went wrong"
-      const details = e.details
-
-      res.status(status).json({
-        status,
-        message,
-        details
-      })
+      res.status(status).json(apiError(e))
     }
   }
 }
 
-function errorStatusCode(error): number {
+function apiError(error: AnyError): ApiErrorResponse {
+  if (error instanceof ProcessingError) {
+    return {
+      status: error.status,
+      errors: error.failures.map((failure) => {
+        return {
+          message: failure.message,
+          details: failure.details
+        }
+      })
+    }
+  } else {
+    return {
+      status: errorStatusCode(error),
+      errors: [
+        {
+          message: error.message || "Something went wrong",
+          details: error.details
+        }
+      ]
+    }
+  }
+}
+
+function errorStatusCode(error: AnyError): number {
   if (error.status) {
     return error.status
   }

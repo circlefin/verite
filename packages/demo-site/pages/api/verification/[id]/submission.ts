@@ -5,7 +5,7 @@ import {
   findVerificationRequest,
   updateVerificationRequestStatus
 } from "../../../../lib/database/verificationRequests"
-import { NotFoundError } from "../../../../lib/errors"
+import { NotFoundError, ProcessingError } from "../../../../lib/errors"
 
 type PostResponse = { status: string }
 
@@ -27,10 +27,14 @@ export default apiHandler<PostResponse>(async (req, res) => {
   }
 
   try {
-    await processVerificationSubmission(
+    const processedSubmission = await processVerificationSubmission(
       submission,
       verificationRequest.presentation_definition
     )
+
+    if (!processedSubmission.accepted()) {
+      throw new ProcessingError(processedSubmission.errors())
+    }
   } catch (err) {
     await updateVerificationRequestStatus(
       verificationRequest.request.id,
