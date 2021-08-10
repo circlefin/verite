@@ -9,12 +9,11 @@ import type {
   W3CCredential,
   W3CPresentation,
   Verifiable,
-  RevocableCredential,
   PathEvaluation
 } from "../../types"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation, hasPaths } from "../utils"
+import { asyncSome, decodeVerifiablePresentation } from "../utils"
 import {
   CredentialResults,
   FieldConstraintEvaluation,
@@ -24,7 +23,7 @@ import { ProcessedVerificationSubmission } from "./ProcessedVerificationSubmissi
 
 const ajv = new Ajv()
 
-export function validateInputDescriptors(
+function validateInputDescriptors(
   creds: Map<string, Verifiable<W3CCredential>[]>,
   descriptors?: InputDescriptor[]
 ): ValidationCheck[] {
@@ -94,56 +93,37 @@ function mapInputsToDescriptors(
   submission: DecodedVerificationSubmission | DecodedCredentialApplication,
   definition?: PresentationDefinition
 ) {
-  const result = new Map<string, Verifiable<W3CCredential>[]>()
-  if (!definition || !submission.presentation_submission) {
-    return result
-  }
+  const descriptorMap = submission.presentation_submission?.descriptor_map || []
 
-  return submission.presentation_submission.descriptor_map.reduce((map, d) => {
-    const match = definition.input_descriptors.find((id) => id.id === d.id)
+  return descriptorMap.reduce((map, d) => {
+    const match = definition?.input_descriptors.find((id) => id.id === d.id)
+
     if (!match) {
       return map
     }
 
-    const values = jsonpath.query(submission, d.path)
-    map.set(match.schema[0].uri, values)
-    return map
-  }, result)
+    const credentials = jsonpath.query(submission, d.path)
+    return map.set(match.schema[0].uri, credentials)
+  }, new Map<string, Verifiable<W3CCredential>[]>())
 }
 
+/**
+ * Validate a verifiable presentation against a presentation definition
+ */
 export async function processVerificationSubmission(
   submission: EncodedVerificationSubmission,
   definition: PresentationDefinition
 ): Promise<ProcessedVerificationSubmission> {
-  /**
-   * Ensure there is a valid presentation definition
-   */
-  if (!definition) {
-    throw new ValidationError(
-      "Invalid Presentation Definition ID",
-      "This issuer doesn't accept submissions associated with the presentation definition id"
-    )
-  }
-
-  if (!hasPaths(submission, ["presentation_submission", "presentation"])) {
-    throw new ValidationError(
-      "Missing required paths in Credential Application",
-      "Input doesn't have the required format for a Credential Application"
-    )
-  }
-
   const presentation = await decodeVerifiablePresentation(
     submission.presentation
   )
 
-  const converted: DecodedVerificationSubmission = {
+  const decoded: DecodedVerificationSubmission = {
     presentation_submission: submission.presentation_submission,
     presentation
   }
 
   await ensureNotRevoked(presentation)
-
-  const mapped = mapInputsToDescriptors(converted, definition)
 
   // check conforms to expected schema: disabled for now
   /*
@@ -158,17 +138,20 @@ export async function processVerificationSubmission(
   */
 
   const evaluations = validateInputDescriptors(
-    mapped,
+    mapInputsToDescriptors(decoded, definition),
     definition.input_descriptors
   )
 
   return new ProcessedVerificationSubmission(
-    converted.presentation,
+    decoded.presentation,
     evaluations,
-    converted.presentation_submission
+    decoded.presentation_submission
   )
 }
 
+/**
+ * Ensure all credentials in a verifiable presentation are not revoked
+ */
 async function ensureNotRevoked(
   presentation: Verifiable<W3CPresentation>
 ): Promise<void> {
