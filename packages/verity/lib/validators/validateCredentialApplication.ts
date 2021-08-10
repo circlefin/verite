@@ -1,4 +1,5 @@
 import { CredentialManifest, EncodedCredentialApplication } from "../../types"
+import { getManifestIdFromCredentialApplication } from "../credential-application-fns"
 import { ValidationError } from "../errors"
 import { hasPaths } from "../utils/has-paths"
 
@@ -16,6 +17,13 @@ export async function validateCredentialApplication(
     throw new ValidationError(
       "Invalid Manifest ID",
       "This issuer doesn't issue credentials for the specified Manifest ID"
+    )
+  }
+
+  if (getManifestIdFromCredentialApplication(application) !== manifest.id) {
+    throw new ValidationError(
+      "Invalid Manifest ID",
+      "This application does not include a valid manifest id"
     )
   }
 
