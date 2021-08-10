@@ -1,4 +1,4 @@
-import { validateVerificationSubmission } from "@centre/verity"
+import { processVerificationSubmission } from "@centre/verity"
 import type { EncodedVerificationSubmission } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import {
@@ -27,8 +27,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
   }
 
   try {
-    // TODO: Verify submission matches VerificationRequest (e.g. id check?)
-    await validateVerificationSubmission(
+    await processVerificationSubmission(
       submission,
       verificationRequest.presentation_definition
     )

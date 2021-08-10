@@ -14,7 +14,7 @@ import type {
 } from "../../types"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation } from "../utils"
+import { asyncSome, decodeVerifiablePresentation, hasPaths } from "../utils"
 import {
   CredentialResults,
   FieldConstraintEvaluation,
@@ -115,6 +115,23 @@ export async function processVerificationSubmission(
   submission: EncodedVerificationSubmission,
   definition: PresentationDefinition
 ): Promise<ProcessedVerificationSubmission> {
+  /**
+   * Ensure there is a valid presentation definition
+   */
+  if (!definition) {
+    throw new ValidationError(
+      "Invalid Presentation Definition ID",
+      "This issuer doesn't accept submissions associated with the presentation definition id"
+    )
+  }
+
+  if (!hasPaths(submission, ["presentation_submission", "presentation"])) {
+    throw new ValidationError(
+      "Missing required paths in Credential Application",
+      "Input doesn't have the required format for a Credential Application"
+    )
+  }
+
   const presentation = await decodeVerifiablePresentation(
     submission.presentation
   )
