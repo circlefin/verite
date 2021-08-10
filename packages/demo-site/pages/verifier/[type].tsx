@@ -142,7 +142,7 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
   )
 }
 
-function ScanView({ status, verification }): JSX.Element {
+function ScanView({ result, status, verification }): JSX.Element {
   const { qrCodeData, challenge } = verification
   return (
     <>
@@ -172,7 +172,21 @@ function ScanView({ status, verification }): JSX.Element {
         </>
       ) : null}
 
-      {status === "approved" ? <p>Your credential is verified.</p> : null}
+      {status === "approved" ? (
+        <>
+          <p>Your credential is verified.</p>
+
+          {result ? (
+            <>
+              <p>
+                The following verification result is returned and can be used in
+                a smart contract.
+              </p>
+              <pre>{JSON.stringify(result, null, 4)}</pre>
+            </>
+          ) : null}
+        </>
+      ) : null}
 
       {status === "rejected" ? <p>Your credential was not verified.</p> : null}
 
@@ -205,6 +219,7 @@ const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
     { refreshInterval: 1000 }
   )
   const status = data && data.status
+  const result = data && data.result
 
   let title: string
   if (type === "kyc") {
@@ -231,7 +246,11 @@ const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
         ) : null}
 
         {verification ? (
-          <ScanView verification={verification} status={status} />
+          <ScanView
+            verification={verification}
+            status={status}
+            result={result}
+          />
         ) : null}
       </div>
     </VerifierLayout>

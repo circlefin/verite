@@ -1,4 +1,9 @@
-import { processVerificationSubmission } from "@centre/verity"
+import {
+  processVerificationSubmission,
+  VerificationInfo,
+  VerificationInfoResponse,
+  verificationRequestWrapper
+} from "@centre/verity"
 import type { EncodedVerificationSubmission } from "@centre/verity"
 import { ethers, Wallet } from "ethers"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
@@ -8,19 +13,7 @@ import {
 } from "../../../../lib/database/verificationRequests"
 import { NotFoundError, ProcessingError } from "../../../../lib/errors"
 
-export type VerificationInfo = {
-  credentialType: string
-  message: string
-  expiration: number
-  subjectAddress: string
-}
-
-export type VerificationInfoResponse = {
-  verificationInfo: VerificationInfo
-  signature: string
-}
-
-type PostResponse = { status: string } | VerificationInfoResponse
+type PostResponse = { status: string; result?: VerificationInfoResponse }
 
 /**
  * POST request handler
@@ -57,20 +50,25 @@ export default apiHandler<PostResponse>(async (req, res) => {
     throw err
   }
 
-  await updateVerificationRequestStatus(
-    verificationRequest.request.id,
-    "approved"
-  )
-
   // If a subjectAddress and contractAddress are given, we will return a
   // verification result suitable for the ETH network
   const subjectAddress = req.query.subjectAddress as string
   const contractAddress = req.query.contractAddress as string
+  let result: VerificationInfoResponse
   if (subjectAddress && contractAddress) {
-    const result = await verificationResult(subjectAddress, contractAddress)
-    res.json(result)
+    result = await verificationResult(subjectAddress, contractAddress)
+  }
+
+  await updateVerificationRequestStatus(
+    verificationRequest.request.id,
+    "approved",
+    result
+  )
+
+  if (result) {
+    res.json({ status: "approved", result })
   } else {
-    res.json({ status: "ok" })
+    res.json({ status: "approved" })
   }
 })
 

@@ -36,4 +36,5 @@ model VerificationRequest {
   id      String @id @default(uuid())
   payload String
   status  String @default("pending")
+  result  String?
 }
