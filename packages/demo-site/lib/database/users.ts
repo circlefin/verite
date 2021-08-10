@@ -13,7 +13,11 @@ export async function allUsers(): Promise<User[]> {
   })
 }
 
-export async function findUser(id: string): Promise<User | undefined> {
+export async function findUser(id?: string): Promise<User | undefined> {
+  if (!id) {
+    return
+  }
+
   return prisma.user.findUnique({
     where: { id }
   })

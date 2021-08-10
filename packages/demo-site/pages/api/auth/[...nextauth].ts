@@ -2,7 +2,7 @@
 
 import NextAuth from "next-auth"
 import Providers from "next-auth/providers"
-import { User } from "../../../lib/database"
+import { findUser, User } from "../../../lib/database"
 import { authenticateUser } from "../../../lib/database"
 
 type Credentials = {
@@ -27,13 +27,19 @@ export default NextAuth({
   session: { jwt: true },
   callbacks: {
     async session(session, jwtUser) {
+      const user = await findUser(jwtUser.uid as string)
+
+      if (!user) {
+        return Promise.reject()
+      }
+
       // @ts-ignore
-      session.user.id = jwtUser.uid
+      session.user.id = user.id
       // @ts-ignore
-      session.user.role = jwtUser.role
+      session.user.role = user.role
       return Promise.resolve(session)
     },
-    jwt: async (token, user: User) => {
+    jwt: async (token, user?: User) => {
       if (user) {
         token.uid = user.id
         token.role = user.role
