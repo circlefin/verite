@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "sqlite"
-  url      = "file:/tmp/database.db"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -11,7 +11,7 @@ generator client {
 }
 
 model Credential {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   userId    String
   jwt       String
   createdAt DateTime @default(now())

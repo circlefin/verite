@@ -1,5 +1,4 @@
 import { asyncMap, buildIssuer, generateRevocationList } from "@centre/verity"
-import { loadEnvConfig } from "@next/env"
 import { PrismaClient, User } from "@prisma/client"
 import { v4 as uuidv4 } from "uuid"
 import { saveRevocationList } from "../lib/database"
@@ -28,8 +27,6 @@ const users: UserInput[] = [
 ]
 
 async function main() {
-  loadEnvConfig(process.cwd(), /* dev: */ true)
-
   await asyncMap(users, async (user) => {
     console.info(`Creating user ${user.email}...`)
     return prisma.user.create({
