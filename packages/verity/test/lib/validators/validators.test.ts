@@ -51,7 +51,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const kycRequest = generateKycVerificationRequest(
+    const verificationRequest = generateKycVerificationRequest(
       verifierDidKey.controller,
       "https://test.host/verify",
       verifierDidKey.controller,
@@ -61,13 +61,13 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      kycRequest.presentation_definition,
+      verificationRequest.presentation_definition,
       clientVC
     )
 
     const result = await processVerificationSubmission(
       submission,
-      kycRequest.presentation_definition
+      verificationRequest.presentation_definition
     )
 
     expect(result.accepted()).toBe(true)
@@ -79,8 +79,16 @@ describe("Submission validator", () => {
     expect(results).toHaveLength(1)
     const match = results[0]
     expect(match.inputDescriptorId).toEqual("kycaml_input")
-    expect(match.results).toHaveLength(1)
-    expect(match.results[0].match!.path).toEqual("$.issuer.id")
+    expect(match.results).toHaveLength(3)
+
+    const expectedPaths = [
+      "$.issuer.id",
+      "$.credentialSubject.KYCAMLAttestation.authorityId",
+      "$.credentialSubject.KYCAMLAttestation.approvalDate"
+    ]
+    expectedPaths.forEach((path) => {
+      expect(match.results.some((r) => r.match!.path === path)).toBe(true)
+    })
   })
 
   it("rejects if the issuer is not trusted", async () => {
@@ -108,7 +116,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const kycRequest = generateKycVerificationRequest(
+    const verificationRequest = generateKycVerificationRequest(
       verifierDidKey.controller,
       "https://test.host/verify",
       verifierDidKey.controller,
@@ -118,18 +126,18 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      kycRequest.presentation_definition,
+      verificationRequest.presentation_definition,
       clientVC
     )
 
     const result = await processVerificationSubmission(
       submission,
-      kycRequest.presentation_definition
+      verificationRequest.presentation_definition
     )
 
     expect(result.accepted()).toBe(false)
     expect(result.errors()[0].details).toEqual(
-      "Credential did not match constraint: We can only verify KYC credentials attested by a trusted authority."
+      "Credential did not match constraint: We can only verify KYC/AML credentials attested by a trusted authority."
     )
   })
 
@@ -158,7 +166,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const kycRequest = generateCreditScoreVerificationRequest(
+    const verificationRequest = generateCreditScoreVerificationRequest(
       verifierDidKey.controller,
       "https://test.host/verify",
       verifierDidKey.controller,
@@ -169,18 +177,69 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      kycRequest.presentation_definition,
+      verificationRequest.presentation_definition,
       clientVC
     )
 
     const result = await processVerificationSubmission(
       submission,
-      kycRequest.presentation_definition
+      verificationRequest.presentation_definition
     )
 
     expect(result.accepted()).toBe(false)
     expect(result.errors()[0].details).toEqual(
       "Credential did not match constraint: We can only verify Credit Score credentials that are above 400."
+    )
+  })
+
+  it("rejects if the submission includes a KYC credential when a Credit Score is required", async () => {
+    const clientDidKey = await randomDidKey()
+    const verifierDidKey = await randomDidKey()
+    const { manifest, issuer } = await generateManifestAndIssuer("kyc")
+    const application = await createCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+
+    await validateCredentialApplication(application, manifest)
+
+    const decodedApplication = await decodeCredentialApplication(application)
+
+    const fulfillment = await buildAndSignFulfillment(
+      issuer,
+      decodedApplication,
+      revocationListFixture,
+      kycAmlAttestation([])
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(
+      fulfillment.presentation
+    )
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    // Generate Credit Score Request, even though we have a KYC credential
+    const verificationRequest = generateCreditScoreVerificationRequest(
+      verifierDidKey.controller,
+      "https://test.host/verify",
+      verifierDidKey.controller,
+      "https://other.host/callback",
+      [issuer.did]
+    )
+
+    const submission = await createVerificationSubmission(
+      clientDidKey,
+      verificationRequest.presentation_definition,
+      clientVC
+    )
+
+    const result = await processVerificationSubmission(
+      submission,
+      verificationRequest.presentation_definition
+    )
+
+    expect(result.accepted()).toBe(false)
+    expect(result.errors()[0].details).toEqual(
+      "Credential did not match constraint: The Credit Score Attestation is missing the field: 'score'."
     )
   })
 

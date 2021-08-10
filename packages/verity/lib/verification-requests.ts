@@ -1,14 +1,52 @@
-import { compact } from "lodash"
 import { v4 as uuidv4 } from "uuid"
-import { InputDescriptorConstraintStatusDirective } from "../types"
+import {
+  InputDescriptorConstraintField,
+  InputDescriptorConstraintStatusDirective
+} from "../types"
 import type { PresentationDefinition, VerificationRequest } from "../types"
 
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 const KYC_PRESENTATION_DEFINITION_ID = "KYCAMLPresentationDefinition"
+const CREDIT_SCORE_PRESENTATION_DEFINITION_ID =
+  "CreditScorePresentationDefinition"
 
 export function kycPresentationDefinition(
   trustedAuthorities: string[] = []
 ): PresentationDefinition {
+  const requiredFields: Record<string, string> = {
+    authorityId: "string",
+    approvalDate: "string"
+  }
+
+  const fields: InputDescriptorConstraintField[] = Object.keys(
+    requiredFields
+  ).map((key) => {
+    return {
+      path: [
+        `$.credentialSubject.KYCAMLAttestation.${key}`,
+        `$.vc.credentialSubject.KYCAMLAttestation.${key}`,
+        `$.KYCAMLAttestation.${key}`
+      ],
+      purpose: `The KYC/AML Attestation is missing the field: '${key}'.`,
+      predicate: "required",
+      filter: {
+        type: requiredFields[key]
+      }
+    }
+  })
+
+  if (trustedAuthorities.length > 0) {
+    fields.push({
+      path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"],
+      purpose:
+        "We can only verify KYC/AML credentials attested by a trusted authority.",
+      filter: {
+        type: "string",
+        pattern: trustedAuthorities.join("|")
+      }
+    })
+  }
+
   return {
     id: KYC_PRESENTATION_DEFINITION_ID,
     input_descriptors: [
@@ -28,21 +66,7 @@ export function kycPresentationDefinition(
               directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
-          fields: [
-            {
-              path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"],
-              purpose:
-                "We can only verify KYC credentials attested by a trusted authority.",
-              filter: {
-                type: "string",
-                pattern: compact([
-                  "did:web:verity.id",
-                  "did:web:coinbase.com",
-                  ...trustedAuthorities
-                ]).join("|")
-              }
-            }
-          ]
+          fields
         }
       }
     ]
@@ -84,10 +108,60 @@ export const generateKycVerificationRequest = (
 
 function creditScorePresentationDefinition(
   trustedAuthorities: string[] = [],
-  minimumCreditScore = 0
+  minimumCreditScore?: number
 ): PresentationDefinition {
+  const requiredFields: Record<string, string> = {
+    score: "number",
+    scoreType: "string",
+    provider: "string"
+  }
+
+  const fields: InputDescriptorConstraintField[] = Object.keys(
+    requiredFields
+  ).map((key) => {
+    return {
+      path: [
+        `$.credentialSubject.CreditScoreAttestation.${key}`,
+        `$.vc.credentialSubject.CreditScoreAttestation.${key}`,
+        `$.CreditScoreAttestation.${key}`
+      ],
+      purpose: `The Credit Score Attestation is missing the field: '${key}'.`,
+      predicate: "required",
+      filter: {
+        type: requiredFields[key]
+      }
+    }
+  })
+
+  if (trustedAuthorities.length > 0) {
+    fields.push({
+      path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"],
+      purpose:
+        "We can only verify Credit Score credentials attested by a trusted authority.",
+      filter: {
+        type: "string",
+        pattern: trustedAuthorities.join("|")
+      }
+    })
+  }
+
+  if (minimumCreditScore) {
+    fields.push({
+      path: [
+        "$.credentialSubject.CreditScoreAttestation.score",
+        "$.vc.credentialSubject.CreditScoreAttestation.score",
+        "$.CreditScoreAttestation.score"
+      ],
+      purpose: `We can only verify Credit Score credentials that are above ${minimumCreditScore}.`,
+      filter: {
+        type: "number",
+        exclusiveMinimum: minimumCreditScore
+      }
+    })
+  }
+
   return {
-    id: KYC_PRESENTATION_DEFINITION_ID,
+    id: CREDIT_SCORE_PRESENTATION_DEFINITION_ID,
     input_descriptors: [
       {
         id: "creditScore_input",
@@ -105,33 +179,7 @@ function creditScorePresentationDefinition(
               directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
-          fields: [
-            {
-              path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"],
-              purpose:
-                "We can only verify Credit Score credentials attested by a trusted authority.",
-              filter: {
-                type: "string",
-                pattern: compact([
-                  "did:web:verity.id",
-                  "did:web:coinbase.com",
-                  ...trustedAuthorities
-                ]).join("|")
-              }
-            },
-            {
-              path: [
-                "$.credentialSubject.CreditScoreAttestation[*].score",
-                "$.vc.credentialSubject.CreditScoreAttestation[*].score",
-                "$.CreditScoreAttestation[*].score"
-              ],
-              purpose: `We can only verify Credit Score credentials that are above ${minimumCreditScore}.`,
-              filter: {
-                type: "number",
-                exclusiveMinimum: minimumCreditScore
-              }
-            }
-          ]
+          fields
         }
       }
     ]
@@ -144,7 +192,7 @@ export const generateCreditScoreVerificationRequest = (
   replyTo: string,
   callbackUrl?: string,
   trustedAuthorities: string[] = [],
-  minimumCreditScore = 0,
+  minimumCreditScore?: number,
   id = uuidv4()
 ): VerificationRequest => {
   const now = Date.now()
