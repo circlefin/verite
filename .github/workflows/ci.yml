@@ -17,8 +17,6 @@ jobs:
           node-version: "16"
           cache: "npm"
       - run: npm install
-      - run: npm run db:migrate
-      - run: npm run db:seed
       - run: npm run build:verity
       - run: npm run lint
       - run: npm run type-check

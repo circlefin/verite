@@ -73,8 +73,8 @@ async function getClientVerifiableCredential(
   const fulfillment = await buildAndSignFulfillment(
     issuer,
     decodedApplication,
-    revocationListFixture,
-    kycAmlAttestationFixture
+    kycAmlAttestationFixture,
+    revocationListFixture
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(

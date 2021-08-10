@@ -17,7 +17,7 @@ import {
   generateRevocationListStatus,
   saveVerificationRequest
 } from "../../../../../lib/database"
-import { fulfillmentDataForUser } from "../../../../../lib/issuance/fulfillment"
+import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
 import handler from "../../../../../pages/api/verification/[id]/submission"
 import { userFactory } from "../../../../../test/factories"
@@ -169,8 +169,8 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     decodedApplication,
-    await generateRevocationListStatus(),
-    fulfillmentDataForUser(user, manifest)
+    buildAttestationForUser(user, manifest),
+    await generateRevocationListStatus()
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(

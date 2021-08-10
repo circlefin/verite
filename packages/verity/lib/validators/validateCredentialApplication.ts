@@ -1,4 +1,4 @@
-import { CredentialManifest, EncodedCredentialApplication } from "../../types"
+import { CredentialManifest, GenericCredentialApplication } from "../../types"
 import { getManifestIdFromCredentialApplication } from "../credential-application-fns"
 import { ValidationError } from "../errors"
 import { hasPaths } from "../utils/has-paths"
@@ -10,7 +10,7 @@ import { hasPaths } from "../utils/has-paths"
  * @throws {ValidationError} If the credential application is invalid.
  */
 export async function validateCredentialApplication(
-  application: EncodedCredentialApplication,
+  application: GenericCredentialApplication,
   manifest?: CredentialManifest
 ): Promise<void> {
   if (!manifest) {

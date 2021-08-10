@@ -8,7 +8,7 @@ import {
 import type { CreditScoreAttestation, KYCAMLAttestation } from "@centre/verity"
 import type { User } from "../database"
 
-export function fulfillmentDataForUser(
+export function buildAttestationForUser(
   user: User,
   manifest: CredentialManifest
 ): KYCAMLAttestation | CreditScoreAttestation {

@@ -1,12 +1,15 @@
-import { RevocableCredential } from "@centre/verity/dist"
+import { MaybeRevocableCredential } from "@centre/verity"
 import { apiHandler } from "../../../lib/api-fns"
 import { findNewestCredential } from "../../../lib/database/credentials"
 import { NotFoundError } from "../../../lib/errors"
 
 type Resp = {
-  credential: RevocableCredential
+  credential: MaybeRevocableCredential
 }
 
+/**
+ * Load the lastest credentials
+ */
 export default apiHandler<Resp>(async (req, res) => {
   const createdAt = new Date(req.query.createdAt as string)
 

@@ -51,8 +51,7 @@ npm run site
 
 ## Sample Users
 
-To minimize dependencies, we use an in-memory data store in lieu of a database.
-The following users are added by default:
+The following users are added to the development environment by default:
 
 | id  | email          | password |
 | --- | -------------- | -------- |
@@ -67,7 +66,7 @@ Run tests by running
 npm run test
 ```
 
-**NOTE** Be sure to have built `verity` by running `npm run build:verity`
+**NOTE** Be sure to have built the `@centre/verity` package by running `npm run build:verity`.
 
 ## Developing
 

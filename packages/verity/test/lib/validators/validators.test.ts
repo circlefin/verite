@@ -42,8 +42,8 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      revocationListFixture,
-      kycAmlAttestation([])
+      kycAmlAttestation([]),
+      revocationListFixture
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(
@@ -107,8 +107,8 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      revocationListFixture,
-      kycAmlAttestation([])
+      kycAmlAttestation([]),
+      revocationListFixture
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(
@@ -157,8 +157,8 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      revocationListFixture,
-      creditScoreAttestation(200) // 200 lower than required 400
+      creditScoreAttestation(200), // 200 lower than required 400
+      revocationListFixture
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(
@@ -208,8 +208,8 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      revocationListFixture,
-      kycAmlAttestation([])
+      kycAmlAttestation([]),
+      revocationListFixture
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(

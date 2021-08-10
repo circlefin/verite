@@ -16,6 +16,7 @@
     "db:migrate": "npm run db:migrate --workspace @centre/demo-site",
     "db:reset": "npm run db:reset --workspace @centre/demo-site",
     "db:seed": "npm run db:seed --workspace @centre/demo-site",
+    "db:studio": "npm run db:studio --workspace @centre/demo-site",
     "dev": "run-p dev:verity dev:site",
     "dev:site": "npm run dev --workspace @centre/demo-site",
     "dev:verity": "npm run dev --workspace @centre/verity",

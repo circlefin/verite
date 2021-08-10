@@ -1,4 +1,6 @@
-import type {
+import {
+  isRevocable,
+  MaybeRevocableCredential,
   RevocableCredential,
   RevocationList2021Status,
   RevocationListCredential
@@ -6,27 +8,25 @@ import type {
 import {
   MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
-  decodeVerifiableCredential,
-  isRevocable
+  decodeVerifiableCredential
 } from "@centre/verity"
 import { random, sample } from "lodash"
-import { prisma, User } from "./prisma"
+import { prisma, User, Credential } from "./prisma"
 import { findUser } from "./users"
 
-export type DatabaseCredential = {
-  userId: string
-  credential: RevocableCredential
-}
+export type DecodedDatabaseCredential<T = MaybeRevocableCredential> =
+  Credential & {
+    credential: T
+  }
 
-export const storeRevocableCredential = async (
-  credentials: RevocableCredential[],
+/**
+ *
+ */
+export const storeCredentials = async (
+  credentials: Array<MaybeRevocableCredential>,
   userId: string
 ): Promise<void> => {
   await asyncMap(credentials, async (credential) => {
-    if (!isRevocable(credential)) {
-      return
-    }
-
     await prisma.credential.create({
       data: {
         userId,
@@ -36,6 +36,9 @@ export const storeRevocableCredential = async (
   })
 }
 
+/**
+ *
+ */
 export const allRevocationLists = async (): Promise<
   RevocationListCredential[]
 > => {
@@ -48,6 +51,9 @@ export const allRevocationLists = async (): Promise<
   })
 }
 
+/**
+ *
+ */
 export const findRevocationListForCredential = async (
   credential: RevocableCredential
 ): Promise<RevocationListCredential | undefined> => {
@@ -60,6 +66,9 @@ export const findRevocationListForCredential = async (
   return revocationLists.find((list) => list.id === url)
 }
 
+/**
+ *
+ */
 export const findUserByCredential = async (
   jwt: string
 ): Promise<User | undefined> => {
@@ -73,29 +82,28 @@ export const findUserByCredential = async (
   }
 }
 
+/**
+ *
+ */
 export const findCredentialsByUserId = async (
   userId: string
-): Promise<DatabaseCredential[]> => {
-  const result = await prisma.credential.findMany({
+): Promise<DecodedDatabaseCredential[]> => {
+  const records = await prisma.credential.findMany({
     where: {
       userId
     }
   })
 
-  return await asyncMap(result, async (r) => {
-    return {
-      userId: r.userId,
-      credential: (await decodeVerifiableCredential(
-        r.jwt
-      )) as RevocableCredential
-    }
-  })
+  return decodeDatabaseCredentials(records)
 }
 
+/**
+ *
+ */
 export const findCredentialsByUserIdAndType = async (
   userId: string,
   type: string
-): Promise<RevocableCredential[]> => {
+): Promise<MaybeRevocableCredential[]> => {
   const credentials = (await findCredentialsByUserId(userId))
     .filter((credential) => credential.credential.type[1] === type)
     .map((c) => c.credential)
@@ -111,7 +119,7 @@ export const findCredentialsByUserIdAndType = async (
  */
 export const findNewestCredential = async (
   createdAt: Date = new Date(0)
-): Promise<RevocableCredential | undefined> => {
+): Promise<MaybeRevocableCredential | undefined> => {
   const result = await prisma.credential.findFirst({
     where: {
       createdAt: {
@@ -122,31 +130,35 @@ export const findNewestCredential = async (
       createdAt: "desc"
     }
   })
+
   if (result) {
-    return (await decodeVerifiableCredential(result.jwt)) as RevocableCredential
+    return decodeVerifiableCredential(result.jwt)
   }
 }
 
+/**
+ *
+ */
 const findCredentialsByRevocationlist = async (
   revocationList: RevocationListCredential
-): Promise<DatabaseCredential[]> => {
-  const results = await prisma.credential.findMany()
+): Promise<DecodedDatabaseCredential<RevocableCredential>[]> => {
+  const records = await prisma.credential.findMany()
+  const decoded = await decodeDatabaseCredentials(records)
 
-  return (
-    await asyncMap(results, async (r) => {
-      return {
-        userId: r.userId,
-        credential: (await decodeVerifiableCredential(
-          r.jwt
-        )) as RevocableCredential
-      }
-    })
-  ).filter(
+  // Remove non-revocable credentials
+  const revocable = decoded.filter(({ credential }) =>
+    isRevocable(credential)
+  ) as DecodedDatabaseCredential<RevocableCredential>[]
+
+  return revocable.filter(
     ({ credential }) =>
       credential.credentialStatus.statusListCredential === revocationList.id
   )
 }
 
+/**
+ *
+ */
 export const getRevocationListById = async (
   id: string
 ): Promise<RevocationListCredential> => {
@@ -160,6 +172,9 @@ export const getRevocationListById = async (
   )) as RevocationListCredential
 }
 
+/**
+ *
+ */
 export const saveRevocationList = async (
   revocationList: RevocationListCredential
 ): Promise<void> => {
@@ -207,3 +222,16 @@ export const generateRevocationListStatus =
       }
     }
   }
+
+async function decodeDatabaseCredentials(
+  records: Credential[]
+): Promise<DecodedDatabaseCredential[]> {
+  return await asyncMap(records, async (record) => {
+    const decoded = await decodeVerifiableCredential(record.jwt)
+
+    return {
+      ...record,
+      credential: decoded
+    }
+  })
+}
