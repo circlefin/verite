@@ -1,4 +1,3 @@
-import { NotFoundError } from "@centre/demo-site/lib/errors"
 import {
   ChallengeTokenUrlWrapper,
   challengeTokenUrlWrapper,
@@ -9,6 +8,7 @@ import {
 import { v4 as uuidv4 } from "uuid"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { saveVerificationRequest } from "../../../lib/database/verificationRequests"
+import { NotFoundError } from "../../../lib/errors"
 
 type PostResponse = {
   challenge: Record<string, unknown>

@@ -3,6 +3,7 @@ import { has } from "lodash"
 import type {
   CredentialPayload,
   Issuer,
+  MaybeRevocableCredential,
   RevocableCredential,
   RevocationList,
   RevocationListCredential,
@@ -147,9 +148,14 @@ export const isRevoked = async (
  * @returns the encoded status list, if present
  */
 export async function fetchStatusList(
-  credential: RevocableCredential
+  credential: MaybeRevocableCredential
 ): Promise<RevocationListCredential | undefined> {
-  const url = credential.credentialStatus.statusListCredential
+  if (!isRevocable(credential)) {
+    return
+  }
+
+  const url = (credential as RevocableCredential).credentialStatus
+    .statusListCredential
 
   try {
     const response = await fetch(url)

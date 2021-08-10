@@ -63,6 +63,9 @@ export function apiHandler<T>(
       // Call the original API method
       await handler(req, res)
     } catch (e) {
+      if (process.env.NODE_ENV !== "test") {
+        console.error(e)
+      }
       const status = errorStatusCode(e)
       res.status(status).json(apiError(e))
     }

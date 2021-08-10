@@ -26,8 +26,8 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      revocationListFixture,
-      kycAmlAttestation([])
+      kycAmlAttestation([]),
+      revocationListFixture
     )
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(

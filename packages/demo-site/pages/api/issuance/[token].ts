@@ -1,15 +1,18 @@
 import {
   buildAndSignFulfillment,
+  CredentialManifest,
   decodeCredentialApplication,
-  EncodedCredentialApplication,
   EncodedCredentialFulfillment,
-  RevocableCredential
+  isRevocable,
+  RevocableCredential,
+  RevocationList2021Status
 } from "@centre/verity"
 import {
   buildIssuer,
   revokeCredential,
   decodeVerifiablePresentation,
   getManifestIdFromCredentialApplication,
+  requiresRevocableCredentials,
   validateCredentialApplication
 } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
@@ -19,10 +22,10 @@ import {
   saveRevocationList,
   findCredentialsByUserIdAndType,
   generateRevocationListStatus,
-  storeRevocableCredential
+  storeCredentials
 } from "../../../lib/database"
 import { NotFoundError } from "../../../lib/errors"
-import { fulfillmentDataForUser } from "../../../lib/issuance/fulfillment"
+import { buildAttestationForUser } from "../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../lib/manifest"
 
 /**
@@ -42,29 +45,25 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  const credentialApplication: EncodedCredentialApplication = req.body
+  // Decode the Verifiable Presentation and check the signature
+  const credentialApplication = await decodeCredentialApplication(req.body)
 
   // Validate the format of the Verifiable Presentation.
-  const manifest = await findManifestById(
-    getManifestIdFromCredentialApplication(credentialApplication)
-  )
-  await validateCredentialApplication(credentialApplication, manifest)
-
-  // Decode the Verifiable Presentation and check the signature
-  const decodedCredentialApplication = await decodeCredentialApplication(
+  const manifestId = getManifestIdFromCredentialApplication(
     credentialApplication
   )
+  const manifest = await findManifestById(manifestId)
+  await validateCredentialApplication(credentialApplication, manifest)
 
-  // Before we issue a new credential of this type to a user, revoke all their
-  // previous credentials of the same type.
-  await revokeUserCredentials(user, manifest.id)
+  // Build a revocation list and index if needed
+  const revocationList = await handleRevocationIfNecessary(user, manifest)
 
   // Generate new credentials for the user
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    decodedCredentialApplication,
-    await generateRevocationListStatus(),
-    fulfillmentDataForUser(user, manifest)
+    credentialApplication,
+    buildAttestationForUser(user, manifest),
+    revocationList
   )
 
   // Save the credentials to the database
@@ -74,32 +73,32 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
 })
 
 /**
- * Persist the verifiable credential to the database, associated with the user.
+ * If we are using revocable credentials (e.g. KYC), then we should revoke
+ * existing credentials (optional) and generate a revocation list and index
+ * for this credential
  */
-async function persistGeneratedCredentials(
+async function handleRevocationIfNecessary(
   user: User,
-  fulfillment: EncodedCredentialFulfillment
-): Promise<void> {
-  const decodedPresentation = await decodeVerifiablePresentation(
-    fulfillment.presentation
-  )
-
-  const decodedCredential =
-    decodedPresentation.verifiableCredential as RevocableCredential[]
-
-  await storeRevocableCredential(decodedCredential, user.id)
+  manifest: CredentialManifest
+): Promise<RevocationList2021Status | undefined> {
+  if (requiresRevocableCredentials(manifest)) {
+    // Before we issue a new credential of this type to a user, revoke all their
+    // previous credentials of the same type.
+    await revokeUserCredentials(user, manifest.id)
+    return generateRevocationListStatus()
+  }
 }
 
 /**
  * Revokes all the credentials for a given user and type.
- *
- * @param user
- * @param type
  */
 async function revokeUserCredentials(user: User, type: string) {
   const credentials = await findCredentialsByUserIdAndType(user.id, type)
+  const revocable = credentials.filter((c) =>
+    isRevocable(c.revocable)
+  ) as RevocableCredential[]
 
-  for (const credential of credentials) {
+  for (const credential of revocable) {
     // Find the credential's revocation list
     const url = credential.credentialStatus.statusListCredential
     const revocationLists = await allRevocationLists()
@@ -115,4 +114,18 @@ async function revokeUserCredentials(user: User, type: string) {
     // Persist the new revocation list
     await saveRevocationList(list)
   }
+}
+
+/**
+ * Persist the verifiable credential to the database, associated with the user.
+ */
+async function persistGeneratedCredentials(
+  user: User,
+  fulfillment: EncodedCredentialFulfillment
+): Promise<void> {
+  const decodedPresentation = await decodeVerifiablePresentation(
+    fulfillment.presentation
+  )
+
+  await storeCredentials(decodedPresentation.verifiableCredential, user.id)
 }

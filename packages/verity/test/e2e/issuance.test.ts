@@ -41,8 +41,8 @@ describe("issuance", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      revocationListFixture,
-      kycAmlAttestationFixture
+      kycAmlAttestationFixture,
+      revocationListFixture
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(

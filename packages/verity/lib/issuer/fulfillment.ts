@@ -12,11 +12,12 @@ import type {
   KYCAMLAttestation,
   DecodedCredentialApplication,
   CreditScoreAttestation,
-  CredentialIssuer
+  CredentialIssuer,
+  JWT
 } from "../../types"
 import { verifiablePresentationPayload } from "../utils/credentials"
 
-export function buildVerifiableCredentialPayload(
+function buildVerifiableCredentialPayload(
   issuer: CredentialIssuer, // TODO: Can we auto-gen this?
   subject: string,
   attestation: KYCAMLAttestation | CreditScoreAttestation,
@@ -40,21 +41,38 @@ export function buildVerifiableCredentialPayload(
   }
 }
 
-export async function buildAndSignFulfillment(
+/**
+ * Build a VerifiableCredential contaning an attestation for the given holder.
+ */
+export function buildAndSignVerifiableCredential(
   signer: Issuer,
-  application: DecodedCredentialApplication,
-  credentialStatus: RevocationList2021Status,
-  attestation: KYCAMLAttestation | CreditScoreAttestation
-): Promise<EncodedCredentialFulfillment> {
+  holderDid: string,
+  attestation: KYCAMLAttestation | CreditScoreAttestation,
+  credentialStatus?: RevocationList2021Status
+): Promise<JWT> {
   const vcPayload = buildVerifiableCredentialPayload(
     { id: signer.did },
-    application.presentation.holder,
+    holderDid,
     attestation,
     credentialStatus
   )
-  const encodedCredentials = await createVerifiableCredentialJwt(
-    vcPayload,
-    signer
+  return createVerifiableCredentialJwt(vcPayload, signer)
+}
+
+/**
+ * Build a VerifiablePresentation containing a list of attestations (VerifiableCredentials)
+ */
+export async function buildAndSignFulfillment(
+  signer: Issuer,
+  application: DecodedCredentialApplication,
+  attestation: KYCAMLAttestation | CreditScoreAttestation,
+  credentialStatus?: RevocationList2021Status
+): Promise<EncodedCredentialFulfillment> {
+  const encodedCredentials = await buildAndSignVerifiableCredential(
+    signer,
+    application.presentation.holder,
+    attestation,
+    credentialStatus
   )
 
   const encodedPresentation = await createVerifiablePresentationJwt(

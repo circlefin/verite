@@ -57,6 +57,15 @@ export function createManifest(
   }
 }
 
+/**
+ * Whether or not a manifest requires revocable credentials.
+ */
+export function requiresRevocableCredentials(
+  manifest: CredentialManifest
+): boolean {
+  return manifest.id === KYCAML_ATTESTATION_MANIFEST_ID
+}
+
 export function createKycAmlManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}

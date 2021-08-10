@@ -1,4 +1,6 @@
-import type {
+import {
+  isRevocable,
+  MaybeRevocableCredential,
   RevocableCredential,
   RevocationListCredential
 } from "@centre/verity"
@@ -11,17 +13,19 @@ import AdminLayout from "../../../components/admin/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
 import {
   allRevocationLists,
-  DatabaseCredential,
+  DecodedDatabaseCredential,
   findCredentialsByUserId,
   findUser
 } from "../../../lib/database"
 import type { User } from "../../../lib/database"
 
+type CredentialList = Array<{
+  credential: DecodedDatabaseCredential
+  revoked?: boolean
+}>
+
 type Props = {
-  credentialList: {
-    credential: DatabaseCredential
-    revoked: boolean
-  }[]
+  credentialList: CredentialList
   user: User
 }
 
@@ -34,15 +38,20 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
   // https://github.com/vercel/next.js/discussions/11209
   const credentials = JSON.parse(
     JSON.stringify(await findCredentialsByUserId(user.id))
-  ) as DatabaseCredential[]
+  ) as DecodedDatabaseCredential[]
   const revocationLists = JSON.parse(
     JSON.stringify(await allRevocationLists())
   ) as RevocationListCredential[]
 
   // Map data for easy rendering
   const credentialList = await asyncMap(credentials, async (credential) => {
+    if (!isRevocable(credential.credential)) {
+      return { credential }
+    }
+
     // Find the credential's revocation list
-    const url = credential.credential.credentialStatus.statusListCredential
+    const url = (credential.credential as RevocableCredential).credentialStatus
+      .statusListCredential
     const revocationList = revocationLists.find((l) => l.id === url)
 
     // If revocation list cannot be found, assume it is not revocable
@@ -73,7 +82,11 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
   }
 })
 
-function CredentialTable({ credentials }) {
+function CredentialTable({
+  credentials
+}: {
+  credentials: CredentialList
+}): JSX.Element {
   return (
     <table>
       <thead>
@@ -93,10 +106,9 @@ function CredentialTable({ credentials }) {
           >
             <td>{credential.credential.credential.type[1]}</td>
             <td>
-              {
-                credential?.credential?.credential?.credentialSubject
-                  ?.KYCAMLAttestation?.approvalDate
-              }
+              {credential.credential?.credential?.credentialSubject
+                ?.KYCAMLAttestation?.approvalDate ||
+                credential.credential.createdAt}
             </td>
             <td>
               <Link
@@ -112,7 +124,7 @@ function CredentialTable({ credentials }) {
   )
 }
 
-const doRevoke = async (credential: RevocableCredential) => {
+const doRevoke = async (credential: MaybeRevocableCredential) => {
   const url = "/api/revoke"
   await fetch(url, {
     method: "POST",
@@ -151,16 +163,6 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
       return credential.credential.credential
     })
 
-  const creditScoreCreds = activeCredentials
-    .filter((credential) => {
-      return (
-        credential.credential.credential.type[1] === "CreditScoreAttestation"
-      )
-    })
-    .map((credential) => {
-      return credential.credential.credential
-    })
-
   return (
     <AdminLayout title={user.email}>
       <div className="prose">
@@ -181,20 +183,6 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
             }}
           >
             Revoke KYC Credentials
-          </button>
-        </p>
-        <p>
-          <button
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={async () => {
-              // Dev Note: Ideally, your API would handle this in bulk, but for simplicity we loop over them one by one
-              for (const credential of creditScoreCreds) {
-                await doRevoke(credential)
-              }
-              router.reload()
-            }}
-          >
-            Revoke Credit Score Credentials
           </button>
         </p>
         <h2>Active Credentials</h2>

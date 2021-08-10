@@ -8,6 +8,7 @@
     "db:migrate": "dotenv -c development prisma migrate dev",
     "db:reset": "dotenv -c development prisma migrate reset",
     "db:seed": "dotenv -c development prisma db seed --preview-feature",
+    "db:studio": "dotenv -c development prisma studio",
     "dev": "next dev",
     "format": "prettier  --write .",
     "lint": "next lint",
