@@ -4,13 +4,13 @@ import { ArrowCircleRightIcon } from "@heroicons/react/solid"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
-import { useState } from "react"
+import { useState, createRef } from "react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
 
 type Props = {
   type: string
-  url: string
+  baseUrl: string
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   return {
     props: {
       type: context.params.type as string,
-      url: `${process.env.HOST}/api/verification/create?type=${context.params.type}`
+      baseUrl: `${process.env.HOST}/api/verification/create?type=${context.params.type}`
     }
   }
 }
@@ -54,19 +54,82 @@ function QRCodeOrStatus({
   )
 }
 
-function GetStarted({ url, onClick }): JSX.Element {
+function GetStarted({ baseUrl, onClick }): JSX.Element {
+  const [url, setUrl] = useState<URL>(new URL(baseUrl))
+  const subject = createRef<HTMLInputElement>()
+  const contract = createRef<HTMLInputElement>()
+
+  const updateUrl = () => {
+    const url = new URL(baseUrl)
+    url.searchParams.append("subjectAddress", subject.current.value)
+    url.searchParams.append("contractAddress", contract.current.value)
+    setUrl(url)
+  }
+
   return (
     <>
       <p>
-        To start, a dApp would issue the following API call to a verifier to
-        begin the verification flow:
+        To start, a dApp would issue an API call to a verifier to begin the
+        verification flow. You can provide an optional ETH address and contract
+        address. If given and the verification is successful, the Verifier will
+        return a Verification Result and signature that can later be verified in
+        a smart contract.
       </p>
-      <p>{url}</p>
+      <p>
+        This demo uses input fields, but a more user-friendly approach would be
+        to have the user connect via MetaMask.
+      </p>
+      <div>
+        <form>
+          <div>
+            <label
+              htmlFor="subjectAddress"
+              className="block text-sm font-medium text-gray-700"
+            >
+              ETH Address
+            </label>
+            <div className="mt-1">
+              <input
+                type="text"
+                name="subjectAddress"
+                id="subjectAddress"
+                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                ref={subject}
+                onInput={updateUrl}
+                placeholder="0x..."
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="contractAddress"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Contract Address
+            </label>
+            <div className="mt-1">
+              <input
+                type="text"
+                name="contractAddress"
+                id="contractAddress"
+                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                ref={contract}
+                onInput={updateUrl}
+                placeholder="0x..."
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <p>{url.href}</p>
       <p>
         <button
           type="button"
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          onClick={onClick}
+          onClick={() => {
+            onClick(subject.current.value, contract.current.value)
+          }}
         >
           Start Verification Flow
           <ArrowCircleRightIcon
@@ -133,7 +196,7 @@ function ScanView({ status, verification }): JSX.Element {
   )
 }
 
-const VerifierPage: NextPage<Props> = ({ type, url }) => {
+const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
   const [verification, setVerification] = useState(null)
 
   const { data } = useSWR(
@@ -155,9 +218,12 @@ const VerifierPage: NextPage<Props> = ({ type, url }) => {
       <div className="prose">
         {!verification ? (
           <GetStarted
-            url={url}
-            onClick={async () => {
-              const response = await fetch(url, { method: "POST" })
+            baseUrl={baseUrl}
+            onClick={async (subjectAddress, contractAddress) => {
+              const url = new URL(baseUrl)
+              url.searchParams.append("subjectAddress", subjectAddress)
+              url.searchParams.append("contractAddress", contractAddress)
+              const response = await fetch(url.href, { method: "POST" })
               const json = await response.json()
               setVerification(json)
             }}

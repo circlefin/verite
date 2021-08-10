@@ -30,22 +30,37 @@ export default apiHandler<PostResponse>(async (req, res) => {
     throw new NotFoundError()
   }
 
+  // If the request includes a subjectAddress and contractAddress query
+  // parameter, we will use it to generate an ETH verification result.
+  const id = uuidv4()
+  const replyUrl = new URL(
+    `${process.env.HOST}/api/verification/${id}/submission`
+  )
+  if (req.query.subjectAddress && req.query.contractAddress) {
+    replyUrl.searchParams.append(
+      "subjectAddress",
+      req.query.subjectAddress as string
+    )
+    replyUrl.searchParams.append(
+      "contractAddress",
+      req.query.contractAddress as string
+    )
+  }
+
   let verificationRequest: VerificationRequest
   if (type === "kyc") {
-    const id = uuidv4()
     verificationRequest = await generateKycVerificationRequest(
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/${id}/submission`,
+      replyUrl.href,
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/${id}/callback`,
       [process.env.ISSUER_DID],
       id
     )
   } else if (type === "credit-score") {
-    const id = uuidv4()
     verificationRequest = await generateCreditScoreVerificationRequest(
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/${id}/submission`,
+      replyUrl.href,
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/${id}/callback`,
       [process.env.ISSUER_DID],
