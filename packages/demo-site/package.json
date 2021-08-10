@@ -24,6 +24,7 @@
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
     "cors": "^2.8.5",
+    "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "next": "11.0.1",
