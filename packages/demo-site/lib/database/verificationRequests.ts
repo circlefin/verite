@@ -1,4 +1,7 @@
-import type { VerificationRequest } from "@centre/verity"
+import type {
+  VerificationRequest,
+  VerificationInfoResponse
+} from "@centre/verity"
 import { prisma } from "./prisma"
 
 export async function saveVerificationRequest(
@@ -32,25 +35,32 @@ export async function findVerificationRequest(
 
 export async function fetchVerificationRequestStatus(
   id: string
-): Promise<string | undefined> {
+): Promise<{ result: VerificationInfoResponse; status: string } | undefined> {
   const record = await prisma.verificationRequest.findUnique({
     where: {
       id
     }
   })
 
-  return record?.status
+  if (record) {
+    return {
+      result: record.result ? JSON.parse(record.result) : undefined,
+      status: record.status
+    }
+  }
 }
 
 export async function updateVerificationRequestStatus(
   id: string,
-  status: string
+  status: string,
+  result?: VerificationInfoResponse
 ): Promise<void> {
   await prisma.verificationRequest.update({
     where: {
       id
     },
     data: {
+      result: result ? JSON.stringify(result) : undefined,
       status
     }
   })

@@ -50,12 +50,61 @@ describe("POST /verification/[id]/submission", () => {
 
     const response = res._getJSONData()
     expect(res.statusCode).toBe(200)
-    expect(response).toEqual({ status: "ok" })
+    expect(response).toEqual({ status: "approved" })
 
     const status = await fetchVerificationRequestStatus(
       verificationRequest.request.id
     )
-    expect(status).toBe("approved")
+    expect(status.status).toBe("approved")
+  })
+
+  it("returns a result object for use in a smart contract", async () => {
+    const subject = "0x39C55A1Da9F3f6338A1789fE195E8a47b9484E18"
+    const contract = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+    const verificationRequest = generateKycVerificationRequest(
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/submission?subjectAddress=${subject}&contractAddress=${contract}`,
+      process.env.VERIFIER_DID,
+      `${process.env.HOST}/api/verification/callback`
+    )
+    await saveVerificationRequest(verificationRequest)
+    const clientDidKey = await randomDidKey()
+    const clientVC = await generateKycAmlVc(clientDidKey)
+
+    const submission = await createVerificationSubmission(
+      clientDidKey,
+      verificationRequest.presentation_definition,
+      clientVC
+    )
+
+    const { req, res } = createMocks({
+      method: "POST",
+      query: {
+        id: verificationRequest.request.id,
+        subjectAddress: subject,
+        contractAddress: contract
+      },
+      body: submission
+    })
+
+    await handler(req, res)
+
+    const response = res._getJSONData()
+    expect(res.statusCode).toBe(200)
+    expect(response.status).toEqual("approved")
+    expect(response.result).toBeDefined()
+    expect(response.result).toHaveProperty("signature")
+    expect(response.result).toHaveProperty("verificationInfo")
+    expect(response.result.verificationInfo).toHaveProperty("credentialType")
+    expect(response.result.verificationInfo).toHaveProperty("expiration")
+    expect(response.result.verificationInfo).toHaveProperty("message")
+    expect(response.result.verificationInfo).toHaveProperty("subjectAddress")
+
+    const status = await fetchVerificationRequestStatus(
+      verificationRequest.request.id
+    )
+    expect(status.status).toBe("approved")
+    expect(status.result).toBeDefined()
   })
 
   it("rejects and returns errors on an invalid input", async () => {
@@ -100,7 +149,8 @@ describe("POST /verification/[id]/submission", () => {
     const status = await fetchVerificationRequestStatus(
       verificationRequest.request.id
     )
-    expect(status).toBe("rejected")
+    expect(status.status).toBe("rejected")
+    expect(status.result).toBeUndefined()
   })
 })
 

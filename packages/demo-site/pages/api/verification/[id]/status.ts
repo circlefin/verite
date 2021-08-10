@@ -1,17 +1,24 @@
+import type { VerificationInfoResponse } from "@centre/verity"
 import { apiHandler } from "../../../../lib/api-fns"
 import { fetchVerificationRequestStatus } from "../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../lib/errors"
 
 type Resp = {
+  result: VerificationInfoResponse
   status: string
 }
 
 export default apiHandler<Resp>(async (req, res) => {
-  const status = await fetchVerificationRequestStatus(req.query.id as string)
+  const verificationRequest = await fetchVerificationRequestStatus(
+    req.query.id as string
+  )
 
-  if (!status) {
+  if (!verificationRequest) {
     throw new NotFoundError()
   }
 
-  res.json({ status })
+  const status = verificationRequest.status
+  const result = verificationRequest.result
+
+  res.json({ result, status })
 })
