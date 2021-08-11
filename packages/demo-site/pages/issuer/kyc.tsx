@@ -59,11 +59,11 @@ const KycAmlPage: NextPage<Props> = ({
     if (!data || data.status === 404) {
       return (
         <>
-          <dl className="flex flex-row mx-auto space-x-2 sm:space-x-5">
+          <dl className="flex flex-row justify-center mx-auto space-x-2 sm:space-x-5">
             {stats.map((item) => (
               <div
                 key={item.name}
-                className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 sm:px-8 flex-0"
+                className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 flex-0"
               >
                 <dt className="text-sm font-medium text-gray-500 truncate">
                   {item.name}
