@@ -1,5 +1,5 @@
+import { JWT } from "@centre/verity"
 import jwt from "jsonwebtoken"
-import { JWT } from "next-auth/jwt"
 import { prisma, User } from "./prisma"
 
 const JWT_ALGORITHM = "HS256"
@@ -51,7 +51,7 @@ export const findUserFromTemporaryAuthToken = async (
       algorithms: [JWT_ALGORITHM]
     })
 
-    return findUser(payload.sub)
+    return findUser(payload.sub as string)
   } catch (e) {
     // JSON Web Token is invalid
     return

@@ -54,9 +54,7 @@ const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
           renderAs="svg"
         />
         <h2>QR Code Data</h2>
-        <p>
-          <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
-        </p>
+        <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
 
         <h2>Credential Manifest</h2>
         <p>
@@ -73,9 +71,7 @@ const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
           .
         </p>
 
-        <p>
-          <pre>{JSON.stringify(manifest, null, 4)}</pre>
-        </p>
+        <pre>{JSON.stringify(manifest, null, 4)}</pre>
       </div>
     </IssuerLayout>
   )

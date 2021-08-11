@@ -98,20 +98,16 @@ const AdminCredentialPage: NextPage<Props> = ({
 
         <h2>Credential</h2>
 
-        <p>
-          <pre className="overflow-x-scroll">
-            {JSON.stringify(credential, null, 4)}
-          </pre>
-        </p>
+        <pre className="overflow-x-scroll">
+          {JSON.stringify(credential, null, 4)}
+        </pre>
         {revocable && (
           <>
             <h2>Revocation List Credential</h2>
 
-            <p>
-              <pre className="overflow-x-scroll">
-                {JSON.stringify(list, null, 4)}
-              </pre>
-            </p>
+            <pre className="overflow-x-scroll">
+              {JSON.stringify(list, null, 4)}
+            </pre>
           </>
         )}
       </div>

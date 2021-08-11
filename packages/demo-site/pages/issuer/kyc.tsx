@@ -83,9 +83,7 @@ const KycAmlPage: NextPage<Props> = ({
             renderAs="svg"
           />
           <h2>QR Code Data</h2>
-          <p>
-            <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
-          </p>
+          <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
 
           <h2>Credential Manifest</h2>
           <p>
@@ -102,9 +100,7 @@ const KycAmlPage: NextPage<Props> = ({
             .
           </p>
 
-          <p>
-            <pre>{JSON.stringify(manifest, null, 4)}</pre>
-          </p>
+          <pre>{JSON.stringify(manifest, null, 4)}</pre>
         </>
       )
     } else {
@@ -129,9 +125,7 @@ const KycAmlPage: NextPage<Props> = ({
             </Link>
           </p>
           <h2>Credential</h2>
-          <p>
-            <pre>{JSON.stringify(data.credential, null, 4)}</pre>
-          </p>
+          <pre>{JSON.stringify(data.credential, null, 4)}</pre>
         </div>
       )
     }

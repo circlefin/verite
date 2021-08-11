@@ -41,7 +41,7 @@ async function main() {
 }
 
 async function createRevocationList() {
-  const url = `${process.env.REVOCATION_URL}/${uuidv4()}`
+  const url = `${process.env.HOST}/api/revocation/${uuidv4()}`
   const issuer = process.env.ISSUER_DID
   const list = await generateRevocationList(
     [],
