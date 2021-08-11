@@ -1,7 +1,7 @@
 import {
   processVerificationSubmission,
-  VerificationInfo,
-  VerificationInfoResponse
+  VerificationInfoResponse,
+  KYCVerificationInfo
 } from "@centre/verity"
 import type { EncodedVerificationSubmission } from "@centre/verity"
 import { ethers, Wallet } from "ethers"
@@ -114,24 +114,22 @@ const verificationResult = async (
   // See https://eips.ethereum.org/EIPS/eip-712
 
   const domain: Record<string, unknown> = {
-    name: "VerifiedCallable",
+    name: "VerificationValidator",
     version: "1.0",
     chainId: 1337,
     verifyingContract: contractAddress
   }
 
   const types: Record<string, any[]> = {
-    VerificationInfo: [
-      { name: "credentialType", type: "string" },
+    KYCVerificationInfo: [
       { name: "message", type: "string" },
       { name: "expiration", type: "uint256" },
       { name: "subjectAddress", type: "address" }
     ]
   }
 
-  const verificationInfo: VerificationInfo = {
-    credentialType: "KYC",
-    message: "Verification Results",
+  const verificationInfo: KYCVerificationInfo = {
+    message: "KYC:did:web:verity.id:TT1231",
     expiration: expiration,
     subjectAddress: subjectAddress
   }

@@ -1,11 +1,10 @@
-export type VerificationInfo = {
-  credentialType: string
+export type KYCVerificationInfo = {
   message: string
   expiration: number
   subjectAddress: string
 }
 
 export type VerificationInfoResponse = {
-  verificationInfo: VerificationInfo
+  verificationInfo: KYCVerificationInfo
   signature: string
 }
