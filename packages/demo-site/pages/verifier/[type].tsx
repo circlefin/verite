@@ -69,7 +69,7 @@ function QRCodeOrStatus({
 
 function GetStarted({ baseUrl, onClick }): JSX.Element {
   const { account } = useWeb3React<Web3Provider>()
-  const [subjectAddress, setSubjectAddress] = useState<string>(account)
+  const [subjectAddress, setSubjectAddress] = useState<string>(account || "")
   const [contractAddress, setContractAddress] = useState<string>("")
 
   useEffect(() => {
