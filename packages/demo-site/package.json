@@ -12,6 +12,7 @@
     "dev": "next dev",
     "format": "prettier  --write .",
     "lint": "next lint",
+    "setup:ci": "dotenv -c test prisma migrate reset -- --force",
     "start": "next start",
     "test": "jest",
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",

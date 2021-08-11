@@ -10,6 +10,8 @@ jobs:
   lint_and_test:
     name: "Lint & Test"
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -17,6 +19,7 @@ jobs:
           node-version: "16"
           cache: "npm"
       - run: npm install
+      - run: npm run setup:ci
       - run: npm run build:verity
       - run: npm run lint
       - run: npm run type-check
