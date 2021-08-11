@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Layout from "../Layout"
+import EthLayout from "../layouts/EthAuthLayout"
 import AttestationNavigation from "./AttestationNavigation"
 
 type Props = {
@@ -9,10 +9,10 @@ type Props = {
 
 const VerifierLayout: FC<Props> = ({ title, children, hideNavigation }) => {
   return (
-    <Layout title={title} theme="blue">
+    <EthLayout title={title} theme="blue">
       {!hideNavigation && <AttestationNavigation />}
       {children}
-    </Layout>
+    </EthLayout>
   )
 }
 

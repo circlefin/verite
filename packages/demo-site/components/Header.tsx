@@ -48,12 +48,9 @@ const Header: FC<Props> = ({ title, theme, skipAuth }) => {
 
   const navigation = [
     { name: "Issuer", href: "/issuer" },
-    { name: "Verifier", href: "/verifier" }
+    { name: "Verifier", href: "/verifier" },
+    { name: "Admin", href: "/admin" }
   ]
-
-  if ((session?.user as User)?.role === "admin") {
-    navigation.push({ name: "Admin", href: "/admin" })
-  }
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
-import Layout from "../components/Layout"
+import Layout from "../components/layouts/UserAuthLayout"
 import { currentUser } from "../lib/auth-fns"
 import type { User } from "../lib/database"
 
@@ -58,21 +58,19 @@ const Home: NextPage<Props> = ({ user }) => {
               </a>
             </Link>
           </li>
-          {user && user.role === "admin" && (
-            <li>
-              <Link href={`/admin`}>
-                <a className="flex justify-between py-4 hover:bg-gray-50">
-                  <div className="ml-3">
-                    <p className="text-sm text-gray-900">Admin</p>
-                  </div>
-                  <ChevronRightIcon
-                    className="w-5 h-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </a>
-              </Link>
-            </li>
-          )}
+          <li>
+            <Link href={`/admin`}>
+              <a className="flex justify-between py-4 hover:bg-gray-50">
+                <div className="ml-3">
+                  <p className="text-sm text-gray-900">Admin</p>
+                </div>
+                <ChevronRightIcon
+                  className="w-5 h-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </a>
+            </Link>
+          </li>
         </ul>
       </div>
     </Layout>

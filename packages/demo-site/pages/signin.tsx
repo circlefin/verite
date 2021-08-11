@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
-import Layout from "../components/Layout"
+import Layout from "../components/layouts/UserAuthLayout"
 import SignInForm from "../components/SignInForm"
 
 type Props = {

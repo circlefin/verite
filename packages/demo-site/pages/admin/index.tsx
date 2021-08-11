@@ -50,7 +50,7 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
           {users.map((user) => (
             <div key={user.email}>
               <Link href={`/admin/users/${user.id}`}>
-                <span className="flex justify-between py-4 hover:bg-gray-50 cursor-pointer">
+                <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
                   <div className="ml-3">
                     <span className="text-sm text-gray-900">{user.email}</span>
                   </div>

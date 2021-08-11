@@ -23,12 +23,6 @@ const items = [
   }
 ]
 
-export const getServerSideProps = requireAuth(async () => {
-  return {
-    props: {}
-  }
-})
-
 const IssuerPage: NextPage = () => {
   return (
     <IssuerLayout title="Verifier" hideNavigation={true}>

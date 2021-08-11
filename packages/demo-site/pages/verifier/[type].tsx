@@ -1,10 +1,12 @@
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
+import { Web3Provider } from "@ethersproject/providers"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
+import { useWeb3React } from "@web3-react/core"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
-import { useState, createRef } from "react"
+import { useState, createRef, useEffect } from "react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
 
@@ -55,16 +57,20 @@ function QRCodeOrStatus({
 }
 
 function GetStarted({ baseUrl, onClick }): JSX.Element {
-  const [url, setUrl] = useState<URL>(new URL(baseUrl))
-  const subject = createRef<HTMLInputElement>()
-  const contract = createRef<HTMLInputElement>()
+  const { account } = useWeb3React<Web3Provider>()
+  const [address, setAddress] = useState<string>(account)
+  const [contractAddress, setContractAddress] = useState<string>("")
 
-  const updateUrl = () => {
+  const url = (): URL => {
     const url = new URL(baseUrl)
-    url.searchParams.append("subjectAddress", subject.current.value)
-    url.searchParams.append("contractAddress", contract.current.value)
-    setUrl(url)
+    url.searchParams.append("subjectAddress", address)
+    url.searchParams.append("contractAddress", contractAddress)
+    return url
   }
+
+  useEffect(() => {
+    setAddress(account)
+  }, [account])
 
   return (
     <>
@@ -93,9 +99,9 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
                 type="text"
                 name="subjectAddress"
                 id="subjectAddress"
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                ref={subject}
-                onInput={updateUrl}
+                className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                onChange={(e) => setAddress(e.target.value)}
+                value={address}
                 placeholder="0x..."
               />
             </div>
@@ -113,16 +119,16 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
                 type="text"
                 name="contractAddress"
                 id="contractAddress"
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                ref={contract}
-                onInput={updateUrl}
+                className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                onChange={(e) => setContractAddress(e.target.value)}
+                value={contractAddress}
                 placeholder="0x..."
               />
             </div>
           </div>
         </form>
       </div>
-      <p>{url.href}</p>
+      <p>{url().href}</p>
       <p>
         <button
           type="button"
