@@ -70,16 +70,7 @@ const Header: FC<HeaderProps> = ({ children, title }) => {
                     </div>
                   </div>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    {!skipAuth && session && (
-                      <div>
-                        <button
-                          onClick={() => signOut({ callbackUrl: "/" })}
-                          className={`text-gray-300 ${colors.hover} hover:text-white px-3 py-2 rounded-md text-sm font-medium`}
-                        >
-                          Sign out
-                        </button>
-                      </div>
-                    )}
+                    {children}
                   </div>
                 </div>
               </div>

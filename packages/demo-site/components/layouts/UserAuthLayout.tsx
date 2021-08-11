@@ -1,20 +1,25 @@
-import Head from "next/head"
+import { signOut, useSession } from "next-auth/client"
 import { FC } from "react"
-import Header from "../Header"
+import Header, { HeaderProps } from "../Header"
 
-type Props = {
-  title: string
-  theme?: string
-}
+const Layout: FC<HeaderProps> = ({ children, ...headerProps }) => {
+  const [session] = useSession()
 
-const Layout: FC<Props> = ({ children, title, theme }) => {
   return (
     <>
-      <Head>
-        <title>{title} | Verity Demo</title>
-      </Head>
       <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
-        <Header title={title} theme={theme} skipAuth={false} />
+        <Header {...headerProps}>
+          {session && (
+            <div>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
+        </Header>
         <main className="-mt-32">
           <div className="max-w-3xl px-4 pb-12 mx-auto sm:px-6 lg:px-8">
             <div className="px-5 py-6 bg-white rounded-lg shadow sm:px-6">
