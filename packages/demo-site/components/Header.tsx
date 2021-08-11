@@ -43,7 +43,7 @@ const Header: FC<HeaderProps> = ({ children, title }) => {
                     </Disclosure.Button>
                   </div>
                   <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-start">
-                    <div className="flex items-center flex-shrink-0">
+                    <div className="items-center flex-shrink-0 hidden sm:flex">
                       <Link href="/">
                         <a className="text-2xl font-extrabold tracking-tight text-center text-white">
                           Verity Demo
