@@ -7,25 +7,20 @@
 
 ## Getting Started
 
-```
-npm install
-npm run db:migrate
-```
-
-### Configuring your Local Environment
-
-To enable interactions with the mobile wallet, we need to configure our local environment file `packages/demo-site/.env.development.local`:
-
-1. Point to an IP address rather than localhost
-2. Contain a JWT secret key
-
-For example:
+Local environment setup is handled by running the following script:
 
 ```sh
-touch packages/demo-site/.env.development.local
-echo "HOSTNAME=192.168.4.31" >> packages/demo-site/.env.development.local
-echo "AUTH_JWT_SECRET=<SECRET_KEY>" >> packages/demo-site/.env.development.local
+npm run setup
 ```
+
+This script will do the following:
+
+- Install all dependencies
+- Build the `@centre/verity` project
+- Set up the local IP hostname for `@centre/demo-site` to be used with the wallet.
+- Generate an auth JWT secret for `@centre/demo-site`
+- Generate issuer and verifier DIDs and secrets for `@centre/demo-site`
+- Build and migrate the database for `@centre/demo-site`
 
 ## Running the apps
 
@@ -34,6 +29,8 @@ To run the `demo-site` while watching for changes in `verity`, you can run
 ```
 npm run dev
 ```
+
+This will start your server at [http://localhost:3000](http://localhost:3000)
 
 ### @centre/verity:
 

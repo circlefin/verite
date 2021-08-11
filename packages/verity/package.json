@@ -11,6 +11,7 @@
     "dev": "tsc --watch --preserveWatchOutput",
     "format": "prettier  --write .",
     "lint": "eslint .",
+    "setup": "./bin/setup",
     "test": "jest",
     "type-check": "tsc --pretty --noEmit"
   },

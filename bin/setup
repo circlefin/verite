@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+echo "Installing dependencies..."
+npm install
+
+echo "Setting up verity..."
+npm run setup --workspace @centre/verity
+
+echo "Setting up demo-site..."
+npm run setup --workspace @centre/demo-site
