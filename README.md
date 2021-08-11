@@ -2,8 +2,10 @@
 
 ## Packages
 
-- [@centre/demo-site](./packages/demo-site)
-- [@centre/verity](./packages/verity)
+- [@centre/contract](./packages/contract) - A solidity contract requiring KYC proof for a transaction
+- [@centre/dapp](./packages/dapp) - A front-end for the contract
+- [@centre/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project
+- [@centre/verity](./packages/verity) - Shared logic for issuingg, verifying, and revoking Verifiable Credentials
 
 ## Getting Started
 

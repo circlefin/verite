@@ -16,7 +16,6 @@ async function setup(): Promise<void> {
     `VERIFIER_SECRET=${Buffer.from(verifierDidKey.privateKey).toString("hex")}`
   )
   console.log(`AUTH_JWT_SECRET=${jwtSecret}`)
-  console.log(`HOSTNAME=${internalIP.v4.sync()}`)
 }
 
 setup()

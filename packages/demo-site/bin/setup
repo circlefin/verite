@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 
 echo "Setting up environment variables..."
-npm run ts-node ./bin/env.ts --silent >> .env.local
+npm run ts-node ./bin/env.ts --silent > .env.development.local
+npm run ts-node ./bin/local-ip.ts --silent >> .env.development.local
+npm run ts-node ./bin/env.ts --silent > .env.test.local
 
 echo "Setting up the database ..."
 npm run db:reset:force
-

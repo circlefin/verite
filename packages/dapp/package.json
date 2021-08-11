@@ -23,7 +23,10 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "",
+    "test": "",
+    "type-check": ""
   },
   "eslintConfig": {
     "extends": [
