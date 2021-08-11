@@ -95,7 +95,6 @@ describe("POST /verification/[id]/submission", () => {
     expect(response.result).toBeDefined()
     expect(response.result).toHaveProperty("signature")
     expect(response.result).toHaveProperty("verificationInfo")
-    expect(response.result.verificationInfo).toHaveProperty("credentialType")
     expect(response.result.verificationInfo).toHaveProperty("expiration")
     expect(response.result.verificationInfo).toHaveProperty("message")
     expect(response.result.verificationInfo).toHaveProperty("subjectAddress")
