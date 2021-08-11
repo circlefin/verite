@@ -2,8 +2,7 @@ import { CalculatorIcon, UsersIcon } from "@heroicons/react/outline"
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
-import IssuerLayout from "../../components/issuer/Layout"
-import { requireAuth } from "../../lib/auth-fns"
+import VerifierLayout from "../../components/verifier/Layout"
 
 const items = [
   {
@@ -23,15 +22,9 @@ const items = [
   }
 ]
 
-export const getServerSideProps = requireAuth(async () => {
-  return {
-    props: {}
-  }
-})
-
-const IssuerPage: NextPage = () => {
+const VerifierPage: NextPage = () => {
   return (
-    <IssuerLayout title="Verifier" hideNavigation={true}>
+    <VerifierLayout title="Verifier" hideNavigation={true}>
       <div className="prose">
         <h2>Verify a Credential</h2>
         <p>Select the type of credential you would like to verify.</p>
@@ -74,8 +67,8 @@ const IssuerPage: NextPage = () => {
           </li>
         ))}
       </ul>
-    </IssuerLayout>
+    </VerifierLayout>
   )
 }
 
-export default IssuerPage
+export default VerifierPage

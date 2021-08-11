@@ -59,11 +59,11 @@ const KycAmlPage: NextPage<Props> = ({
     if (!data || data.status === 404) {
       return (
         <>
-          <dl className="flex flex-row mx-auto space-x-2 sm:space-x-5">
+          <dl className="flex flex-row justify-center mx-auto space-x-2 sm:space-x-5">
             {stats.map((item) => (
               <div
                 key={item.name}
-                className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 sm:px-8 flex-0"
+                className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 flex-0"
               >
                 <dt className="text-sm font-medium text-gray-500 truncate">
                   {item.name}
@@ -118,11 +118,11 @@ const KycAmlPage: NextPage<Props> = ({
             <Link href="/verifier/" passHref>
               <button
                 type="button"
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Next Demo: Verification
                 <ArrowCircleRightIcon
-                  className="ml-2 -mr-1 h-5 w-5"
+                  className="w-5 h-5 ml-2 -mr-1"
                   aria-hidden="true"
                 />
               </button>

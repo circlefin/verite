@@ -1,16 +1,23 @@
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
+import { Web3Provider } from "@ethersproject/providers"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
+import { useWeb3React } from "@web3-react/core"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
-import { useState, createRef } from "react"
+import { useState, useEffect } from "react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
 
 type Props = {
   type: string
   baseUrl: string
+}
+
+type QRCodeOrStatusProps = {
+  qrCodeData: ChallengeTokenUrlWrapper
+  status: string | null
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
@@ -24,12 +31,18 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   }
 }
 
-type QRCodeOrStatusProps = {
-  qrCodeData: ChallengeTokenUrlWrapper
-  status: string | null
-}
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+function verificationUrl(
+  baseUrl: string,
+  subjectAddress: string,
+  contractAddress: string
+): string {
+  const url = new URL(baseUrl)
+  url.searchParams.append("subjectAddress", subjectAddress)
+  url.searchParams.append("contractAddress", contractAddress)
+  return url.href
+}
 
 function QRCodeOrStatus({
   qrCodeData,
@@ -55,16 +68,13 @@ function QRCodeOrStatus({
 }
 
 function GetStarted({ baseUrl, onClick }): JSX.Element {
-  const [url, setUrl] = useState<URL>(new URL(baseUrl))
-  const subject = createRef<HTMLInputElement>()
-  const contract = createRef<HTMLInputElement>()
+  const { account } = useWeb3React<Web3Provider>()
+  const [subjectAddress, setSubjectAddress] = useState<string>(account)
+  const [contractAddress, setContractAddress] = useState<string>("")
 
-  const updateUrl = () => {
-    const url = new URL(baseUrl)
-    url.searchParams.append("subjectAddress", subject.current.value)
-    url.searchParams.append("contractAddress", contract.current.value)
-    setUrl(url)
-  }
+  useEffect(() => {
+    setSubjectAddress(account || "")
+  }, [account])
 
   return (
     <>
@@ -93,9 +103,9 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
                 type="text"
                 name="subjectAddress"
                 id="subjectAddress"
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                ref={subject}
-                onInput={updateUrl}
+                className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                onChange={(e) => setSubjectAddress(e.target.value)}
+                value={subjectAddress}
                 placeholder="0x..."
               />
             </div>
@@ -113,22 +123,22 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
                 type="text"
                 name="contractAddress"
                 id="contractAddress"
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                ref={contract}
-                onInput={updateUrl}
+                className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                onChange={(e) => setContractAddress(e.target.value)}
+                value={contractAddress}
                 placeholder="0x..."
               />
             </div>
           </div>
         </form>
       </div>
-      <p>{url.href}</p>
+      <p>{verificationUrl(baseUrl, subjectAddress, contractAddress)}</p>
       <p>
         <button
           type="button"
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           onClick={() => {
-            onClick(subject.current.value, contract.current.value)
+            onClick(subjectAddress, contractAddress)
           }}
         >
           Start Verification Flow
@@ -146,13 +156,11 @@ function ScanView({ result, status, verification }): JSX.Element {
   const { qrCodeData, challenge } = verification
   return (
     <>
-      {status === "pending" ? (
-        <p>Scan this QR code using the Verity app.</p>
-      ) : null}
+      {status === "pending" && <p>Scan this QR code using the Verity app.</p>}
 
       <QRCodeOrStatus qrCodeData={qrCodeData} status={status} />
 
-      {status === "pending" ? (
+      {status === "pending" && (
         <>
           <h2>Verification Presentation Request</h2>
           <p>
@@ -170,13 +178,13 @@ function ScanView({ result, status, verification }): JSX.Element {
 
           <pre>{JSON.stringify(challenge, null, 4)}</pre>
         </>
-      ) : null}
+      )}
 
-      {status === "approved" ? (
+      {status === "approved" && (
         <>
           <p>Your credential is verified.</p>
 
-          {result ? (
+          {result && (
             <>
               <p>
                 The following verification result is returned and can be used in
@@ -184,13 +192,13 @@ function ScanView({ result, status, verification }): JSX.Element {
               </p>
               <pre>{JSON.stringify(result, null, 4)}</pre>
             </>
-          ) : null}
+          )}
         </>
-      ) : null}
+      )}
 
-      {status === "rejected" ? <p>Your credential was not verified.</p> : null}
+      {status === "rejected" && <p>Your credential was not verified.</p>}
 
-      {status === "approved" || status === "rejected" ? (
+      {(status === "approved" || status === "rejected") && (
         <p>
           <Link href="/admin" passHref>
             <button
@@ -205,7 +213,7 @@ function ScanView({ result, status, verification }): JSX.Element {
             </button>
           </Link>
         </p>
-      ) : null}
+      )}
     </>
   )
 }
@@ -231,27 +239,27 @@ const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
   return (
     <VerifierLayout title={title}>
       <div className="prose">
-        {!verification ? (
-          <GetStarted
-            baseUrl={baseUrl}
-            onClick={async (subjectAddress, contractAddress) => {
-              const url = new URL(baseUrl)
-              url.searchParams.append("subjectAddress", subjectAddress)
-              url.searchParams.append("contractAddress", contractAddress)
-              const response = await fetch(url.href, { method: "POST" })
-              const json = await response.json()
-              setVerification(json)
-            }}
-          />
-        ) : null}
-
         {verification ? (
           <ScanView
             verification={verification}
             status={status}
             result={result}
           />
-        ) : null}
+        ) : (
+          <GetStarted
+            baseUrl={baseUrl}
+            onClick={async (subjectAddress, contractAddress) => {
+              const url = verificationUrl(
+                baseUrl,
+                subjectAddress,
+                contractAddress
+              )
+              const response = await fetch(url, { method: "POST" })
+              const json = await response.json()
+              setVerification(json)
+            }}
+          />
+        )}
       </div>
     </VerifierLayout>
   )

@@ -37,8 +37,8 @@ const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
   return (
     <IssuerLayout title="Credit Score">
       <div className="prose">
-        <dl className="flex flex-row mx-auto space-x-2 sm:space-x-5">
-          <div className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 sm:px-8 flex-0">
+        <dl className="flex flex-row justify-center mx-auto space-x-2 sm:space-x-5">
+          <div className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 flex-0">
             <dt className="text-sm font-medium text-gray-500 truncate">
               Credit Score
             </dt>

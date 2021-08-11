@@ -1,8 +1,7 @@
 import {
   processVerificationSubmission,
   VerificationInfo,
-  VerificationInfoResponse,
-  verificationRequestWrapper
+  VerificationInfoResponse
 } from "@centre/verity"
 import type { EncodedVerificationSubmission } from "@centre/verity"
 import { ethers, Wallet } from "ethers"

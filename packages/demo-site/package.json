@@ -12,6 +12,7 @@
     "dev": "next dev",
     "format": "prettier  --write .",
     "lint": "next lint",
+    "setup:ci": "dotenv -c test prisma migrate reset -- --force",
     "start": "next start",
     "test": "jest",
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
@@ -24,6 +25,7 @@
     "@prisma/client": "^2.28.0",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
+    "@web3-react/core": "^6.1.9",
     "cors": "^2.8.5",
     "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
@@ -37,6 +39,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@ethersproject/providers": "^5.4.3",
     "@types/cors": "^2.8.12",
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.171",
@@ -44,6 +47,7 @@
     "@types/react": "^17.0.11",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
+    "@web3-react/injected-connector": "^6.0.7",
     "autoprefixer": "^10.2.6",
     "babel-jest": "^27.0.6",
     "dotenv-cli": "^4.0.0",
