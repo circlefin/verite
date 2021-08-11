@@ -9,7 +9,7 @@ type Props = {
 
 const VerifierLayout: FC<Props> = ({ title, children, hideNavigation }) => {
   return (
-    <EthLayout title={title} theme="blue">
+    <EthLayout title={title}>
       {!hideNavigation && <AttestationNavigation />}
       {children}
     </EthLayout>

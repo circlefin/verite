@@ -1,33 +1,9 @@
 import { ChevronRightIcon } from "@heroicons/react/solid"
-import { GetServerSideProps, NextPage } from "next"
+import { NextPage } from "next"
 import Link from "next/link"
 import Layout from "../components/layouts/UserAuthLayout"
-import { currentUser } from "../lib/auth-fns"
-import type { User } from "../lib/database"
 
-type Props = {
-  user?: User
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
-) => {
-  const user = await currentUser(context)
-
-  if (user) {
-    return {
-      props: {
-        user
-      }
-    }
-  }
-
-  return {
-    props: {}
-  }
-}
-
-const Home: NextPage<Props> = ({ user }) => {
+const Home: NextPage = () => {
   return (
     <Layout title="Project Verity Demo">
       <div className="container px-4 py-4 mx-auto sm:px-8">

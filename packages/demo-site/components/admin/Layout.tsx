@@ -6,11 +6,7 @@ type Props = {
 }
 
 const AdminLayout: FC<Props> = ({ title, children }) => {
-  return (
-    <Layout title={title} theme="green">
-      {children}
-    </Layout>
-  )
+  return <Layout title={title}>{children}</Layout>
 }
 
 export default AdminLayout

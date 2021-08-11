@@ -1,69 +1,36 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure } from "@headlessui/react"
 import { MenuIcon, XIcon } from "@heroicons/react/outline"
-import { signOut, useSession } from "next-auth/client"
+import Head from "next/head"
 import Link from "next/link"
 import { FC } from "react"
 import { isActive, classNames } from "../lib/react-fns"
 
-type Props = {
+export type HeaderProps = {
   title: string
-  theme?: string
-  skipAuth?: boolean
 }
 
-type Theme = {
-  bg: string
-  active: string
-  hover: string
-}
+const navigation = [
+  { name: "Issuer", href: "/issuer" },
+  { name: "Verifier", href: "/verifier" },
+  { name: "Admin", href: "/admin" }
+]
 
-const THEMES: Record<string, Theme> = {
-  gray: {
-    bg: "bg-gray-800",
-    active: "bg-gray-900",
-    hover: "hover:bg-gray-700"
-  },
-  blue: {
-    bg: "bg-blue-600",
-    active: "bg-blue-800",
-    hover: "hover:bg-blue-700"
-  },
-  indigo: {
-    bg: "bg-indigo-600",
-    active: "bg-indigo-800",
-    hover: "hover:bg-indigo-700"
-  },
-  green: {
-    bg: "bg-green-600",
-    active: "bg-green-800",
-    hover: "hover:bg-green-700"
-  }
-}
-
-const Header: FC<Props> = ({ title, theme, skipAuth }) => {
-  const [session] = useSession()
-  const colors = THEMES[theme || "gray"]
-
-  const navigation = [
-    { name: "Issuer", href: "/issuer" },
-    { name: "Verifier", href: "/verifier" },
-    { name: "Admin", href: "/admin" }
-  ]
-
+const Header: FC<HeaderProps> = ({ children, title }) => {
   return (
     <>
-      <div className={`${colors.bg} pb-32`}>
-        <Disclosure as="nav" className={colors.bg}>
+      <Head>
+        <title>{title} | Verity Demo</title>
+      </Head>
+      <div className="pb-32 bg-blue-600">
+        <Disclosure as="nav" className="bg-blue-600">
           {({ open }) => (
             <>
               <div className="max-w-3xl px-2 mx-auto sm:px-6 lg:px-8">
                 <div className="relative flex items-center justify-between h-16">
                   <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                     {/* Mobile menu button*/}
-                    <Disclosure.Button
-                      className={`inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white ${colors.hover} focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white`}
-                    >
+                    <Disclosure.Button className="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XIcon className="block w-6 h-6" aria-hidden="true" />
@@ -90,8 +57,8 @@ const Header: FC<Props> = ({ title, theme, skipAuth }) => {
                             <a
                               className={classNames(
                                 isActive(item.href)
-                                  ? `${colors.active} text-white`
-                                  : `text-gray-300 ${colors.hover} hover:text-white`,
+                                  ? "bg-blue-800 text-white"
+                                  : "text-gray-300 hover:bg-blue-700 hover:text-white",
                                 "px-3 py-2 rounded-md text-sm font-medium"
                               )}
                             >
@@ -124,8 +91,8 @@ const Header: FC<Props> = ({ title, theme, skipAuth }) => {
                       <a
                         className={classNames(
                           isActive(item.href)
-                            ? `${colors.active} text-white`
-                            : `text-gray-300 ${colors.hover} hover:text-white`,
+                            ? "bg-blue-800 text-white"
+                            : "text-gray-300 hover:bg-blue-700 hover:text-white",
                           "block px-3 py-2 rounded-md text-base font-medium"
                         )}
                       >
