@@ -60,7 +60,7 @@ async function createTrustedVerifier(token: Contract) {
 
 function saveFrontendFiles(token) {
   const fs = require("fs");
-  const contractsDir = __dirname + "/../../frontend/contracts";
+  const contractsDir = __dirname + "/../../dapp/contracts";
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir);
