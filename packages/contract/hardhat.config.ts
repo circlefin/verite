@@ -22,7 +22,7 @@ task("faucet", "Sends ETH and tokens to an address")
     }
 
     const addressesFile =
-      __dirname + "/../frontend/contracts/contract-address.json";
+      __dirname + "/../dapp/contracts/contract-address.json";
 
     if (!fs.existsSync(addressesFile)) {
       console.error("You need to deploy your contract first");
@@ -98,7 +98,7 @@ task("add-verifier", "Adds a trusted verifier to the contract")
     }
 
     const addressesFile =
-      __dirname + "/../frontend/contracts/contract-address.json";
+      __dirname + "/../dapp/contracts/contract-address.json";
 
     if (!fs.existsSync(addressesFile)) {
       console.error("You need to deploy your contract first");
