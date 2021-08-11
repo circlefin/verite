@@ -220,6 +220,7 @@ function ScanView({ result, status, verification }): JSX.Element {
 
 const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
   const [verification, setVerification] = useState(null)
+  const [title, setTitle] = useState("")
 
   const { data } = useSWR(
     () => `/api/verification/${verification.id}/status`,
@@ -229,12 +230,14 @@ const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
   const status = data && data.status
   const result = data && data.result
 
-  let title: string
-  if (type === "kyc") {
-    title = "KYC/AML Verification"
-  } else if (type === "credit-score") {
-    title = "Credit Score Verification"
-  }
+  useEffect(() => {
+    if (type === "kyc") {
+      setTitle("KYC/AML Verification")
+    } else {
+      setTitle("Credit Score Verification")
+    }
+    setVerification(null)
+  }, [type])
 
   return (
     <VerifierLayout title={title}>
