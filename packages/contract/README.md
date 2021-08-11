@@ -6,11 +6,13 @@ This recipe illustrates how to register a web app's or dApp's verification with 
 
 This app leverages hardhat for local development and react for the dApp.
 
-From this package's root directory:
+From the repository's root directory:
 
 ```
 npm install
 ```
+
+From this package's root directory:
 
 Run a standalone node in a separate terminal:
 
@@ -35,8 +37,7 @@ npx hardhat run scripts/deploy.ts --network localhost
 Make sure you have MetaMask installed in Chrome.
 
 ```
-cd frontend
-npm install
+cd ../dapp
 npm run dev
 ```
 
@@ -45,9 +46,3 @@ The web app will guide you through use of the faucet and verify hardhat tasks, w
 ## Troubleshooting
 
 When restarting the app locally with a new freshly-run hardhat node, MetaMask can get confused and use the wrong nonce, one based on the previous hardhat run. Enable 'Customize transaction nonce' in MetaMask Settings->Advanced to set the nonce manually to work around this issue. Reset the custom nonce in MetaMask's to '0' when transacting on the first run, and increment it manually from there.
-
-
-
-
-
-

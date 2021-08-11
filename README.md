@@ -48,6 +48,32 @@ npm run site
 
 **NOTE** To run the demo-site, you _must_ build the verity project first.
 
+### @centre/dapp
+
+A demo in which sending over 10 or more tokens would require proof of KYC.
+
+```
+npm run dev:dapp
+```
+
+This will start a server at [http://localhost:3001](http://localhost:3001)
+
+### @centre/contract
+
+Run a standalone ethereum network using hardhat in a separate terminal
+
+```
+npm run hardhat:node
+```
+
+Deploy the contract
+
+```
+npm run hardhat:deploy
+```
+
+You can find more [detailed information](./packages/contract) in the package.
+
 ## Sample Users
 
 The following users are added to the development environment by default:
