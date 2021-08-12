@@ -16,7 +16,8 @@ export default apiHandler<Resp>(async (req, res) => {
   const credential = await findNewestCredential(createdAt)
 
   if (!credential) {
-    throw new NotFoundError()
+    res.status(404).json({ status: 404, errors: [] })
+    return
   }
 
   res.json({ credential })
