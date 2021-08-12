@@ -3,9 +3,7 @@ import {
   MaybeRevocableCredential,
   RevocableCredential,
   RevocationList2021Status,
-  RevocationListCredential
-} from "@centre/verity"
-import {
+  RevocationListCredential,
   MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
   decodeVerifiableCredential
@@ -161,15 +159,18 @@ const findCredentialsByRevocationlist = async (
  */
 export const getRevocationListById = async (
   id: string
-): Promise<RevocationListCredential> => {
+): Promise<RevocationListCredential | undefined> => {
   const list = await prisma.revocationList.findFirst({
     where: {
       id
     }
   })
-  return (await decodeVerifiableCredential(
-    list.jwt
-  )) as RevocationListCredential
+
+  if (list) {
+    return (await decodeVerifiableCredential(
+      list.jwt
+    )) as RevocationListCredential
+  }
 }
 
 /**

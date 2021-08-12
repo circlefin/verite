@@ -4,11 +4,10 @@ import {
   createCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
-  generateKycVerificationRequest,
+  generateVerificationRequest,
   randomDidKey,
   validateCredentialApplication,
-  decodeCredentialApplication,
-  generateCreditScoreVerificationRequest
+  decodeCredentialApplication
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
@@ -24,10 +23,11 @@ import { userFactory } from "../../../../../test/factories"
 
 describe("POST /verification/[id]/submission", () => {
   it("validates the submission and updates the verification status", async () => {
-    const verificationRequest = generateKycVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "KYCAMLAttestation",
+      process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/submission`,
-      process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/callback`
     )
     await saveVerificationRequest(verificationRequest)
@@ -61,10 +61,11 @@ describe("POST /verification/[id]/submission", () => {
   it("returns a result object for use in a smart contract", async () => {
     const subject = "0x39C55A1Da9F3f6338A1789fE195E8a47b9484E18"
     const contract = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
-    const verificationRequest = generateKycVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "KYCAMLAttestation",
+      process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/submission?subjectAddress=${subject}&contractAddress=${contract}`,
-      process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/callback`
     )
     await saveVerificationRequest(verificationRequest)
@@ -107,10 +108,11 @@ describe("POST /verification/[id]/submission", () => {
   })
 
   it("rejects and returns errors on an invalid input", async () => {
-    const verificationRequest = generateCreditScoreVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "CreditScoreAttestation",
+      process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/submission`,
-      process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/callback`
     )
     await saveVerificationRequest(verificationRequest)

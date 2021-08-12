@@ -1,14 +1,15 @@
-import { generateKycVerificationRequest } from "@centre/verity"
+import { generateVerificationRequest } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import { saveVerificationRequest } from "../../../../../lib/database"
 import handler from "../../../../../pages/api/verification/[id]/index"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {
-    const verificationRequest = generateKycVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "KYCAMLAttestation",
+      process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/submission`,
-      process.env.VERIFIER_DID,
       `${process.env.HOST}/api/verification/callback`
     )
     await saveVerificationRequest(verificationRequest)

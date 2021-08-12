@@ -1,16 +1,15 @@
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
+import { jsonFetch } from "../../lib/utils"
 
 type Props = {
   id: string
   qrcodeData: Record<string, unknown>
 }
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
-
 export default function QRCodeOrStatus({ id, qrcodeData }: Props): JSX.Element {
-  const { data } = useSWR(`/api/verification/${id}/status`, fetcher, {
+  const { data } = useSWR(`/api/verification/${id}/status`, jsonFetch, {
     refreshInterval: 1000
   })
 

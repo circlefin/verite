@@ -3,44 +3,33 @@ import { Web3Provider } from "@ethersproject/providers"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
 import { useWeb3React } from "@web3-react/core"
-import { GetServerSideProps, NextPage } from "next"
+import { NextPage } from "next"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import QRCode from "qrcode.react"
 import { useState, useEffect } from "react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
-
-type Props = {
-  type: string
-  baseUrl: string
-}
+import { jsonFetch } from "../../lib/utils"
 
 type QRCodeOrStatusProps = {
   qrCodeData: ChallengeTokenUrlWrapper
   status: string | null
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
-) => {
-  return {
-    props: {
-      type: context.params.type as string,
-      baseUrl: `${process.env.HOST}/api/verification/create?type=${context.params.type}`
-    }
-  }
-}
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
 function verificationUrl(
   baseUrl: string,
-  subjectAddress: string,
-  contractAddress: string
+  subjectAddress?: string,
+  contractAddress?: string
 ): string {
   const url = new URL(baseUrl)
-  url.searchParams.append("subjectAddress", subjectAddress)
-  url.searchParams.append("contractAddress", contractAddress)
+  if (subjectAddress?.length) {
+    url.searchParams.append("subjectAddress", subjectAddress)
+  }
+
+  if (contractAddress?.length) {
+    url.searchParams.append("contractAddress", contractAddress)
+  }
   return url.href
 }
 
@@ -67,10 +56,17 @@ function QRCodeOrStatus({
   )
 }
 
-function GetStarted({ baseUrl, onClick }): JSX.Element {
+function GetStarted({ baseUrl, setVerification }): JSX.Element {
   const { account } = useWeb3React<Web3Provider>()
   const [subjectAddress, setSubjectAddress] = useState<string>(account || "")
   const [contractAddress, setContractAddress] = useState<string>("")
+
+  const createVerificationRequest = async (): Promise<void> => {
+    const url = verificationUrl(baseUrl, subjectAddress, contractAddress)
+    const response = await fetch(url, { method: "POST" })
+    const json = await response.json()
+    setVerification(json)
+  }
 
   useEffect(() => {
     setSubjectAddress(account || "")
@@ -132,14 +128,12 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
           </div>
         </form>
       </div>
-      <p>{verificationUrl(baseUrl, subjectAddress, contractAddress)}</p>
+      <pre>{verificationUrl(baseUrl, subjectAddress, contractAddress)}</pre>
       <p>
         <button
           type="button"
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          onClick={() => {
-            onClick(subjectAddress, contractAddress)
-          }}
+          onClick={createVerificationRequest}
         >
           Start Verification Flow
           <ArrowCircleRightIcon
@@ -152,8 +146,21 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
   )
 }
 
-function ScanView({ result, status, verification }): JSX.Element {
+function ScanView({ verification }): JSX.Element {
   const { qrCodeData, challenge } = verification
+
+  const { data } = useSWR(
+    () => `/api/verification/${verification.id}/status`,
+    jsonFetch,
+    { refreshInterval: 1000 }
+  )
+  const status = data && (data.status as string)
+  const result = data && data.result
+
+  if (!status) {
+    return <></>
+  }
+
   return (
     <>
       {status === "pending" && <p>Scan this QR code using the Verity app.</p>}
@@ -218,17 +225,12 @@ function ScanView({ result, status, verification }): JSX.Element {
   )
 }
 
-const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
+const VerifierPage: NextPage = () => {
+  const { query } = useRouter()
   const [verification, setVerification] = useState(null)
   const [title, setTitle] = useState("")
-
-  const { data } = useSWR(
-    () => `/api/verification/${verification.id}/status`,
-    fetcher,
-    { refreshInterval: 1000 }
-  )
-  const status = data && data.status
-  const result = data && data.result
+  const { type } = query
+  const baseUrl = `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=${type}`
 
   useEffect(() => {
     if (type === "kyc") {
@@ -243,25 +245,9 @@ const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
     <VerifierLayout title={title}>
       <div className="prose">
         {verification ? (
-          <ScanView
-            verification={verification}
-            status={status}
-            result={result}
-          />
+          <ScanView verification={verification} />
         ) : (
-          <GetStarted
-            baseUrl={baseUrl}
-            onClick={async (subjectAddress, contractAddress) => {
-              const url = verificationUrl(
-                baseUrl,
-                subjectAddress,
-                contractAddress
-              )
-              const response = await fetch(url, { method: "POST" })
-              const json = await response.json()
-              setVerification(json)
-            }}
-          />
+          <GetStarted baseUrl={baseUrl} setVerification={setVerification} />
         )}
       </div>
     </VerifierLayout>
