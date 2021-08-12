@@ -37,7 +37,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
   // parameter, we will use it to generate an ETH verification result.
   const id = uuidv4()
   const replyTo = replyUrl(
-    `${process.env.HOST}/api/verification/${id}/submission`,
+    id,
     req.query.subjectAddress as string,
     req.query.contractAddress as string
   )
