@@ -1,11 +1,12 @@
 import { asyncMap, buildIssuer, generateRevocationList } from "@centre/verity"
 import { PrismaClient, User } from "@prisma/client"
+import { Wallet } from "ethers"
 import { v4 as uuidv4 } from "uuid"
 import { saveRevocationList } from "../lib/database"
 
 const prisma = new PrismaClient()
 
-type UserInput = Partial<User> & { email: string }
+type UserInput = Partial<User> & { email: string; mnemonic: string }
 // Users
 const users: UserInput[] = [
   {
@@ -14,7 +15,8 @@ const users: UserInput[] = [
     role: "admin",
     jumioScore: 80,
     ofacScore: 0,
-    creditScore: 750
+    creditScore: 750,
+    mnemonic: Wallet.createRandom().mnemonic.phrase
   },
   {
     email: "bob@test.com",
@@ -22,7 +24,8 @@ const users: UserInput[] = [
     role: "member",
     jumioScore: 10,
     ofacScore: 1,
-    creditScore: 320
+    creditScore: 320,
+    mnemonic: Wallet.createRandom().mnemonic.phrase
   }
 ]
 

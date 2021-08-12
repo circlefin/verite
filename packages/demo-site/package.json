@@ -6,6 +6,7 @@
     "build": "next build",
     "clean": "rimraf .next",
     "db:migrate": "dotenv -c development prisma migrate dev",
+    "db:push": "dotenv -c development prisma db push",
     "db:reset": "dotenv -c development prisma migrate reset",
     "db:reset:force": "dotenv -c development prisma migrate reset -- --force",
     "db:seed": "dotenv -c development prisma db seed -- --preview-feature",

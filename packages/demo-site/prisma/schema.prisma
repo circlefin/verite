@@ -30,6 +30,7 @@ model User {
   jumioScore  Int?
   ofacScore   Int?
   creditScore Int?
+  mnemonic    String
 }
 
 model VerificationRequest {
