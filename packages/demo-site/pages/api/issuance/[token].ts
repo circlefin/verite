@@ -95,7 +95,7 @@ async function handleRevocationIfNecessary(
 async function revokeUserCredentials(user: User, type: string) {
   const credentials = await findCredentialsByUserIdAndType(user.id, type)
   const revocable = credentials.filter((c) =>
-    isRevocable(c.revocable)
+    isRevocable(c)
   ) as RevocableCredential[]
 
   for (const credential of revocable) {
