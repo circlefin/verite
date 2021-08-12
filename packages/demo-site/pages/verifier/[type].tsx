@@ -19,12 +19,17 @@ type QRCodeOrStatusProps = {
 
 function verificationUrl(
   baseUrl: string,
-  subjectAddress: string,
-  contractAddress: string
+  subjectAddress?: string,
+  contractAddress?: string
 ): string {
   const url = new URL(baseUrl)
-  url.searchParams.append("subjectAddress", subjectAddress)
-  url.searchParams.append("contractAddress", contractAddress)
+  if (subjectAddress?.length) {
+    url.searchParams.append("subjectAddress", subjectAddress)
+  }
+
+  if (contractAddress?.length) {
+    url.searchParams.append("contractAddress", contractAddress)
+  }
   return url.href
 }
 
@@ -51,10 +56,17 @@ function QRCodeOrStatus({
   )
 }
 
-function GetStarted({ baseUrl, onClick }): JSX.Element {
+function GetStarted({ baseUrl, setVerification }): JSX.Element {
   const { account } = useWeb3React<Web3Provider>()
   const [subjectAddress, setSubjectAddress] = useState<string>(account || "")
   const [contractAddress, setContractAddress] = useState<string>("")
+
+  const createVerificationRequest = async (): Promise<void> => {
+    const url = verificationUrl(baseUrl, subjectAddress, contractAddress)
+    const response = await fetch(url, { method: "POST" })
+    const json = await response.json()
+    setVerification(json)
+  }
 
   useEffect(() => {
     setSubjectAddress(account || "")
@@ -116,14 +128,12 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
           </div>
         </form>
       </div>
-      <p>{verificationUrl(baseUrl, subjectAddress, contractAddress)}</p>
+      <pre>{verificationUrl(baseUrl, subjectAddress, contractAddress)}</pre>
       <p>
         <button
           type="button"
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          onClick={() => {
-            onClick(subjectAddress, contractAddress)
-          }}
+          onClick={createVerificationRequest}
         >
           Start Verification Flow
           <ArrowCircleRightIcon
@@ -237,19 +247,7 @@ const VerifierPage: NextPage = () => {
         {verification ? (
           <ScanView verification={verification} />
         ) : (
-          <GetStarted
-            baseUrl={baseUrl}
-            onClick={async (subjectAddress, contractAddress) => {
-              const url = verificationUrl(
-                baseUrl,
-                subjectAddress,
-                contractAddress
-              )
-              const response = await fetch(url, { method: "POST" })
-              const json = await response.json()
-              setVerification(json)
-            }}
-          />
+          <GetStarted baseUrl={baseUrl} setVerification={setVerification} />
         )}
       </div>
     </VerifierLayout>

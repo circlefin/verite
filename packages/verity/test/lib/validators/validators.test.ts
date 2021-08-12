@@ -17,10 +17,7 @@ import {
 } from "../../../lib/validators/Matches"
 import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
 import { processVerificationSubmission } from "../../../lib/validators/validators"
-import {
-  generateCreditScoreVerificationRequest,
-  generateKycVerificationRequest
-} from "../../../lib/verification-requests"
+import { generateVerificationRequest } from "../../../lib/verification-request-fns"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 import { generateVerifiableCredential } from "../../support/verifiable-credential-fns"
@@ -51,10 +48,11 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = generateKycVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "KYCAMLAttestation",
+      verifierDidKey.controller,
       verifierDidKey.controller,
       "https://test.host/verify",
-      verifierDidKey.controller,
       "https://other.host/callback",
       [issuer.did]
     )
@@ -116,10 +114,11 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = generateKycVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "KYCAMLAttestation",
+      verifierDidKey.controller,
       verifierDidKey.controller,
       "https://test.host/verify",
-      verifierDidKey.controller,
       "https://other.host/callback",
       ["NOT TRUSTED"]
     )
@@ -137,7 +136,7 @@ describe("Submission validator", () => {
 
     expect(result.accepted()).toBe(false)
     expect(result.errors()[0].details).toEqual(
-      "Credential did not match constraint: We can only verify KYC/AML credentials attested by a trusted authority."
+      "Credential did not match constraint: We can only verify credentials attested by a trusted authority."
     )
   })
 
@@ -166,13 +165,14 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = generateCreditScoreVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "CreditScoreAttestation",
+      verifierDidKey.controller,
       verifierDidKey.controller,
       "https://test.host/verify",
-      verifierDidKey.controller,
       "https://other.host/callback",
       [issuer.did],
-      400 // minimum credit score required
+      { minimumCreditScore: 400 } // minimum credit score required
     )
 
     const submission = await createVerificationSubmission(
@@ -218,10 +218,11 @@ describe("Submission validator", () => {
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     // Generate Credit Score Request, even though we have a KYC credential
-    const verificationRequest = generateCreditScoreVerificationRequest(
+    const verificationRequest = generateVerificationRequest(
+      "CreditScoreAttestation",
+      verifierDidKey.controller,
       verifierDidKey.controller,
       "https://test.host/verify",
-      verifierDidKey.controller,
       "https://other.host/callback",
       [issuer.did]
     )

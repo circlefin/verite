@@ -8,7 +8,7 @@ import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validateCredentialApplication"
 import { processVerificationSubmission } from "../../lib/validators/validators"
-import { generateKycVerificationRequest } from "../../lib/verification-requests"
+import { generateVerificationRequest } from "../../lib/verification-request-fns"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
@@ -24,10 +24,11 @@ describe("verification", () => {
     )
 
     // 2. VERIFIER: Discovery of verification requirements
-    const kycRequest = generateKycVerificationRequest(
+    const kycRequest = generateVerificationRequest(
+      "KYCAMLAttestation",
       verifierDidKey.controller,
-      "https://test.host/verify",
-      verifierDidKey.controller
+      verifierDidKey.controller,
+      "https://test.host/verify"
     )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
