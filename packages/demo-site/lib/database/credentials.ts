@@ -159,15 +159,18 @@ const findCredentialsByRevocationlist = async (
  */
 export const getRevocationListById = async (
   id: string
-): Promise<RevocationListCredential> => {
+): Promise<RevocationListCredential | undefined> => {
   const list = await prisma.revocationList.findFirst({
     where: {
       id
     }
   })
-  return (await decodeVerifiableCredential(
-    list.jwt
-  )) as RevocationListCredential
+
+  if (list) {
+    return (await decodeVerifiableCredential(
+      list.jwt
+    )) as RevocationListCredential
+  }
 }
 
 /**
