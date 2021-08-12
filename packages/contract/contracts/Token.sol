@@ -39,6 +39,8 @@ contract Token is VerificationValidator {
 
     uint256 private immutable _CREDENTIAL_THRESHOLD;
 
+    event Transfer(address indexed from, address indexed to, uint amount);
+
     constructor() {
         // The totalSupply is assigned to transaction sender, which is the account
         // that is deploying the contract.
@@ -88,5 +90,7 @@ contract Token is VerificationValidator {
     function _transfer(address to, uint256 amount) private {
         balances[msg.sender] -= amount;
         balances[to] += amount;
+
+        emit Transfer(msg.sender, to, amount);
     }
 }

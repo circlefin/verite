@@ -1,6 +1,7 @@
 import { createServer } from "http"
 import { parse } from "url"
 import next from "next"
+import { listen } from "./lib/transfer-listener"
 
 const dev = process.env.NODE_ENV !== "production"
 const app = next({ dev })
@@ -14,6 +15,8 @@ app.prepare().then(() => {
     handle(req, res, parsedUrl)
   }).listen(3000, () => {
     // if (err) throw err
+
+    listen()
     console.log(`> Ready! on ${process.env.HOST}`)
   })
 })
