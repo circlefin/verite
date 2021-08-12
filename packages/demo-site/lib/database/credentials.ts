@@ -3,9 +3,7 @@ import {
   MaybeRevocableCredential,
   RevocableCredential,
   RevocationList2021Status,
-  RevocationListCredential
-} from "@centre/verity"
-import {
+  RevocationListCredential,
   MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
   decodeVerifiableCredential

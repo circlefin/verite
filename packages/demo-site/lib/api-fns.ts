@@ -3,7 +3,7 @@ import {
   ValidationError,
   ValidationFailure,
   VerificationError
-} from "@centre/verity/dist"
+} from "@centre/verity"
 import Cors from "cors"
 import { NextApiHandler, NextApiRequest } from "next"
 import { MethodNotAllowedError, ProcessingError } from "./errors"

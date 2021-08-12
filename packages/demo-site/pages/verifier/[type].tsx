@@ -3,35 +3,19 @@ import { Web3Provider } from "@ethersproject/providers"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
 import { useWeb3React } from "@web3-react/core"
-import { GetServerSideProps, NextPage } from "next"
+import { NextPage } from "next"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import QRCode from "qrcode.react"
 import { useState, useEffect } from "react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
-
-type Props = {
-  type: string
-  baseUrl: string
-}
+import { jsonFetch } from "../../lib/utils"
 
 type QRCodeOrStatusProps = {
   qrCodeData: ChallengeTokenUrlWrapper
   status: string | null
 }
-
-export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
-) => {
-  return {
-    props: {
-      type: context.params.type as string,
-      baseUrl: `${process.env.HOST}/api/verification/create?type=${context.params.type}`
-    }
-  }
-}
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 function verificationUrl(
   baseUrl: string,
@@ -152,8 +136,21 @@ function GetStarted({ baseUrl, onClick }): JSX.Element {
   )
 }
 
-function ScanView({ result, status, verification }): JSX.Element {
+function ScanView({ verification }): JSX.Element {
   const { qrCodeData, challenge } = verification
+
+  const { data } = useSWR(
+    () => `/api/verification/${verification.id}/status`,
+    jsonFetch,
+    { refreshInterval: 1000 }
+  )
+  const status = data && (data.status as string)
+  const result = data && data.result
+
+  if (!status) {
+    return <></>
+  }
+
   return (
     <>
       {status === "pending" && <p>Scan this QR code using the Verity app.</p>}
@@ -218,17 +215,12 @@ function ScanView({ result, status, verification }): JSX.Element {
   )
 }
 
-const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
+const VerifierPage: NextPage = () => {
+  const { query } = useRouter()
   const [verification, setVerification] = useState(null)
   const [title, setTitle] = useState("")
-
-  const { data } = useSWR(
-    () => `/api/verification/${verification.id}/status`,
-    fetcher,
-    { refreshInterval: 1000 }
-  )
-  const status = data && data.status
-  const result = data && data.result
+  const { type } = query
+  const baseUrl = `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=${type}`
 
   useEffect(() => {
     if (type === "kyc") {
@@ -243,11 +235,7 @@ const VerifierPage: NextPage<Props> = ({ type, baseUrl }) => {
     <VerifierLayout title={title}>
       <div className="prose">
         {verification ? (
-          <ScanView
-            verification={verification}
-            status={status}
-            result={result}
-          />
+          <ScanView verification={verification} />
         ) : (
           <GetStarted
             baseUrl={baseUrl}

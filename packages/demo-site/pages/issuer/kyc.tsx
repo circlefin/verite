@@ -9,6 +9,7 @@ import IssuerLayout from "../../components/issuer/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
+import { jsonFetch } from "../../lib/utils"
 
 type Props = {
   createdAt: string
@@ -37,8 +38,6 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   }
 })
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
-
 const KycAmlPage: NextPage<Props> = ({
   createdAt,
   manifest,
@@ -48,7 +47,7 @@ const KycAmlPage: NextPage<Props> = ({
   // Setup polling to detect a newly issued credential.
   const { data } = useSWR(
     `/api/demo/get-newest-credential-from?createdAt=${createdAt}`,
-    fetcher,
+    jsonFetch,
     {
       refreshInterval: 1000
     }
