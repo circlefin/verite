@@ -99,13 +99,38 @@ const Dapp: FC = () => {
   }, [token])
 
   /**
+   * When we have a verification, we'll poll on it
+   */
+  useEffect(() => {
+    const startPollingVerification = async (id: string) => {
+      setPollVerificationInterval(
+        setInterval(() => fetchVerificationStatus(id), 1000)
+      )
+      fetchVerificationStatus(id)
+    }
+
+    const stopPollingVerification = async () => {
+      clearInterval(pollVerificationInterval as unknown as number)
+      setPollVerificationInterval(undefined)
+    }
+
+    if (verification) {
+      startPollingVerification(verification.id)
+    } else {
+      stopPollingVerification()
+    }
+
+    return () => {
+      console.log("clearing", pollVerificationInterval)
+      clearInterval(pollVerificationInterval)
+    }
+  }, [verification])
+
+  /**
    * Start verification via demo-site verifier.
    */
   const createVerification = async () => {
     try {
-      // Stop polling just in case
-      stopPollingVerification()
-
       // Create a Verification Request
       const resp = await fetch(
         `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress.Token}`,
@@ -114,16 +139,12 @@ const Dapp: FC = () => {
       const verification = await resp.json()
       setVerification(verification)
       setIsVerifying(true)
-
-      // Poll for status
-      startPollingVerification(verification.id)
     } catch (e) {
       setVerification(undefined)
       setIsVerifying(false)
       setStatusMessage(
         "API call to Verifier failed. Are you running demo-site?"
       )
-      stopPollingVerification()
     }
   }
 
@@ -141,13 +162,11 @@ const Dapp: FC = () => {
         setVerificationInfoSet(verification.result)
         setIsVerifying(false)
         setStatusMessage("Verification complete.")
-        stopPollingVerification()
       } else if (verification.status === "rejected") {
         setVerification(undefined)
         setVerificationInfoSet(undefined)
         setIsVerifying(false)
         setStatusMessage("Verification failed.")
-        stopPollingVerification()
       }
     } catch (e) {
       setVerification(undefined)
@@ -157,20 +176,7 @@ const Dapp: FC = () => {
       setStatusMessage(
         "API call to Verifier failed. Are you running demo-site?"
       )
-      stopPollingVerification()
     }
-  }
-
-  const startPollingVerification = async (id: string) => {
-    setPollVerificationInterval(
-      setInterval(() => fetchVerificationStatus(id), 1000)
-    )
-    fetchVerificationStatus(id)
-  }
-
-  const stopPollingVerification = async () => {
-    clearInterval(pollVerificationInterval as unknown as number)
-    setPollVerificationInterval(undefined)
   }
   // End demo-site verifier
 
