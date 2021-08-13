@@ -6,8 +6,14 @@ import { saveRevocationList } from "../lib/database"
 
 const prisma = new PrismaClient()
 
-type UserInput = Partial<User> & { email: string; mnemonic: string }
+type UserInput = Partial<User> & {
+  email: string
+  mnemonic: string
+  address: string
+}
 // Users
+const aliceWallet = Wallet.createRandom()
+const bobWallet = Wallet.createRandom()
 const users: UserInput[] = [
   {
     email: "alice@test.com",
@@ -16,7 +22,8 @@ const users: UserInput[] = [
     jumioScore: 80,
     ofacScore: 0,
     creditScore: 750,
-    mnemonic: Wallet.createRandom().mnemonic.phrase
+    mnemonic: aliceWallet.mnemonic.phrase,
+    address: aliceWallet.address
   },
   {
     email: "bob@test.com",
@@ -25,7 +32,8 @@ const users: UserInput[] = [
     jumioScore: 10,
     ofacScore: 1,
     creditScore: 320,
-    mnemonic: Wallet.createRandom().mnemonic.phrase
+    mnemonic: bobWallet.mnemonic.phrase,
+    address: bobWallet.address
   }
 ]
 

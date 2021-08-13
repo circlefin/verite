@@ -37,6 +37,7 @@ model User {
   ofacScore   Int?
   creditScore Int?
   mnemonic    String
+  address     String
   balance     String @default("0")
 }
 
