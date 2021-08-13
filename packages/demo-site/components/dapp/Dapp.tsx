@@ -102,27 +102,27 @@ const Dapp: FC = () => {
    * When we have a verification, we'll poll on it
    */
   useEffect(() => {
-    const startPollingVerification = async (id: string) => {
-      setPollVerificationInterval(
-        setInterval(() => fetchVerificationStatus(id), 1000)
-      )
+    const startPollingVerification = (id: string) => {
+      const i = setInterval(() => fetchVerificationStatus(id), 1000)
+      setPollVerificationInterval(i)
       fetchVerificationStatus(id)
+      return i
     }
 
-    const stopPollingVerification = async () => {
+    const stopPollingVerification = () => {
       clearInterval(pollVerificationInterval as unknown as number)
-      setPollVerificationInterval(undefined)
+      setPollVerificationInterval(null)
     }
 
+    let timer
     if (verification) {
-      startPollingVerification(verification.id)
+      timer = startPollingVerification(verification.id)
     } else {
       stopPollingVerification()
     }
 
     return () => {
-      console.log("clearing", pollVerificationInterval)
-      clearInterval(pollVerificationInterval)
+      clearInterval(timer)
     }
   }, [verification])
 
