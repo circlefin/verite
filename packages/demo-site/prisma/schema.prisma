@@ -47,3 +47,10 @@ model VerificationRequest {
   status  String @default("pending")
   result  String?
 }
+
+model VerificationResult {
+  id             String @id @default(uuid())
+  result         String
+  expires        DateTime
+  subjectAddress String
+}

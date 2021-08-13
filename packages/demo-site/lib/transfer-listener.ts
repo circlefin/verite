@@ -44,9 +44,6 @@ export const listen = (): void => {
       update: { name: "blockNumber", value: blockNumber }
     })
 
-    // Note that a production environment would want to transactionally update
-    // its balances, but we do not for simplicity of the example.
-
     // Debit the sender if they exist
     const sender = await prisma.user.findFirst({
       where: {
@@ -65,6 +62,26 @@ export const listen = (): void => {
         }
       })
     }
+
+    // Before a reciver can use their funds, we need to be sure the funds were
+    // received from a verified address. Check to see that we have a
+    // VerificationResult for the sending address.
+    const verificationResult = await prisma.verificationResult.findFirst({
+      where: {
+        subjectAddress: from,
+        expires: {
+          gt: new Date()
+        }
+      }
+    })
+
+    if (!verificationResult) {
+      console.log("Could not find a verification result, skipping.")
+      return
+    }
+
+    // Note that a production environment would want to transactionally update
+    // its balances, but we do not for simplicity of the example.
 
     // Credit the receiver if they exist
     const receiver = await prisma.user.findFirst({
