@@ -13,6 +13,9 @@ import { NotFoundError, ProcessingError } from "../../../../lib/errors"
 
 type PostResponse = { status: string; result?: VerificationInfoResponse }
 
+const WALLET_MNEMONIC =
+  "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
+
 /**
  * POST request handler
  *
@@ -54,7 +57,11 @@ export default apiHandler<PostResponse>(async (req, res) => {
   const contractAddress = req.query.contractAddress as string
   let result: VerificationInfoResponse
   if (subjectAddress && contractAddress) {
-    result = await verificationResult(subjectAddress, contractAddress)
+    result = await verificationResult(
+      subjectAddress,
+      contractAddress,
+      WALLET_MNEMONIC
+    )
   }
 
   await updateVerificationRequestStatus(

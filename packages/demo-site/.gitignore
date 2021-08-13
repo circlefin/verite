@@ -34,3 +34,6 @@ yarn-error.log*
 
 # Temp files
 tmp/*
+
+# Contract details
+contracts

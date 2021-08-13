@@ -1,16 +1,16 @@
 import { NextPage } from "next"
-import Layout from "components/Layout"
-import Dapp from "components/Dapp"
 import React from "react"
+import Dapp from "../components/dapp/Dapp"
+import Layout from "../components/layouts/EthAuthLayout"
 
-const Home: NextPage = () => {
+const DappPage: NextPage = () => {
   return (
     <Layout title="Project Verity Demo">
       <React.StrictMode>
         <Dapp />
       </React.StrictMode>
     </Layout>
-  );
+  )
 }
 
-export default Home
+export default DappPage

@@ -3,7 +3,6 @@
 ## Packages
 
 - [@centre/contract](./packages/contract) - A solidity contract requiring KYC proof for a transaction
-- [@centre/dapp](./packages/dapp) - A front-end for the contract
 - [@centre/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project
 - [@centre/verity](./packages/verity) - Shared logic for issuingg, verifying, and revoking Verifiable Credentials
 
@@ -24,39 +23,76 @@ This script will do the following:
 - Generate issuer and verifier DIDs and secrets for `@centre/demo-site`
 - Build and migrate the database for `@centre/demo-site`
 
-## Running the apps
+## Running the Apps
 
-To run the `demo-site` while watching for changes in `verity`, you can run
+It's recommended to run hardhat and the demo-site separately.
+
+```sh
+npm run hardhat:node
+```
+
+then, in a new tab:
+
+```sh
+npm run hardhat:deploy
+npm run dev
+```
+
+Or, if you want to run everything together, simply run:
+
+```sh
+npm run dev:all
+```
+
+### Manually running services:
+
+First, you need to run a hardhat node on it's own terminal tab:
+
+```sh
+npm run hardhat:node
+```
+
+Next, you must deploy the contract:
 
 ```
-npm run dev
+npm run hardhat:deploy
+```
+
+Next, build verity:
+
+```sh
+npm run build:verity
+```
+
+Now you can run the `demo-site`:
+
+```sh
+npm run dev:site
 ```
 
 This will start your server at [http://localhost:3000](http://localhost:3000)
 
 ### @centre/verity:
 
-```
+To build the shared @centre/verity package, run:
+
+```sh
 npm run build:verity
+```
+
+To watch for changes to @centre/verity, run:
+
+```sh
+npm run dev:verity
 ```
 
 ### @centre/demo-site:
 
 ```
-npm run site
+npm run dev:site
 ```
 
 **NOTE** To run the demo-site, you _must_ build the verity project first.
-
-### @centre/dapp
-
-A demo in which sending over 10 or more tokens would require proof of KYC.
-
-```
-npm run dev:dapp
-```
-
-This will start a server at [http://localhost:3001](http://localhost:3001)
 
 ### @centre/contract
 

@@ -13,6 +13,7 @@ export type HeaderProps = {
 const navigation = [
   { name: "Issuer", href: "/issuer" },
   { name: "Verifier", href: "/verifier" },
+  { name: "Dapp", href: "/dapp" },
   { name: "Admin", href: "/admin" }
 ]
 
