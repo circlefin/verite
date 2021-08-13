@@ -87,17 +87,16 @@ const Dapp: FC = () => {
 
   useEffect(() => {
     if (token) {
+      const getTokenData = async () => {
+        const name: string = await token.name()
+        const symbol: string = await token.symbol()
+
+        setTokenData({ name, symbol })
+      }
+
       getTokenData()
     }
   }, [token])
-
-  // The next two methods read from the contract and store results in component state.
-  const getTokenData = async () => {
-    const name: string = await token.name()
-    const symbol: string = await token.symbol()
-
-    setTokenData({ name, symbol })
-  }
 
   /**
    * Start verification via demo-site verifier.
