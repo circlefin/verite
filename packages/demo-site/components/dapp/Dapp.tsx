@@ -319,23 +319,6 @@ const Dapp: FC = () => {
     return error.message
   }
 
-  // This method checks whether the Metamask selected network is localhost:8545
-  // const checkNetwork = () => {
-  //   if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
-  //     return true
-  //   }
-
-  //   setNetworkError("Please connect Metamask to localhost:8545")
-
-  //   return false
-  // }
-
-  // Ethereum wallets inject the window.ethereum object. If it hasn't been
-  // injected, we instruct the user to install MetaMask.
-  // if (typeof window !== "undefined" && window.ethereum === undefined) {
-  //   return <NoWalletDetected />;
-  // }
-
   // The next thing we need to do is ask the user to connect the wallet.
   // When the wallet gets connected, we are going to save the users's address
   // in the component's state. So if it hasn't been saved yet, we show the
@@ -344,12 +327,7 @@ const Dapp: FC = () => {
   // Note that we pass it a callback that is going to be called when the user
   // clicks a button. This callback just calls the _connectWallet method.
   if (!account) {
-    return (
-      <ConnectWallet
-        networkError={networkError}
-        dismiss={() => dismissNetworkError()}
-      />
-    )
+    return <ConnectWallet />
   }
 
   // If the token data or the user's balance hasn't loaded yet, we show
