@@ -1,9 +1,11 @@
+import { Web3Provider } from "@ethersproject/providers"
 import { UnsupportedChainIdError } from "@web3-react/core"
 import {
   InjectedConnector,
   NoEthereumProviderError,
   UserRejectedRequestError
 } from "@web3-react/injected-connector"
+import { Contract } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only
@@ -53,4 +55,17 @@ export function formatEthAddress(address: string) {
   const lower = address.toLowerCase()
 
   return `${lower.slice(0, 6)}...${lower.slice(-4)}`
+}
+
+/**
+ * Perform a method on a given contract
+ */
+export function contractFetcher(
+  library: Web3Provider,
+  abi: Record<string, unknown>[]
+) {
+  return (address: string, method: string, ...args) => {
+    const contract = new Contract(address, abi, library.getSigner())
+    return contract[method](...args)
+  }
 }

@@ -3,8 +3,9 @@
 import type { VerificationInfoResponse } from "@centre/verity"
 import { Web3Provider } from "@ethersproject/providers"
 import { useWeb3React } from "@web3-react/core"
-import { BigNumber, Contract } from "ethers"
+import { Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
+import useSWR from "swr"
 
 // import the contract's artifacts and address
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -13,6 +14,7 @@ import TokenArtifact from "../../contracts/Token.json"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import contractAddress from "../../contracts/contract-address.json"
+import { contractFetcher } from "../../lib/eth-fns"
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
@@ -43,13 +45,17 @@ const ERROR_CODE_TX_REJECTED_BY_USER = 4001
  */
 const Dapp: FC = () => {
   const { account, library } = useWeb3React<Web3Provider>()
+  // Refresh the user's contract balance every 1 second
+  const { data: balance, mutate } = useSWR(
+    [contractAddress.Token, "balanceOf", account],
+    {
+      fetcher: contractFetcher(library, TokenArtifact.abi),
+      refreshInterval: 1000
+    }
+  )
 
   // token name and symbol
   const [tokenData, setTokenData] = useState<{ name: string; symbol: string }>()
-
-  // dapp user's address and balance
-  // const [account, setSelectedAddress] = useState(account || "")
-  const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0))
 
   // transactions being sent and any error with them
   const [txBeingSent, setTxBeingSent] = useState("")
@@ -65,80 +71,32 @@ const Dapp: FC = () => {
   const [verificationStatus, setVerificationStatus] = useState()
 
   const [token, setToken] = useState<Contract>(null)
-  const [pollDataInterval, setPollDataInterval] = useState(null)
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
 
-  /**
-   * When the active eth account changes, we should initialize ethers to
-   * find the latest contract
-   */
   useEffect(() => {
-    stopPollingData()
-
-    if (!account) {
-      return resetState()
-    }
-
-    intializeEthers()
-  }, [account])
-
-  /**
-   * When we have an active contract, fetch the token's data, and start polling
-   * for updates. Fetching the token data and the user's balance are specific
-   * to this sample project, but you can reuse the same initialization pattern
-   */
-  useEffect(() => {
-    if (token) {
-      getTokenData()
-      startPollingData()
-    }
-  }, [token])
-
-  /**
-   * Initialize the contract using that provider and the token's
-   * artifact. You can do this same thing with your contracts.
-   */
-  const intializeEthers = async () => {
-    setToken(
-      new Contract(
+    if (library) {
+      const token = new Contract(
         contractAddress.Token,
         TokenArtifact.abi,
         library.getSigner(0)
       )
-    )
-  }
 
-  // The next two methods are needed to start and stop polling data. While
-  // the data being polled here is specific to this example, you can use this
-  // pattern to read any data from your contracts.
-  //
-  // Note that if you don't need it to update in near real time, you probably
-  // don't need to poll it. If that's the case, you can just fetch it when you
-  // initialize the app, as we do with the token data.
-  const startPollingData = () => {
-    setPollDataInterval(setInterval(() => updateFromContract(), 1000))
-    // run it once immediately so we don't have to wait for it
-    updateFromContract()
-  }
+      setToken(token)
+    }
+  }, [library])
 
-  const stopPollingData = () => {
-    clearInterval(pollDataInterval as unknown as number)
-    setPollDataInterval(null)
-  }
+  useEffect(() => {
+    if (token) {
+      const getTokenData = async () => {
+        const name: string = await token.name()
+        const symbol: string = await token.symbol()
 
-  // The next two methods read from the contract and store results in component state.
-  const getTokenData = async () => {
-    const name: string = await token.name()
-    const symbol: string = await token.symbol()
+        setTokenData({ name, symbol })
+      }
 
-    setTokenData({ name, symbol })
-  }
-
-  const updateFromContract = async () => {
-    // update balance
-    const balance = await token.balanceOf(account)
-    setBalance(balance)
-  }
+      getTokenData()
+    }
+  }, [token])
 
   /**
    * Start verification via demo-site verifier.
@@ -250,7 +208,6 @@ const Dapp: FC = () => {
   }
 
   const transferTokens = async (to: string, amount: string) => {
-    console.log("amount", amount)
     // Sending a transaction is a complex operation:
     //   - The user can reject it
     //   - It can fail before reaching the ethereum network (i.e. if the user
@@ -270,7 +227,7 @@ const Dapp: FC = () => {
       // send the transfer, either with verification or without
       let tx: any
       const t = await token.verificationThreshold()
-      if (t <= amount && verificationInfoSet !== undefined) {
+      if (t <= amount && verificationInfoSet) {
         tx = await token.validateAndTransfer(
           to,
           amount,
@@ -299,7 +256,8 @@ const Dapp: FC = () => {
       }
 
       // If we got here, the transaction was successful, so update Dapp state.
-      await updateFromContract()
+      // Force the balance refresher to update state
+      mutate(undefined, true)
       setStatusMessage("Transaction Succeeded")
       setIsVerifying(false)
     } catch (error) {
@@ -353,18 +311,6 @@ const Dapp: FC = () => {
     }
 
     return error.message
-  }
-
-  // This method resets the state
-  const resetState = () => {
-    setTokenData(undefined)
-    setBalance(undefined)
-    setTxBeingSent(undefined)
-    setTransactionError(undefined)
-    setNetworkError(undefined)
-    setStatusMessage(undefined)
-    setIsVerifying(undefined)
-    setVerificationInfoSet(undefined)
   }
 
   // This method checks whether the Metamask selected network is localhost:8545
