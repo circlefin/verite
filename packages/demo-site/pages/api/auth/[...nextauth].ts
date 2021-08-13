@@ -37,6 +37,8 @@ export default NextAuth({
       session.user.id = user.id
       // @ts-ignore
       session.user.role = user.role
+      session.balance = user.balance
+      session.address = user.address
       return Promise.resolve(session)
     },
     jwt: async (token, user?: User) => {
