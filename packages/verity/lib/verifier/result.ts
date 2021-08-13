@@ -3,14 +3,13 @@ import type { KYCVerificationInfo, VerificationInfoResponse } from "../../types"
 
 export const verificationResult = async (
   subjectAddress: string,
-  contractAddress: string
+  contractAddress: string,
+  mnemonic: string
 ): Promise<VerificationInfoResponse> => {
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new signer trusted signer when needed.
   // We use the same mnemonic here that the deploy script used in order to get
   // a signer that is already registered as trusted in the contract.
-  const mnemonic =
-    "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
   const signer: Wallet = ethers.Wallet.fromMnemonic(mnemonic)
 
   // This would be best done from current block.timestamp. Expirations allow verifiers
@@ -22,14 +21,14 @@ export const verificationResult = async (
   // See https://eips.ethereum.org/EIPS/eip-712
 
   // Use the contract's remote address as part of the domain separator in the hash
-  const domain: Record<string, unknown> = {
+  const domain = {
     name: "VerificationValidator",
     version: "1.0",
     chainId: 1337,
     verifyingContract: contractAddress
   }
 
-  const types: Record<string, any[]> = {
+  const types = {
     KYCVerificationInfo: [
       { name: "message", type: "string" },
       { name: "expiration", type: "uint256" },

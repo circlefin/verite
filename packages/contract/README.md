@@ -36,11 +36,6 @@ npx hardhat run scripts/deploy.ts --network localhost
 
 Make sure you have MetaMask installed in Chrome.
 
-```
-cd ../dapp
-npm run dev
-```
-
 The web app will guide you through use of the faucet and verify hardhat tasks, which give your MetaMask account tokens and enable simulation of successful verification. The frontend was created with create-react-app with typescript and npm toggled, and subsequently modified to use next.js
 
 ## Troubleshooting
