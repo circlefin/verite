@@ -10,11 +10,13 @@ import Header, { HeaderProps } from "../Header"
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
+    /*
     1, // Mainet
     3, // Ropsten
     4, // Rinkeby
     5, // Goerli
     42, // Kovan
+    */
     1337 // Hardhat
   ]
 })
@@ -23,7 +25,7 @@ function getErrorMessage(error: Error) {
   if (error instanceof NoEthereumProviderError) {
     return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile."
   } else if (error instanceof UnsupportedChainIdError) {
-    return "You're connected to an unsupported network."
+    return "You're connected to an unsupported network. Please set MetaMask to connect to localhost:8545."
   } else if (error instanceof UserRejectedRequestErrorInjected) {
     return "Please authorize this website to access your Ethereum account."
   } else {
