@@ -26,7 +26,7 @@
     "isomorphic-unfetch": "^3.1.0",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
-    "multibase": "^4.0.4",
+    "multibase": "4.0.4",
     "multicodec": "^3.1.0",
     "pako": "^2.0.4",
     "schema-dts": "^0.10.0",
