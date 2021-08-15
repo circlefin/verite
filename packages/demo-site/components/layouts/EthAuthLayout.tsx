@@ -8,13 +8,19 @@ import {
 } from "../../lib/eth-fns"
 import Header, { HeaderProps } from "../Header"
 
-const Layout: FC<HeaderProps> = ({ children, ...headerProps }) => {
+type Props = HeaderProps & {
+  noPadding?: boolean
+}
+
+const Layout: FC<Props> = ({ children, noPadding, ...headerProps }) => {
   const { account, active, activate, deactivate, error } =
     useWeb3React<Web3Provider>()
 
   if (error) {
     window.alert(getEthErrorMessage(error))
   }
+
+  const bodyPadding = noPadding ? "" : "px-5 py-6 sm:px-6"
 
   return (
     <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
@@ -35,7 +41,7 @@ const Layout: FC<HeaderProps> = ({ children, ...headerProps }) => {
           </>
         ) : (
           <button
-            className="px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
+            className="text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
             onClick={() => {
               activate(injectedConnector)
             }}
@@ -46,7 +52,9 @@ const Layout: FC<HeaderProps> = ({ children, ...headerProps }) => {
       </Header>
       <main className="-mt-32">
         <div className="max-w-3xl px-4 pb-12 mx-auto sm:px-6 lg:px-8">
-          <div className="px-5 py-6 bg-white rounded-lg shadow sm:px-6">
+          <div
+            className={`bg-white rounded-lg shadow ${bodyPadding} overflow-hidden`}
+          >
             {children}
           </div>
         </div>
