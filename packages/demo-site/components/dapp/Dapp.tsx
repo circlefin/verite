@@ -20,7 +20,6 @@ import { contractFetcher } from "../../lib/eth-fns"
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
 // logic. They just render HTML.
-import ConnectWallet from "./ConnectWallet"
 import Layout from "./Layout"
 import Loading from "./Loading"
 import NoTokensMessage from "./NoTokensMessage"
@@ -70,33 +69,46 @@ const Dapp: FC = () => {
   const [verification, setVerification] = useState(null)
   const [verificationStatus, setVerificationStatus] = useState()
 
-  const [token, setToken] = useState<Contract>(null)
+  // const [token, setToken] = useState<Contract>(null)
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
 
+  const token = new Contract(
+    contractAddress.Token,
+    TokenArtifact.abi,
+    library.getSigner(0)
+  )
+
+  // Intial setup
   useEffect(() => {
-    if (library) {
-      const token = new Contract(
-        contractAddress.Token,
-        TokenArtifact.abi,
-        library.getSigner(0)
-      )
+    // Load the token information (name, symbol)
+    const getTokenData = async () => {
+      const name: string = await token.name()
+      const symbol: string = await token.symbol()
 
-      setToken(token)
+      setTokenData({ name, symbol })
     }
-  }, [library])
 
-  useEffect(() => {
-    if (token) {
-      const getTokenData = async () => {
-        const name: string = await token.name()
-        const symbol: string = await token.symbol()
+    getTokenData()
 
-        setTokenData({ name, symbol })
-      }
+    // Set up listeners for the token contract so we know when
+    // to update balances, etc.
+    const fromMe = token.filters.Transfer(account, null)
+    const toMe = token.filters.Transfer(null, account)
+    library.on(fromMe, (from, to, amount, event) => {
+      console.log("Transfer sent", { from, to, amount, event })
+      mutate(undefined, true)
+    })
 
-      getTokenData()
+    library.on(toMe, (from, to, amount, event) => {
+      console.log("Transfer received", { from, to, amount, event })
+      mutate(undefined, true)
+    })
+
+    return () => {
+      library.removeAllListeners(toMe)
+      library.removeAllListeners(fromMe)
     }
-  }, [token])
+  })
 
   /**
    * When we have a verification, we'll poll on it
@@ -320,21 +332,6 @@ const Dapp: FC = () => {
     }
 
     return error.message
-  }
-
-  // The next thing we need to do is ask the user to connect the wallet.
-  // When the wallet gets connected, we are going to save the users's address
-  // in the component's state. So if it hasn't been saved yet, we show the
-  // ConnectWallet component.
-  //
-  // Note that we pass it a callback that is going to be called when the user
-  // clicks a button. This callback just calls the _connectWallet method.
-  if (!account) {
-    return (
-      <Layout>
-        <ConnectWallet />
-      </Layout>
-    )
   }
 
   // If the token data or the user's balance hasn't loaded yet, we show
