@@ -18,7 +18,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const qrCodeData = challengeTokenUrlWrapper(
-    `${process.env.HOST}/api/manifests/credit-score/${authToken}`
+    `${process.env.NGROK_HOST}/api/manifests/credit-score/${authToken}`
   )
 
   const response = await fetch(qrCodeData.challengeTokenUrl)

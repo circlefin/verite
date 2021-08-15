@@ -4,7 +4,7 @@ import { getRevocationListById } from "../../../lib/database"
 import { NotFoundError } from "../../../lib/errors"
 
 export default apiHandler<RevocationListCredential>(async (req, res) => {
-  const q = `${process.env.HOST}${req.url}`
+  const q = `${process.env.NGROK_HOST}${req.url}`
   const revocationList = await getRevocationListById(q)
 
   if (!revocationList) {

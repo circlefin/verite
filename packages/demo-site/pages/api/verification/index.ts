@@ -48,7 +48,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
     process.env.VERIFIER_DID,
     process.env.VERIFIER_DID,
     replyTo,
-    `${process.env.HOST}/api/verification/${id}/callback`,
+    `${process.env.NEXT_PUBLIC_NGROK_HOST}/api/verification/${id}/callback`,
     [process.env.ISSUER_DID],
     { id, minimumCreditScore: 600 }
   )
@@ -59,7 +59,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
     id,
     challenge: verificationRequestWrapper(verificationRequest),
     qrCodeData: challengeTokenUrlWrapper(
-      `${process.env.HOST}/api/verification/${verificationRequest.request.id}`
+      `${process.env.NEXT_PUBLIC_NGROK_HOST}/api/verification/${verificationRequest.request.id}`
     )
   })
 })
@@ -69,7 +69,9 @@ function replyUrl(
   subjectAddress?: string,
   contractAddress?: string
 ): string {
-  const url = new URL(`${process.env.HOST}/api/verification/${id}/submission`)
+  const url = new URL(
+    `${process.env.NEXT_PUBLIC_NGROK_HOST}/api/verification/${id}/submission`
+  )
 
   if (subjectAddress) {
     url.searchParams.append("subjectAddress", subjectAddress)

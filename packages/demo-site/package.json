@@ -11,6 +11,7 @@
     "db:seed": "dotenv -c development prisma db seed -- --preview-feature",
     "db:studio": "dotenv -c development prisma studio",
     "dev": "next dev",
+    "ngrok": "ngrok http 3000",
     "format": "prettier  --write .",
     "lint": "next lint",
     "setup": "./bin/setup",

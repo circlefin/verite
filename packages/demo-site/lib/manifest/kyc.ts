@@ -6,11 +6,11 @@ export const kycManifest: CredentialManifest = createKycAmlManifest(
   manifestIssuer,
   {
     thumbnail: {
-      uri: `${process.env.HOST}/img/kyc-aml-thumbnail.png`,
+      uri: `${process.env.NEXT_PUBLIC_NGROK_HOST}/img/kyc-aml-thumbnail.png`,
       alt: "Verity Logo"
     },
     hero: {
-      uri: `${process.env.HOST}/img/kyc-aml-hero.png`,
+      uri: `${process.env.NEXT_PUBLIC_NGROK_HOST}/img/kyc-aml-hero.png`,
       alt: "KYC+AML Visual"
     },
     background: {

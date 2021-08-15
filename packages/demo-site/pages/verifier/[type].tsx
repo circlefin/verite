@@ -230,7 +230,7 @@ const VerifierPage: NextPage = () => {
   const [verification, setVerification] = useState(null)
   const [title, setTitle] = useState("")
   const { type } = query
-  const baseUrl = `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=${type}`
+  const baseUrl = `${process.env.NEXT_PUBLIC_NGROK_HOST}/api/verification?type=${type}`
 
   useEffect(() => {
     if (type === "kyc") {

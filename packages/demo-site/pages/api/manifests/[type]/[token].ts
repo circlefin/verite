@@ -14,6 +14,6 @@ export default apiHandler<ManifestWrapper>(async (req, res) => {
   }
 
   res.json(
-    manifestWrapper(manifest, `${process.env.HOST}/api/issuance/${token}`)
+    manifestWrapper(manifest, `${process.env.NGROK_HOST}/api/issuance/${token}`)
   )
 })
