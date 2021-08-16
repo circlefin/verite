@@ -1,3 +1,4 @@
+import { publicUrl } from "@centre/demo-site/lib/api-fns"
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
 import { Web3Provider } from "@ethersproject/providers"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
@@ -230,7 +231,7 @@ const VerifierPage: NextPage = () => {
   const [verification, setVerification] = useState(null)
   const [title, setTitle] = useState("")
   const { type } = query
-  const baseUrl = `${process.env.NEXT_PUBLIC_NGROK_HOST}/api/verification?type=${type}`
+  const baseUrl = publicUrl(`/api/verification?type=${type}`)
 
   useEffect(() => {
     if (type === "kyc") {

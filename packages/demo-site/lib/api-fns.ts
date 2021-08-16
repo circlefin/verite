@@ -107,3 +107,25 @@ function errorStatusCode(error: AnyError): number {
 
   return 500
 }
+
+/**
+ * Helper function to create a URL with the NGROK_HOST if given, otherwise the
+ * default HOST. Implementation uses the NEXT_PUBLIC_ prefix so they are
+ * available in both the server and client environments.
+ *
+ * Used for debugging purposes, this function is intended to be used for URLs
+ * used in Verifiable Credentials, Revocation URLs, QR Codes, etc to aid in
+ * routing traffic to a host. This allows us to tunnel traffic from a mobile
+ * identity wallet to the service runnong on localhost using ngrok.
+ *
+ * @param path of the route
+ * @returns A url with the NGROK_HOST as host if given, otherwise uses the
+ * default HOST env variable.
+ */
+export function publicUrl(path: string): string {
+  if (process.env.NEXT_PUBLIC_NGROK_HOST) {
+    return `${process.env.NEXT_PUBLIC_NGROK_HOST}${path}`
+  }
+
+  return `${process.env.NEXT_PUBLIC_HOST}${path}`
+}

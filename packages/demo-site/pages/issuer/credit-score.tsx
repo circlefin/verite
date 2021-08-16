@@ -4,6 +4,7 @@ import { NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import IssuerLayout from "../../components/issuer/Layout"
+import { publicUrl } from "../../lib/api-fns"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
@@ -18,7 +19,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const qrCodeData = challengeTokenUrlWrapper(
-    `${process.env.NGROK_HOST}/api/manifests/credit-score/${authToken}`
+    publicUrl(`/api/manifests/credit-score/${authToken}`)
   )
 
   const response = await fetch(qrCodeData.challengeTokenUrl)

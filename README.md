@@ -14,13 +14,6 @@ Local environment setup is handled by running the following script:
 npm run setup
 ```
 
-If using the demo mobile identity wallet, the server will automatically configure itself to use your local IP address. However, you can optionally create a tunnel through ngrok instead. Note, you must use `https` as it is required by iOS.
-
-```
-ngrok http 3000
-NGROK_HOST=https://f15f3dcbc823.ngrok.io npm run setup
-```
-
 This script will do the following:
 
 - Install all dependencies
@@ -49,6 +42,15 @@ Or, if you want to run everything together, simply run:
 
 ```sh
 npm run dev:all
+```
+
+## Running the Apps with ngrok
+
+If using the demo mobile identity wallet, the server will automatically configure itself to use your local IP address. However, you can optionally create a tunnel through ngrok instead. Note, you must use `https` as it is required by iOS.
+
+```
+ngrok http 3000
+NGROK_HOST=https://f15f3dcbc823.ngrok.io npm run dev
 ```
 
 ### Manually running services:
