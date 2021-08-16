@@ -1,7 +1,5 @@
-import { asyncMap, buildIssuer, generateRevocationList } from "@centre/verity"
+import { asyncMap } from "@centre/verity"
 import { PrismaClient, User } from "@prisma/client"
-import { v4 as uuidv4 } from "uuid"
-import { saveRevocationList } from "../lib/database"
 
 const prisma = new PrismaClient()
 
@@ -33,23 +31,6 @@ async function main() {
       data: user
     })
   })
-
-  // Revocation List
-  console.info(`Generating revocation lists ...`)
-  await createRevocationList()
-  await createRevocationList()
-}
-
-async function createRevocationList() {
-  const url = `${process.env.HOST}/api/revocation/${uuidv4()}`
-  const issuer = process.env.ISSUER_DID
-  const list = await generateRevocationList(
-    [],
-    url,
-    issuer,
-    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
-  )
-  return saveRevocationList(list)
 }
 
 main()

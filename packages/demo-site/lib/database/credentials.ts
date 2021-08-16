@@ -6,9 +6,12 @@ import {
   RevocationListCredential,
   MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
-  decodeVerifiableCredential
+  decodeVerifiableCredential,
+  generateRevocationList,
+  buildIssuer
 } from "@centre/verity"
 import { random, sample } from "lodash"
+import { v4 as uuidv4 } from "uuid"
 import { prisma, User, Credential } from "./prisma"
 import { findUser } from "./users"
 
@@ -35,12 +38,32 @@ export const storeCredentials = async (
 }
 
 /**
+ * Returns all revocation lists, optionally filtered by ones for a specific
+ * host.
  *
+ * @param host to filter by
+ * @returns revocation lists filtered by host
  */
-export const allRevocationLists = async (): Promise<
-  RevocationListCredential[]
-> => {
-  const lists = await prisma.revocationList.findMany()
+export const allRevocationLists = async (
+  host: string = undefined
+): Promise<RevocationListCredential[]> => {
+  let options
+  if (host) {
+    options = { where: { host } }
+  }
+  const lists = await prisma.revocationList.findMany(options)
+
+  // Create one if it doesn't exist.
+  if (lists.length === 0) {
+    const list = await generateRevocationList(
+      [],
+      `${process.env.HOST}/api/revocation/${uuidv4()}`,
+      process.env.ISSUER_DID,
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+    )
+    await saveRevocationList(list)
+    return [list]
+  }
 
   return await asyncMap(lists, async (list) => {
     return (await decodeVerifiableCredential(
@@ -183,7 +206,11 @@ export const saveRevocationList = async (
     where: {
       id: revocationList.id
     },
-    create: { id: revocationList.id, jwt: revocationList.proof.jwt },
+    create: {
+      id: revocationList.id,
+      jwt: revocationList.proof.jwt,
+      host: process.env.HOST
+    },
     update: { id: revocationList.id, jwt: revocationList.proof.jwt }
   })
 }
@@ -199,7 +226,7 @@ export const saveRevocationList = async (
 export const generateRevocationListStatus =
   async (): Promise<RevocationList2021Status> => {
     // Pick a random revocation list
-    const lists = await allRevocationLists()
+    const lists = await allRevocationLists(process.env.HOST)
     const revocationList = sample(lists)
 
     // Find all credentials in the revocation list and map the index
