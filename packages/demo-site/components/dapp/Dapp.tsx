@@ -14,7 +14,7 @@ import useSWR from "swr"
 import TokenArtifact from "../../contracts/Token.json"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import contractAddress from "../../contracts/contract-address.json"
+import contractAddressJSON from "../../contracts/contract-address.json"
 import { contractFetcher } from "../../lib/eth-fns"
 
 // All the logic of this dapp is contained in the Dapp component.
@@ -26,6 +26,9 @@ import NoTokensMessage from "./NoTokensMessage"
 import TransactionErrorMessage from "./TransactionErrorMessage"
 import Transfer from "./Transfer"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
+
+const contractAddress =
+  process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS || contractAddressJSON.Token
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -47,7 +50,7 @@ const Dapp: FC = () => {
   const { account, library } = useWeb3React<Web3Provider>()
   // Refresh the user's contract balance every 1 second
   const { data: balance, mutate } = useSWR(
-    [contractAddress.Token, "balanceOf", account],
+    [contractAddress, "balanceOf", account],
     {
       fetcher: contractFetcher(library, TokenArtifact.abi),
       refreshInterval: 1000
@@ -73,7 +76,7 @@ const Dapp: FC = () => {
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
 
   const token = new Contract(
-    contractAddress.Token,
+    contractAddress,
     TokenArtifact.abi,
     library.getSigner(0)
   )
@@ -145,7 +148,7 @@ const Dapp: FC = () => {
     try {
       // Create a Verification Request
       const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress.Token}`,
+        `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`,
         { method: "POST" }
       )
       const verification = await resp.json()
@@ -207,7 +210,7 @@ const Dapp: FC = () => {
 
     const postData = {
       subjectAddress: account,
-      contractAddress: contractAddress.Token
+      contractAddress: contractAddress
     }
     const res = await fetch("/api/demo/simulate-verification", {
       method: "POST",
