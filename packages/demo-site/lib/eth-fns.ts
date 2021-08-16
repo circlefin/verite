@@ -10,7 +10,7 @@ import { Contract } from "ethers"
 /**
  * Representats the supported ETH networks. For now, we only
  * want to support `hardhat` which is served from port 8545, and
- * Ropstein. You can change it in the hardhat.config.js config file.
+ * Ropsten. You can change it in the hardhat.config.js config file.
  *
  * Here's a list of network ids to use when deploying to other networks.
  * https://docs.metamask.io/guide/ethereum-provider.html#properties
