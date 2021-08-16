@@ -293,8 +293,8 @@ const Dapp: FC = () => {
       // up front before the transfer, but for the sake of example, we show that
       // the contract is not relying solely on the web frontend to fire the error
       if (
-        error.data &&
-        error.data.message.indexOf("Verifiable Credential") !== -1
+        error?.data?.message &&
+        error?.data?.message?.indexOf("Verifiable Credential") !== -1
       ) {
         setIsVerifying(true)
         // Generate a QR code for scanning
@@ -327,7 +327,7 @@ const Dapp: FC = () => {
     data: { message: any }
     message: any
   }) => {
-    if (error.data) {
+    if (error.data?.message) {
       return error.data.message
     }
 
