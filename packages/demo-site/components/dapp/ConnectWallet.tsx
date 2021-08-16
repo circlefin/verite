@@ -32,7 +32,9 @@ const ConnectWallet: FC = () => {
       </p>
       <p className="mt-1 text-sm text-gray-500">
         For this demo, ensure MetaMask is connected to{" "}
-        <span className="font-mono font-bold">localhost:8545</span>
+        <span className="font-mono font-bold">
+          {process.env.NEXT_PUBLIC_ETH_NETWORK_NAME}
+        </span>
       </p>
       <div className="mt-6">
         <button
