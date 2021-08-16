@@ -327,11 +327,15 @@ const Dapp: FC = () => {
     data: { message: any }
     message: any
   }) => {
-    if (error.data?.message) {
+    if (error?.data?.message) {
       return error.data.message
     }
 
-    return error.message
+    if (error?.message) {
+      return error?.message
+    }
+
+    return "Unknown Error"
   }
 
   // If the token data or the user's balance hasn't loaded yet, we show
