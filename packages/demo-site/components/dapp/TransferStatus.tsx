@@ -1,5 +1,6 @@
 import QRCode from "qrcode.react"
 import { FC } from "react"
+import Spinner from "../Spinner"
 
 type TransferStatusProps = {
   simulateFunction: () => Promise<void>
@@ -15,7 +16,7 @@ const TransferStatus: FC<TransferStatusProps> = ({
       <h3 className="text-lg font-medium leading-6 text-gray-900">
         Present KYC Verifiable Credential
       </h3>
-      {verification && (
+      {verification ? (
         <>
           <label className="block text-sm font-medium text-gray-700">
             Scan this QR code with the verity app to provide your KYC Verifiable
@@ -25,6 +26,13 @@ const TransferStatus: FC<TransferStatusProps> = ({
             <QRCode value={JSON.stringify(verification.qrCodeData)} />
           </div>
         </>
+      ) : (
+        <div className="py-8 prose">
+          <h4>
+            <Spinner className="inline w-5 h-5 mr-3" />
+            Generating Verification Request ...
+          </h4>
+        </div>
       )}
       <label className="block text-sm font-medium text-gray-700">
         Alternatively, you can simulate verification:

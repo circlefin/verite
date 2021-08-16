@@ -30,7 +30,7 @@ const DappLayout: FC<Props> = ({ children, balance, symbol, account }) => {
           </div>
         </div>
       )}
-      <div className="px-5 py-6 sm:px-6">{children}</div>
+      <div className="px-5 py-6 sm:px-6 min-h-[17rem]">{children}</div>
     </EthAuthLayout>
   )
 }
