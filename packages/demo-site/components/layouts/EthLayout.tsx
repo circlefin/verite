@@ -6,13 +6,14 @@ import {
   getEthErrorMessage,
   injectedConnector
 } from "../../lib/eth-fns"
-import Header, { HeaderProps } from "../Header"
+import { HeaderProps } from "../Header"
+import BaseLayout from "./BaseLayout"
 
 type Props = HeaderProps & {
   noPadding?: boolean
 }
 
-const Layout: FC<Props> = ({ children, noPadding, ...headerProps }) => {
+const EthLayout: FC<Props> = ({ children, ...props }) => {
   const { account, active, activate, deactivate, error } =
     useWeb3React<Web3Provider>()
 
@@ -20,47 +21,40 @@ const Layout: FC<Props> = ({ children, noPadding, ...headerProps }) => {
     window.alert(getEthErrorMessage(error))
   }
 
-  const bodyPadding = noPadding ? "" : "px-5 py-6 sm:px-6"
-
-  return (
-    <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
-      <Header {...headerProps}>
-        {active ? (
-          <>
-            <span className="hidden px-3 py-3 text-sm font-medium text-gray-300 rounded-md sm:inline">
-              {formatEthAddress(account)}
-            </span>
-            <button
-              className="px-3 py-1 text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
-              onClick={() => {
-                deactivate()
-              }}
-            >
-              Disconnect
-            </button>
-          </>
-        ) : (
+  const authSection = (
+    <>
+      {active ? (
+        <>
+          <span className="hidden px-3 py-3 text-sm font-medium text-gray-300 rounded-md sm:inline">
+            {formatEthAddress(account)}
+          </span>
           <button
-            className="text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
+            className="px-3 py-1 text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
             onClick={() => {
-              activate(injectedConnector)
+              deactivate()
             }}
           >
-            Connect Wallet
+            Disconnect
           </button>
-        )}
-      </Header>
-      <main className="-mt-32">
-        <div className="max-w-3xl px-4 pb-12 mx-auto sm:px-6 lg:px-8">
-          <div
-            className={`bg-white rounded-lg shadow ${bodyPadding} overflow-hidden`}
-          >
-            {children}
-          </div>
-        </div>
-      </main>
-    </div>
+        </>
+      ) : (
+        <button
+          className="text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
+          onClick={() => {
+            activate(injectedConnector)
+          }}
+        >
+          Connect Wallet
+        </button>
+      )}
+    </>
+  )
+
+  return (
+    <BaseLayout authSection={authSection} {...props}>
+      {children}
+    </BaseLayout>
   )
 }
 
-export default Layout
+export default EthLayout
