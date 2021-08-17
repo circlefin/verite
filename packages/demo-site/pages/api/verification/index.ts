@@ -2,7 +2,7 @@ import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import {
   createVerificationRequest,
   VerificationRequestResponse
-} from "../../../lib/verification"
+} from "../../../lib/verification-request"
 
 /**
  * POST request handler
