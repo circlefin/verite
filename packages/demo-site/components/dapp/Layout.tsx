@@ -1,5 +1,5 @@
 import { FC } from "react"
-import EthAuthLayout from "../layouts/EthAuthLayout"
+import EthLayout from "../layouts/EthLayout"
 
 type Props = {
   balance?: any
@@ -14,7 +14,7 @@ const DappLayout: FC<Props> = ({ children, balance, symbol, account }) => {
   }
 
   return (
-    <EthAuthLayout noPadding={true} title={title}>
+    <EthLayout noPadding={true} title={title}>
       {balance && symbol && account && (
         <div className="flex flex-row space-x-2 border-b bg-blue-50">
           <div className="flex-1 hidden p-4 border-r sm:block">
@@ -31,7 +31,7 @@ const DappLayout: FC<Props> = ({ children, balance, symbol, account }) => {
         </div>
       )}
       <div className="px-5 py-6 sm:px-6 min-h-[17rem]">{children}</div>
-    </EthAuthLayout>
+    </EthLayout>
   )
 }
 
