@@ -10,10 +10,8 @@ type Props = {
 const VerifierLayout: FC<Props> = ({ title, children, hideNavigation }) => {
   return (
     <EthLayout title={title}>
-      <div className="px-5 py-6 sm:px-6">
-        {!hideNavigation && <AttestationNavigation />}
-        {children}
-      </div>
+      {!hideNavigation && <AttestationNavigation />}
+      {children}
     </EthLayout>
   )
 }
