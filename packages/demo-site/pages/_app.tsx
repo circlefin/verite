@@ -29,15 +29,21 @@ function DemoApp({ Component, pageProps }: AppProps): JSX.Element {
 DemoApp.getInitialProps = async (appContext) => {
   const appProps = await App.getInitialProps(appContext)
 
-  /**
-   * Add basic authentication to the site
-   */
-  const cookies = new Cookies(appContext.ctx.req.headers.cookie)
-  const password = cookies.get(PASSWORD_PROTECTION_COOKIE) ?? ""
-  if (
-    !process.env.PROTECTED_PASSWORD ||
-    password === process.env.PROTECTED_PASSWORD
-  ) {
+  if (appContext.ctx.req) {
+    /**
+     * Add basic authentication to the site
+     */
+    const cookies = new Cookies(appContext.ctx.req.headers.cookie)
+    const password = cookies.get(PASSWORD_PROTECTION_COOKIE) ?? ""
+
+    if (
+      !process.env.PROTECTED_PASSWORD ||
+      password === process.env.PROTECTED_PASSWORD
+    ) {
+      appProps.pageProps.passwordSuccessful = true
+    }
+  } else {
+    // client-side rendering, meaning we've already authenticated. continue.
     appProps.pageProps.passwordSuccessful = true
   }
 
