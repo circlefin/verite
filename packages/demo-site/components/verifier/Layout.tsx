@@ -1,5 +1,5 @@
 import { FC } from "react"
-import EthLayout from "../layouts/EthAuthLayout"
+import EthLayout from "../layouts/EthLayout"
 import AttestationNavigation from "./AttestationNavigation"
 
 type Props = {
