@@ -20,7 +20,7 @@ const Transfer: FC<TransferProps> = ({
   verification,
   verificationInfoSet
 }) => {
-  const [to, setTo] = useState("")
+  const [to, setTo] = useState(process.env.NEXT_PUBLIC_ETH_DEFAULT_RECIPIENT)
   const [amount, setAmount] = useState("")
 
   return (
