@@ -2,7 +2,7 @@ import { PlusIcon } from "@heroicons/react/outline"
 import { FC, useState } from "react"
 
 export type NoTokensMessageProps = {
-  faucetFunction: (address: string) => Promise<void>
+  faucetFunction: (address: string) => Promise<boolean>
   selectedAddress: string
 }
 
@@ -21,9 +21,8 @@ const NoTokensMessage: FC<NoTokensMessageProps> = ({
               return
             }
             setLoading(true)
-            try {
-              await faucetFunction(selectedAddress)
-            } finally {
+            const success = await faucetFunction(selectedAddress)
+            if (!success) {
               setLoading(false)
             }
           }}

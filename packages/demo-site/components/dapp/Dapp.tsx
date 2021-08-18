@@ -351,7 +351,7 @@ const Dapp: FC = () => {
     )
   }
 
-  const faucet = async (address: string): Promise<void> => {
+  const faucet = async (address: string): Promise<boolean> => {
     try {
       const resp = await fetch("/api/demo/faucet", {
         headers: {
@@ -363,10 +363,14 @@ const Dapp: FC = () => {
       const json = await resp.json()
       if (json.status !== "ok") {
         setStatusMessage("API call to faucet failed.")
+        return false
       }
     } catch (e) {
       setStatusMessage("API call to faucet failed.")
+      return false
     }
+
+    return true
   }
 
   return (
