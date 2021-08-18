@@ -351,6 +351,28 @@ const Dapp: FC = () => {
     )
   }
 
+  const faucet = async (address: string): Promise<boolean> => {
+    try {
+      const resp = await fetch("/api/demo/faucet", {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({ address })
+      })
+      const json = await resp.json()
+      if (json.status !== "ok") {
+        setStatusMessage("API call to faucet failed.")
+        return false
+      }
+    } catch (e) {
+      setStatusMessage("API call to faucet failed.")
+      return false
+    }
+
+    return true
+  }
+
   return (
     <Layout account={account} balance={balance} symbol={tokenData.symbol}>
       <div className="prose">
@@ -415,7 +437,9 @@ const Dapp: FC = () => {
         {/*
         If the user has no tokens, we don't show the Transfer form
       */}
-        {balance.eq(0) && <NoTokensMessage selectedAddress={account} />}
+        {balance.eq(0) && (
+          <NoTokensMessage faucetFunction={faucet} selectedAddress={account} />
+        )}
 
         {/*
         This component displays a form that the user can use to send a
