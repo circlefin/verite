@@ -16,7 +16,12 @@ export default apiHandler<Response>(async (req, res) => {
 
   const address = req.body.address
 
-  const provider = new ethers.providers.JsonRpcProvider()
+  const network = ethers.providers.getNetwork(
+    process.env.NEXT_PUBLIC_ETH_NETWORK
+  )
+  const provider = ethers.providers.getDefaultProvider(network, {
+    alchemy: process.env.ALCHEMY_API_KEY
+  })
 
   const signer = new Wallet(process.env.ETH_FAUCET_PRIVATE_KEY, provider)
 

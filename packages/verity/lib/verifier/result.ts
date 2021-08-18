@@ -24,7 +24,7 @@ export const verificationResult = async (
   const domain = {
     name: "VerificationValidator",
     version: "1.0",
-    chainId: 1337,
+    chainId: 3,
     verifyingContract: contractAddress
   }
 
