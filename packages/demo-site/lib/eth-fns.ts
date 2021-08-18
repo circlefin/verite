@@ -68,3 +68,13 @@ export function contractFetcher(
     return contract[method](...args)
   }
 }
+
+export function verityTokenContractArtifact() {
+  return require("../contracts/Token.json")
+}
+
+export function verityTokenContractAddress(): string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const json = require("../contracts/contract-address.json")
+  return json.Token
+}
