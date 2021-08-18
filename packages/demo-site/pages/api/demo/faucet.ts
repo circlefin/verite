@@ -2,7 +2,6 @@ import { verificationResult } from "@centre/verity"
 import { Wallet } from "@ethersproject/wallet"
 import { ethers, Contract } from "ethers"
 import TokenArtifact from "../../../contracts/Token.json"
-import contractAddressJSON from "../../../contracts/contract-address.json"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 
 type Response = {
@@ -23,13 +22,13 @@ export default apiHandler<Response>(async (req, res) => {
     "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
   const verification = await verificationResult(
     signer.address,
-    contractAddressJSON.Token,
+    process.env.ETH_CONTRACT_ADDRESS,
     mnemonic
   )
 
   // Load the contract
   const contract = new Contract(
-    contractAddressJSON.Token,
+    process.env.ETH_CONTRACT_ADDRESS,
     TokenArtifact.abi,
     signer
   )
