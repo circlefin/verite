@@ -198,6 +198,10 @@ const Dapp: FC = () => {
   // End demo-site verifier
 
   const getVerificationResult = async () => {
+    // Clear verification if one exists. This will stop polling on the
+    // unsimulated verification workflow
+    setVerification(undefined)
+
     // in this recipe, the dApp calls a verifier by API and passes its
     // own subject address to be used in the verification result digest.
     // The verifier does not require proof of ownership of that address,
