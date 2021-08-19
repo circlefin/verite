@@ -111,7 +111,7 @@ const Dapp: FC = () => {
       library.removeAllListeners(toMe)
       library.removeAllListeners(fromMe)
     }
-  })
+  }, [])
 
   /**
    * When we have a verification, we'll poll on it
