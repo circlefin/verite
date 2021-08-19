@@ -1,4 +1,5 @@
 import { verificationResult } from "@centre/verity"
+import { Provider } from "@ethersproject/abstract-provider"
 import { Wallet } from "@ethersproject/wallet"
 import { ethers, Contract } from "ethers"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
@@ -16,12 +17,16 @@ export default apiHandler<Response>(async (req, res) => {
 
   const address = req.body.address
 
-  const network = ethers.providers.getNetwork(
-    parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
-  )
-  const provider = ethers.providers.getDefaultProvider(network, {
-    alchemy: process.env.ALCHEMY_API_KEY
-  })
+  const chainId = parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
+  let provider: Provider
+  if (chainId === 1337) {
+    provider = new ethers.providers.JsonRpcProvider()
+  } else {
+    const network = ethers.providers.getNetwork(chainId)
+    provider = ethers.providers.getDefaultProvider(network, {
+      alchemy: process.env.ALCHEMY_API_KEY
+    })
+  }
 
   const signer = new Wallet(process.env.ETH_FAUCET_PRIVATE_KEY, provider)
 
