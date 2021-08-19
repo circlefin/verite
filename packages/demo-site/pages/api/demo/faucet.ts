@@ -17,7 +17,7 @@ export default apiHandler<Response>(async (req, res) => {
   const address = req.body.address
 
   const network = ethers.providers.getNetwork(
-    process.env.NEXT_PUBLIC_ETH_NETWORK
+    parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
   const provider = ethers.providers.getDefaultProvider(network, {
     alchemy: process.env.ALCHEMY_API_KEY
