@@ -111,7 +111,7 @@ const Dapp: FC = () => {
       library.removeAllListeners(toMe)
       library.removeAllListeners(fromMe)
     }
-  })
+  }, [])
 
   /**
    * When we have a verification, we'll poll on it
@@ -309,7 +309,7 @@ const Dapp: FC = () => {
 
       // Other errors are logged and stored in the Dapp's state. This is used to
       // show them to the user, and for debugging.
-      setTransactionError(error)
+      setTransactionError(getRpcErrorMessage(error))
     } finally {
       // If we leave the try/catch, we aren't sending a tx anymore, so we clear
       // this part of the state.
@@ -340,7 +340,7 @@ const Dapp: FC = () => {
       return error?.message
     }
 
-    return "Unknown Error"
+    return `Unknown Error: ${error?.toString()}`
   }
 
   // If the token data or the user's balance hasn't loaded yet, we show
@@ -364,11 +364,15 @@ const Dapp: FC = () => {
       })
       const json = await resp.json()
       if (json.status !== "ok") {
-        setStatusMessage("API call to faucet failed.")
+        console.error(json)
+        setTransactionError(
+          `API call to faucet failed: ${JSON.stringify(json)}`
+        )
         return false
       }
     } catch (e) {
-      setStatusMessage("API call to faucet failed.")
+      console.error(e)
+      setTransactionError(`API call to faucet failed: ${e.message}`)
       return false
     }
 
@@ -399,7 +403,7 @@ const Dapp: FC = () => {
       */}
         {transactionError && (
           <TransactionErrorMessage
-            message={getRpcErrorMessage(transactionError)}
+            message={transactionError}
             dismiss={() => dismissTransactionError()}
           />
         )}
