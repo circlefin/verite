@@ -39,7 +39,7 @@ const EthLayout: FC<Props> = ({ children, ...props }) => {
         </>
       ) : (
         <button
-          className="text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
+          className="px-3 py-1 text-sm font-medium text-gray-300 rounded-md hover:bg-blue-700 hover:text-white"
           onClick={() => {
             activate(injectedConnector)
           }}
