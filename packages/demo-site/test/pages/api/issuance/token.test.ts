@@ -177,17 +177,5 @@ describe("POST /issuance/[token]", () => {
     expect(vc.credentialSubject.KYCAMLAttestation["@type"]).toBe(
       "KYCAMLAttestation"
     )
-    expect(vc.credentialSubject.KYCAMLAttestation.serviceProviders).toEqual([
-      {
-        "@type": "KYCAMLProvider",
-        name: "Jumio",
-        score: 80
-      },
-      {
-        "@type": "KYCAMLProvider",
-        name: "OFAC-SDN",
-        score: 0
-      }
-    ])
   })
 })

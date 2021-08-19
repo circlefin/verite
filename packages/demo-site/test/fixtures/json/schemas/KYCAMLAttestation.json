@@ -12,9 +12,6 @@
         "approvalDate": {
           "type": "string"
         },
-        "expirationDate": {
-          "type": "string"
-        },
         "authorityName": {
           "type": "string"
         },
@@ -23,33 +20,9 @@
         },
         "authorityCallbackUrl": {
           "type": "string"
-        },
-        "serviceProviders": {
-          "type": "array",
-          "$ref": "#/definitions/KYCAMLProvider"
         }
       },
       "required": ["authorityId", "approvalDate"],
-      "additionalProperties": false
-    }
-  },
-  "definitions": {
-    "KYCAMLProvider": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "score": {
-          "type": "number"
-        },
-        "completionDate": {
-          "type": "string"
-        },
-        "comment": {
-          "type": "string"
-        }
-      },
       "additionalProperties": false
     }
   },

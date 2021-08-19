@@ -1,21 +1,17 @@
 import {
   CreditScoreAttestation,
-  KYCAMLAttestation,
-  KYCAMLProvider
+  KYCAMLAttestation
 } from "../types/Attestations"
 
 // TODO(mv) allow custominzing the authority info
-export function kycAmlAttestation(
-  serviceProviders?: KYCAMLProvider[]
-): KYCAMLAttestation {
+export function kycAmlAttestation(): KYCAMLAttestation {
   return {
     "@type": "KYCAMLAttestation",
     authorityId: "did:web:verity.id",
     approvalDate: new Date().toJSON(),
     authorityName: "Verity",
     authorityUrl: "https://verity.id",
-    authorityCallbackUrl: "https://identity.verity.id",
-    serviceProviders: serviceProviders
+    authorityCallbackUrl: "https://identity.verity.id"
   }
 }
 
