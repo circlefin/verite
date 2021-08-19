@@ -31,7 +31,8 @@ export default apiHandler<Response>(async (req, res) => {
   const verification = await verificationResult(
     signer.address,
     verityTokenContractAddress(),
-    mnemonic
+    mnemonic,
+    parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
   // Load the contract

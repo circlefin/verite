@@ -60,7 +60,8 @@ export default apiHandler<PostResponse>(async (req, res) => {
     result = await verificationResult(
       subjectAddress,
       contractAddress,
-      WALLET_MNEMONIC
+      WALLET_MNEMONIC,
+      parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
     )
   }
 
