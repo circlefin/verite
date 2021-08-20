@@ -296,24 +296,29 @@ const Dapp: FC = () => {
         return
       }
 
+      const message = getRpcErrorMessage(error)
+
       // if the error is verification-related, we prompt -- this would be better handled
       // up front before the transfer, but for the sake of example, we show that
       // the contract is not relying solely on the web frontend to fire the error
-      if (
-        (error.message &&
-          error.message.indexOf("Verifiable Credential") !== -1) ||
-        (error.data?.message &&
-          error.data?.message?.indexOf("Verifiable Credential") !== -1)
-      ) {
+      if (message.indexOf("Verifiable Credential:") !== -1) {
         setIsVerifying(true)
+        setVerification(undefined)
+        setVerificationInfoSet(undefined)
+
         // Generate a QR code for scanning
         createVerification()
-        return
       }
 
-      // Other errors are logged and stored in the Dapp's state. This is used to
-      // show them to the user, and for debugging.
-      setTransactionError(getRpcErrorMessage(error))
+      // This is the error message to kick off the Verification workflow. We
+      // special case it so it is not shown to the user.
+      const sentinel =
+        "Verifiable Credential: Transfers of this amount require validateAndTransfer"
+      if (message.indexOf(sentinel) === -1) {
+        // Other errors are logged and stored in the Dapp's state. This is used to
+        // show them to the user, and for debugging.
+        setTransactionError(getRpcErrorMessage(error))
+      }
     } finally {
       // If we leave the try/catch, we aren't sending a tx anymore, so we clear
       // this part of the state.
