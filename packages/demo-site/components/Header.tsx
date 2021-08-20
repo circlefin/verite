@@ -11,23 +11,24 @@ export type HeaderProps = {
 }
 
 const navigation = [
-  { name: "Issuer", href: "/issuer" },
-  { name: "Verifier", href: "/verifier" },
+  { name: "Issue", href: "/issuer" },
+  { name: "Verify", href: "/verifier" },
   { name: "Dapp", href: "/dapp" },
-  { name: "Admin", href: "/admin" }
+  { name: "Admin", href: "/admin" },
+  { name: "Docs", href: "/documentation" }
 ]
 
 const Header: FC<HeaderProps> = ({ children, title }) => {
   return (
     <>
       <Head>
-        <title>{title} | Verity Demo</title>
+        <title>Verity.id | {title}</title>
       </Head>
       <div className="pb-32 bg-blue-600">
         <Disclosure as="nav" className="bg-blue-600">
           {({ open }) => (
             <>
-              <div className="max-w-3xl px-2 mx-auto sm:px-6 lg:px-8">
+              <div className="max-w-4xl px-2 mx-auto sm:px-6 lg:px-8">
                 <div className="relative flex items-center justify-between h-16">
                   <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                     {/* Mobile menu button*/}
@@ -47,7 +48,7 @@ const Header: FC<HeaderProps> = ({ children, title }) => {
                     <div className="items-center flex-shrink-0 hidden sm:flex">
                       <Link href="/">
                         <a className="text-2xl font-extrabold tracking-tight text-center text-white">
-                          Verity Demo
+                          Verity.id
                         </a>
                       </Link>
                     </div>
@@ -98,7 +99,7 @@ const Header: FC<HeaderProps> = ({ children, title }) => {
           )}
         </Disclosure>
         <header className="py-4 sm:py-10">
-          <div className="max-w-3xl px-4 mx-auto sm:px-6 lg:px-8">
+          <div className="max-w-4xl px-4 mx-auto sm:px-6 lg:px-8">
             <h1 className="text-2xl font-bold text-white sm:text-3xl">
               {title}
             </h1>
