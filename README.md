@@ -2,9 +2,9 @@
 
 ## Packages
 
-- [@centre/contract](./packages/contract) - A solidity contract requiring KYC proof for a transaction
+- [@centre/contract](./packages/contract) - A solidity contract requiring KYC proof for higher-value transactions
 - [@centre/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project
-- [@centre/verity](./packages/verity) - Shared logic for issuingg, verifying, and revoking Verifiable Credentials
+- [@centre/verity](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
 
 ## Getting Started
 
@@ -44,9 +44,9 @@ Or, if you want to run everything together, simply run:
 npm run dev:all
 ```
 
-### Manually running services:
+### Manually running services
 
-First, you need to run a hardhat node on it's own terminal tab:
+First, you need to run a hardhat node on its own terminal tab:
 
 ```sh
 npm run hardhat:node
@@ -72,7 +72,7 @@ npm run dev:site
 
 This will start your server at [http://localhost:3000](http://localhost:3000)
 
-### @centre/verity:
+### @centre/verity
 
 To build the shared @centre/verity package, run:
 

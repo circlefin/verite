@@ -18,7 +18,7 @@ const BaseLayout: FC<Props> = ({
     <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
       <Header {...headerProps}>{authSection}</Header>
       <main className="-mt-32">
-        <div className="max-w-3xl px-4 pb-12 mx-auto sm:px-6 lg:px-8">
+        <div className="max-w-4xl px-4 pb-12 mx-auto sm:px-6 lg:px-8">
           <div
             className={`bg-white rounded-lg shadow ${bodyPadding} overflow-hidden`}
           >
