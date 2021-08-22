@@ -22,7 +22,8 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
 const AdminPage: NextPage<Props> = ({ user, users }) => {
   return (
     <AdminLayout title="Admin">
-      <div className="prose">
+      <div className="prose max-w-none">
+        <h2>Simulating an Issuer's Compliance Tool</h2>
         <p>
           This is an example admin tool used by Issuers to manage their
           credentials. This tool might be used day-to-day by a compliance
@@ -31,14 +32,14 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
         </p>
 
         <p>
-          Project Verity uses{" "}
+          To protect privacy, Verity employs{" "}
           <Link href="https://w3c-ccg.github.io/vc-status-list-2021">
-            Status List 2021
+            <a target="_blank">Status List 2021</a>
           </Link>{" "}
-          to perform revocation.
+          to execute credential revocation.
         </p>
 
-        <h2>Users</h2>
+        <h2>Demo Users</h2>
         <p>
           We have seeded the database with multiple users to provide a more
           realistic experience and more clearly illustrate integration

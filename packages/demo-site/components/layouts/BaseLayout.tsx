@@ -24,6 +24,12 @@ const BaseLayout: FC<Props> = ({
           >
             {children}
           </div>
+          <div className="prose-sm pt-8 text-center">
+            <p className="font-extralight text-gray-500">
+              &copy;2021 The Centre Consortium | Software available under MIT
+              open source license
+            </p>
+          </div>
         </div>
       </main>
     </div>

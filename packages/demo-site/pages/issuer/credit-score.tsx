@@ -35,8 +35,19 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
 
 const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
   return (
-    <IssuerLayout title="Credit Score">
+    <IssuerLayout title="Credit Score Verifiable Credential">
       <div className="prose">
+        <h2>User Experience</h2>
+        <p>
+          Credentials contain data specific to their schema types. Compared to a
+          KYC/AML credential, a credential that attests to a credit score has
+          additional data to contain a numeric score, and the credential expires
+          relatively quickly.
+        </p>
+        <p>
+          The currently signed-in user for this demonstration has the following
+          credit score:
+        </p>
         <dl className="flex flex-row justify-center mx-auto space-x-2 sm:space-x-5">
           <div className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 flex-0">
             <dt className="text-sm font-medium text-gray-500 truncate">
@@ -47,31 +58,49 @@ const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
             </dd>
           </div>
         </dl>
-        <p>Using the Verity app, scan this QR code to request credentials.</p>
+        <p>
+          Request a credit score credential by scanning this QR code with the
+          Verity mobile app:
+        </p>
         <QRCode
           value={JSON.stringify(qrCodeData)}
           className="w-48 h-48 mx-auto"
           renderAs="svg"
         />
-        <h2>QR Code Data</h2>
+        <h2>Behind the Scenes</h2>
+
+        <p>
+          As in the KYC/AML example, the QR code contains a{" "}
+          <code>challengeTokenUrl</code> that enables the wallet to retrieve a{" "}
+          <Link href="https://identity.foundation/credential-manifest/">
+            <a target="_blank">Credential Manifest</a>
+          </Link>{" "}
+          defining the credentials that the issuer can issue and how a wallet
+          can request them. It looks like this:
+        </p>
+
         <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
 
-        <h2>Credential Manifest</h2>
-        <p>
-          After following the url in `challengeTokenUrl`, the mobile application
-          will receive the following, which instructs the client where and how
-          to make the request to issue a new credential.
-        </p>
+        <button
+          className="flex justify-center text-md "
+          onClick={() => {
+            const el = document.getElementById("manifest")
+            el.style.display = el.style.display === "" ? "block" : ""
+          }}
+        >
+          <p className="underline font-semibold">
+            Show/Hide the Complete Credential Manifest
+          </p>
+        </button>
+
+        <div id="manifest" className="hidden">
+          <pre>{JSON.stringify(manifest, null, 4)}</pre>
+        </div>
 
         <p>
-          Read more about{" "}
-          <Link href="https://identity.foundation/credential-manifest/">
-            Credential Manifest
-          </Link>
-          .
+          After scanning the QR code and completing the protocol sequence, you
+          will be able to view the actual Verifiable Credential.
         </p>
-
-        <pre>{JSON.stringify(manifest, null, 4)}</pre>
       </div>
     </IssuerLayout>
   )

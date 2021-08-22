@@ -43,35 +43,61 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
 
   return (
     <VerifierLayout title={title}>
-      <div className="prose">
+      <div className="prose max-w-none">
         {status === "pending" && (
           <>
+            <h2>Verification User Experience</h2>
             <p>
-              Using the Verity app, scan this QR code to submit your
-              credentials.
+              Using the Verity demo wallet app, scan this QR code to begin the
+              verification sequence:
             </p>
             <QRCode
               value={JSON.stringify(qrCodeData)}
               className="w-48 h-48 mx-auto"
               renderAs="svg"
             />
-            <h2>QR Code Data</h2>
+            <h2>Behind the Scenes</h2>
+            <p>
+              The QR code informs the wallet where to retrieve a{" "}
+              <Link href="https://identity.foundation/presentation-exchange/#presentation-request">
+                <a target="_blank">Presentation Request</a>
+              </Link>
+              . The QR code contains the following data:
+            </p>
             <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
             <h2>Verification Presentation Request</h2>
             <p>
-              After following the url in `challengeTokenUrl`, the mobile
-              application will receive the following, which instructs the client
-              where and how to make the request to verify the credential.
-            </p>
-            <p>
-              Read more about{" "}
-              <Link href="https://identity.foundation/presentation-exchange/">
-                Presentation Exchange
-              </Link>
-              .
+              After following the url in <code>challengeTokenUrl</code>, the
+              wallet receives a complete Presentation Request, which instructs
+              the wallet where and how to make the request to verify the
+              credential.
             </p>
 
-            <pre>{JSON.stringify(challenge, null, 4)}</pre>
+            <button
+              className="flex justify-center text-md "
+              onClick={() => {
+                const el = document.getElementById("manifest")
+                el.style.display = el.style.display === "" ? "block" : ""
+              }}
+            >
+              <p className="underline font-semibold">
+                Show/Hide the Complete Presentation Request
+              </p>
+            </button>
+
+            <div id="manifest" className="hidden">
+              <pre>{JSON.stringify(challenge, null, 4)}</pre>
+            </div>
+
+            <p>
+              Once the client has the Presentation Request, it wraps the
+              relevant Verifiable Crdential inside a{" "}
+              <Link href="https://www.w3.org/TR/vc-data-model/#presentations-0">
+                <a target="_blank">Verifiable Presentation</a>
+              </Link>{" "}
+              (preventing relay attacks). It then signs the Verifiable
+              Presentation using its DID key and transmits it to the verifier.
+            </p>
           </>
         )}
 

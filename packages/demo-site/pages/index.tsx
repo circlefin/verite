@@ -39,7 +39,7 @@ const Home: NextPage = () => {
         </div>
 
         <div className="bg-white rounded-lg overflow-hidden p-4 border-gray-300 border">
-          <p className="prose-2xl">Hold</p>
+          <p className="prose-2xl">Custody</p>
           <p className="prose-sm pb-6 max-w-none">
             People and institutions &mdash; the <i>subjects</i> of the
             credentials &mdash; custody their Verifiable Credentials in wallets
