@@ -39,7 +39,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      kycAmlAttestation([]),
+      kycAmlAttestation(),
       revocationListFixture
     )
 
@@ -105,7 +105,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      kycAmlAttestation([]),
+      kycAmlAttestation(),
       revocationListFixture
     )
 
@@ -208,7 +208,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      kycAmlAttestation([]),
+      kycAmlAttestation(),
       revocationListFixture
     )
 

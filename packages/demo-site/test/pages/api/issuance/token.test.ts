@@ -146,10 +146,7 @@ describe("POST /issuance/[token]", () => {
   })
 
   it("returns a KYC credential with known input/output", async () => {
-    const user = await userFactory({
-      jumioScore: 80,
-      ofacScore: 0
-    })
+    const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const manifest = await findManifestById("KYCAMLAttestation")

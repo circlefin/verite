@@ -158,10 +158,7 @@ describe("POST /verification/[id]/submission", () => {
 // TODO: This block should be easier to repro
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLAttestation")
-  const user = await userFactory({
-    jumioScore: 55,
-    ofacScore: 2
-  })
+  const user = await userFactory()
   const application = await createCredentialApplication(clientDidKey, manifest)
   await validateCredentialApplication(application, manifest)
 
