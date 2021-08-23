@@ -1,5 +1,6 @@
-import { Contract, Wallet, getDefaultProvider, BigNumber } from "ethers"
+import { Contract, getDefaultProvider, BigNumber } from "ethers"
 import { prisma } from "./database/prisma"
+import { verityTokenContractAddress } from "./eth-fns"
 
 export const listen = (): void => {
   const provider = getDefaultProvider("http://localhost:8545")
@@ -8,10 +9,14 @@ export const listen = (): void => {
     "event Transfer(address indexed from, address indexed to, uint amount)"
   ]
 
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  const contractAddress = verityTokenContractAddress()
   const contract = new Contract(contractAddress, abi, provider)
 
+  console.log("Listening for Transfer events...")
+  console.log(`Contract Address: ${contractAddress}`)
+
   contract.on("Transfer", async (from, to, amount, extra) => {
+    console.log(`Transfer:\nFrom: ${from}\nTo: ${to}\nAmount: ${amount}`)
     // A production environment would have many Transfer events within a single
     // block, but for the sake of example, we will assume there will be at most
     // one Transfer event per block.
