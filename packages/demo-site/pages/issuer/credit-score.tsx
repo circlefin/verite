@@ -36,7 +36,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
 const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
   return (
     <IssuerLayout title="Credit Score Verifiable Credential">
-      <div className="prose">
+      <div className="prose max-w-none">
         <h2>Issue User Experience</h2>
         <p>
           Credentials contain data specific to their schema types. Compared to a

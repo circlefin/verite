@@ -13,7 +13,7 @@ const NoTokensMessage: FC<NoTokensMessageProps> = ({
   const [loading, setLoading] = useState<boolean>(false)
   return (
     <div className="prose">
-      <p>You do not have tokens to transfer.</p>
+      <p>You do not have any tokens to transfer.</p>
       <p>
         <button
           onClick={async () => {

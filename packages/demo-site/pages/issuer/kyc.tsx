@@ -156,7 +156,7 @@ const KycAmlPage: NextPage<Props> = ({
 
   return (
     <IssuerLayout title="KYC/AML Verifiable Credential">
-      <div className="prose">{credential(data)}</div>
+      <div className="prose max-w-none">{credential(data)}</div>
     </IssuerLayout>
   )
 }
