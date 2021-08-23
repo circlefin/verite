@@ -75,18 +75,29 @@ contract Token is VerificationValidator {
             signature
         );
 
-        // After verification confirmed, transfer
+        // After verification is confirmed, execute transfer
         _transfer(to, amount);
     }
 
+    /**
+     * Return the balance in the given account. 
+     */
     function balanceOf(address account) external view returns (uint256) {
         return balances[account];
     }
 
+    /**
+     * Convenience method to return the threshold over which verification
+     * is required. This is an overly-simplified example, in the real world
+     * more sophisticated logic would likely trigger verification.
+     */
     function verificationThreshold() external view returns (uint256) {
         return _CREDENTIAL_THRESHOLD;
     }
 
+    /**
+     * Execute the actual transfer.
+     */
     function _transfer(address to, uint256 amount) private {
         balances[msg.sender] -= amount;
         balances[to] += amount;
