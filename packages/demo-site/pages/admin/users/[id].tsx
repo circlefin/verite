@@ -167,9 +167,9 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
     <AdminLayout title={user.email}>
       <div className="prose">
         <p>
-          When revoking a user&apos;s credentials, it is recommended to revoke
-          all credentials of the same type. This ensures no previously issued
-          credentials can still be used.
+          When revoking a redentials, the best practice is to revoke all of a
+          user&apos;s credentials of the same type. This ensures no previously
+          issued credentials can still be used.
         </p>
         <p>
           <button

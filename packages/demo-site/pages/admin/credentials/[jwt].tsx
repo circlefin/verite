@@ -73,10 +73,10 @@ const AdminCredentialPage: NextPage<Props> = ({
           User: <Link href={`/admin/users/${user.id}`}>{user.email}</Link>
         </h2>
         <p>
-          Note: We can only reconcile this credential to a specific user in the
-          system because we stored it when issuing the credential. No one else
-          would know their email address or other identifying information. See
-          the credential below.
+          We can reconcile this credential to a specific user in our system
+          because we persisted that mapping when we issued the credential. No
+          one else would know this user's email address or other identifying
+          information. See the credential below.
         </p>
         {revocable && (
           <>
@@ -96,7 +96,7 @@ const AdminCredentialPage: NextPage<Props> = ({
           </>
         )}
 
-        <h2>Credential</h2>
+        <h3>Verifiable Credential:</h3>
 
         <pre className="overflow-x-scroll">
           {JSON.stringify(credential, null, 4)}

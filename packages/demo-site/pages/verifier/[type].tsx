@@ -103,14 +103,19 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
 
         {status === "approved" && (
           <>
-            <BadgeCheckIcon className="w-48 h-48 mx-auto text-green-400" />
-            <p>Your credential is verified.</p>
+            <h3>
+              The Presentation Exchange completed and the credential was
+              verified.
+            </h3>
+
+            <BadgeCheckIcon className="w-36 h-36 mx-auto text-green-600" />
 
             {result && (
               <>
                 <p>
-                  The following verification result is returned and can be used
-                  in a smart contract.
+                  The verifier signed and returned the following verification
+                  result, which can be used by a relying party such as a smart
+                  contract that can validate the result.
                 </p>
                 <pre>{JSON.stringify(result, null, 4)}</pre>
               </>
@@ -120,8 +125,8 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
 
         {status === "rejected" && (
           <>
-            <XCircleIcon className="w-48 h-48 mx-auto text-red-400" />
-            <p>Your credential was not verified.</p>
+            <h3>Your credential was not verified.</h3>
+            <XCircleIcon className="w-36 h-36 mx-auto text-red-400" />
           </>
         )}
 
@@ -132,7 +137,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
                 type="button"
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Next Demo: Revocation
+                Next: Issuers Can Revoke Credentials
                 <ArrowCircleRightIcon
                   className="w-5 h-5 ml-2 -mr-1"
                   aria-hidden="true"

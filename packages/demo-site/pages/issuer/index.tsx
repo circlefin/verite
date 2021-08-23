@@ -41,8 +41,7 @@ const IssuerPage: NextPage = () => {
           accredited investor status, or other key claims.
         </p>
         <p className="font-semibold">
-          Select one of the Verifiable Credentials below to see how issuance
-          works:
+          Select a Verifiable Credentials below to see how issuance works:
         </p>
       </div>
       <ul

@@ -37,7 +37,7 @@ const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
   return (
     <IssuerLayout title="Credit Score Verifiable Credential">
       <div className="prose">
-        <h2>User Experience</h2>
+        <h2>Issue User Experience</h2>
         <p>
           Credentials contain data specific to their schema types. Compared to a
           KYC/AML credential, a credential that attests to a credit score has
@@ -49,17 +49,14 @@ const CreditScorePage: NextPage<Props> = ({ manifest, qrCodeData, user }) => {
           credit score:
         </p>
         <dl className="flex flex-row justify-center mx-auto space-x-2 sm:space-x-5">
-          <div className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-5 sm:px-6 flex-0">
-            <dt className="text-sm font-medium text-gray-500 truncate">
-              Credit Score
-            </dt>
+          <div className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-2 sm:px-4 flex-0">
             <dd className="mt-1 text-3xl font-semibold text-gray-900">
               {user.creditScore}
             </dd>
           </div>
         </dl>
         <p>
-          Request a credit score credential by scanning this QR code with the
+          Request a VC for this credit score by scanning this QR code with the
           Verity mobile app:
         </p>
         <QRCode

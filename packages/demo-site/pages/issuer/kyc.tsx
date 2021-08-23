@@ -59,7 +59,7 @@ const KycAmlPage: NextPage<Props> = ({
     if (!data || data.status === 404) {
       return (
         <>
-          <h2>User Experience</h2>
+          <h2>Issue User Experience</h2>
           <p className="pb-4">
             Credentials and DID data may be custodied in crypto/identity wallets
             such as browser extensions, mobile apps, or hosted wallet providers.
@@ -119,8 +119,16 @@ const KycAmlPage: NextPage<Props> = ({
       return (
         <div className="space-y-4">
           <p>
-            You&apos;ve successfully issued a credential. You can see the
-            Verifiable Credential below.
+            The issuer created a credential for a{" "}
+            <Link href="https://www.w3.org/TR/did-core/">
+              <a target="_blank">DID</a>
+            </Link>{" "}
+            owned by{" "}
+            <b>
+              <em>{user.email}</em>
+            </b>
+            . The issuer signed the Verifiable Credential with its own DID. The
+            raw VC is below.
           </p>
           <p>
             <Link href="/verifier/" passHref>
@@ -139,7 +147,7 @@ const KycAmlPage: NextPage<Props> = ({
               </button>
             </Link>
           </p>
-          <h2>Credential</h2>
+          <h3>Raw KYC Verifiable Credential:</h3>
           <pre>{JSON.stringify(data.credential, null, 4)}</pre>
         </div>
       )

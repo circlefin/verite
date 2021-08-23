@@ -67,7 +67,7 @@ const Home: NextPage = () => {
         <div className="bg-white rounded-lg overflow-hidden p-4 border-gray-300 border">
           <p className="prose-2xl">Identify</p>
           <p className="prose-sm pb-4 max-w-none">
-            Issuers, holders, and verifiers of credentials are identified by
+            Issuers, subjects, and verifiers of credentials are identified by
             unique Decentralized Identifiers, or{" "}
             <b>
               <Link href="https://www.w3.org/TR/did-core/">DIDs</Link>
