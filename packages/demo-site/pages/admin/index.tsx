@@ -25,10 +25,10 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
       <div className="prose max-w-none">
         <h2>Simulating an Issuer's Compliance Tool</h2>
         <p>
-          This example simulates an admin tool used by Issuers to manage
-          credentials. This tool might be used by a compliance analyst to
-          inspect the details of a User, including all their issued credentials,
-          and revoke credentials if needed.
+          This example simulates an admin tool used by issuers to manage
+          credentials. Such a tool might be used by a compliance analyst to
+          inspect the details of a user, including all credentials issued to a
+          user, and to revoke credentials if needed.
         </p>
 
         <p>

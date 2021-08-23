@@ -70,7 +70,7 @@ const AdminCredentialPage: NextPage<Props> = ({
   return (
     <AdminLayout title="Credential Details">
       <div className="prose max-w-none">
-        <h3>{credential.type}</h3>
+        <h2>{credential.type}</h2>
         <p>
           An issuer can reconcile this credential to a specific user in its
           system because the issuer persists that mapping internally whenever it
@@ -107,6 +107,16 @@ const AdminCredentialPage: NextPage<Props> = ({
           </>
         )}
 
+        {revocable && (
+          <>
+            <h3>Revocation List Credential:</h3>
+
+            <pre className="overflow-x-scroll">
+              {JSON.stringify(list, null, 4)}
+            </pre>
+          </>
+        )}
+
         <button
           className="flex justify-center text-md "
           onClick={() => {
@@ -118,20 +128,9 @@ const AdminCredentialPage: NextPage<Props> = ({
             Show/Hide the Verifiable Credential
           </p>
         </button>
-
         <pre id="vc" className="overflow-x-scroll hidden">
           {JSON.stringify(credential, null, 4)}
         </pre>
-
-        {revocable && (
-          <>
-            <h3>Revocation List Credential:</h3>
-
-            <pre className="overflow-x-scroll">
-              {JSON.stringify(list, null, 4)}
-            </pre>
-          </>
-        )}
 
         <Link href={`/admin/users/${user.id}`} passHref>
           <button

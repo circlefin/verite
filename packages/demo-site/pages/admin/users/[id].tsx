@@ -170,8 +170,8 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
         <h2>Issuer Review: {user.email}</h2>
         <p>
           When revoking a credential, the best practice is to revoke all of a
-          user&apos;s credentials of the same type. This ensures no previously
-          issued credentials can still be used.
+          user&apos;s credentials of the same type. This ensures that no
+          previously issued credentials can still be used.
         </p>
         <p>
           In this demo, KYC/AML credentials can be revoked, but Credit Score

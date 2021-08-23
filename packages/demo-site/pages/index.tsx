@@ -27,7 +27,7 @@ const Home: NextPage = () => {
             identity&apos;s claims by issuing a cryptographic{" "}
             <b>
               <Link href="https://www.w3.org/TR/vc-data-model/">
-                Verifiable Credential
+                <a target="_blank">Verifiable Credential</a>
               </Link>
             </b>{" "}
             about the claim.
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
             credentials &mdash; custody their Verifiable Credentials in wallets
             just as they hold their own USDC and other crypto assets. Subjects
             may &quot;self-custody&quot; or rely on a trusted host to custody
-            their credentials.
+            their credentials. The custodian is also called the <i>holder</i>.
           </p>
         </div>
       </div>
@@ -55,7 +55,14 @@ const Home: NextPage = () => {
           <p className="prose-sm pb-2 max-w-none">
             People, institutions, and smart contracts can verify credentials
             without accessing the private information used in the issuance of
-            the claim and without leaking information to the issuer.
+            the claim and without leaking information to the issuer. Verity
+            implements{" "}
+            <b>
+              <Link href="https://identity.foundation/presentation-exchange/">
+                <a target="_blank">Presentation Exchange</a>
+              </Link>
+            </b>{" "}
+            as its verification protocol.
           </p>
           <p className="prose-sm italic pb-4 max-w-none">
             For example, an employer can verify that a job candidate has
@@ -70,7 +77,9 @@ const Home: NextPage = () => {
             Issuers, subjects, and verifiers of credentials are identified by
             unique Decentralized Identifiers, or{" "}
             <b>
-              <Link href="https://www.w3.org/TR/did-core/">DIDs</Link>
+              <Link href="https://www.w3.org/TR/did-core/">
+                <a target="_blank">DIDs</a>
+              </Link>
             </b>
             . DIDs leverage public-private key cryptography similarly to
             blockchain addresses. Just as in the physical world where

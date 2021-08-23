@@ -32,11 +32,6 @@ const DappLayout: FC<Props> = ({ children, balance, symbol, account }) => {
         </div>
       )}
       <div className="px-5 py-6 sm:px-6 min-h-[17rem]">{children}</div>
-      <div className="prose-sm max-w-none text-gray-600 text-center pb-6">
-        <Link href="https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationValidator.sol">
-          <a target="_blank">View Smart Contract Source</a>
-        </Link>
-      </div>
     </EthLayout>
   )
 }
