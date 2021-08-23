@@ -2,6 +2,7 @@ import {
   createVerificationRequest,
   VerificationRequestResponse
 } from "@centre/demo-site/lib/verification-request"
+import { Disclosure } from "@headlessui/react"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
 import { GetServerSideProps, NextPage } from "next"
@@ -73,21 +74,16 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
               credential.
             </p>
 
-            <button
-              className="flex justify-center text-md "
-              onClick={() => {
-                const el = document.getElementById("manifest")
-                el.style.display = el.style.display === "" ? "block" : ""
-              }}
-            >
-              <p className="underline font-semibold">
-                Show/Hide the Complete Presentation Request
-              </p>
-            </button>
-
-            <div id="manifest" className="hidden">
-              <pre>{JSON.stringify(challenge, null, 4)}</pre>
-            </div>
+            <Disclosure>
+              <Disclosure.Button>
+                <p className="font-semibold text-md underline">
+                  Show/Hide the Complete Presentation Request
+                </p>
+              </Disclosure.Button>
+              <Disclosure.Panel>
+                <pre>{JSON.stringify(challenge, null, 4)}</pre>
+              </Disclosure.Panel>
+            </Disclosure>
 
             <p>
               Once the client has the Presentation Request, it wraps the
