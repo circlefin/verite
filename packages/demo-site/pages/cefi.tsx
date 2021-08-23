@@ -1,7 +1,7 @@
 import { NextPage } from "next"
 import React from "react"
 
-import Layout from "../components/layouts/EthAuthLayout"
+import Layout from "../components/layouts/EthLayout"
 import { useBalance } from "../hooks/useBalance"
 import { useEthBalance } from "../hooks/useBalance"
 
