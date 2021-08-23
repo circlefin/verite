@@ -9,22 +9,21 @@ import { Contract } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only
- * want to support `hardhat` which is served from port 8545,
- * and is chainId `1337`. You can change it in the hardhat.config.js config file.
+ * want to support `hardhat` which is served from port 8545, and
+ * Ropsten. You can change it in the hardhat.config.js config file.
  *
  * Here's a list of network ids to use when deploying to other networks.
  * https://docs.metamask.io/guide/ethereum-provider.html#properties
  */
 export const supportedChainIds = [
-  /*
-	1, // Mainet
-	3, // Ropsten
-	4, // Rinkeby
-	5, // Goerli
-	42, // Kovan
-	*/
-  1337 // Hardhat
+  parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
 ]
+// 1, // Mainet
+// 3, // Ropsten
+// 4, // Rinkeby
+// 5, // Goerli
+// 42, // Kovan
+// 1337 // Hardhat
 
 /**
  * The connector for the etherum interface.
@@ -38,7 +37,7 @@ export function getEthErrorMessage(error: Error): string {
   if (error instanceof NoEthereumProviderError) {
     return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile."
   } else if (error instanceof UnsupportedChainIdError) {
-    return "You're connected to an unsupported network. Please set MetaMask to connect to localhost:8545."
+    return `You're connected to an unsupported network. Please set MetaMask to connect to ${process.env.NEXT_PUBLIC_ETH_NETWORK_NAME}.`
   } else if (error instanceof UserRejectedRequestError) {
     return "Please authorize this website to access your Ethereum account."
   } else {
@@ -68,4 +67,14 @@ export function contractFetcher(
     const contract = new Contract(address, abi, library.getSigner())
     return contract[method](...args)
   }
+}
+
+export function verityTokenContractArtifact() {
+  return require("../contracts/Token.json")
+}
+
+export function verityTokenContractAddress(): string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const json = require("../contracts/contract-address.json")
+  return json.Token
 }

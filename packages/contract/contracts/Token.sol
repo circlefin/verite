@@ -29,7 +29,7 @@ import "./VerificationValidator.sol";
 import "hardhat/console.sol";
 
 contract Token is VerificationValidator {
-    
+
     string public name = "Verity Demo USDC";
     string public symbol = "VUSDC";
 
@@ -54,7 +54,7 @@ contract Token is VerificationValidator {
     function transfer(address to, uint256 amount) external {
         require(balances[msg.sender] >= amount, "Not enough tokens");
         require(amount < _CREDENTIAL_THRESHOLD, "Verifiable Credential: Transfers of this amount require validateAndTransfer");
-            
+
         _transfer(to, amount);
     }
 

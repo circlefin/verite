@@ -50,7 +50,7 @@ export function verificationRequestWrapper(
 }
 
 /**
- * Hnandle QR codes that initiate an issuance or verification workflow.
+ * Handle QR codes that initiate an issuance or verification workflow.
  *
  * When scanning a QR code, it will encode a JSON object with a challengeTokenUrl
  * property. We will subsequently fetch that value to retrieve the full

@@ -1,5 +1,7 @@
 import { useRouter } from "next/router"
 
+export const PASSWORD_PROTECTION_COOKIE = "PPBqWA9"
+
 export function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(" ")
 }

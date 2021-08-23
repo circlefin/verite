@@ -1,31 +1,38 @@
-import Head from "next/head";
-import { FC } from "react";
+import { FC } from "react"
+import EthLayout from "../layouts/EthLayout"
 
 type Props = {
-  title: string;
-};
+  balance?: any
+  symbol?: string
+  account?: string
+}
 
-const Layout: FC<Props> = ({ children, title }) => {
+const DappLayout: FC<Props> = ({ children, balance, symbol, account }) => {
+  let title = "Verity Demo USDC"
+  if (symbol) {
+    title = `${title} (${symbol})`
+  }
+
   return (
-    <>
-      <Head>
-        <title>{title} | Smart Contract Recipe</title>
-        <meta
-          name="description"
-          content="Verity Smart Contract and dApp Boilerplate"
-        />
-      </Head>
-      <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
-        <main className="-mt-32">
-          <div className="max-w-3xl px-4 pb-12 mx-auto sm:px-6 lg:px-8">
-            <div className="px-5 py-6 bg-white rounded-lg shadow sm:px-6">
-              {children}
-            </div>
+    <EthLayout noPadding={true} title={title}>
+      {balance && symbol && account && (
+        <div className="flex flex-row space-x-2 border-b bg-blue-50">
+          <div className="flex-1 hidden p-4 border-r sm:block">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Account
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">{account}</p>
           </div>
-        </main>
-      </div>
-    </>
-  );
-};
+          <div className="flex items-center justify-end flex-1 p-4 text-center sm:text-right">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              {balance.toString()} {symbol}
+            </h3>
+          </div>
+        </div>
+      )}
+      <div className="px-5 py-6 sm:px-6 min-h-[17rem]">{children}</div>
+    </EthLayout>
+  )
+}
 
-export default Layout;
+export default DappLayout

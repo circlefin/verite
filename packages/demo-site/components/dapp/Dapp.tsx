@@ -2,6 +2,7 @@
 // by a verifier to this dapp
 import type { VerificationInfoResponse } from "@centre/verity"
 import { Web3Provider } from "@ethersproject/providers"
+import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
 import { useWeb3React } from "@web3-react/core"
 import { Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
@@ -13,19 +14,21 @@ import useSWR from "swr"
 import TokenArtifact from "../../contracts/Token.json"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import contractAddress from "../../contracts/contract-address.json"
+import contractAddressJSON from "../../contracts/contract-address.json"
 import { contractFetcher } from "../../lib/eth-fns"
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
 // logic. They just render HTML.
-import ConnectWallet from "./ConnectWallet"
+import Layout from "./Layout"
 import Loading from "./Loading"
 import NoTokensMessage from "./NoTokensMessage"
 import TransactionErrorMessage from "./TransactionErrorMessage"
 import Transfer from "./Transfer"
-import TransferStatus from "./TransferStatus"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
+
+const contractAddress =
+  process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS || contractAddressJSON.Token
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -47,7 +50,7 @@ const Dapp: FC = () => {
   const { account, library } = useWeb3React<Web3Provider>()
   // Refresh the user's contract balance every 1 second
   const { data: balance, mutate } = useSWR(
-    [contractAddress.Token, "balanceOf", account],
+    [contractAddress, "balanceOf", account],
     {
       fetcher: contractFetcher(library, TokenArtifact.abi),
       refreshInterval: 1000
@@ -60,7 +63,6 @@ const Dapp: FC = () => {
   // transactions being sent and any error with them
   const [txBeingSent, setTxBeingSent] = useState("")
   const [transactionError, setTransactionError] = useState(null)
-  const [networkError, setNetworkError] = useState(null)
 
   // non-error status message for rendering
   const [statusMessage, setStatusMessage] = useState("")
@@ -70,33 +72,46 @@ const Dapp: FC = () => {
   const [verification, setVerification] = useState(null)
   const [verificationStatus, setVerificationStatus] = useState()
 
-  const [token, setToken] = useState<Contract>(null)
+  // const [token, setToken] = useState<Contract>(null)
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
 
+  const token = new Contract(
+    contractAddress,
+    TokenArtifact.abi,
+    library.getSigner(0)
+  )
+
+  // Intial setup
   useEffect(() => {
-    if (library) {
-      const token = new Contract(
-        contractAddress.Token,
-        TokenArtifact.abi,
-        library.getSigner(0)
-      )
+    // Load the token information (name, symbol)
+    const getTokenData = async () => {
+      const name: string = await token.name()
+      const symbol: string = await token.symbol()
 
-      setToken(token)
+      setTokenData({ name, symbol })
     }
-  }, [library])
 
-  useEffect(() => {
-    if (token) {
-      const getTokenData = async () => {
-        const name: string = await token.name()
-        const symbol: string = await token.symbol()
+    getTokenData()
 
-        setTokenData({ name, symbol })
-      }
+    // Set up listeners for the token contract so we know when
+    // to update balances, etc.
+    const fromMe = token.filters.Transfer(account, null)
+    const toMe = token.filters.Transfer(null, account)
+    library.on(fromMe, (from, to, amount, event) => {
+      console.log("Transfer sent", { from, to, amount, event })
+      mutate(undefined, true)
+    })
 
-      getTokenData()
+    library.on(toMe, (from, to, amount, event) => {
+      console.log("Transfer received", { from, to, amount, event })
+      mutate(undefined, true)
+    })
+
+    return () => {
+      library.removeAllListeners(toMe)
+      library.removeAllListeners(fromMe)
     }
-  }, [token])
+  }, [])
 
   /**
    * When we have a verification, we'll poll on it
@@ -133,7 +148,7 @@ const Dapp: FC = () => {
     try {
       // Create a Verification Request
       const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress.Token}`,
+        `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`,
         { method: "POST" }
       )
       const verification = await resp.json()
@@ -161,7 +176,9 @@ const Dapp: FC = () => {
         setVerification(undefined)
         setVerificationInfoSet(verification.result)
         setIsVerifying(false)
-        setStatusMessage("Verification complete.")
+        setStatusMessage(
+          "Verification complete. You can now transfer > 10 VUSDC"
+        )
       } else if (verification.status === "rejected") {
         setVerification(undefined)
         setVerificationInfoSet(undefined)
@@ -181,6 +198,10 @@ const Dapp: FC = () => {
   // End demo-site verifier
 
   const getVerificationResult = async () => {
+    // Clear verification if one exists. This will stop polling on the
+    // unsimulated verification workflow
+    setVerification(undefined)
+
     // in this recipe, the dApp calls a verifier by API and passes its
     // own subject address to be used in the verification result digest.
     // The verifier does not require proof of ownership of that address,
@@ -193,7 +214,7 @@ const Dapp: FC = () => {
 
     const postData = {
       subjectAddress: account,
-      contractAddress: contractAddress.Token
+      contractAddress: contractAddress
     }
     const res = await fetch("/api/demo/simulate-verification", {
       method: "POST",
@@ -210,7 +231,7 @@ const Dapp: FC = () => {
 
     setVerificationInfoSet(verificationInfoSet)
     setIsVerifying(false)
-    setStatusMessage("Verification complete.")
+    setStatusMessage("Verification complete. You can now transfer > 10 VUSDC")
   }
 
   const transferTokens = async (to: string, amount: string) => {
@@ -275,20 +296,29 @@ const Dapp: FC = () => {
         return
       }
 
+      const message = getRpcErrorMessage(error)
+
       // if the error is verification-related, we prompt -- this would be better handled
       // up front before the transfer, but for the sake of example, we show that
       // the contract is not relying solely on the web frontend to fire the error
-      if (
-        error.data &&
-        error.data.message.indexOf("Verifiable Credential") !== -1
-      ) {
+      if (message.indexOf("Verifiable Credential:") !== -1) {
         setIsVerifying(true)
-        return
+        setVerification(undefined)
+        setVerificationInfoSet(undefined)
+
+        // Generate a QR code for scanning
+        createVerification()
       }
 
-      // Other errors are logged and stored in the Dapp's state. This is used to
-      // show them to the user, and for debugging.
-      setTransactionError(error)
+      // This is the error message to kick off the Verification workflow. We
+      // special case it so it is not shown to the user.
+      const sentinel =
+        "Verifiable Credential: Transfers of this amount require validateAndTransfer"
+      if (message.indexOf(sentinel) === -1) {
+        // Other errors are logged and stored in the Dapp's state. This is used to
+        // show them to the user, and for debugging.
+        setTransactionError(getRpcErrorMessage(error))
+      }
     } finally {
       // If we leave the try/catch, we aren't sending a tx anymore, so we clear
       // this part of the state.
@@ -302,9 +332,8 @@ const Dapp: FC = () => {
     setStatusMessage(undefined)
   }
 
-  // This method just clears part of the state
-  const dismissNetworkError = () => {
-    setNetworkError(undefined)
+  const dismissStatusMessage = () => {
+    setStatusMessage(undefined)
   }
 
   // This is an utility method that makes an RPC error human readable
@@ -312,139 +341,140 @@ const Dapp: FC = () => {
     data: { message: any }
     message: any
   }) => {
-    if (error.data) {
+    if (error?.data?.message) {
       return error.data.message
     }
 
-    return error.message
-  }
+    if (error?.message) {
+      return error?.message
+    }
 
-  // This method checks whether the Metamask selected network is localhost:8545
-  // const checkNetwork = () => {
-  //   if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
-  //     return true
-  //   }
-
-  //   setNetworkError("Please connect Metamask to localhost:8545")
-
-  //   return false
-  // }
-
-  // Ethereum wallets inject the window.ethereum object. If it hasn't been
-  // injected, we instruct the user to install MetaMask.
-  // if (typeof window !== "undefined" && window.ethereum === undefined) {
-  //   return <NoWalletDetected />;
-  // }
-
-  // The next thing we need to do is ask the user to connect the wallet.
-  // When the wallet gets connected, we are going to save the users's address
-  // in the component's state. So if it hasn't been saved yet, we show the
-  // ConnectWallet component.
-  //
-  // Note that we pass it a callback that is going to be called when the user
-  // clicks a button. This callback just calls the _connectWallet method.
-  if (!account) {
-    return (
-      <ConnectWallet
-        networkError={networkError}
-        dismiss={() => dismissNetworkError()}
-      />
-    )
+    return `Unknown Error: ${error?.toString()}`
   }
 
   // If the token data or the user's balance hasn't loaded yet, we show
   // a loading component
   if (!tokenData || !balance) {
-    return <Loading />
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    )
+  }
+
+  const faucet = async (address: string): Promise<boolean> => {
+    try {
+      const resp = await fetch("/api/demo/faucet", {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({ address })
+      })
+      const json = await resp.json()
+      if (json.status !== "ok") {
+        console.error(json)
+        setTransactionError(
+          `API call to faucet failed: ${JSON.stringify(json)}`
+        )
+        return false
+      }
+    } catch (e) {
+      console.error(e)
+      setTransactionError(`API call to faucet failed: ${e.message}`)
+      return false
+    }
+
+    return true
   }
 
   return (
-    <div className="container p-4">
-      <div className="row">
-        <div className="col-12">
-          <h1>
-            {tokenData.name} ({tokenData.symbol})
-          </h1>
-          <p>
-            Welcome <b>{account}</b>, you have{" "}
-            <b>
-              {balance.toString()} {tokenData.symbol}
-            </b>
-            .
-          </p>
-          <p>
-            In this demo, transfers of 10 or more VUSDC require proof of KYC.
-          </p>
-          <p>
-            Other DeFi use cases include credit/risk credentials for lower
-            collateralization and improved borrowing terms.
-          </p>
-        </div>
+    <Layout account={account} balance={balance} symbol={tokenData.symbol}>
+      <div className="prose">
+        <p>In this demo, transfers of 10 or more VUSDC require proof of KYC.</p>
+        <p>
+          Other DeFi use cases include credit/risk credentials for lower
+          collateralization and improved borrowing terms.
+        </p>
       </div>
 
-      <hr />
-
-      <div className="row">
-        <div className="col-12">
-          {/*
+      <div>
+        {/*
         Sending a transaction isn't an immediate action. We have to wait
         for it to be mined.
         If we are waiting for one, we show a message here.
       */}
-          {txBeingSent && <WaitingForTransactionMessage txHash={txBeingSent} />}
+        {txBeingSent && <WaitingForTransactionMessage txHash={txBeingSent} />}
 
-          {/*
+        {/*
         Sending a transaction can fail in multiple ways.
         If that happened, we show a message here.
       */}
-          {transactionError && (
-            <TransactionErrorMessage
-              message={getRpcErrorMessage(transactionError)}
-              dismiss={() => dismissTransactionError()}
-            />
-          )}
-        </div>
+        {transactionError && (
+          <TransactionErrorMessage
+            message={transactionError}
+            dismiss={() => dismissTransactionError()}
+          />
+        )}
+
+        {statusMessage && (
+          <div className="p-4 rounded-md bg-blue-50">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <InformationCircleIcon
+                  className="w-5 h-5 text-blue-400"
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-blue-800">
+                  {statusMessage}
+                </p>
+              </div>
+              <div className="pl-3 ml-auto">
+                <div className="-mx-1.5 -my-1.5">
+                  <button
+                    type="button"
+                    className="inline-flex bg-blue-50 rounded-md p-1.5 text-blue-500 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-50 focus:ring-blue-600"
+                    onClick={() => dismissStatusMessage()}
+                  >
+                    <span className="sr-only">Dismiss</span>
+                    <XIcon className="w-5 h-5" aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="row">
-        <div className="col-12">
-          {/*
+      <div className="py-8">
+        {/*
         If the user has no tokens, we don't show the Transfer form
       */}
-          {balance.eq(0) && <NoTokensMessage selectedAddress={account} />}
+        {balance.eq(0) && (
+          <NoTokensMessage faucetFunction={faucet} selectedAddress={account} />
+        )}
 
-          {/*
+        {/*
         This component displays a form that the user can use to send a
         transaction and transfer some tokens.
         The component doesn't have logic, it just calls the transferTokens
         callback.
       */}
-          {balance.gt(0) && (
-            <Transfer
-              transferTokens={(to, amount) => transferTokens(to, amount)}
-              tokenSymbol={tokenData.symbol}
-            />
-          )}
-          {statusMessage && <hr />}
-        </div>
+        {balance.gt(0) && (
+          <Transfer
+            transferTokens={transferTokens}
+            tokenSymbol={tokenData.symbol}
+            isVerifying={isVerifying}
+            simulateFunction={getVerificationResult}
+            verification={verification}
+            verificationInfoSet={verificationInfoSet}
+            dismissStatusMessage={dismissStatusMessage}
+          />
+        )}
       </div>
-      {/*
-    If we have transfer or verification status to report, we do so here.
-  */}
-      <div className="row">
-        <div className="col-12">
-          {(statusMessage || isVerifying) && (
-            <TransferStatus
-              statusMessage={statusMessage}
-              isVerifying={isVerifying}
-              simulateFunction={() => getVerificationResult()}
-              verifyFunction={() => createVerification()}
-              verification={verification}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+    </Layout>
   )
 }
 

@@ -4,7 +4,8 @@ import type { KYCVerificationInfo, VerificationInfoResponse } from "../../types"
 export const verificationResult = async (
   subjectAddress: string,
   contractAddress: string,
-  mnemonic: string
+  mnemonic: string,
+  chainId: number
 ): Promise<VerificationInfoResponse> => {
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new signer trusted signer when needed.
@@ -24,7 +25,7 @@ export const verificationResult = async (
   const domain = {
     name: "VerificationValidator",
     version: "1.0",
-    chainId: 1337,
+    chainId,
     verifyingContract: contractAddress
   }
 

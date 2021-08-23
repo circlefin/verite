@@ -27,7 +27,8 @@ export default apiHandler<VerificationInfoResponse>(async (req, res) => {
   const result = await verificationResult(
     subjectAddress,
     contractAddress,
-    mnemonic
+    mnemonic,
+    parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
   // return the result object to the calling client
