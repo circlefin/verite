@@ -10,7 +10,6 @@ import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
 import { jsonFetch } from "../../lib/utils"
-import e from "cors"
 
 type Props = {
   createdAt: string

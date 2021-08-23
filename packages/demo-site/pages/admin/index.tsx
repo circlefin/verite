@@ -23,7 +23,7 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
   return (
     <AdminLayout title="Credential Administration">
       <div className="prose max-w-none">
-        <h2>Simulating an Issuer's Compliance Tool</h2>
+        <h2>Simulating an Issuer&apos;s Compliance Tool</h2>
         <p>
           This example simulates an admin tool used by issuers to manage
           credentials. Such a tool might be used by a compliance analyst to
@@ -49,7 +49,7 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
         <div className="divide-y divide-gray-200">
           {users.map((user) => (
             <div key={user.email}>
-              <Link href={`/admin/users/${user.id}`}>
+              <Link href={`/admin/users/${user.id}`} passHref>
                 <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
                   <div className="ml-3">
                     <span className="text-sm text-gray-900">{user.email}</span>
