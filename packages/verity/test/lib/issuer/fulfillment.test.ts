@@ -27,7 +27,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
       issuer,
       decodedApplication,
       kycAmlAttestation(),
-      revocationListFixture
+      { credentialStatus: revocationListFixture }
     )
     expect(fulfillment.credential_fulfillment).toBeDefined()
     expect(fulfillment.credential_fulfillment.manifest_id).toEqual(

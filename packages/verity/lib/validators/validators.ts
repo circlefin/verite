@@ -13,7 +13,7 @@ import type {
 } from "../../types"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation } from "../utils"
+import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
 import {
   CredentialResults,
   FieldConstraintEvaluation,
@@ -126,6 +126,8 @@ export async function processVerificationSubmission(
 
   await ensureNotRevoked(presentation)
 
+  ensureNotExpired(presentation)
+
   // check conforms to expected schema: disabled for now
   /*
     Object.keys(mapped).map((key) => {
@@ -166,7 +168,23 @@ async function ensureNotRevoked(
   if (anyRevoked) {
     throw new ValidationError(
       "Revoked Credentials",
-      "At least one of the provided verified credential have been revoked"
+      "At least one of the provided verified credentials has been revoked"
+    )
+  }
+}
+
+/**
+ * Ensure all credentials in a verifiable presentation are not expired
+ */
+function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
+  const credentials = presentation.verifiableCredential || []
+
+  const anyExpired = credentials.some((credential) => isExpired(credential))
+
+  if (anyExpired) {
+    throw new ValidationError(
+      "Expired Credentials",
+      "At least one of the provided verified credentials has expired"
     )
   }
 }

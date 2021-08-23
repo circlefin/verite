@@ -42,7 +42,7 @@ describe("issuance", () => {
       issuer,
       decodedApplication,
       kycAmlAttestationFixture,
-      revocationListFixture
+      { credentialStatus: revocationListFixture }
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
