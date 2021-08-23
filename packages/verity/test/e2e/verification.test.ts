@@ -75,7 +75,7 @@ async function getClientVerifiableCredential(
     issuer,
     decodedApplication,
     kycAmlAttestationFixture,
-    revocationListFixture
+    { credentialStatus: revocationListFixture }
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(

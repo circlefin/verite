@@ -163,12 +163,13 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
   await validateCredentialApplication(application, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)
+  const credentialStatus = await generateRevocationListStatus()
 
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     decodedApplication,
     buildAttestationForUser(user, manifest),
-    await generateRevocationListStatus()
+    { credentialStatus }
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(

@@ -63,3 +63,15 @@ export async function decodeVerifiablePresentation(
     )
   }
 }
+
+/**
+ * Determines if a given credential is expired
+ */
+export function isExpired(credential: Verifiable<W3CCredential>): boolean {
+  if (!credential.expirationDate) {
+    return false
+  }
+
+  const expirationDate = new Date(credential.expirationDate)
+  return expirationDate < new Date()
+}
