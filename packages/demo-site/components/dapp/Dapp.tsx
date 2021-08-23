@@ -390,11 +390,15 @@ const Dapp: FC = () => {
 
   return (
     <Layout account={account} balance={balance} symbol={tokenData.symbol}>
-      <div className="prose">
-        <p>In this demo, transfers of 10 or more VUSDC require proof of KYC.</p>
+      <div className="prose max-w-none">
+        <p className="font-bold">
+          In this demo, transfers of 10 or more VUSDC will require proof of KYC.
+        </p>
         <p>
-          Other DeFi use cases include credit/risk credentials for lower
-          collateralization and improved borrowing terms.
+          Other DeFi use cases include credit credentials for lower
+          collateralization and improved borrowing terms, accredited investor
+          status for access to new markets, proof of geo location for licensed
+          services, etc.
         </p>
       </div>
 

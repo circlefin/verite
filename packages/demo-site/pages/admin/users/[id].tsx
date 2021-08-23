@@ -5,6 +5,7 @@ import {
   RevocationListCredential
 } from "@centre/verity"
 import { asyncMap, isRevoked } from "@centre/verity"
+import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import Link from "next/link"
@@ -166,30 +167,36 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
   return (
     <AdminLayout title={user.email}>
       <div className="prose">
+        <h2>Issuer Review: {user.email}</h2>
         <p>
-          When revoking a user&apos;s credentials, it is recommended to revoke
-          all credentials of the same type. This ensures no previously issued
-          credentials can still be used.
+          When revoking a credential, the best practice is to revoke all of a
+          user&apos;s credentials of the same type. This ensures that no
+          previously issued credentials can still be used.
         </p>
         <p>
-          <button
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={async () => {
-              // Dev Note: Ideally, your API would handle this in bulk, but for simplicity we loop over them one by one }
-              for (const credential of kycCreds) {
-                await doRevoke(credential)
-              }
-              router.reload()
-            }}
-          >
-            Revoke KYC Credentials
-          </button>
+          In this demo, KYC/AML credentials can be revoked, but Credit Score
+          cannot &mdash; it simply expires relatively quickly, as a snapshot in
+          time. Not all credentials must be revocable.
         </p>
+
         <h2>Active Credentials</h2>
         <CredentialTable credentials={activeCredentials} />
 
         <h2>Revoked Credentials</h2>
         <CredentialTable credentials={revokedCredentials} />
+
+        <Link href="/admin" passHref>
+          <button
+            type="button"
+            className="inline-flex items-center px-4 py-2 text-sm 
+                font-medium text-white bg-blue-600 border border-transparent 
+                rounded-md shadow-sm hover:bg-blue-700 focus:outline-none 
+                focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <ArrowCircleLeftIcon className="w-5 h-5 mr-2" aria-hidden="true" />
+            Back
+          </button>
+        </Link>
       </div>
     </AdminLayout>
   )

@@ -16,7 +16,7 @@ const items = [
   },
   {
     name: "Credit Score",
-    description: "Proof of your current credit score.",
+    description: "Proof of your current credit score",
     href: "/issuer/credit-score",
     iconColor: "bg-purple-500",
     icon: CalculatorIcon
@@ -31,10 +31,18 @@ export const getServerSideProps = requireAuth(async () => {
 
 const IssuerPage: NextPage = () => {
   return (
-    <IssuerLayout title="Issuer" hideNavigation={true}>
-      <div className="prose">
-        <h2>Request a Verifiable Credential</h2>
-        <p>Select the type of credential you would like to receive.</p>
+    <IssuerLayout title="Basic Issuance" hideNavigation={true}>
+      <div className="prose pb-2 max-w-none">
+        <h2>Request and Custody Verifiable Credentials</h2>
+        <p>
+          When you sign into your account at Circle, Coinbase, Square, or
+          another trusted institution, you might request credentials that prove
+          those providers have confirmed your identity, credit/risk score,
+          accredited investor status, or other key claims.
+        </p>
+        <p className="font-semibold">
+          Select a Verifiable Credentials below to see how issuance works:
+        </p>
       </div>
       <ul
         role="list"

@@ -45,9 +45,10 @@ contract VerificationValidator is Ownable, EIP712("VerificationValidator", "1.0"
     * contract. The contract can also use properties in the object to adjust its
     * contract logic, if appropriate.
     * 
-    * Note that the subjectAddress is included in the verifier hash but the contract
-    * ALWAYS use msg.sender as the subjectAddress when regenerating the hash in order
-    * to prevent replay attacks, so subjectAddress is not included in the struct.
+    * In this example, the subjectAddress is included in the verifier hash but 
+    * the contract ALWAYS uses msg.sender as the subjectAddress when regenerating 
+    * the hash in order to prevent replay attacks, so subjectAddress is not necessary 
+    * in the struct.
     */
     struct KYCVerificationInfo {
         string message;
@@ -170,8 +171,8 @@ contract VerificationValidator is Ownable, EIP712("VerificationValidator", "1.0"
      * This private function completes the validation process by recovering a signer 
      * based on a reconstituted hash and a signature, confirms that the address is
      * a trusted verifier, confirms that the result has not expired, and emits an
-     * event upon success. Note that in this example, any trusted verifier is valid
-     * for any type of verification (as opposed to maintaining separate trusted verifiers
+     * event upon success. In this example, any trusted verifier is valid for any 
+     * type of verification (as opposed to maintaining separate trusted verifiers
      * for different credential types).
      */
     function _validateVerifier(
