@@ -11,6 +11,7 @@
     "db:reset:force": "dotenv -c development prisma migrate reset -- --force",
     "db:seed": "dotenv -c development prisma db seed -- --preview-feature",
     "db:studio": "dotenv -c development prisma studio",
+    "worker": "dotenv -c development ./bin/worker",
     "dev": "next dev",
     "format": "prettier  --write .",
     "lint": "next lint",
