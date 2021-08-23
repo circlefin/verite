@@ -4,19 +4,9 @@ export type KYCAMLAttestation = {
   "@type": "KYCAMLAttestation"
   authorityId: string
   approvalDate: string
-  expirationDate?: string
   authorityName?: string
   authorityUrl?: string
   authorityCallbackUrl?: string
-  serviceProviders?: KYCAMLProvider[]
-}
-
-export type KYCAMLProvider = {
-  "@type": "KYCAMLProvider"
-  name?: string
-  score?: number
-  completionDate?: string
-  comment?: string
 }
 
 export type CreditScoreAttestation = {

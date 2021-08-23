@@ -146,10 +146,7 @@ describe("POST /issuance/[token]", () => {
   })
 
   it("returns a KYC credential with known input/output", async () => {
-    const user = await userFactory({
-      jumioScore: 80,
-      ofacScore: 0
-    })
+    const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const manifest = await findManifestById("KYCAMLAttestation")
@@ -177,17 +174,5 @@ describe("POST /issuance/[token]", () => {
     expect(vc.credentialSubject.KYCAMLAttestation["@type"]).toBe(
       "KYCAMLAttestation"
     )
-    expect(vc.credentialSubject.KYCAMLAttestation.serviceProviders).toEqual([
-      {
-        "@type": "KYCAMLProvider",
-        name: "Jumio",
-        score: 80
-      },
-      {
-        "@type": "KYCAMLProvider",
-        name: "OFAC-SDN",
-        score: 0
-      }
-    ])
   })
 })

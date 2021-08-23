@@ -59,9 +59,6 @@ describe("issuance", () => {
 
         const credentialSubject = verifiableCredential.credentialSubject
         expect(credentialSubject.id).toEqual(clientDidKey.controller)
-        expect(credentialSubject.KYCAMLAttestation.serviceProviders).toEqual(
-          kycAmlAttestationFixture.serviceProviders
-        )
 
         const credentialStatus = verifiableCredential.credentialStatus
         expect(credentialStatus.id).toEqual(

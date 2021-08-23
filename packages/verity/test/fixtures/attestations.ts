@@ -1,10 +1,4 @@
-import { KYCAMLAttestation, KYCAMLProvider } from "../../types/Attestations"
-
-export const kycServiceProviderFixture: KYCAMLProvider = {
-  "@type": "KYCAMLProvider",
-  name: "Some Service",
-  score: 200
-}
+import { KYCAMLAttestation } from "../../types/Attestations"
 
 export const kycAmlAttestationFixture: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
@@ -12,6 +6,5 @@ export const kycAmlAttestationFixture: KYCAMLAttestation = {
   approvalDate: new Date().toJSON(),
   authorityName: "Verity",
   authorityUrl: "https://verity.id",
-  authorityCallbackUrl: "https://identity.verity.id",
-  serviceProviders: [kycServiceProviderFixture]
+  authorityCallbackUrl: "https://identity.verity.id"
 }
