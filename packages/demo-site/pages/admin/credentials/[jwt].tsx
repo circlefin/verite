@@ -7,6 +7,7 @@ import {
   RevocationListCredential
 } from "@centre/verity"
 import { isRevoked } from "@centre/verity"
+import { Disclosure } from "@headlessui/react"
 import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
@@ -117,33 +118,34 @@ const AdminCredentialPage: NextPage<Props> = ({
           </>
         )}
 
-        <button
-          className="flex justify-center text-md "
-          onClick={() => {
-            const el = document.getElementById("vc")
-            el.style.display = el.style.display === "" ? "block" : ""
-          }}
-        >
-          <p className="underline font-semibold">
-            Show/Hide the Verifiable Credential
-          </p>
-        </button>
-        <pre id="vc" className="overflow-x-scroll hidden">
-          {JSON.stringify(credential, null, 4)}
-        </pre>
+        <Disclosure>
+          <Disclosure.Button>
+            <p className="font-semibold text-md underline">
+              Show/Hide the Verifiable Credential
+            </p>
+          </Disclosure.Button>
+          <Disclosure.Panel>
+            <pre>{JSON.stringify(credential, null, 4)}</pre>
+          </Disclosure.Panel>
+        </Disclosure>
 
-        <Link href={`/admin/users/${user.id}`} passHref>
-          <button
-            type="button"
-            className="inline-flex items-center px-4 py-2 text-sm 
+        <div>
+          <Link href={`/admin/users/${user.id}`} passHref>
+            <button
+              type="button"
+              className="inline-flex items-center px-4 py-2 text-sm 
                 font-medium text-white bg-blue-600 border border-transparent 
                 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none 
                 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <ArrowCircleLeftIcon className="w-5 h-5 mr-2" aria-hidden="true" />
-            Back
-          </button>
-        </Link>
+            >
+              <ArrowCircleLeftIcon
+                className="w-5 h-5 mr-2"
+                aria-hidden="true"
+              />
+              Back
+            </button>
+          </Link>
+        </div>
       </div>
     </AdminLayout>
   )

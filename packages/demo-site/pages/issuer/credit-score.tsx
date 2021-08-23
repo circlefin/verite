@@ -1,5 +1,6 @@
 import { challengeTokenUrlWrapper } from "@centre/verity"
 import type { ChallengeTokenUrlWrapper } from "@centre/verity"
+import { Disclosure } from "@headlessui/react"
 import { ArrowCircleRightIcon } from "@heroicons/react/outline"
 import { NextPage } from "next"
 import Link from "next/link"
@@ -98,21 +99,16 @@ const CreditScorePage: NextPage<Props> = ({
 
           <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>
 
-          <button
-            className="flex justify-center text-md "
-            onClick={() => {
-              const el = document.getElementById("manifest")
-              el.style.display = el.style.display === "" ? "block" : ""
-            }}
-          >
-            <p className="underline font-semibold">
-              Show/Hide the Complete Credential Manifest
-            </p>
-          </button>
-
-          <div id="manifest" className="hidden">
-            <pre>{JSON.stringify(manifest, null, 4)}</pre>
-          </div>
+          <Disclosure>
+            <Disclosure.Button>
+              <p className="font-semibold text-md underline">
+                Show/Hide the Complete Credential Manifest
+              </p>
+            </Disclosure.Button>
+            <Disclosure.Panel>
+              <pre>{JSON.stringify(manifest, null, 4)}</pre>
+            </Disclosure.Panel>
+          </Disclosure>
 
           <p>
             After scanning the QR code and completing the protocol sequence, you
