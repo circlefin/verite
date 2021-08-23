@@ -1,4 +1,9 @@
-import { GetServerSideProps, GetServerSidePropsContext } from "next"
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  NextApiHandler,
+  NextApiRequest
+} from "next"
 import { getSession } from "next-auth/client"
 import { findUser, User } from "./database"
 
@@ -66,6 +71,14 @@ export async function currentUser(
   context: GetServerSidePropsContext
 ): Promise<User | null> {
   const session = await getSession(context)
+
+  if (session && session.user) {
+    return findUser((session.user as User).id)
+  }
+}
+
+export async function currentUser2(req: NextApiRequest): Promise<User | null> {
+  const session = await getSession({ req })
 
   if (session && session.user) {
     return findUser((session.user as User).id)
