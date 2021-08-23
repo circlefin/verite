@@ -3,7 +3,8 @@ export type {
   Credential,
   RevocationList,
   User,
-  VerificationRequest
+  VerificationRequest,
+  VerificationResult
 } from "@prisma/client"
 
 export const prisma = new PrismaClient()
