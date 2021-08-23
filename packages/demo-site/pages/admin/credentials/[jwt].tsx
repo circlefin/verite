@@ -58,6 +58,15 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
   }
 })
 
+const formatType = (credential: MaybeRevocableCredential) => {
+  try {
+    return credential.type[credential.type.length - 1]
+  } catch (e) {
+    console.log(e)
+    return credential.type
+  }
+}
+
 const AdminCredentialPage: NextPage<Props> = ({
   credential,
   revocable,
@@ -71,7 +80,7 @@ const AdminCredentialPage: NextPage<Props> = ({
   return (
     <AdminLayout title="Credential Details">
       <div className="prose max-w-none">
-        <h2>{credential.type}</h2>
+        <h2>{formatType(credential)}</h2>
         <p>
           An issuer can reconcile this credential to a specific user in its
           system because the issuer persists that mapping internally whenever it
