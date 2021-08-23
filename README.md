@@ -6,6 +6,10 @@
 - [@centre/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project
 - [@centre/verity](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
 
+## Requirements
+
+The `demo-site` package requires Postgres running locally.
+
 ## Getting Started
 
 Local environment setup is handled by running the following script:

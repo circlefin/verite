@@ -6,4 +6,7 @@ npm run ts-node ./bin/local-ip.ts --silent >> .env.development.local
 npm run ts-node ./bin/env.ts --silent > .env.test.local
 
 echo "Setting up the database ..."
+createuser -s verity
+createdb -O verity verity_development
+createdb -O verity verity_test
 npm run db:reset:force
