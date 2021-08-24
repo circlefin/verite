@@ -12,6 +12,7 @@ import {
 } from "@centre/verity"
 import { random, sample } from "lodash"
 import { v4 as uuidv4 } from "uuid"
+import { fullURL } from "../../lib/utils"
 import { prisma, User, Credential } from "./prisma"
 import { findUser } from "./users"
 
@@ -57,7 +58,7 @@ export const allRevocationLists = async (
   if (lists.length === 0) {
     const list = await generateRevocationList(
       [],
-      `${process.env.HOST}/api/revocation/${uuidv4()}`,
+      fullURL(`/api/revocation/${uuidv4()}`),
       process.env.ISSUER_DID,
       buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
     )
@@ -209,7 +210,7 @@ export const saveRevocationList = async (
     create: {
       id: revocationList.id,
       jwt: revocationList.proof.jwt,
-      host: process.env.HOST
+      host: fullURL()
     },
     update: { id: revocationList.id, jwt: revocationList.proof.jwt }
   })
@@ -226,7 +227,7 @@ export const saveRevocationList = async (
 export const generateRevocationListStatus =
   async (): Promise<RevocationList2021Status> => {
     // Pick a random revocation list
-    const lists = await allRevocationLists(process.env.HOST)
+    const lists = await allRevocationLists(fullURL())
     const revocationList = sample(lists)
 
     // Find all credentials in the revocation list and map the index

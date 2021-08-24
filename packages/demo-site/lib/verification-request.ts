@@ -7,6 +7,7 @@ import {
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationRequest } from "./database/verificationRequests"
 import { NotFoundError } from "./errors"
+import { fullURL } from "./utils"
 
 const ATTESTATION_TYPE_MAPPINGS = {
   kyc: "KYCAMLAttestation",
@@ -49,7 +50,7 @@ export async function createVerificationRequest(
     process.env.VERIFIER_DID,
     process.env.VERIFIER_DID,
     replyTo,
-    `${process.env.HOST}/api/verification/${id}/callback`,
+    fullURL(`/api/verification/${id}/callback`),
     [process.env.ISSUER_DID],
     requestOpts
   )
@@ -60,7 +61,7 @@ export async function createVerificationRequest(
     id,
     challenge: verificationRequestWrapper(verificationRequest),
     qrCodeData: challengeTokenUrlWrapper(
-      `${process.env.HOST}/api/verification/${verificationRequest.request.id}`
+      fullURL(`/api/verification/${verificationRequest.request.id}`)
     )
   }
 }
@@ -70,7 +71,7 @@ function replyUrl(
   subjectAddress?: string,
   contractAddress?: string
 ): string {
-  const url = new URL(`${process.env.HOST}/api/verification/${id}/submission`)
+  const url = new URL(fullURL(`/api/verification/${id}/submission`))
 
   if (subjectAddress) {
     url.searchParams.append("subjectAddress", subjectAddress)

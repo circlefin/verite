@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "prisma generate; next build",
     "clean": "rimraf .next",
     "db:migrate": "dotenv -c development prisma migrate dev",
     "db:reset": "dotenv -c development prisma migrate reset",

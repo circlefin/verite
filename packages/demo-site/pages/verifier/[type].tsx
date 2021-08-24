@@ -11,7 +11,7 @@ import { useRouter } from "next/router"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
-import { jsonFetch } from "../../lib/utils"
+import { fullURL, jsonFetch } from "../../lib/utils"
 
 type Props = {
   verification: VerificationRequestResponse
@@ -35,7 +35,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
   const { qrCodeData, challenge } = verification
 
   const { data } = useSWR(
-    () => `/api/verification/${verification.id}/status`,
+    () => fullURL(`/api/verification/${verification.id}/status`),
     jsonFetch,
     { refreshInterval: 1000 }
   )
@@ -76,7 +76,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
 
             <Disclosure>
               <Disclosure.Button>
-                <p className="font-semibold text-md underline">
+                <p className="font-semibold underline text-md">
                   Show/Hide the Complete Presentation Request
                 </p>
               </Disclosure.Button>
@@ -104,7 +104,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
               verified.
             </h3>
 
-            <BadgeCheckIcon className="w-36 h-36 mx-auto text-green-600" />
+            <BadgeCheckIcon className="mx-auto text-green-600 w-36 h-36" />
 
             {result && (
               <>
@@ -122,7 +122,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
         {status === "rejected" && (
           <>
             <h3>Your credential was not verified.</h3>
-            <XCircleIcon className="w-36 h-36 mx-auto text-red-400" />
+            <XCircleIcon className="mx-auto text-red-400 w-36 h-36" />
           </>
         )}
 

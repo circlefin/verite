@@ -10,7 +10,7 @@ import IssuerLayout from "../../components/issuer/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { temporaryAuthToken } from "../../lib/database"
 import type { User } from "../../lib/database"
-import { jsonFetch } from "../../lib/utils"
+import { fullURL, jsonFetch } from "../../lib/utils"
 
 type Props = {
   createdAt: string
@@ -23,7 +23,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const qrCodeData = challengeTokenUrlWrapper(
-    `${process.env.HOST}/api/manifests/credit-score/${authToken}`
+    fullURL(`/api/manifests/credit-score/${authToken}`)
   )
 
   const response = await fetch(qrCodeData.challengeTokenUrl)
@@ -47,7 +47,7 @@ const CreditScorePage: NextPage<Props> = ({
 }) => {
   // Setup polling to detect a newly issued credential.
   const { data } = useSWR(
-    `/api/demo/get-newest-credential-from?createdAt=${createdAt}`,
+    fullURL(`/api/demo/get-newest-credential-from?createdAt=${createdAt}`),
     jsonFetch,
     {
       refreshInterval: 1000
@@ -101,7 +101,7 @@ const CreditScorePage: NextPage<Props> = ({
 
           <Disclosure>
             <Disclosure.Button>
-              <p className="font-semibold text-md underline">
+              <p className="font-semibold underline text-md">
                 Show/Hide the Complete Credential Manifest
               </p>
             </Disclosure.Button>
