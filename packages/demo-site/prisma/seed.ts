@@ -10,12 +10,24 @@ type UserInput = Partial<User> & {
   address: string
 }
 // Users
-const aliceWallet = Wallet.createRandom()
-const bobWallet = Wallet.createRandom()
-const kimWallet = Wallet.createRandom()
-const briceWallet = Wallet.createRandom()
-const mattWallet = Wallet.createRandom()
-const seanWallet = Wallet.createRandom()
+const aliceWallet = Wallet.fromMnemonic(
+  "doctor card season nasty dose refuse arrest enroll lock rely nerve reject"
+)
+const bobWallet = Wallet.fromMnemonic(
+  "feed flame cable lock kind jar diet security auction kitten question stand"
+)
+const kimWallet = Wallet.fromMnemonic(
+  "alcohol talk chronic mistake invest tumble horse pattern monster inner ivory awesome"
+)
+const briceWallet = Wallet.fromMnemonic(
+  "chase scrub final fossil onion enter imitate enable amused salad predict trigger"
+)
+const mattWallet = Wallet.fromMnemonic(
+  "hard laptop lucky green conduct maze gravity state welcome stomach camera grunt"
+)
+const seanWallet = Wallet.fromMnemonic(
+  "milk power apple shallow spatial speak infant bind split spice brief wave"
+)
 
 const users: UserInput[] = [
   {
