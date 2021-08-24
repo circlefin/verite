@@ -21,25 +21,25 @@ const users: UserInput[] = [
   {
     email: "kim@test.com",
     password: "testing",
-    role: "member",
+    role: "admin",
     creditScore: 751
   },
   {
     email: "brice@test.com",
     password: "testing",
-    role: "member",
+    role: "admin",
     creditScore: 752
   },
   {
     email: "matt@test.com",
     password: "testing",
-    role: "member",
+    role: "admin",
     creditScore: 400
   },
   {
     email: "sean@test.com",
     password: "testing",
-    role: "member",
+    role: "admin",
     creditScore: 850
   }
 ]
