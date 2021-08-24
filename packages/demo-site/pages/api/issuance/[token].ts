@@ -61,19 +61,12 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   // a revocable credential for KYC/AML credentials.
   const revocationList = await handleRevocationIfNecessary(user, manifest)
 
-  // If this is a Credit Score attestation, set the expiration to be
-  // one minute for the sake of a demo
-  const expirationDate =
-    manifest.id === "CreditScoreAttestation"
-      ? new Date(Date.now() + oneMinute)
-      : undefined
-
   // Generate new credentials for the user
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     credentialApplication,
     buildAttestationForUser(user, manifest),
-    { credentialStatus: revocationList, expirationDate }
+    { credentialStatus: revocationList }
   )
 
   // Save the credentials to the database
