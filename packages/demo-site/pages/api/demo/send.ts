@@ -53,6 +53,15 @@ export default apiHandler<Response>(async (req, res) => {
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
+  // Call out to other service letting them know the results
+  const response = await fetch(`${process.env.HOST}/api/demo/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ verification })
+  })
+  console.log(JSON.stringify({ verification }))
+  console.log(await response.text())
+
   // This fails.
   // const tx = await contract.transfer(
   //   transaction.address,
@@ -66,7 +75,7 @@ export default apiHandler<Response>(async (req, res) => {
     verification.verificationInfo,
     verification.signature
   )
-  await tx.wait()
+  // await tx.wait()
 
   // Success
   res.status(200).json({ status: "ok" })

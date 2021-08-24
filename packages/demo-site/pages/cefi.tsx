@@ -14,7 +14,7 @@ const sendFunction = async () => {
     body: JSON.stringify({
       transaction: {
         amount: "10",
-        address: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+        address: "0xFAEd4F38A7a2628d65699C71be0650FBff4617e6"
       }
     })
   })
@@ -23,6 +23,7 @@ const sendFunction = async () => {
 const Page: NextPage = () => {
   const { balance } = useBalance()
   const { data } = useEthBalance(balance?.address)
+  const alice = useEthBalance("0xFAEd4F38A7a2628d65699C71be0650FBff4617e6")
 
   console.log(data)
   return (
@@ -36,6 +37,8 @@ const Page: NextPage = () => {
           <div>Address: {balance?.address}</div>
           <button onClick={sendFunction}>Send</button>
         </div>
+
+        <div>Alice: {alice?.data?.balance?.toString()}</div>
       </React.StrictMode>
     </Layout>
   )

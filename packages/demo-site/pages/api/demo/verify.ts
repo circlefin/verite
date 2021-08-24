@@ -23,7 +23,7 @@ export default apiHandler<Response>(async (req, res) => {
   await prisma.verificationResult.create({
     data: {
       result: JSON.stringify(verification),
-      expires: new Date(verification.verificationInfo.expiration),
+      expires: new Date(verification.verificationInfo.expiration * 1000),
       subjectAddress: verification.verificationInfo.subjectAddress
     }
   })
