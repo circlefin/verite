@@ -18,6 +18,7 @@ import {
 } from "../../../../../lib/database"
 import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
+import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/verification/[id]/submission"
 import { userFactory } from "../../../../../test/factories"
 
@@ -27,8 +28,8 @@ describe("POST /verification/[id]/submission", () => {
       "KYCAMLAttestation",
       process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/submission`,
-      `${process.env.HOST}/api/verification/callback`
+      fullURL("/api/verification/submission"),
+      fullURL("/api/verification/callback")
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
@@ -65,8 +66,10 @@ describe("POST /verification/[id]/submission", () => {
       "KYCAMLAttestation",
       process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/submission?subjectAddress=${subject}&contractAddress=${contract}`,
-      `${process.env.HOST}/api/verification/callback`
+      fullURL(
+        `/api/verification/submission?subjectAddress=${subject}&contractAddress=${contract}`
+      ),
+      fullURL("/api/verification/callback")
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
@@ -112,8 +115,8 @@ describe("POST /verification/[id]/submission", () => {
       "CreditScoreAttestation",
       process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/submission`,
-      `${process.env.HOST}/api/verification/callback`
+      fullURL("/api/verification/submission"),
+      fullURL("/api/verification/callback")
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()

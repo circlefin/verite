@@ -3,6 +3,7 @@ import { manifestWrapper } from "@centre/verity"
 import { NotFoundError } from "../../../..//lib/errors"
 import { apiHandler } from "../../../../lib/api-fns"
 import { MANIFEST_MAP } from "../../../../lib/manifest"
+import { fullURL } from "../../../../lib/utils"
 
 export default apiHandler<ManifestWrapper>(async (req, res) => {
   const manifestName = req.query.type as string
@@ -13,7 +14,5 @@ export default apiHandler<ManifestWrapper>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  res.json(
-    manifestWrapper(manifest, `${process.env.HOST}/api/issuance/${token}`)
-  )
+  res.json(manifestWrapper(manifest, fullURL(`/api/issuance/${token}`)))
 })

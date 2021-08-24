@@ -1,7 +1,7 @@
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
-import { jsonFetch } from "../../lib/utils"
+import { jsonFetch, fullURL } from "../../lib/utils"
 
 type Props = {
   id: string
@@ -9,9 +9,13 @@ type Props = {
 }
 
 export default function QRCodeOrStatus({ id, qrcodeData }: Props): JSX.Element {
-  const { data } = useSWR(`/api/verification/${id}/status`, jsonFetch, {
-    refreshInterval: 1000
-  })
+  const { data } = useSWR(
+    fullURL(`/api/verification/${id}/status`),
+    jsonFetch,
+    {
+      refreshInterval: 1000
+    }
+  )
 
   if (data) {
     if (data.status === "approved") {
