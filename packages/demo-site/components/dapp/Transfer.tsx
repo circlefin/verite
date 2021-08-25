@@ -1,5 +1,7 @@
+import { classNames } from "@centre/demo-site/lib/react-fns"
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
 import { FC, useState } from "react"
+import { LoadingButton } from "../LoadingButton"
 import TransferStatus from "./TransferStatus"
 
 type TransferProps = {
@@ -22,6 +24,8 @@ const Transfer: FC<TransferProps> = ({
 }) => {
   const [to, setTo] = useState(process.env.NEXT_PUBLIC_ETH_DEFAULT_RECIPIENT)
   const [amount, setAmount] = useState("")
+
+  const isLoading = isVerifying && !verificationInfoSet
 
   return (
     <form
@@ -70,7 +74,7 @@ const Transfer: FC<TransferProps> = ({
         {/*
           If we have transfer or verification status to report, we do so here.
         */}
-        {isVerifying && !verificationInfoSet && (
+        {isLoading && (
           <TransferStatus
             simulateFunction={simulateFunction}
             verification={verification}
@@ -78,20 +82,20 @@ const Transfer: FC<TransferProps> = ({
         )}
       </div>
       <div className="px-4 py-3 text-right bg-gray-50 sm:px-6">
-        <button
+        <LoadingButton
+          loading={isLoading}
           type="submit"
-          className={`inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm  hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-            isVerifying && !verificationInfoSet
-              ? "opacity-50 cursor-not-allowed"
-              : ""
-          }`}
+          style="dot-loader"
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <PaperAirplaneIcon
-            className="w-5 h-5 mr-2 -ml-1"
-            aria-hidden="true"
+            className={classNames(
+              isLoading ? "hidden" : "inline",
+              "w-5 h-5 mr-2 -ml-1"
+            )}
           />
           Transfer
-        </button>
+        </LoadingButton>
       </div>
     </form>
   )

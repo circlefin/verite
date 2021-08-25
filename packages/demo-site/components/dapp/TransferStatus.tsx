@@ -29,7 +29,7 @@ const TransferStatus: FC<TransferStatusProps> = ({
       ) : (
         <div className="py-8 prose">
           <h4>
-            <Spinner className="inline w-5 h-5 mr-3" />
+            <Spinner className="inline w-5 h-5 mr-2 -ml-1" />
             Generating Verification Request ...
           </h4>
         </div>

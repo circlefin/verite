@@ -7,7 +7,6 @@ import type {
   DescriptorMap,
   EncodedCredentialFulfillment,
   Issuer,
-  RevocationList2021Status,
   KYCAMLAttestation,
   DecodedCredentialApplication,
   CreditScoreAttestation,

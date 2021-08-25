@@ -1,5 +1,6 @@
 import { signIn } from "next-auth/client"
 import { FC, useState } from "react"
+import { LoadingButton } from "./LoadingButton"
 
 type Props = {
   redirectTo?: string
@@ -8,9 +9,13 @@ type Props = {
 const SignInForm: FC<Props> = ({ redirectTo }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [isFormLoading, setIsFormLoading] = useState(false)
+  const [isAliceLoading, setIsAliceLoading] = useState(false)
+  const [isBobLoading, setIsBobLoading] = useState(false)
 
   const emailSignin = (e) => {
     e.preventDefault()
+    setIsFormLoading(true)
     signIn("credentials", { email, password, callbackUrl: redirectTo })
   }
 
@@ -64,34 +69,45 @@ const SignInForm: FC<Props> = ({ redirectTo }) => {
       </div>
 
       <div>
-        <button
+        <LoadingButton
+          loading={isFormLoading}
           type="submit"
-          className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           Sign in
-        </button>
+        </LoadingButton>
       </div>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-gray-300" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 text-gray-500 bg-white">or sign in as</span>
+          <span className="px-2 text-gray-500 bg-white">
+            or use a sample user:
+          </span>
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        <button
-          onClick={() => signInAs("alice@test.com")}
+        <LoadingButton
+          loading={isAliceLoading}
+          onClick={() => {
+            setIsAliceLoading(true)
+            signInAs("alice@test.com")
+          }}
           className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
         >
           Alice (Admin)
-        </button>
-        <button
-          onClick={() => signInAs("bob@test.com")}
+        </LoadingButton>
+        <LoadingButton
+          loading={isBobLoading}
+          onClick={() => {
+            setIsBobLoading(true)
+            signInAs("bob@test.com")
+          }}
           className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
         >
           Bob
-        </button>
+        </LoadingButton>
       </div>
     </form>
   )

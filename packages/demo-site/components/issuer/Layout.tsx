@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Layout from "../layouts/UserAuthLayout"
+import Layout from "../Layout"
 import AttestationNavigation from "./AttestationNavigation"
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 const IssuerLayout: FC<Props> = ({ title, children, hideNavigation }) => {
   return (
     <Layout title={title}>
-      {!hideNavigation && <AttestationNavigation />}
+      <AttestationNavigation hideNavigation={hideNavigation} />
       {children}
     </Layout>
   )
