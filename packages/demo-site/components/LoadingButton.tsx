@@ -1,37 +1,61 @@
-import { PlusIcon } from "@heroicons/react/outline"
 import { FC } from "react"
 import DotLoader from "react-spinners/DotLoader"
+import { classNames } from "../lib/react-fns"
+import Spinner from "./Spinner"
 
 type Props = {
+  className?: string
   loading: boolean
-  onClick: () => Promise<void>
-  text: string
+  onClick?: () => void | Promise<void>
+  type?: "button" | "submit" | "reset"
+  style?: string
 }
 
-export const LoadingButton: FC<Props> = ({ loading, onClick, text }) => {
+/**
+ * An un-styled loading button
+ */
+export const LoadingButton: FC<Props> = ({
+  children,
+  className,
+  loading,
+  onClick,
+  style,
+  type
+}) => {
   return (
     <>
       <button
         onClick={onClick}
-        type="button"
+        type={type || "button"}
         disabled={loading}
-        className={`${
-          loading ? "opacity-50" : ""
-        } inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-      >
-        {loading ? (
-          <DotLoader
-            color="#FFF"
-            size={20}
-            css={`
-              margin-left: -0.25rem;
-              margin-right: 0.5rem;
-            `}
-          />
-        ) : (
-          <PlusIcon className="w-5 h-5 mr-2 -ml-1" aria-hidden="true" />
+        className={classNames(
+          loading ? "opacity-50 cursor-not-allowed" : "",
+          className
         )}
-        {text}
+      >
+        {style === "dot-loader" ? (
+          <>
+            {loading && (
+              <DotLoader
+                color="#FFF"
+                size={20}
+                css={`
+                  margin-left: -0.25rem;
+                  margin-right: 0.5rem;
+                `}
+              />
+            )}
+          </>
+        ) : (
+          <Spinner
+            className={classNames(
+              loading ? "inline" : "hidden",
+              "w-5 h-5 mr-2 -ml-1"
+            )}
+          />
+        )}
+
+        {children}
       </button>
     </>
   )
