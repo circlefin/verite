@@ -10,7 +10,7 @@ import {
   generateRevocationList,
   buildIssuer
 } from "@centre/verity"
-import { random, sample } from "lodash"
+import { compact, random, sample } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 import { fullURL } from "../../lib/utils"
 import { prisma, User, Credential } from "./prisma"
@@ -154,7 +154,12 @@ export const findNewestCredential = async (
   })
 
   if (result) {
-    return decodeVerifiableCredential(result.jwt)
+    try {
+      const decoded = await decodeVerifiableCredential(result.jwt)
+      return decoded
+    } catch (e) {
+      return
+    }
   }
 }
 
@@ -255,12 +260,16 @@ export const generateRevocationListStatus =
 async function decodeDatabaseCredentials(
   records: Credential[]
 ): Promise<DecodedDatabaseCredential[]> {
-  return await asyncMap(records, async (record) => {
-    const decoded = await decodeVerifiableCredential(record.jwt)
+  const credentials = await asyncMap(records, async (record) => {
+    try {
+      const decoded = await decodeVerifiableCredential(record.jwt)
 
-    return {
-      ...record,
-      credential: decoded
-    }
+      return {
+        ...record,
+        credential: decoded
+      }
+    } catch (e) {}
   })
+
+  return compact(credentials)
 }

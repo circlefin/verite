@@ -126,6 +126,15 @@ export async function processVerificationSubmission(
 
   await ensureNotRevoked(presentation)
 
+  /**
+   * Check the verifiable credentials to ensure none are expired. Generally,
+   * the JWT verification itself would handle this by checking the `exp` field
+   * of the JWT, but those JWT properties are only checked on the Presentation
+   * JWT, and not on the included credentials themselves.
+   *
+   * To ensure we do not use any expired credentials, we check this ourselves
+   * here.
+   */
   ensureNotExpired(presentation)
 
   // check conforms to expected schema: disabled for now
