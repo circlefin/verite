@@ -10,7 +10,7 @@ type Props = {
 const IssuerLayout: FC<Props> = ({ title, children, hideNavigation }) => {
   return (
     <Layout title={title}>
-      {!hideNavigation && <AttestationNavigation />}
+      <AttestationNavigation hideNavigation={hideNavigation} />
       {children}
     </Layout>
   )

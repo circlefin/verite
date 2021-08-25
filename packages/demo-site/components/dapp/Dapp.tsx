@@ -21,7 +21,7 @@ import { fullURL } from "../../lib/utils"
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
 // logic. They just render HTML.
-import Layout from "./Layout"
+import DappLayout from "./Layout"
 import Loading from "./Loading"
 import NoTokensMessage from "./NoTokensMessage"
 import TransactionErrorMessage from "./TransactionErrorMessage"
@@ -355,9 +355,9 @@ const Dapp: FC = () => {
   // a loading component
   if (!tokenData || !balance) {
     return (
-      <Layout>
+      <DappLayout>
         <Loading />
-      </Layout>
+      </DappLayout>
     )
   }
 
@@ -388,7 +388,7 @@ const Dapp: FC = () => {
   }
 
   return (
-    <Layout account={account} balance={balance} symbol={tokenData.symbol}>
+    <DappLayout account={account} balance={balance} symbol={tokenData.symbol}>
       <div className="prose max-w-none">
         <p className="font-bold">
           In this demo, transfers of 10 or more VUSDC will require proof of KYC.
@@ -477,7 +477,7 @@ const Dapp: FC = () => {
           />
         )}
       </div>
-    </Layout>
+    </DappLayout>
   )
 }
 

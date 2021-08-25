@@ -4,7 +4,7 @@ import { NextPage } from "next"
 import React from "react"
 import ConnectWallet from "../components/dapp/ConnectWallet"
 import Dapp from "../components/dapp/Dapp"
-import Layout from "../components/dapp/Layout"
+import DappLayout from "../components/dapp/Layout"
 
 const DappPage: NextPage = () => {
   const { active } = useWeb3React<Web3Provider>()
@@ -20,9 +20,9 @@ const DappPage: NextPage = () => {
     return <Dapp />
   } else {
     return (
-      <Layout>
+      <DappLayout>
         <ConnectWallet />
-      </Layout>
+      </DappLayout>
     )
   }
 }

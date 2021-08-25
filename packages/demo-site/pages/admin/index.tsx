@@ -47,12 +47,19 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
           </b>
         </p>
         <div className="divide-y divide-gray-200">
-          {users.map((user) => (
-            <div key={user.email}>
-              <Link href={`/admin/users/${user.id}`} passHref>
+          {users.map((record) => (
+            <div key={record.email}>
+              <Link href={`/admin/users/${record.id}`} passHref>
                 <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
                   <div className="ml-3">
-                    <span className="text-sm text-gray-900">{user.email}</span>
+                    <span className="text-sm text-gray-900">
+                      {record.email}
+                      {record.email === user.email && (
+                        <span className="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          Current
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <ChevronRightIcon
                     className="w-5 h-5 text-gray-400"
