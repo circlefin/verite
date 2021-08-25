@@ -1,9 +1,9 @@
 import { FC } from "react"
-import Header, { HeaderProps } from "../Header"
+import Header, { HeaderProps } from "./Header"
 
 type Props = HeaderProps
 
-const BaseLayout: FC<Props> = ({ children, ...headerProps }) => {
+const Layout: FC<Props> = ({ children, ...headerProps }) => {
   return (
     <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
       <Header {...headerProps} />
@@ -23,4 +23,4 @@ const BaseLayout: FC<Props> = ({ children, ...headerProps }) => {
   )
 }
 
-export default BaseLayout
+export default Layout

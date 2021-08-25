@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Layout from "../layouts/BaseLayout"
+import Layout from "../Layout"
 import AttestationNavigation from "./AttestationNavigation"
 
 type Props = {

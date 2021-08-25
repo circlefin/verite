@@ -1,5 +1,5 @@
 import { FC } from "react"
-import BaseLayout from "../layouts/BaseLayout"
+import Layout from "../Layout"
 import AttestationNavigation from "./AttestationNavigation"
 
 type Props = {
@@ -9,10 +9,10 @@ type Props = {
 
 const VerifierLayout: FC<Props> = ({ title, children, hideNavigation }) => {
   return (
-    <BaseLayout title={title}>
+    <Layout title={title}>
       {!hideNavigation && <AttestationNavigation />}
       {children}
-    </BaseLayout>
+    </Layout>
   )
 }
 

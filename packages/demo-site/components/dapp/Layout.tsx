@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core"
 import { BigNumber } from "ethers"
 import { FC } from "react"
 import { formatEthAddress, getEthErrorMessage } from "../../lib/eth-fns"
-import Layout from "../layouts/BaseLayout"
+import Layout from "../Layout"
 
 type Props = {
   balance?: BigNumber

@@ -2,7 +2,7 @@ import { BadgeCheckIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import Layout from "../components/layouts/BaseLayout"
+import Layout from "../components/Layout"
 
 const Home: NextPage = () => {
   return (
