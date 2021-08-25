@@ -1,6 +1,5 @@
 import {
   isRevocable,
-  MaybeRevocableCredential,
   RevocableCredential,
   RevocationListCredential
 } from "@centre/verity"

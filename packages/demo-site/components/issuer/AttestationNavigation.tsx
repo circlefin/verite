@@ -16,10 +16,17 @@ const AttestationNavigation: FC<Props> = ({ hideNavigation }) => {
   const [session] = useSession()
 
   return (
-    <div className="flex justify-between mb-6 -mt-6 border-b border-gray-200">
-      <nav className="flex -mb-px space-x-8" aria-label="Tabs">
-        {!hideNavigation &&
-          tabs.map((tab) => (
+    <div
+      className={classNames(
+        hideNavigation
+          ? "justify-end"
+          : "justify-between flex-col-reverse sm:flex-row",
+        "flex mb-6 -mt-6 border-b border-gray-200"
+      )}
+    >
+      {!hideNavigation && (
+        <nav className="flex -mb-px space-x-8" aria-label="Tabs">
+          {tabs.map((tab) => (
             <Link key={tab.name} href={tab.href}>
               <a
                 className={classNames(
@@ -33,10 +40,16 @@ const AttestationNavigation: FC<Props> = ({ hideNavigation }) => {
               </a>
             </Link>
           ))}
-      </nav>
+        </nav>
+      )}
 
       {session && (
-        <div className="flex -mb-px space-x-8">
+        <div
+          className={classNames(
+            hideNavigation ? "w-full sm:w-auto" : "",
+            "flex -mb-px space-x-8 justify-between"
+          )}
+        >
           <span className="px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
             {session.user.email}
           </span>

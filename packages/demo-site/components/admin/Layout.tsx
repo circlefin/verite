@@ -11,9 +11,9 @@ const AdminLayout: FC<Props> = ({ title, children }) => {
 
   return (
     <Layout title={title}>
-      <div className="flex justify-end mb-6 -mt-6 border-b border-gray-200">
+      <div className="mb-6 -mt-6 border-b border-gray-200">
         {session && (
-          <div className="flex -mb-px space-x-8">
+          <div className="flex justify-between -mb-px space-x-8 sm:justify-end">
             <span className="px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
               {session.user.email}
             </span>

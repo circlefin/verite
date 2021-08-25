@@ -25,8 +25,11 @@ const DappLayout: FC<Props> = ({ children, balance, symbol }) => {
   return (
     <Layout title={title}>
       {balance && symbol && account && (
-        <div className="flex justify-between mb-6 -mt-6 border-b border-gray-200">
-          <nav className="flex -mb-px space-x-8" aria-label="Tabs">
+        <div className="flex flex-col-reverse justify-between mb-6 -mt-6 border-b border-gray-200 sm:flex-row">
+          <nav
+            className="flex justify-center -mb-px space-x-8"
+            aria-label="Tabs"
+          >
             <span className="px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
               Balance:
               <span className="ml-3 text-lg font-bold">
@@ -35,7 +38,7 @@ const DappLayout: FC<Props> = ({ children, balance, symbol }) => {
             </span>
           </nav>
 
-          <div className="flex -mb-px space-x-8">
+          <div className="flex justify-between -mb-px space-x-8">
             <span className="flex items-center px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
               {formatEthAddress(account)}
             </span>
