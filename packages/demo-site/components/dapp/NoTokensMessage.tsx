@@ -1,6 +1,6 @@
+import { classNames } from "@centre/demo-site/lib/react-fns"
 import { PlusIcon } from "@heroicons/react/outline"
 import { FC, useState } from "react"
-import DotLoader from "react-spinners/DotLoader"
 import { LoadingButton } from "../LoadingButton"
 
 export type NoTokensMessageProps = {
@@ -18,7 +18,9 @@ const NoTokensMessage: FC<NoTokensMessageProps> = ({
       <p>You do not have any tokens to transfer.</p>
       <p>
         <LoadingButton
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           loading={loading}
+          style="dot-loader"
           onClick={async () => {
             if (loading) {
               return
@@ -29,8 +31,17 @@ const NoTokensMessage: FC<NoTokensMessageProps> = ({
               setLoading(false)
             }
           }}
-          text="Get Tokens"
-        />
+        >
+          <>
+            <PlusIcon
+              className={classNames(
+                loading ? "hidden" : "inline",
+                "w-5 h-5 mr-2 -ml-1"
+              )}
+            />
+            Get Tokens
+          </>
+        </LoadingButton>
       </p>
 
       <p>

@@ -18,7 +18,7 @@ const navigation = [
   { name: "Docs", href: "/documentation" }
 ]
 
-const Header: FC<HeaderProps> = ({ children, title }) => {
+const Header: FC<HeaderProps> = ({ title }) => {
   return (
     <>
       <Head>
@@ -45,7 +45,7 @@ const Header: FC<HeaderProps> = ({ children, title }) => {
                     </Disclosure.Button>
                   </div>
                   <div className="flex items-center justify-center flex-1 sm:items-stretch sm:justify-start">
-                    <div className="items-center flex-shrink-0 hidden sm:flex">
+                    <div className="flex-shrink-0">
                       <Link href="/">
                         <a className="text-2xl font-extrabold tracking-tight text-center text-white">
                           Verity.id
@@ -70,9 +70,6 @@ const Header: FC<HeaderProps> = ({ children, title }) => {
                         ))}
                       </div>
                     </div>
-                  </div>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    {children}
                   </div>
                 </div>
               </div>

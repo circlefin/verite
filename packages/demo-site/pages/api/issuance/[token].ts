@@ -28,8 +28,6 @@ import { NotFoundError } from "../../../lib/errors"
 import { buildAttestationForUser } from "../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../lib/manifest"
 
-const oneMinute = 60 * 1000
-
 /**
  * Handle a POST request to containing an empty Verifiable Presentation proving
  * ownership of a client did.  The endpoint checks the validity of the Verifiable

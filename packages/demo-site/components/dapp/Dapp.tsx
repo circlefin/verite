@@ -21,7 +21,7 @@ import { fullURL } from "../../lib/utils"
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
 // logic. They just render HTML.
-import Layout from "./Layout"
+import DappLayout from "./Layout"
 import Loading from "./Loading"
 import NoTokensMessage from "./NoTokensMessage"
 import TransactionErrorMessage from "./TransactionErrorMessage"
@@ -71,7 +71,6 @@ const Dapp: FC = () => {
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationInfoSet, setVerificationInfoSet] = useState(null)
   const [verification, setVerification] = useState(null)
-  const [verificationStatus, setVerificationStatus] = useState()
 
   // const [token, setToken] = useState<Contract>(null)
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
@@ -121,7 +120,6 @@ const Dapp: FC = () => {
     const startPollingVerification = (id: string) => {
       const i = setInterval(() => fetchVerificationStatus(id), 1000)
       setPollVerificationInterval(i)
-      fetchVerificationStatus(id)
       return i
     }
 
@@ -172,7 +170,6 @@ const Dapp: FC = () => {
         method: "POST"
       })
       const verification = await resp.json()
-      setVerificationStatus(verification)
 
       if (verification.status === "approved") {
         setVerification(undefined)
@@ -358,9 +355,9 @@ const Dapp: FC = () => {
   // a loading component
   if (!tokenData || !balance) {
     return (
-      <Layout>
+      <DappLayout>
         <Loading />
-      </Layout>
+      </DappLayout>
     )
   }
 
@@ -391,7 +388,7 @@ const Dapp: FC = () => {
   }
 
   return (
-    <Layout account={account} balance={balance} symbol={tokenData.symbol}>
+    <DappLayout balance={balance} symbol={tokenData.symbol}>
       <div className="prose max-w-none">
         <p className="font-bold">
           In this demo, transfers of 10 or more VUSDC will require proof of KYC.
@@ -480,7 +477,7 @@ const Dapp: FC = () => {
           />
         )}
       </div>
-    </Layout>
+    </DappLayout>
   )
 }
 
