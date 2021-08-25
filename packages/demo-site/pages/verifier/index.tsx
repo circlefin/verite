@@ -25,7 +25,7 @@ const items = [
 const VerifierPage: NextPage = () => {
   return (
     <VerifierLayout title="Basic Verification" hideNavigation={true}>
-      <div className="prose pb-2 max-w-none">
+      <div className="pb-2 prose max-w-none">
         <h2>Verify an Identity&apos;s Credentials</h2>
         <p>
           Smart contracts, financial insitutions, agencies, apps, and devices
@@ -40,6 +40,11 @@ const VerifierPage: NextPage = () => {
           credentials, how holders format, sign, and transmit credentials in
           response, and how information is secured and conveyed in verification
           user experiences.
+        </p>
+        <p>
+          Note there is no user authentication required for verification. A
+          verifier does not require any knowledge of an end-user other than the
+          provided credentials to verify.
         </p>
         <p className="font-semibold">
           Select the type of credential you would like to verify:
