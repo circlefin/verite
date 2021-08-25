@@ -28,6 +28,8 @@ import { NotFoundError } from "../../../lib/errors"
 import { buildAttestationForUser } from "../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../lib/manifest"
 
+const oneMinute = 60 * 1000
+
 /**
  * Handle a POST request to containing an empty Verifiable Presentation proving
  * ownership of a client did.  The endpoint checks the validity of the Verifiable
@@ -59,12 +61,19 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   // a revocable credential for KYC/AML credentials.
   const revocationList = await handleRevocationIfNecessary(user, manifest)
 
+  // If this is a Credit Score attestation, set the expiration to be
+  // one minute for the sake of a demo
+  const expirationDate =
+    manifest.id === "CreditScoreAttestation"
+      ? new Date(Date.now() + oneMinute)
+      : undefined
+
   // Generate new credentials for the user
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     credentialApplication,
     buildAttestationForUser(user, manifest),
-    { credentialStatus: revocationList }
+    { credentialStatus: revocationList, expirationDate }
   )
 
   // Save the credentials to the database
