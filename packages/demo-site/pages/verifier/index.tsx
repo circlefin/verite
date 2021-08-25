@@ -24,10 +24,26 @@ const items = [
 
 const VerifierPage: NextPage = () => {
   return (
-    <VerifierLayout title="Verifier" hideNavigation={true}>
-      <div className="prose">
-        <h2>Verify a Credential</h2>
-        <p>Select the type of credential you would like to verify.</p>
+    <VerifierLayout title="Basic Verification" hideNavigation={true}>
+      <div className="prose pb-2 max-w-none">
+        <h2>Verify an Identity&apos;s Credentials</h2>
+        <p>
+          Smart contracts, financial insitutions, agencies, apps, and devices
+          can verify credentials by implementing support for the{" "}
+          <Link href="https://identity.foundation/presentation-exchange/">
+            <a target="_blank">Presentation Exchange</a>
+          </Link>{" "}
+          specification.
+        </p>
+        <p>
+          This reference implemenation demonstrates how verifiers request
+          credentials, how holders format, sign, and transmit credentials in
+          response, and how information is secured and conveyed in verification
+          user experiences.
+        </p>
+        <p className="font-semibold">
+          Select the type of credential you would like to verify:
+        </p>
       </div>
       <ul
         role="list"

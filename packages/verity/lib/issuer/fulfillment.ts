@@ -1,7 +1,6 @@
 import {
   createVerifiableCredentialJwt,
-  createVerifiablePresentationJwt,
-  CredentialPayload
+  createVerifiablePresentationJwt
 } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 import type {
@@ -12,34 +11,10 @@ import type {
   KYCAMLAttestation,
   DecodedCredentialApplication,
   CreditScoreAttestation,
-  CredentialIssuer,
+  CredentialPayload,
   JWT
 } from "../../types"
 import { verifiablePresentationPayload } from "../utils/credentials"
-
-function buildVerifiableCredentialPayload(
-  issuer: CredentialIssuer, // TODO: Can we auto-gen this?
-  subject: string,
-  attestation: KYCAMLAttestation | CreditScoreAttestation,
-  credentialStatus?: RevocationList2021Status
-): CredentialPayload {
-  const type = attestation["@type"]
-
-  return {
-    "@context": [
-      "https://www.w3.org/2018/credentials/v1",
-      "https://verity.id/identity"
-    ],
-    type: ["VerifiableCredential", type],
-    credentialSubject: {
-      id: subject,
-      [type]: attestation
-    },
-    issuanceDate: new Date(),
-    issuer,
-    credentialStatus
-  }
-}
 
 /**
  * Build a VerifiableCredential contaning an attestation for the given holder.
@@ -48,14 +23,27 @@ export function buildAndSignVerifiableCredential(
   signer: Issuer,
   holderDid: string,
   attestation: KYCAMLAttestation | CreditScoreAttestation,
-  credentialStatus?: RevocationList2021Status
+  payload: Partial<CredentialPayload> = {}
 ): Promise<JWT> {
-  const vcPayload = buildVerifiableCredentialPayload(
-    { id: signer.did },
-    holderDid,
-    attestation,
-    credentialStatus
+  const type = attestation["@type"]
+
+  const vcPayload: CredentialPayload = Object.assign(
+    {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://verity.id/identity"
+      ],
+      type: ["VerifiableCredential", type],
+      credentialSubject: {
+        id: holderDid,
+        [type]: attestation
+      },
+      issuanceDate: new Date(),
+      issuer: { id: signer.did }
+    },
+    payload
   )
+
   return createVerifiableCredentialJwt(vcPayload, signer)
 }
 
@@ -66,13 +54,13 @@ export async function buildAndSignFulfillment(
   signer: Issuer,
   application: DecodedCredentialApplication,
   attestation: KYCAMLAttestation | CreditScoreAttestation,
-  credentialStatus?: RevocationList2021Status
+  payload: Partial<CredentialPayload> = {}
 ): Promise<EncodedCredentialFulfillment> {
   const encodedCredentials = await buildAndSignVerifiableCredential(
     signer,
     application.presentation.holder,
     attestation,
-    credentialStatus
+    payload
   )
 
   const encodedPresentation = await createVerifiablePresentationJwt(

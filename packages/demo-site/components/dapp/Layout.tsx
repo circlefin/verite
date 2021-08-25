@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { FC } from "react"
 import EthLayout from "../layouts/EthLayout"
 

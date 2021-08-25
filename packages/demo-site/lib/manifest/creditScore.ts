@@ -1,15 +1,16 @@
 import { createCreditScoreManifest } from "@centre/verity"
 import type { CredentialManifest } from "@centre/verity"
+import { fullURL } from "../utils"
 import { manifestIssuer } from "./issuer"
 
 export const creditScoreManifest: CredentialManifest =
   createCreditScoreManifest(manifestIssuer, {
     thumbnail: {
-      uri: `${process.env.HOST}/img/credit-score-thumbnail.png`,
+      uri: fullURL("/img/credit-score-thumbnail.png"),
       alt: "Verity Logo"
     },
     hero: {
-      uri: `${process.env.HOST}/img/credit-score-hero.png`,
+      uri: fullURL("/img/credit-score-hero.png"),
       alt: "Credit Score Visual"
     },
     background: {

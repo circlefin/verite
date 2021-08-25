@@ -18,6 +18,7 @@ import {
 } from "../../../../../lib/database"
 import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
+import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/verification/[id]/submission"
 import { userFactory } from "../../../../../test/factories"
 
@@ -27,8 +28,8 @@ describe("POST /verification/[id]/submission", () => {
       "KYCAMLAttestation",
       process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/submission`,
-      `${process.env.HOST}/api/verification/callback`
+      fullURL("/api/verification/submission"),
+      fullURL("/api/verification/callback")
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
@@ -65,8 +66,10 @@ describe("POST /verification/[id]/submission", () => {
       "KYCAMLAttestation",
       process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/submission?subjectAddress=${subject}&contractAddress=${contract}`,
-      `${process.env.HOST}/api/verification/callback`
+      fullURL(
+        `/api/verification/submission?subjectAddress=${subject}&contractAddress=${contract}`
+      ),
+      fullURL("/api/verification/callback")
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
@@ -112,8 +115,8 @@ describe("POST /verification/[id]/submission", () => {
       "CreditScoreAttestation",
       process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/submission`,
-      `${process.env.HOST}/api/verification/callback`
+      fullURL("/api/verification/submission"),
+      fullURL("/api/verification/callback")
     )
     await saveVerificationRequest(verificationRequest)
     const clientDidKey = await randomDidKey()
@@ -158,20 +161,18 @@ describe("POST /verification/[id]/submission", () => {
 // TODO: This block should be easier to repro
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLAttestation")
-  const user = await userFactory({
-    jumioScore: 55,
-    ofacScore: 2
-  })
+  const user = await userFactory()
   const application = await createCredentialApplication(clientDidKey, manifest)
   await validateCredentialApplication(application, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)
+  const credentialStatus = await generateRevocationListStatus()
 
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     decodedApplication,
     buildAttestationForUser(user, manifest),
-    await generateRevocationListStatus()
+    { credentialStatus }
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(

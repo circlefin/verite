@@ -34,8 +34,6 @@ model User {
   email       String @unique
   password    String @default("testing")
   role        String @default("member")
-  jumioScore  Int?
-  ofacScore   Int?
   creditScore Int?
   mnemonic    String
   address     String
@@ -43,9 +41,9 @@ model User {
 }
 
 model VerificationRequest {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   payload String
-  status  String @default("pending")
+  status  String  @default("pending")
   result  String?
 }
 

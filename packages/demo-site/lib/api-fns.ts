@@ -55,7 +55,7 @@ export function apiHandler<T>(
     await cors(req, res)
 
     // Log the HTTP request, but not in test environments
-    if (process.env.NODE_ENV !== "test") {
+    if (process.env.NODE_ENV === "development") {
       console.info(`> ${req.method} ${req.url}`)
     }
 

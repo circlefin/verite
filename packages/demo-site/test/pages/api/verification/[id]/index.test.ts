@@ -1,6 +1,7 @@
 import { generateVerificationRequest } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import { saveVerificationRequest } from "../../../../../lib/database"
+import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/verification/[id]/index"
 
 describe("GET /verification/[id]", () => {
@@ -9,8 +10,8 @@ describe("GET /verification/[id]", () => {
       "KYCAMLAttestation",
       process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
-      `${process.env.HOST}/api/verification/submission`,
-      `${process.env.HOST}/api/verification/callback`
+      fullURL("/api/verification/submission"),
+      fullURL("/api/verification/callback")
     )
     await saveVerificationRequest(verificationRequest)
 

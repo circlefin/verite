@@ -21,35 +21,35 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
 
 const AdminPage: NextPage<Props> = ({ user, users }) => {
   return (
-    <AdminLayout title="Admin">
-      <div className="prose">
+    <AdminLayout title="Credential Administration">
+      <div className="prose max-w-none">
+        <h2>Simulating an Issuer&apos;s Compliance Tool</h2>
         <p>
-          This is an example admin tool used by Issuers to manage their
-          credentials. This tool might be used day-to-day by a compliance
-          analyst to inspect the details of a User, including all their issued
-          credentials, and ultimately revoke credentials as needed.
+          This example simulates an admin tool used by issuers to manage
+          credentials. Such a tool might be used by a compliance analyst to
+          inspect the details of a user, including all credentials issued to a
+          user, and to revoke credentials if needed.
         </p>
 
         <p>
-          Project Verity uses{" "}
+          To protect privacy, Verity employs{" "}
           <Link href="https://w3c-ccg.github.io/vc-status-list-2021">
-            Status List 2021
+            <a target="_blank">Status List 2021</a>
           </Link>{" "}
-          to perform revocation.
+          to execute credential revocation.
         </p>
 
-        <h2>Users</h2>
+        <h2>Demo Users</h2>
         <p>
-          We have seeded the database with multiple users to provide a more
-          realistic experience and more clearly illustrate integration
-          requirements. You are currently signed in as <em>{user.email}</em> so
-          any previously issued credentials will likely be found under that
-          user.
+          You are currently signed in as{" "}
+          <b>
+            <em>{user.email}</em>
+          </b>
         </p>
         <div className="divide-y divide-gray-200">
           {users.map((user) => (
             <div key={user.email}>
-              <Link href={`/admin/users/${user.id}`}>
+              <Link href={`/admin/users/${user.id}`} passHref>
                 <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
                   <div className="ml-3">
                     <span className="text-sm text-gray-900">{user.email}</span>

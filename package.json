@@ -30,6 +30,7 @@
     "prisma": "npx -w @centre/demo-site prisma",
     "setup": "./bin/setup",
     "setup:ci": "npm run setup:ci --workspace @centre/demo-site",
+    "start": "npm run start --workspace @centre/demo-site",
     "test": "npm test --workspaces",
     "type-check": "npm run type-check --workspaces"
   },

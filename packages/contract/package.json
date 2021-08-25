@@ -1,6 +1,8 @@
 {
   "name": "@centre/contract",
   "scripts": {
+    "build": "",
+    "clean": "",
     "hardhat:node": "npx hardhat node",
     "hardhat:deploy": "npx hardhat run scripts/deploy.ts --network localhost",
     "hardhat:faucet": "npx hardhat --network localhost faucet",

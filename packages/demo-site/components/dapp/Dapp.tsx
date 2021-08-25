@@ -16,6 +16,7 @@ import TokenArtifact from "../../contracts/Token.json"
 // @ts-ignore
 import contractAddressJSON from "../../contracts/contract-address.json"
 import { contractFetcher } from "../../lib/eth-fns"
+import { fullURL } from "../../lib/utils"
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
@@ -148,7 +149,9 @@ const Dapp: FC = () => {
     try {
       // Create a Verification Request
       const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`,
+        fullURL(
+          `/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`
+        ),
         { method: "POST" }
       )
       const verification = await resp.json()
@@ -165,10 +168,9 @@ const Dapp: FC = () => {
 
   const fetchVerificationStatus = async (id: string) => {
     try {
-      const resp = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/verification/${id}/status`,
-        { method: "POST" }
-      )
+      const resp = await fetch(fullURL(`/api/verification/${id}/status`), {
+        method: "POST"
+      })
       const verification = await resp.json()
       setVerificationStatus(verification)
 
@@ -216,7 +218,7 @@ const Dapp: FC = () => {
       subjectAddress: account,
       contractAddress: contractAddress
     }
-    const res = await fetch("/api/demo/simulate-verification", {
+    const res = await fetch(fullURL("/api/demo/simulate-verification"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -364,7 +366,7 @@ const Dapp: FC = () => {
 
   const faucet = async (address: string): Promise<boolean> => {
     try {
-      const resp = await fetch("/api/demo/faucet", {
+      const resp = await fetch(fullURL("/api/demo/faucet"), {
         headers: {
           "Content-Type": "application/json"
         },
@@ -390,11 +392,15 @@ const Dapp: FC = () => {
 
   return (
     <Layout account={account} balance={balance} symbol={tokenData.symbol}>
-      <div className="prose">
-        <p>In this demo, transfers of 10 or more VUSDC require proof of KYC.</p>
+      <div className="prose max-w-none">
+        <p className="font-bold">
+          In this demo, transfers of 10 or more VUSDC will require proof of KYC.
+        </p>
         <p>
-          Other DeFi use cases include credit/risk credentials for lower
-          collateralization and improved borrowing terms.
+          Other DeFi use cases include credit credentials for lower
+          collateralization and improved borrowing terms, accredited investor
+          status for access to new markets, proof of geo location for licensed
+          services, etc.
         </p>
       </div>
 

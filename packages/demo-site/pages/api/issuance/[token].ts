@@ -28,6 +28,8 @@ import { NotFoundError } from "../../../lib/errors"
 import { buildAttestationForUser } from "../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../lib/manifest"
 
+const oneMinute = 60 * 1000
+
 /**
  * Handle a POST request to containing an empty Verifiable Presentation proving
  * ownership of a client did.  The endpoint checks the validity of the Verifiable
@@ -55,7 +57,8 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   const manifest = await findManifestById(manifestId)
   await validateCredentialApplication(credentialApplication, manifest)
 
-  // Build a revocation list and index if needed
+  // Build a revocation list and index if needed. We currently only need
+  // a revocable credential for KYC/AML credentials.
   const revocationList = await handleRevocationIfNecessary(user, manifest)
 
   // Generate new credentials for the user
@@ -63,7 +66,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     credentialApplication,
     buildAttestationForUser(user, manifest),
-    revocationList
+    { credentialStatus: revocationList }
   )
 
   // Save the credentials to the database
