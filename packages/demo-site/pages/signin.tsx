@@ -31,8 +31,22 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
 const Home: NextPage = () => {
   return (
-    <Layout title="Sign in">
+    <Layout title="Please sign in">
       <div className="container px-4 py-4 mx-auto sm:px-8">
+        <div className="prose">
+          <h3>This part of the demo requires authentication.</h3>
+          <p>
+            To <strong>issue credentials</strong>, an issuer would require the
+            end-user to authenticate to be identified and to issue a
+            user-specific credential.
+          </p>
+          <p>
+            To <strong>revoke credentials</strong>, an issuer needs an internal
+            compliance administrator to authenticate to access the revocation
+            controls. In this case, you can use the <strong>Alice</strong>{" "}
+            sample account.
+          </p>
+        </div>
         <SignInForm />
       </div>
     </Layout>
