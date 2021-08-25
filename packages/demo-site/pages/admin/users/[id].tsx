@@ -9,7 +9,6 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import Link from "next/link"
-import router from "next/router"
 import AdminLayout from "../../../components/admin/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
 import {
@@ -125,17 +124,6 @@ function CredentialTable({
   )
 }
 
-const doRevoke = async (credential: MaybeRevocableCredential) => {
-  const url = "/api/revoke"
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain"
-    },
-    body: credential.proof.jwt
-  })
-}
-
 const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
   const activeCredentials = reverse(
     sortBy(
@@ -155,14 +143,6 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
       }
     )
   )
-
-  const kycCreds = activeCredentials
-    .filter((credential) => {
-      return credential.credential.credential.type[1] === "KYCAMLAttestation"
-    })
-    .map((credential) => {
-      return credential.credential.credential
-    })
 
   return (
     <AdminLayout title={user.email}>
@@ -188,10 +168,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
         <Link href="/admin" passHref>
           <button
             type="button"
-            className="inline-flex items-center px-4 py-2 text-sm 
-                font-medium text-white bg-blue-600 border border-transparent 
-                rounded-md shadow-sm hover:bg-blue-700 focus:outline-none 
-                focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <ArrowCircleLeftIcon className="w-5 h-5 mr-2" aria-hidden="true" />
             Back

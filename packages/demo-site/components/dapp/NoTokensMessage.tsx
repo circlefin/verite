@@ -1,6 +1,4 @@
-import { PlusIcon } from "@heroicons/react/outline"
 import { FC, useState } from "react"
-import DotLoader from "react-spinners/DotLoader"
 import { LoadingButton } from "../LoadingButton"
 
 export type NoTokensMessageProps = {

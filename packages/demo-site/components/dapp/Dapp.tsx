@@ -71,7 +71,6 @@ const Dapp: FC = () => {
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationInfoSet, setVerificationInfoSet] = useState(null)
   const [verification, setVerification] = useState(null)
-  const [verificationStatus, setVerificationStatus] = useState()
 
   // const [token, setToken] = useState<Contract>(null)
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
@@ -121,7 +120,6 @@ const Dapp: FC = () => {
     const startPollingVerification = (id: string) => {
       const i = setInterval(() => fetchVerificationStatus(id), 1000)
       setPollVerificationInterval(i)
-      fetchVerificationStatus(id)
       return i
     }
 
@@ -172,7 +170,6 @@ const Dapp: FC = () => {
         method: "POST"
       })
       const verification = await resp.json()
-      setVerificationStatus(verification)
 
       if (verification.status === "approved") {
         setVerification(undefined)
