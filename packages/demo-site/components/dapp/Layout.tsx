@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core"
 import { BigNumber } from "ethers"
 import { FC } from "react"
 import { formatEthAddress, getEthErrorMessage } from "../../lib/eth-fns"
-import EthLayout from "../layouts/EthLayout"
+import Layout from "../layouts/BaseLayout"
 
 type Props = {
   balance?: BigNumber
@@ -23,7 +23,7 @@ const DappLayout: FC<Props> = ({ children, balance, symbol }) => {
   }
 
   return (
-    <EthLayout title={title}>
+    <Layout title={title}>
       {balance && symbol && account && (
         <div className="flex justify-between mb-6 -mt-6 border-b border-gray-200">
           <nav className="flex -mb-px space-x-8" aria-label="Tabs">
@@ -50,7 +50,7 @@ const DappLayout: FC<Props> = ({ children, balance, symbol }) => {
       )}
 
       <div className="px-5 py-6 sm:px-6 min-h-[17rem]">{children}</div>
-    </EthLayout>
+    </Layout>
   )
 }
 

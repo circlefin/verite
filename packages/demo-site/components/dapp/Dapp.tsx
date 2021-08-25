@@ -388,7 +388,7 @@ const Dapp: FC = () => {
   }
 
   return (
-    <DappLayout account={account} balance={balance} symbol={tokenData.symbol}>
+    <DappLayout balance={balance} symbol={tokenData.symbol}>
       <div className="prose max-w-none">
         <p className="font-bold">
           In this demo, transfers of 10 or more VUSDC will require proof of KYC.
