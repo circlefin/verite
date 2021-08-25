@@ -1,6 +1,6 @@
 import { signOut, useSession } from "next-auth/client"
 import { FC } from "react"
-import Layout from "../layouts/UserAuthLayout"
+import Layout from "../layouts/BaseLayout"
 
 type Props = {
   title: string
