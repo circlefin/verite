@@ -71,7 +71,7 @@ export default apiHandler<Response>(async (req, res) => {
 
   const tx = await contract.validateAndTransfer(
     transaction.address,
-    parseInt(transaction.amount, 20),
+    parseInt(transaction.amount, 10),
     verification.verificationInfo,
     verification.signature
   )
