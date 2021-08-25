@@ -1,36 +1,54 @@
-import Link from "next/link"
+import { Web3Provider } from "@ethersproject/providers"
+import { useWeb3React } from "@web3-react/core"
+import { BigNumber } from "ethers"
 import { FC } from "react"
+import { formatEthAddress, getEthErrorMessage } from "../../lib/eth-fns"
 import EthLayout from "../layouts/EthLayout"
 
 type Props = {
-  balance?: any
+  balance?: BigNumber
   symbol?: string
-  account?: string
 }
 
-const DappLayout: FC<Props> = ({ children, balance, symbol, account }) => {
+const DappLayout: FC<Props> = ({ children, balance, symbol }) => {
+  const { account, deactivate, error } = useWeb3React<Web3Provider>()
+
+  if (error) {
+    window.alert(getEthErrorMessage(error))
+  }
+
   let title = "Verity Demo USDC"
   if (symbol) {
     title = `${title} (${symbol})`
   }
 
   return (
-    <EthLayout noPadding={true} title={title}>
+    <EthLayout title={title}>
       {balance && symbol && account && (
-        <div className="flex flex-row space-x-2 border-b bg-blue-50">
-          <div className="flex-1 hidden p-4 border-r sm:block">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">
-              Account
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">{account}</p>
-          </div>
-          <div className="flex items-center justify-end flex-1 p-4 text-center sm:text-right">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">
-              {balance.toString()} {symbol}
-            </h3>
+        <div className="flex justify-between mb-6 -mt-6 border-b border-gray-200">
+          <nav className="flex -mb-px space-x-8" aria-label="Tabs">
+            <span className="px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+              Balance:
+              <span className="ml-3 text-lg font-bold">
+                {balance.toString()} {symbol}
+              </span>
+            </span>
+          </nav>
+
+          <div className="flex -mb-px space-x-8">
+            <span className="flex items-center px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
+              {formatEthAddress(account)}
+            </span>
+            <button
+              onClick={() => deactivate()}
+              className="px-1 py-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 whitespace-nowrap"
+            >
+              Disconnect
+            </button>
           </div>
         </div>
       )}
+
       <div className="px-5 py-6 sm:px-6 min-h-[17rem]">{children}</div>
     </EthLayout>
   )

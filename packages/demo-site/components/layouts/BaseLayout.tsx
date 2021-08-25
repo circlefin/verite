@@ -1,31 +1,19 @@
 import { FC } from "react"
 import Header, { HeaderProps } from "../Header"
 
-type Props = HeaderProps & {
-  authSection?: JSX.Element
-  noPadding?: boolean
-}
+type Props = HeaderProps
 
-const BaseLayout: FC<Props> = ({
-  children,
-  authSection,
-  noPadding,
-  ...headerProps
-}) => {
-  const bodyPadding = noPadding ? "" : "px-5 py-6 sm:px-6"
-
+const BaseLayout: FC<Props> = ({ children, ...headerProps }) => {
   return (
     <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
-      <Header {...headerProps}>{authSection}</Header>
+      <Header {...headerProps} />
       <main className="-mt-32">
         <div className="max-w-4xl px-4 pb-12 mx-auto sm:px-6 lg:px-8">
-          <div
-            className={`bg-white rounded-lg shadow ${bodyPadding} overflow-hidden`}
-          >
+          <div className="px-5 py-6 overflow-hidden bg-white rounded-lg shadow sm:px-6">
             {children}
           </div>
-          <div className="prose-sm pt-8 text-center">
-            <p className="font-extralight text-gray-500">
+          <div className="pt-8 prose-sm text-center">
+            <p className="text-gray-500 font-extralight">
               &copy;2021 Centre | Software open sourced under the MIT license
             </p>
           </div>
