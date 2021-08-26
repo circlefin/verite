@@ -1,38 +1,24 @@
-import { currentUser2 } from "@centre/demo-site/lib/auth-fns"
-import { ProcessingError } from "@centre/demo-site/lib/errors"
+import { verificationResult } from "@centre/verity/dist"
+import { Contract, Wallet } from "ethers"
+import { User } from "./database"
 import {
   getProvider,
   verityTokenContractAddress,
   verityTokenContractArtifact
-} from "@centre/demo-site/lib/eth-fns"
-import { verificationResult } from "@centre/verity"
-import { ethers, Contract, Wallet } from "ethers"
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
+} from "./eth-fns"
 
-type Response = {
-  status: string
-}
-
-type Transaction = {
+export type Transaction = {
   amount: string
   address: string
 }
 
-/**
- * Fake centralized API to send VUSDC.
- */
-export default apiHandler<Response>(async (req, res) => {
-  requireMethod(req, "POST")
-
-  const user = await currentUser2(req)
-  console.log(user)
-
-  // Input
-  const transaction = req.body.transaction as Transaction
-  console.log(transaction)
-
+export async function send(
+  user: User,
+  transaction: Transaction,
+  withVerification = true
+): Promise<boolean> {
   if (!transaction) {
-    throw new ProcessingError()
+    return false
   }
 
   const provider = getProvider()
@@ -53,7 +39,7 @@ export default apiHandler<Response>(async (req, res) => {
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
-  if (req.body.withVerification) {
+  if (withVerification) {
     // Call out to other service letting them know the results
     const response = await fetch(`${process.env.HOST}/api/demo/verify`, {
       method: "POST",
@@ -79,8 +65,7 @@ export default apiHandler<Response>(async (req, res) => {
     verification.verificationInfo,
     verification.signature
   )
-  // await tx.wait()
+  await tx.wait()
 
-  // Success
-  res.status(200).json({ status: "ok" })
-})
+  return true
+}

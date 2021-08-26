@@ -12,6 +12,7 @@ const form = createRef<HTMLFormElement>()
 const Page: NextPage = () => {
   const [session] = useSession()
   const { balance } = useBalance()
+  const [withVerification, setWithVerification] = useState<boolean>()
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
   const [address, setAddress] = useState<string>(
@@ -27,17 +28,22 @@ const Page: NextPage = () => {
     setMessage({ text, type: "success" })
   }
 
-  const sendFunction = async (address: string, amount: string) => {
+  const sendFunction = async (
+    address: string,
+    amount: string,
+    withVerification = true
+  ) => {
     // Disable form
     setLoading(true)
 
     // Perform send
-    const response = await fetch("/api/demo/send", {
+    const response = await fetch(`/api/demo/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
+        withVerification,
         transaction: {
           amount,
           address
@@ -96,7 +102,7 @@ const Page: NextPage = () => {
             onSubmit={async (e) => {
               e.preventDefault()
 
-              if (await sendFunction(address, amount)) {
+              if (await sendFunction(address, amount, withVerification)) {
                 info("Transfer complete!")
               } else {
                 error("Transfer failed.")
@@ -149,6 +155,38 @@ const Page: NextPage = () => {
                   onChange={(e) => setAmount(e.target.value)}
                 />
               </div>
+            </div>
+
+            <div>
+              <fieldset className="space-y-5">
+                <legend className="sr-only">Notifications</legend>
+                <div className="relative flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="comments"
+                      aria-describedby="comments-description"
+                      name="comments"
+                      type="checkbox"
+                      onChange={(e) => {
+                        setWithVerification(e.target.checked)
+                      }}
+                      className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label
+                      htmlFor="comments"
+                      className="font-medium text-gray-700"
+                    >
+                      Perform KYC Verification with countery party
+                    </label>
+                    <p id="comments-description" className="text-gray-500">
+                      Make API call with receiving service to verify
+                      credentials.
+                    </p>
+                  </div>
+                </div>
+              </fieldset>
             </div>
 
             <LoadingButton

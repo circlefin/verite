@@ -1,4 +1,5 @@
 import { Contract, getDefaultProvider, BigNumber } from "ethers"
+import type { User } from "./database"
 import { prisma } from "./database/prisma"
 import { verityTokenContractAddress } from "./eth-fns"
 
@@ -15,7 +16,7 @@ export const listen = (): void => {
   console.log("Listening for Transfer events...")
   console.log(`Contract Address: ${contractAddress}`)
 
-  contract.on("Transfer", async (from, to, amount, extra) => {
+  contract.on("Transfer", async (from, to, amount: BigNumber, extra) => {
     console.log(`Transfer:\nFrom: ${from}\nTo: ${to}\nAmount: ${amount}`)
     // A production environment would have many Transfer events within a single
     // block, but for the sake of example, we will assume there will be at most
@@ -66,6 +67,7 @@ export const listen = (): void => {
           balance
         }
       })
+      await createTransfer(sender, from, to, amount.mul(-1), "complete")
     }
 
     // Before a reciver can use their funds, we need to be sure the funds were
@@ -80,8 +82,17 @@ export const listen = (): void => {
       }
     })
 
+    const receiver = await prisma.user.findFirst({
+      where: {
+        address: to
+      }
+    })
+
     if (!verificationResult) {
       console.log("Could not find a verification result, skipping.")
+      if (receiver) {
+        await createTransfer(receiver, from, to, amount, "pending")
+      }
       return
     }
 
@@ -89,11 +100,6 @@ export const listen = (): void => {
     // its balances, but we do not for simplicity of the example.
 
     // Credit the receiver if they exist
-    const receiver = await prisma.user.findFirst({
-      where: {
-        address: to
-      }
-    })
     if (receiver) {
       const balance = BigNumber.from(receiver.balance).add(amount).toString()
       // Perform update
@@ -105,6 +111,24 @@ export const listen = (): void => {
           balance
         }
       })
+      await createTransfer(receiver, from, to, amount, "complete")
+    }
+  })
+}
+
+const createTransfer = async (
+  user: User,
+  from: string,
+  to: string,
+  amount: BigNumber,
+  status: string
+) => {
+  await prisma.transfer.create({
+    data: {
+      from,
+      to,
+      amount: amount.toString(),
+      status
     }
   })
 }

@@ -53,3 +53,12 @@ model VerificationResult {
   expires        DateTime
   subjectAddress String
 }
+
+model Transfer {
+  id     String @id @default(uuid())
+  from   String
+  to     String
+  amount String
+  status String @default("pending")
+  userId String
+}
