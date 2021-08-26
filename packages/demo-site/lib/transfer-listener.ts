@@ -128,7 +128,8 @@ const createTransfer = async (
       from,
       to,
       amount: amount.toString(),
-      status
+      status,
+      userId: user.id
     }
   })
 }

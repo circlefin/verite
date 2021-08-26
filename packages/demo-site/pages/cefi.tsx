@@ -1,5 +1,5 @@
 import { NextPage } from "next"
-import { signout, signOut, useSession } from "next-auth/client"
+import { signout, useSession } from "next-auth/client"
 import React, { createRef, useState } from "react"
 
 import Layout from "../components/Layout"
@@ -12,13 +12,11 @@ const form = createRef<HTMLFormElement>()
 const Page: NextPage = () => {
   const [session] = useSession()
   const { balance } = useBalance()
-  const [withVerification, setWithVerification] = useState<boolean>()
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
-  const [address, setAddress] = useState<string>(
-    "" // TODO: default address (Alice)
-  )
+  const [address, setAddress] = useState<string>("")
   const [amount, setAmount] = useState<string>("")
+  const [withVerification, setWithVerification] = useState<boolean>(false)
 
   const error = (text: string) => {
     setMessage({ text, type: "error" })
@@ -55,6 +53,17 @@ const Page: NextPage = () => {
     setLoading(false)
 
     return response.status === 200
+  }
+
+  const TransferRow = (transfer) => {
+    return (
+      <>
+        <div>From: {transfer.from}</div>
+        <div>To: {transfer.to}</div>
+        <div>Amount: {transfer.amount}</div>
+        <div>Status: {transfer.status}</div>
+      </>
+    )
   }
 
   return (
@@ -132,7 +141,7 @@ const Page: NextPage = () => {
                   className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                   placeholder="0x..."
                   onChange={(e) => setAddress(e.target.value)}
-                  defaultValue="0xFAEd4F38A7a2628d65699C71be0650FBff4617e6"
+                  defaultValue={address}
                 />
               </div>
             </div>
@@ -153,6 +162,7 @@ const Page: NextPage = () => {
                   className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                   placeholder="0 VUSDC"
                   onChange={(e) => setAmount(e.target.value)}
+                  defaultValue={amount}
                 />
               </div>
             </div>
@@ -167,6 +177,7 @@ const Page: NextPage = () => {
                       aria-describedby="comments-description"
                       name="comments"
                       type="checkbox"
+                      checked={withVerification}
                       onChange={(e) => {
                         setWithVerification(e.target.checked)
                       }}
@@ -199,6 +210,8 @@ const Page: NextPage = () => {
             </LoadingButton>
           </form>
         </div>
+
+        <div>{balance?.transfers.map((x) => TransferRow(x))}</div>
       </React.StrictMode>
     </Layout>
   )
