@@ -1,3 +1,4 @@
+import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
 import { signout, useSession } from "next-auth/client"
 import React, { createRef, useState } from "react"
@@ -5,18 +6,19 @@ import React, { createRef, useState } from "react"
 import Layout from "../components/Layout"
 import { LoadingButton } from "../components/LoadingButton"
 import Alert from "../components/cefi/Alert"
+import Modal from "../components/cefi/Modal"
 import { useBalance } from "../hooks/useBalance"
 
 const form = createRef<HTMLFormElement>()
 
 const Page: NextPage = () => {
+  const [open, setOpen] = useState<boolean>(false)
   const [session] = useSession()
   const { balance } = useBalance()
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
   const [address, setAddress] = useState<string>("")
   const [amount, setAmount] = useState<string>("")
-  const [withVerification, setWithVerification] = useState<boolean>(false)
 
   const error = (text: string) => {
     setMessage({ text, type: "error" })
@@ -24,6 +26,17 @@ const Page: NextPage = () => {
 
   const info = (text: string) => {
     setMessage({ text, type: "success" })
+  }
+
+  const promptBeforeSend = (amount: string): boolean => {
+    try {
+      if (BigNumber.from(amount).gte(3000)) {
+        setOpen(true)
+        return true
+      }
+    } catch (ignore) {}
+
+    return false
   }
 
   const sendFunction = async (
@@ -52,7 +65,13 @@ const Page: NextPage = () => {
     // Enable and reset form
     setLoading(false)
 
-    return response.status === 200
+    if (response.ok) {
+      info("Transfer complete!")
+    } else {
+      error("Transfer failed.")
+    }
+
+    return response.ok
   }
 
   const TransferRow = (transfer) => {
@@ -69,6 +88,14 @@ const Page: NextPage = () => {
   return (
     <Layout title="Project Verity Demo">
       <React.StrictMode>
+        {open && (
+          <Modal
+            confirmFunction={() => sendFunction(address, amount)}
+            onClose={setOpen}
+            open={open}
+            setOpen={setOpen}
+          ></Modal>
+        )}
         <div className="flex flex-col-reverse justify-between mb-6 -mt-6 border-b border-gray-200 sm:flex-row">
           <nav
             className="flex justify-center -mb-px space-x-8"
@@ -111,11 +138,11 @@ const Page: NextPage = () => {
             onSubmit={async (e) => {
               e.preventDefault()
 
-              if (await sendFunction(address, amount, withVerification)) {
-                info("Transfer complete!")
-              } else {
-                error("Transfer failed.")
+              if (promptBeforeSend(amount)) {
+                return
               }
+
+              await sendFunction(address, amount)
               form.current.reset()
             }}
           >
@@ -135,6 +162,7 @@ const Page: NextPage = () => {
               <div className="mt-1">
                 <input
                   disabled={loading}
+                  required={true}
                   type="text"
                   name="address"
                   id="address"
@@ -156,6 +184,7 @@ const Page: NextPage = () => {
               <div className="mt-1">
                 <input
                   disabled={loading}
+                  required={true}
                   type="text"
                   name="amount"
                   id="amount"
@@ -165,39 +194,6 @@ const Page: NextPage = () => {
                   defaultValue={amount}
                 />
               </div>
-            </div>
-
-            <div>
-              <fieldset className="space-y-5">
-                <legend className="sr-only">Notifications</legend>
-                <div className="relative flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="comments"
-                      aria-describedby="comments-description"
-                      name="comments"
-                      type="checkbox"
-                      checked={withVerification}
-                      onChange={(e) => {
-                        setWithVerification(e.target.checked)
-                      }}
-                      className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label
-                      htmlFor="comments"
-                      className="font-medium text-gray-700"
-                    >
-                      Perform KYC Verification with countery party
-                    </label>
-                    <p id="comments-description" className="text-gray-500">
-                      Make API call with receiving service to verify
-                      credentials.
-                    </p>
-                  </div>
-                </div>
-              </fieldset>
             </div>
 
             <LoadingButton
