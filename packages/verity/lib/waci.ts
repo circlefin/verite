@@ -59,7 +59,7 @@ export function verificationRequestWrapper(
 export async function handleScan(
   scanData: string
 ): Promise<ManifestWrapper | VerificationRequestWrapper | undefined> {
-  const payload = json(scanData)
+  const payload = json(scanData) as ChallengeTokenUrlWrapper
 
   if (!payload.challengeTokenUrl) {
     return
