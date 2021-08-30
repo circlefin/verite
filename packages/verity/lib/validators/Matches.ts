@@ -7,7 +7,6 @@ import type {
   W3CCredential
 } from "../../types"
 
-// TODO(kim)
 export class PathMatches {
   path: string
   matchedValue: any

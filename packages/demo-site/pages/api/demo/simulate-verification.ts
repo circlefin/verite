@@ -2,10 +2,6 @@ import { VerificationInfoResponse, verificationResult } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 
 export default apiHandler<VerificationInfoResponse>(async (req, res) => {
-  // TODO the api should handle a GET poll with the subject addr is on the query str
-  // (as a dynamic api route) to enable the dApp to know when async verification
-  // eventually succeeds or fails. Meanwhile, this verifier stubs out actual
-  // verification through a POST request executed by the dapp:
   requireMethod(req, "POST")
 
   // the dapp sends its own calling address to the verifier, and though the

@@ -159,6 +159,7 @@ describe("Submission validator", () => {
       creditScoreAttestationFixture
     )
 
+    const minimumCreditScore = creditScoreAttestationFixture.score + 1
     const fulfillmentVP = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
@@ -171,7 +172,7 @@ describe("Submission validator", () => {
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
-      { minimumCreditScore: creditScoreAttestationFixture.score + 1 } // minimum credit score required
+      { minimumCreditScore }
     )
 
     const submission = await createVerificationSubmission(
@@ -187,7 +188,7 @@ describe("Submission validator", () => {
 
     expect(result.accepted()).toBe(false)
     expect(result.errors()[0].details).toEqual(
-      "Credential did not match constraint: We can only verify Credit Score credentials that are above 400."
+      `Credential did not match constraint: We can only verify Credit Score credentials that are above ${minimumCreditScore}.`
     )
   })
 
