@@ -1,4 +1,7 @@
-import { KYCAMLAttestation } from "../../types/Attestations"
+import {
+  CreditScoreAttestation,
+  KYCAMLAttestation
+} from "../../types/Attestations"
 
 export const kycAmlAttestationFixture: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
@@ -7,4 +10,11 @@ export const kycAmlAttestationFixture: KYCAMLAttestation = {
   authorityName: "Verity",
   authorityUrl: "https://verity.id",
   authorityCallbackUrl: "https://identity.verity.id"
+}
+
+export const creditScoreAttestationFixture: CreditScoreAttestation = {
+  "@type": "CreditScoreAttestation",
+  score: 700,
+  scoreType: "Credit Rating",
+  provider: "Experian"
 }
