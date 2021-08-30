@@ -1,7 +1,7 @@
 // This type defines the verification result and related metadata returned
 // by a verifier to this dapp
 import type { VerificationInfoResponse } from "@centre/verity"
-import { Web3Provider } from "@ethersproject/providers"
+import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
 import { useWeb3React } from "@web3-react/core"
 import { Contract } from "ethers"
@@ -17,6 +17,7 @@ import TokenArtifact from "../../contracts/Token.json"
 import contractAddressJSON from "../../contracts/contract-address.json"
 import { contractFetcher } from "../../lib/eth-fns"
 import { fullURL } from "../../lib/utils"
+import type { VerificationRequestResponse } from "../../lib/verification-request"
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
@@ -28,7 +29,7 @@ import TransactionErrorMessage from "./TransactionErrorMessage"
 import Transfer from "./Transfer"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
 
-const contractAddress =
+const contractAddress: string =
   process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS || contractAddressJSON.Token
 
 // This is an error code that indicates that the user canceled a transaction
@@ -69,8 +70,10 @@ const Dapp: FC = () => {
   const [statusMessage, setStatusMessage] = useState("")
   // verification-related state
   const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationInfoSet, setVerificationInfoSet] = useState(null)
-  const [verification, setVerification] = useState(null)
+  const [verificationInfoSet, setVerificationInfoSet] =
+    useState<VerificationInfoResponse>(null)
+  const [verification, setVerification] =
+    useState<VerificationRequestResponse>(null)
 
   // const [token, setToken] = useState<Contract>(null)
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
@@ -251,7 +254,7 @@ const Dapp: FC = () => {
       dismissTransactionError()
 
       // send the transfer, either with verification or without
-      let tx: any
+      let tx: TransactionResponse
       const t = await token.verificationThreshold()
       if (t <= amount && verificationInfoSet) {
         tx = await token.validateAndTransfer(
@@ -337,8 +340,8 @@ const Dapp: FC = () => {
 
   // This is an utility method that makes an RPC error human readable
   const getRpcErrorMessage = (error: {
-    data: { message: any }
-    message: any
+    data: { message: string }
+    message: string
   }) => {
     if (error?.data?.message) {
       return error.data.message

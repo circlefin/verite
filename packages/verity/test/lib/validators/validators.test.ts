@@ -1,7 +1,3 @@
-import {
-  creditScoreAttestation,
-  kycAmlAttestation
-} from "../../../lib/attestation"
 import { createVerificationSubmission } from "../../../lib/client/verification-submission"
 import {
   createCredentialApplication,
@@ -18,6 +14,10 @@ import {
 import { validateCredentialApplication } from "../../../lib/validators/validateCredentialApplication"
 import { processVerificationSubmission } from "../../../lib/validators/validators"
 import { generateVerificationRequest } from "../../../lib/verification-request-fns"
+import {
+  creditScoreAttestationFixture,
+  kycAmlAttestationFixture
+} from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 import { generateVerifiableCredential } from "../../support/verifiable-credential-fns"
@@ -39,7 +39,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      kycAmlAttestation(),
+      kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
@@ -105,7 +105,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      kycAmlAttestation(),
+      kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
@@ -156,9 +156,10 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      creditScoreAttestation(200) // 200 lower than required 400
+      creditScoreAttestationFixture
     )
 
+    const minimumCreditScore = creditScoreAttestationFixture.score + 1
     const fulfillmentVP = await decodeVerifiablePresentation(
       fulfillment.presentation
     )
@@ -171,7 +172,7 @@ describe("Submission validator", () => {
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
-      { minimumCreditScore: 400 } // minimum credit score required
+      { minimumCreditScore }
     )
 
     const submission = await createVerificationSubmission(
@@ -187,7 +188,7 @@ describe("Submission validator", () => {
 
     expect(result.accepted()).toBe(false)
     expect(result.errors()[0].details).toEqual(
-      "Credential did not match constraint: We can only verify Credit Score credentials that are above 400."
+      `Credential did not match constraint: We can only verify Credit Score credentials that are above ${minimumCreditScore}.`
     )
   })
 
@@ -207,7 +208,7 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      kycAmlAttestation(),
+      kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 

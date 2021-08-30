@@ -1,10 +1,11 @@
 import QRCode from "qrcode.react"
 import { FC } from "react"
+import type { VerificationRequestResponse } from "../../lib/verification-request"
 import Spinner from "../Spinner"
 
 type TransferStatusProps = {
   simulateFunction: () => Promise<void>
-  verification: Record<string, any>
+  verification: VerificationRequestResponse
 }
 
 const TransferStatus: FC<TransferStatusProps> = ({

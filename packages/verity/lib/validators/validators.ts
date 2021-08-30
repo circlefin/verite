@@ -141,8 +141,6 @@ export async function processVerificationSubmission(
   /*
     Object.keys(mapped).map((key) => {
       const schema = findSchemaById(key)
-      // TODO(kim)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = mapped[key].every((cred) => {
         validateSchema(cred.credentialSubject, schema, errors)
       })

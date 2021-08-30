@@ -1,6 +1,8 @@
 import { classNames } from "@centre/demo-site/lib/react-fns"
+import type { VerificationInfoResponse } from "@centre/verity"
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
 import { FC, useState } from "react"
+import type { VerificationRequestResponse } from "../../lib/verification-request"
 import { LoadingButton } from "../LoadingButton"
 import TransferStatus from "./TransferStatus"
 
@@ -9,9 +11,9 @@ type TransferProps = {
   tokenSymbol: string
   isVerifying?: boolean
   simulateFunction?: () => Promise<void>
-  verification?: any
+  verification?: VerificationRequestResponse
   dismissStatusMessage?: () => void
-  verificationInfoSet?: any
+  verificationInfoSet?: VerificationInfoResponse
 }
 
 const Transfer: FC<TransferProps> = ({

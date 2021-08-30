@@ -5,7 +5,7 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError
 } from "@web3-react/injected-connector"
-import { Contract } from "ethers"
+import { Contract, ContractInterface } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only
@@ -50,7 +50,7 @@ export function getEthErrorMessage(error: Error): string {
  * Format an ethereum address for easier reading. This method lowercases
  * the address and adds an ellipsis to make it easier to read.
  */
-export function formatEthAddress(address: string) {
+export function formatEthAddress(address: string): string {
   const lower = address.toLowerCase()
 
   return `${lower.slice(0, 6)}...${lower.slice(-4)}`
@@ -63,13 +63,14 @@ export function contractFetcher(
   library: Web3Provider,
   abi: Record<string, unknown>[]
 ) {
-  return (address: string, method: string, ...args) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (address: string, method: string, ...args: any[]): any => {
     const contract = new Contract(address, abi, library.getSigner())
     return contract[method](...args)
   }
 }
 
-export function verityTokenContractArtifact() {
+export function verityTokenContractArtifact(): { abi: ContractInterface } {
   return require("../contracts/Token.json")
 }
 

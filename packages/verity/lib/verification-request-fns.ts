@@ -37,7 +37,7 @@ export function generateVerificationRequest(
       reply_url: replyUrl,
       reply_to: [replyTo],
       callback_url: callbackUrl,
-      challenge: "e1b35ae0-9e0e-11ea-9bbf-a387b27c9e61" // TODO: Challenge
+      challenge: uuidv4()
     },
     presentation_definition: presentationDefinition
   }
