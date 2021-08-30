@@ -1,11 +1,3 @@
 # `verity`
 
-> TODO: description
-
-## Usage
-
-```
-const verity = require('verity');
-
-// TODO: DEMONSTRATE API
-```
+This package contains the Verity-specific logic for requesting, issuing, consuming, and revoking verifiable credentials.
