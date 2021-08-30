@@ -6,14 +6,12 @@ import {
   decodeVerifiablePresentation,
   generateVerificationRequest,
   randomDidKey,
-  validateCredentialApplication,
   decodeCredentialApplication
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import {
   fetchVerificationRequestStatus,
-  generateRevocationListStatus,
   saveVerificationRequest
 } from "../../../../../lib/database"
 import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment"
@@ -158,21 +156,17 @@ describe("POST /verification/[id]/submission", () => {
   })
 })
 
-// TODO: This block should be easier to repro
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLAttestation")
   const user = await userFactory()
   const application = await createCredentialApplication(clientDidKey, manifest)
-  await validateCredentialApplication(application, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)
-  const credentialStatus = await generateRevocationListStatus()
 
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     decodedApplication,
-    buildAttestationForUser(user, manifest),
-    { credentialStatus }
+    buildAttestationForUser(user, manifest)
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(
