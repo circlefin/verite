@@ -23,7 +23,7 @@ export default apiHandler<Response>(async (req, res) => {
   // TODO: Should validate, as if we were the contract.
 
   // Persist the Verification Result
-  await prisma.verificationResult.create({
+  await prisma.pendingTransaction.create({
     data: {
       result: JSON.stringify(req.body),
       expires: new Date(verification.verificationInfo.expiration * 1000),

@@ -23,12 +23,6 @@ model RevocationList {
   host String
 }
 
-model Settings {
-  id    String @id @default(uuid())
-  name  String @unique
-  value Int
-}
-
 model User {
   id          String @id @default(uuid())
   email       String @unique
@@ -37,7 +31,6 @@ model User {
   creditScore Int?
   mnemonic    String
   address     String
-  balance     String @default("0")
 }
 
 model VerificationRequest {
@@ -47,7 +40,7 @@ model VerificationRequest {
   result  String?
 }
 
-model VerificationResult {
+model PendingTransaction {
   id               String @id @default(uuid())
   result           String
   expires          DateTime

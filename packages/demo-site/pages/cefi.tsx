@@ -56,7 +56,7 @@ const Page: NextPage = () => {
     setLoading(true)
 
     // Perform send
-    const response = await fetch(`/api/demo/send`, {
+    const response = await fetch(`/api/cefi/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

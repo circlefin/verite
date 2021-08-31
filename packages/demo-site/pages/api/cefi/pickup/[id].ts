@@ -12,7 +12,7 @@ export default apiHandler<Response>(async (req, res) => {
   // Input
   const id = req.query.id as string
 
-  const verificationResult = await prisma.verificationResult.findUnique({
+  const verificationResult = await prisma.pendingTransaction.findUnique({
     where: {
       id
     }
@@ -27,13 +27,14 @@ export default apiHandler<Response>(async (req, res) => {
   const callbackUrl = json.callbackUrl
 
   // Call the callback URL, which should send the funds
+  // TODO: Handle error
   await fetch(callbackUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" }
   })
 
   // Delete the verification result
-  await prisma.verificationResult.delete({
+  await prisma.pendingTransaction.delete({
     where: {
       id
     }

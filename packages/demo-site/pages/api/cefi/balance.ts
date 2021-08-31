@@ -22,7 +22,7 @@ export default apiHandler<Response>(async (req, res) => {
     }
   })
 
-  const pendingTransactions = await prisma.verificationResult.findMany({
+  const pendingTransactions = await prisma.pendingTransaction.findMany({
     where: {
       recipientAddress: user.address
     }
