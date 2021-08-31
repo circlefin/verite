@@ -29,8 +29,8 @@ model User {
   password    String @default("testing")
   role        String @default("member")
   creditScore Int?
-  mnemonic    String
-  address     String
+  mnemonic    String @default("")
+  address     String @default("")
 }
 
 model VerificationRequest {
