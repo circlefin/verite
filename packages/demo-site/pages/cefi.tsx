@@ -121,7 +121,7 @@ const Page: NextPage = () => {
                 await mutate(undefined, true)
 
                 if (response.ok) {
-                  info("Pickup succeessul.")
+                  info("Pickup succeessful.")
                 } else {
                   error(
                     "Pickup failed. This can happen if the verification is expired or if the counterparty does not have sufficient funds."
