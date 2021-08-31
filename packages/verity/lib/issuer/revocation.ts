@@ -76,7 +76,7 @@ export const revokeCredential = async (
   const index = parseInt(credential.credentialStatus.statusListIndex, 10)
   list.push(index)
 
-  return await generateRevocationList(list, statusList.id!, signer.did, signer)
+  return await generateRevocationList(list, statusList.id, signer.did, signer)
 }
 
 /**
@@ -105,7 +105,7 @@ export const unrevokeCredential = async (
     list.splice(index, 1)
   }
 
-  return await generateRevocationList(list, statusList.id!, signer.did, signer)
+  return await generateRevocationList(list, statusList.id, signer.did, signer)
 }
 
 /**

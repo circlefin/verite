@@ -1,4 +1,3 @@
-import { kycAmlAttestation } from "../../../lib/attestation"
 import {
   createCredentialApplication,
   decodeCredentialApplication
@@ -6,6 +5,7 @@ import {
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import { createKycAmlManifest } from "../../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 
 describe("buildAndSignKycAmlFulfillment", () => {
@@ -26,7 +26,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
-      kycAmlAttestation(),
+      kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
     expect(fulfillment.credential_fulfillment).toBeDefined()

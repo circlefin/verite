@@ -26,7 +26,7 @@
     "isomorphic-unfetch": "^3.1.0",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
-    "multibase": "4.0.4",
+    "multibase": "4.0.6",
     "multicodec": "^3.1.0",
     "pako": "^2.0.4",
     "schema-dts": "^0.10.0",
@@ -34,7 +34,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.24",
+    "@types/jest": "^27.0.1",
     "@types/jsonpath": "^0.2.0",
     "@types/lodash": "^4.14.171",
     "@types/node": "^16.4.5",

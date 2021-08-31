@@ -28,6 +28,7 @@ export type RevocablePresentation = Verifiable<W3CPresentation> & {
 }
 
 export type RevocationList<T> = T & {
+  id: string
   readonly credentialSubject: RevocationList2021Subject
 }
 

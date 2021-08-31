@@ -5,7 +5,7 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError
 } from "@web3-react/injected-connector"
-import { ethers, Contract, BigNumber } from "ethers"
+import { ethers, Contract, ContractInterface, BigNumber } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only
@@ -74,13 +74,14 @@ export function contractFetcher(
   library: Web3Provider,
   abi: Record<string, unknown>[]
 ) {
-  return (address: string, method: string, ...args) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (address: string, method: string, ...args: any[]): any => {
     const contract = new Contract(address, abi, library.getSigner())
     return contract[method](...args)
   }
 }
 
-export function verityTokenContractArtifact() {
+export function verityTokenContractArtifact(): { abi: ContractInterface } {
   return require("../contracts/Token.json")
 }
 

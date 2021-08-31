@@ -42,7 +42,7 @@ export async function decodeVerifiableCredential(
   } catch (err) {
     throw new VerificationError(
       "Input wasn't a valid Verifiable Credential",
-      err
+      err as Error
     )
   }
 }
@@ -59,7 +59,7 @@ export async function decodeVerifiablePresentation(
   } catch (err) {
     throw new VerificationError(
       "Input wasn't a valid Verifiable Presentation",
-      err
+      err as Error
     )
   }
 }

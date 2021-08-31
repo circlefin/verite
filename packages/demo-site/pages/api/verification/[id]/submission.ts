@@ -13,9 +13,6 @@ import { NotFoundError, ProcessingError } from "../../../../lib/errors"
 
 type PostResponse = { status: string; result?: VerificationInfoResponse }
 
-const WALLET_MNEMONIC =
-  "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
-
 /**
  * POST request handler
  *
@@ -60,7 +57,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
     result = await verificationResult(
       subjectAddress,
       contractAddress,
-      WALLET_MNEMONIC,
+      process.env.ETH_WALLET_MNEMONIC,
       parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
     )
   }

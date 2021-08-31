@@ -71,9 +71,10 @@ const CreditScorePage: NextPage<Props> = ({
           </p>
           <dl className="flex flex-row justify-center mx-auto space-x-2 sm:space-x-5">
             <div className="px-4 py-3 overflow-hidden text-center bg-white rounded-lg shadow sm:py-2 sm:px-4 flex-0">
-              <dd className="mt-1 text-3xl font-semibold text-gray-900">
+              <dt className="mt-1 text-3xl font-semibold text-gray-900">
                 {user.creditScore}
-              </dd>
+              </dt>
+              <dd>Experian</dd>
             </div>
           </dl>
           <p>

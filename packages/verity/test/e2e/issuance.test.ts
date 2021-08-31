@@ -6,38 +6,45 @@ import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import { createKycAmlManifest } from "../../lib/issuer/manifest"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
+import { validateCredentialApplication } from "../../lib/validators/validateCredentialApplication"
 import type { RevocableCredential, RevocablePresentation } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
 
 describe("issuance", () => {
   it("issues verified credentails", async () => {
-    // 0. ISSUER: The issuer gets a DID
+    /**
+     * The issuer and the client get a DID
+     */
     const issuerDidKey = await randomDidKey()
     const issuer = didKeyToIssuer(issuerDidKey)
-
-    // 1. CLIENT: The client gets a DID
     const clientDidKey = await randomDidKey()
 
-    // 2. ISSUER: Generates a QR code for the client
+    /**
+     * The issuer generates a QR code for the client to scan
+     */
     const credentialIssuer = { id: issuer.did, name: "Verity" }
     const manifest = createKycAmlManifest(credentialIssuer)
 
-    // 3. CLIENT: Client generates a credential application
+    /**
+     * The client scans the QR code and generates a credential application
+     */
     const credentialApplication = await createCredentialApplication(
       clientDidKey,
       manifest
     )
 
-    // TODO(mv): should we validate this??
-    // await validateCredentialApplication(credentialApplication, manifest)
+    /**
+     * The issuer validates the credential application
+     */
+    await validateCredentialApplication(credentialApplication, manifest)
 
+    /**
+     * The issuer builds and signs a fulfillment
+     */
     const decodedApplication = await decodeCredentialApplication(
       credentialApplication
     )
-
-    // 4. ISSUER: Creating the VC
-    // 5. ISSUER: Delivering the VC
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       decodedApplication,
