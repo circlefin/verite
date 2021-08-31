@@ -1,14 +1,10 @@
 import { currentUser2 } from "@centre/demo-site/lib/auth-fns"
 import { send } from "@centre/demo-site/lib/demo-fns"
 import { ProcessingError } from "@centre/demo-site/lib/errors"
-import {
-  getProvider,
-  verityTokenContractAddress,
-  verityTokenContractArtifact
-} from "@centre/demo-site/lib/eth-fns"
+import { verityTokenContractAddress } from "@centre/demo-site/lib/eth-fns"
 import { fullURL } from "@centre/demo-site/lib/utils"
 import { verificationResult } from "@centre/verity"
-import { BigNumber, Contract, Wallet } from "ethers"
+import { BigNumber, Wallet } from "ethers"
 import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 

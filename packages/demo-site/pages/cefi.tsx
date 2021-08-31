@@ -1,7 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
 import { signout, useSession } from "next-auth/client"
-import { userInfo } from "node:os"
 import React, { createRef, useState } from "react"
 
 import Layout from "../components/Layout"
@@ -13,7 +12,7 @@ import { requireAuth } from "../lib/auth-fns"
 
 type Props = Record<string, never>
 
-export const getServerSideProps = requireAuth<Props>(async (context) => {
+export const getServerSideProps = requireAuth<Props>(async () => {
   return { props: {} }
 })
 

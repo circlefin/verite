@@ -5,7 +5,7 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError
 } from "@web3-react/injected-connector"
-import { ethers, Contract, BigNumber, Wallet } from "ethers"
+import { ethers, Contract, BigNumber } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only
@@ -61,7 +61,7 @@ export async function getBalance(address: string): Promise<BigNumber> {
  * Format an ethereum address for easier reading. This method lowercases
  * the address and adds an ellipsis to make it easier to read.
  */
-export function formatEthAddress(address: string) {
+export function formatEthAddress(address: string): string {
   const lower = address.toLowerCase()
 
   return `${lower.slice(0, 6)}...${lower.slice(-4)}`
