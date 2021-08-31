@@ -1,6 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
 import { signout, useSession } from "next-auth/client"
+import { userInfo } from "node:os"
 import React, { createRef, useState } from "react"
 
 import Layout from "../components/Layout"
@@ -21,7 +22,7 @@ const form = createRef<HTMLFormElement>()
 const Page: NextPage = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [session] = useSession()
-  const { balance } = useBalance()
+  const { balance, mutate } = useBalance()
   const [pickupLoading, setPickupLoading] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
@@ -38,7 +39,7 @@ const Page: NextPage = () => {
 
   const promptBeforeSend = (amount: string): boolean => {
     try {
-      if (BigNumber.from(amount).gte(3000)) {
+      if (BigNumber.from(amount).gte(10)) {
         setOpen(true)
         return true
       }
@@ -70,11 +71,18 @@ const Page: NextPage = () => {
       })
     })
 
+    await mutate(undefined, true)
+
     // Enable and reset form
     setLoading(false)
 
     if (response.ok) {
-      info("Transfer complete.")
+      const result = await response.json()
+      if (result.status === "pending") {
+        info("Transfer pending.")
+      } else {
+        info("Transfer complete.")
+      }
     } else {
       error("Transfer failed.")
     }
@@ -105,12 +113,21 @@ const Page: NextPage = () => {
               onClick={async () => {
                 setPickupLoading(true)
 
-                await fetch(`/api/cefi/pickup/${row.id}`, {
+                const response = await fetch(`/api/cefi/pickup/${row.id}`, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json"
                   }
                 })
+                await mutate(undefined, true)
+
+                if (response.ok) {
+                  info("Pickup succeessul.")
+                } else {
+                  error(
+                    "Pickup failed. This can happen if the verification is expired or if the counterparty does not have sufficient funds."
+                  )
+                }
 
                 setPickupLoading(false)
               }}
@@ -182,7 +199,8 @@ const Page: NextPage = () => {
               Send VUSDC
             </h3>
             <p className="mt-2 max-w-4xl text-sm text-gray-500">
-              Transfer VUSDC to an address.
+              In this demo, transfers of 10 or more VUSDC will require providing
+              information to the counterparty.
             </p>
           </div>
 

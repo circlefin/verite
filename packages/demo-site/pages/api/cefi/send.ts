@@ -1,9 +1,13 @@
 import { currentUser2 } from "@centre/demo-site/lib/auth-fns"
 import { ProcessingError } from "@centre/demo-site/lib/errors"
-import { verityTokenContractAddress } from "@centre/demo-site/lib/eth-fns"
+import {
+  getProvider,
+  verityTokenContractAddress,
+  verityTokenContractArtifact
+} from "@centre/demo-site/lib/eth-fns"
 import { fullURL } from "@centre/demo-site/lib/utils"
 import { verificationResult } from "@centre/verity"
-import { Wallet } from "ethers"
+import { BigNumber, Contract, Wallet } from "ethers"
 import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 
@@ -42,6 +46,34 @@ export default apiHandler<Response>(async (req, res) => {
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
+  // If the amount is less than 10, go ahead and send it
+  if (BigNumber.from(transaction.amount).lt(10)) {
+    // Setup ETH
+    const provider = getProvider()
+    const wallet = Wallet.fromMnemonic(user.mnemonic).connect(provider)
+    const contract = new Contract(
+      verityTokenContractAddress(),
+      verityTokenContractArtifact().abi,
+      wallet
+    )
+
+    // Send funds
+    const tx = await contract.validateAndTransfer(
+      transaction.address,
+      parseInt(transaction.amount, 10),
+      verification.verificationInfo,
+      verification.signature
+    )
+    const receipt = await tx.wait()
+
+    if (receipt.status === 0) {
+      throw new ProcessingError()
+    }
+
+    res.status(200).json({ status: "ok" })
+    return
+  }
+
   // Create JWT for callback
   const token = jwt.sign(
     { transaction, verification },
@@ -67,5 +99,5 @@ export default apiHandler<Response>(async (req, res) => {
   })
 
   // Success
-  res.status(200).json({ status: "ok" })
+  res.status(200).json({ status: "pending" })
 })

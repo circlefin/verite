@@ -1,6 +1,6 @@
-import { NotFoundError } from "@centre/demo-site/lib/errors"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { prisma } from "../../../../lib/database/prisma"
+import { NotFoundError, ProcessingError } from "../../../../lib/errors"
 
 type Response = {
   status: string
@@ -28,7 +28,7 @@ export default apiHandler<Response>(async (req, res) => {
 
   // Call the callback URL, which should send the funds
   // TODO: Handle error
-  await fetch(callbackUrl, {
+  const response = await fetch(callbackUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" }
   })
@@ -39,6 +39,10 @@ export default apiHandler<Response>(async (req, res) => {
       id
     }
   })
+
+  if (!response.ok) {
+    throw new ProcessingError()
+  }
 
   // Success
   res.status(200).json({ status: "ok" })

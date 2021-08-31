@@ -5,7 +5,7 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError
 } from "@web3-react/injected-connector"
-import { ethers, Contract, BigNumber } from "ethers"
+import { ethers, Contract, BigNumber, Wallet } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only

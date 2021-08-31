@@ -5,12 +5,13 @@ import ContractAddress from "../contracts/contract-address.json"
 import { jsonFetch } from "../lib/utils"
 
 export const useBalance = () => {
-  const { data, error } = useSWR(`/api/cefi/balance`, jsonFetch)
+  const { data, error, mutate } = useSWR(`/api/cefi/balance`, jsonFetch)
 
   return {
     balance: data,
     isLoading: !error && !data,
-    isError: error
+    isError: error,
+    mutate
   }
 }
 

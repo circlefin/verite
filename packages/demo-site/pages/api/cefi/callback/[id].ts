@@ -54,7 +54,11 @@ export default apiHandler<Response>(async (req, res) => {
     verification.verificationInfo,
     verification.signature
   )
-  await tx.wait()
+  const receipt = await tx.wait()
+
+  if (receipt.status === 0) {
+    throw new ProcessingError()
+  }
 
   res.json({ status: "ok" })
 })
