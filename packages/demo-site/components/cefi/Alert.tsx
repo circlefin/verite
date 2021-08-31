@@ -1,7 +1,9 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { ExclamationIcon } from "@heroicons/react/outline"
 import { CheckCircleIcon, XIcon } from "@heroicons/react/solid"
 
+/**
+ * Simple alert to show success / failure messages
+ */
 export default function Alert({ text, type, onDismiss }) {
   if (type === "error") {
     return (

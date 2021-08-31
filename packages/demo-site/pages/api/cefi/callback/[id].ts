@@ -15,6 +15,16 @@ type Response = {
   status: string
 }
 
+/**
+ * Callback endpoint to complete a send.
+ *
+ * The callback URL includes a JWT with information about the transaction,
+ * and completed verification result from a trusted verifier. We will use
+ * this information to complete the transaction.
+ *
+ * In a production environment, one would need to keep track of these
+ * transactions so as to prevent replay attacks.
+ */
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
 

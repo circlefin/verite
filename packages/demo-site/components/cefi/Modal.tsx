@@ -2,6 +2,9 @@ import { Dialog, Transition } from "@headlessui/react"
 import { ExclamationIcon } from "@heroicons/react/outline"
 import { Fragment, useRef } from "react"
 
+/**
+ * Modal used to prompt sender when sending over 10 VUSDC.
+ */
 export default function Modal({ confirmFunction, onClose, open, setOpen }) {
   const cancelButtonRef = useRef(null)
 

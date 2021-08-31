@@ -1,6 +1,6 @@
 import { Transaction } from "@centre/demo-site/lib/demo-fns"
 import { ProcessingError } from "@centre/demo-site/lib/errors"
-import { VerificationInfoResponse, verificationResult } from "@centre/verity"
+import { VerificationInfoResponse } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { prisma } from "../../../lib/database/prisma"
 
@@ -8,6 +8,9 @@ type Response = {
   status: string
 }
 
+/**
+ * Public endpoint that other CeFi providers can call to send funds.
+ */
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
 
@@ -20,9 +23,12 @@ export default apiHandler<Response>(async (req, res) => {
     throw new ProcessingError()
   }
 
-  // TODO: Should validate, as if we were the contract.
+  // In a production environment, now would be a good time to perform
+  // verification. In this demo, we include the same information required
+  // by the contract, but one could imagine more complex requirements
+  // that would then need to be checked.
 
-  // Persist the Verification Result
+  // Persist the Verification Result so it can be displayed in the UI
   await prisma.pendingTransaction.create({
     data: {
       result: JSON.stringify(req.body),

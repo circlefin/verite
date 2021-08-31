@@ -6,34 +6,41 @@ type Response = {
   status: string
 }
 
+/**
+ * API call for receiver to pickup a pending transaction.
+ *
+ * This could be fully automated by the receiving counterparty if it so
+ * desired, but we display a prompt in the UI for demo purposes.
+ */
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
 
   // Input
   const id = req.query.id as string
 
-  const verificationResult = await prisma.pendingTransaction.findUnique({
+  // Lookup pending transaction
+  const pendingTransaction = await prisma.pendingTransaction.findUnique({
     where: {
       id
     }
   })
 
-  if (!verificationResult) {
+  if (!pendingTransaction) {
     throw new NotFoundError()
   }
 
   // Extract callback URL
-  const json = JSON.parse(verificationResult.result)
+  const json = JSON.parse(pendingTransaction.result)
   const callbackUrl = json.callbackUrl
 
-  // Call the callback URL, which should send the funds
-  // TODO: Handle error
+  // Call the callback URL, which would send the funds
   const response = await fetch(callbackUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" }
   })
 
-  // Delete the verification result
+  // Delete the verification result so it doesn't show up in the UI anymore.
+  // A production system might keep this information.
   await prisma.pendingTransaction.delete({
     where: {
       id

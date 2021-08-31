@@ -1,26 +1,28 @@
 import { apiHandler, requireMethod } from "@centre/demo-site/lib/api-fns"
 import { User } from "@centre/demo-site/lib/database"
+import { NotFoundError } from "@centre/demo-site/lib/errors"
 import { getBalance } from "@centre/demo-site/lib/eth-fns"
 import { getSession } from "next-auth/client"
-import { prisma } from "../../../lib/database/prisma"
+import { PendingTransaction, prisma } from "../../../lib/database/prisma"
 
 type Response = {
   address: string
   balance: string
-  transfers: any[]
-  pendingTransactions: any[]
+  pendingTransaction?: PendingTransaction
 }
 
+/**
+ * API call to return information about a user's account
+ */
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "GET")
 
-  const user = (await getSession({ req })) as User
+  const session = await getSession({ req })
+  const user = session.user as User
 
-  const transfers = await prisma.transfer.findMany({
-    where: {
-      userId: user?.user?.id
-    }
-  })
+  if (!user) {
+    throw new NotFoundError()
+  }
 
   const pendingTransactions = await prisma.pendingTransaction.findMany({
     where: {
@@ -30,9 +32,8 @@ export default apiHandler<Response>(async (req, res) => {
 
   const balance = await getBalance(user?.address)
   res.json({
-    address: user?.address,
+    address: user.address,
     balance: balance.toString(),
-    transfers,
     pendingTransaction: pendingTransactions[0]
   })
 })

@@ -1,4 +1,5 @@
 import { currentUser2 } from "@centre/demo-site/lib/auth-fns"
+import { send } from "@centre/demo-site/lib/demo-fns"
 import { ProcessingError } from "@centre/demo-site/lib/errors"
 import {
   getProvider,
@@ -22,6 +23,17 @@ type Transaction = {
 
 /**
  * Fake centralized API to send VUSDC.
+ *
+ * This endpoint will immediately send funds if the amount is less than some
+ * threshold. For demo purposes it is set to 10 VUSDC.
+ *
+ * Otherwise, we make an API call to the counterparty with information about
+ * the transaction. This information the same as required on the VUSDC token
+ * contract. If more information is necessary, e.g. to satisfy travel rule
+ * requirements, they could be included.
+ *
+ * The payload also includes a callback URL that the receiving counterparty
+ * can use to complete the transaction.
  */
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
@@ -35,6 +47,17 @@ export default apiHandler<Response>(async (req, res) => {
     throw new ProcessingError()
   }
 
+  // If the amount is less than 10, go ahead and send it
+  if (BigNumber.from(transaction.amount).lt(10)) {
+    const success = await send(user, transaction)
+    if (!success) {
+      throw new ProcessingError()
+    }
+
+    res.status(200).json({ status: "ok" })
+    return
+  }
+
   // In a production environment, one would need to call out to a verifier to get a result
   const wallet = Wallet.fromMnemonic(user.mnemonic)
   const mnemonic =
@@ -45,34 +68,6 @@ export default apiHandler<Response>(async (req, res) => {
     mnemonic,
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
-
-  // If the amount is less than 10, go ahead and send it
-  if (BigNumber.from(transaction.amount).lt(10)) {
-    // Setup ETH
-    const provider = getProvider()
-    const wallet = Wallet.fromMnemonic(user.mnemonic).connect(provider)
-    const contract = new Contract(
-      verityTokenContractAddress(),
-      verityTokenContractArtifact().abi,
-      wallet
-    )
-
-    // Send funds
-    const tx = await contract.validateAndTransfer(
-      transaction.address,
-      parseInt(transaction.amount, 10),
-      verification.verificationInfo,
-      verification.signature
-    )
-    const receipt = await tx.wait()
-
-    if (receipt.status === 0) {
-      throw new ProcessingError()
-    }
-
-    res.status(200).json({ status: "ok" })
-    return
-  }
 
   // Create JWT for callback
   const token = jwt.sign(

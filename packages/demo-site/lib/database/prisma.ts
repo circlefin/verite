@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client"
 export type {
   Credential,
+  PendingTransaction,
   RevocationList,
   User,
-  VerificationRequest,
-  VerificationResult
+  VerificationRequest
 } from "@prisma/client"
 
 export let prisma: PrismaClient
