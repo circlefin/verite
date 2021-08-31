@@ -33,31 +33,31 @@ WHERE email = "alice@test.com";
 
 UPDATE User
 SET
-mnemonic = "feed flame cable lock kind jar diet security auction kitten question stand"
+mnemonic = "feed flame cable lock kind jar diet security auction kitten question stand",
 address = "0xF5C117C1cc6Feb7f3930a7Fb882002cd8BDA9Da1"
 WHERE email = "bob@test.com";
 
 UPDATE User
 SET
-mnemonic = "alcohol talk chronic mistake invest tumble horse pattern monster inner ivory awesome"
+mnemonic = "alcohol talk chronic mistake invest tumble horse pattern monster inner ivory awesome",
 address = "0xe28E19C9BfB96DE27a2B558e9A67e5dcbd0379B8"
 WHERE email = "kim@test.com";
 
 UPDATE User
 SET
-mnemonic = "chase scrub final fossil onion enter imitate enable amused salad predict trigger"
+mnemonic = "chase scrub final fossil onion enter imitate enable amused salad predict trigger",
 address = "0x24A60C20553bacBB5cF07303c90F39B3B9d02f1E"
 WHERE email = "brice@test.com";
 
 UPDATE User
 SET
-mnemonic = "hard laptop lucky green conduct maze gravity state welcome stomach camera grunt"
+mnemonic = "hard laptop lucky green conduct maze gravity state welcome stomach camera grunt",
 address = "0x073067B050527abA2026C5102c79d5fcc9469f31"
 WHERE email = "matt@test.com";
 
 UPDATE User
 SET
-mnemonic = "milk power apple shallow spatial speak infant bind split spice brief wave"
+mnemonic = "milk power apple shallow spatial speak infant bind split spice brief wave",
 address = "0xaa83D8d17CEf98A3604F9c176520dA35bA89f0D0"
-WHERE email = "alice@test.com";
+WHERE email = "sean@test.com";
 
