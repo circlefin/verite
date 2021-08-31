@@ -48,10 +48,11 @@ model VerificationRequest {
 }
 
 model VerificationResult {
-  id             String @id @default(uuid())
-  result         String
-  expires        DateTime
-  subjectAddress String
+  id               String @id @default(uuid())
+  result           String
+  expires          DateTime
+  subjectAddress   String
+  recipientAddress String
 }
 
 model Transfer {

@@ -1,3 +1,4 @@
+import { Transaction } from "@centre/demo-site/lib/demo-fns"
 import { ProcessingError } from "@centre/demo-site/lib/errors"
 import { VerificationInfoResponse, verificationResult } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
@@ -12,8 +13,10 @@ export default apiHandler<Response>(async (req, res) => {
 
   // Input
   const verification = req.body.verification as VerificationInfoResponse
+  const transaction = req.body.transaction as Transaction
+  const callbackUrl = req.body.callbackUrl as string
 
-  if (!verification) {
+  if (!verification || !transaction || !callbackUrl) {
     throw new ProcessingError()
   }
 
@@ -22,9 +25,10 @@ export default apiHandler<Response>(async (req, res) => {
   // Persist the Verification Result
   await prisma.verificationResult.create({
     data: {
-      result: JSON.stringify(verification),
+      result: JSON.stringify(req.body),
       expires: new Date(verification.verificationInfo.expiration * 1000),
-      subjectAddress: verification.verificationInfo.subjectAddress
+      subjectAddress: verification.verificationInfo.subjectAddress,
+      recipientAddress: transaction.address
     }
   })
 

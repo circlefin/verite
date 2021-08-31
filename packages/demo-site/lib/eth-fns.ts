@@ -5,7 +5,7 @@ import {
   NoEthereumProviderError,
   UserRejectedRequestError
 } from "@web3-react/injected-connector"
-import { ethers, Contract } from "ethers"
+import { ethers, Contract, BigNumber } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only
@@ -44,6 +44,17 @@ export function getEthErrorMessage(error: Error): string {
     console.error(error)
     return "An unknown error occurred. Check the console for more details."
   }
+}
+
+export async function getBalance(address: string): Promise<BigNumber> {
+  const provider = getProvider()
+
+  const contract = new Contract(
+    verityTokenContractAddress(),
+    verityTokenContractArtifact().abi,
+    provider
+  )
+  return await contract["balanceOf"](address)
 }
 
 /**

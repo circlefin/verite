@@ -8,6 +8,13 @@ import { LoadingButton } from "../components/LoadingButton"
 import Alert from "../components/cefi/Alert"
 import Modal from "../components/cefi/Modal"
 import { useBalance } from "../hooks/useBalance"
+import { requireAuth } from "../lib/auth-fns"
+
+type Props = Record<string, never>
+
+export const getServerSideProps = requireAuth<Props>(async (context) => {
+  return { props: {} }
+})
 
 const form = createRef<HTMLFormElement>()
 
@@ -15,6 +22,7 @@ const Page: NextPage = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [session] = useSession()
   const { balance } = useBalance()
+  const [pickupLoading, setPickupLoading] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
   const [address, setAddress] = useState<string>("")
@@ -66,7 +74,7 @@ const Page: NextPage = () => {
     setLoading(false)
 
     if (response.ok) {
-      info("Transfer complete!")
+      info("Transfer complete.")
     } else {
       error("Transfer failed.")
     }
@@ -74,14 +82,45 @@ const Page: NextPage = () => {
     return response.ok
   }
 
-  const TransferRow = (transfer) => {
+  const PickupPanel = (row) => {
+    const result = JSON.parse(row.result)
+    const amount = result.transaction.amount
     return (
-      <>
-        <div>From: {transfer.from}</div>
-        <div>To: {transfer.to}</div>
-        <div>Amount: {transfer.amount}</div>
-        <div>Status: {transfer.status}</div>
-      </>
+      <div className="bg-gray-50 sm:rounded-lg">
+        <div className="px-4 py-5 sm:p-6">
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            Someone is trying to send you VUSDC
+          </h3>
+          <div className="mt-2 max-w-xl text-sm text-gray-500">
+            <p>
+              Someone has sent you {amount} VUSDC. Before it can be picked up,
+              we must provide beneficiary information to the counterparty.
+            </p>
+          </div>
+          <div className="mt-5">
+            <LoadingButton
+              type="submit"
+              style="dot-loader"
+              loading={pickupLoading}
+              onClick={async () => {
+                setPickupLoading(true)
+
+                await fetch(`/api/cefi/pickup/${row.id}`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  }
+                })
+
+                setPickupLoading(false)
+              }}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Send information to pickup funds
+            </LoadingButton>
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -123,18 +162,33 @@ const Page: NextPage = () => {
           ) : null}
         </div>
 
+        <div className={`${message ? "block" : "hidden"} mb-4`}>
+          <Alert
+            text={message?.text}
+            type={message?.type}
+            onDismiss={() => setMessage(null)}
+          />
+        </div>
+
         <div>
-          <div className={`${message ? "block" : "hidden"} mb-4`}>
-            <Alert
-              text={message?.text}
-              type={message?.type}
-              onDismiss={() => setMessage(null)}
-            />
+          {balance?.pendingTransaction
+            ? PickupPanel(balance?.pendingTransaction)
+            : null}
+        </div>
+
+        <div>
+          <div>
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              Send VUSDC
+            </h3>
+            <p className="mt-2 max-w-4xl text-sm text-gray-500">
+              Transfer VUSDC to an address.
+            </p>
           </div>
 
           <form
             ref={form}
-            className="space-y-2"
+            className="space-y-2 mt-4"
             onSubmit={async (e) => {
               e.preventDefault()
 
@@ -146,12 +200,6 @@ const Page: NextPage = () => {
               form.current.reset()
             }}
           >
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Transfer VUSDC
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Send VUSDC to an address.
-            </p>
             <div>
               <label
                 htmlFor="address"
@@ -207,7 +255,15 @@ const Page: NextPage = () => {
           </form>
         </div>
 
-        <div>{balance?.transfers.map((x) => TransferRow(x))}</div>
+        <div className="mt-8">
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            Receive VUSDC
+          </h3>
+          <p className="mt-2 max-w-4xl text-sm text-gray-500">
+            You can receive VUSDC at this address:
+          </p>
+          <p className="mt-2">{balance?.address}</p>
+        </div>
       </React.StrictMode>
     </Layout>
   )

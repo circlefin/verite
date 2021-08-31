@@ -1,12 +1,10 @@
 import { currentUser2 } from "@centre/demo-site/lib/auth-fns"
 import { ProcessingError } from "@centre/demo-site/lib/errors"
-import {
-  getProvider,
-  verityTokenContractAddress,
-  verityTokenContractArtifact
-} from "@centre/demo-site/lib/eth-fns"
+import { verityTokenContractAddress } from "@centre/demo-site/lib/eth-fns"
+import { fullURL } from "@centre/demo-site/lib/utils"
 import { verificationResult } from "@centre/verity"
-import { ethers, Contract, Wallet } from "ethers"
+import { Wallet } from "ethers"
+import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 
 type Response = {
@@ -25,25 +23,16 @@ export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
 
   const user = await currentUser2(req)
-  console.log(user)
 
   // Input
   const transaction = req.body.transaction as Transaction
-  console.log(transaction)
 
   if (!transaction) {
     throw new ProcessingError()
   }
 
-  const provider = getProvider()
-  const wallet = Wallet.fromMnemonic(user.mnemonic).connect(provider)
-  const contract = new Contract(
-    verityTokenContractAddress(),
-    verityTokenContractArtifact().abi,
-    wallet
-  )
-
   // In a production environment, one would need to call out to a verifier to get a result
+  const wallet = Wallet.fromMnemonic(user.mnemonic)
   const mnemonic =
     "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
   const verification = await verificationResult(
@@ -53,33 +42,29 @@ export default apiHandler<Response>(async (req, res) => {
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
-  if (req.body.withVerification) {
-    // Call out to other service letting them know the results
-    const response = await fetch(`${process.env.HOST}/api/demo/verify`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ verification })
-    })
-    console.log(JSON.stringify({ verification }))
-    console.log(await response.text())
-  } else {
-    console.log("Skipping verification")
+  // Create JWT for callback
+  const token = jwt.sign(
+    { transaction, verification },
+    process.env.AUTH_JWT_SECRET,
+    {
+      subject: user.id,
+      algorithm: "HS256",
+      expiresIn: "1h"
+    }
+  )
+
+  const payload = {
+    callbackUrl: fullURL(`/api/cefi/callback/${token}`),
+    transaction,
+    verification
   }
 
-  // This fails.
-  // const tx = await contract.transfer(
-  //   transaction.address,
-  //   parseInt(transaction.amount, 20)
-  // )
-  // await tx.wait()
-
-  const tx = await contract.validateAndTransfer(
-    transaction.address,
-    parseInt(transaction.amount, 10),
-    verification.verificationInfo,
-    verification.signature
-  )
-  // await tx.wait()
+  // Call out to other service letting them know the results
+  await fetch(fullURL("/api/cefi/verify"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
 
   // Success
   res.status(200).json({ status: "ok" })
