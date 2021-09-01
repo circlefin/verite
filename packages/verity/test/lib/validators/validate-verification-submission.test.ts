@@ -22,7 +22,7 @@ import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("Submission validator", () => {
-  it("validates a Verification Submission", async () => {
+  it("validates a KYC Verification Submission", async () => {
     const clientDidKey = await randomDidKey()
     const verifierDidKey = await randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
@@ -54,6 +54,54 @@ describe("Submission validator", () => {
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did]
+    )
+
+    const submission = await createVerificationSubmission(
+      clientDidKey,
+      verificationRequest.presentation_definition,
+      clientVC
+    )
+
+    await expect(
+      validateVerificationSubmission(
+        submission,
+        verificationRequest.presentation_definition
+      )
+    ).resolves.not.toThrow()
+  })
+
+  it("validates a Credit Score Verification Submission", async () => {
+    const clientDidKey = await randomDidKey()
+    const verifierDidKey = await randomDidKey()
+    const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
+    const application = await createCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+
+    await validateCredentialApplication(application, manifest)
+
+    const decodedApplication = await decodeCredentialApplication(application)
+
+    const fulfillment = await buildAndSignFulfillment(
+      issuer,
+      decodedApplication,
+      creditScoreAttestationFixture
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(
+      fulfillment.presentation
+    )
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const verificationRequest = generateVerificationRequest(
+      "CreditScoreAttestation",
+      verifierDidKey.controller,
+      verifierDidKey.controller,
+      "https://test.host/verify",
+      "https://other.host/callback",
+      [issuer.did],
+      { minimumCreditScore: creditScoreAttestationFixture.score }
     )
 
     const submission = await createVerificationSubmission(

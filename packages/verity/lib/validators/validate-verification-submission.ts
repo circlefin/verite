@@ -14,6 +14,7 @@ import type {
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
 import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
+import { findSchemaById, validateAttestationSchema } from "./validate-schema"
 
 const ajv = new Ajv()
 
@@ -163,8 +164,21 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
 }
 
 function validateCredentialAgainstSchema(
-  credential: Verifiable<W3CCredential>
-): void {}
+  credentialMap: Map<string, Verifiable<W3CCredential>[]>
+): void {
+  credentialMap.forEach((credentials, uri) => {
+    const schema = findSchemaById(uri)
+
+    if (!schema) {
+      throw new ValidationError(`Unknown schema: ${uri}`)
+    }
+
+    credentials.forEach((credential) => {
+      const type = credential.type[credential.type.length - 1]
+      validateAttestationSchema(credential.credentialSubject[type], schema)
+    })
+  })
+}
 
 /**
  * Validate a verifiable presentation against a presentation definition
@@ -200,15 +214,7 @@ export async function validateVerificationSubmission(
    */
   ensureNotExpired(presentation)
 
-  /**
-  // check conforms to expected schema: disabled for now
-  Object.keys(mapped).map((key) => {
-    const schema = findSchemaById(key)
-    const result = mapped[key].every((cred) => {
-      validateSchema(cred.credentialSubject, schema, errors)
-    })
-  })
-  */
+  const credentialMap = mapInputsToDescriptors(decoded, definition)
 
   /**
    * Check the verifiable credentials to ensure they meet the requirements
@@ -216,8 +222,10 @@ export async function validateVerificationSubmission(
    * the credential is signed by a trusted signer, and meets the minimum
    * requirements set forth in the request (e.g. minimum credit score).
    */
-  validateInputDescriptors(
-    mapInputsToDescriptors(decoded, definition),
-    definition.input_descriptors
-  )
+  validateInputDescriptors(credentialMap, definition.input_descriptors)
+
+  /**
+   * Validate that each credential matches the expected schema
+   */
+  validateCredentialAgainstSchema(credentialMap)
 }

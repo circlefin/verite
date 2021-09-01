@@ -1,34 +1,26 @@
+import { CreditScoreAttestation, KYCAMLAttestation } from "@centre/verity/types"
 import Ajv from "ajv"
-import { Verifiable, W3CCredential, W3CPresentation } from "../../types/W3C"
 import { ValidationError } from "../errors"
+export { findSchemaById } from "./schemas"
 
 const ajv = new Ajv()
 
-export function validateSchema(
-  input: Verifiable<W3CCredential | W3CPresentation>,
+export function validateAttestationSchema(
+  attestation: KYCAMLAttestation | CreditScoreAttestation,
   schema: Record<string, unknown>
-): boolean {
+): void {
+  if (!attestation) {
+    throw new ValidationError("No attestation present in credential")
+  }
+
   const validate = ajv.compile(schema)
-  const valid = validate(input)
-  if (!valid) {
-    console.error(validate.errors)
-  }
-  return valid as boolean
-}
+  const valid = validate(attestation)
 
-function ajvErrorToVerificationFailures(
-  errors?: Ajv.ErrorObject[] | null
-): ValidationError[] {
-  if (!errors) {
-    return []
-  }
-
-  const convertedErrors = errors.map((e) => {
-    return new ValidationError(
-      `${e.keyword} json schema validation failure`,
-      `${e.dataPath ? e.dataPath : "input"} ${e.message}`
+  if (!valid && validate.errors) {
+    const error = validate.errors[0]
+    throw new ValidationError(
+      `${error.keyword} json schema validation failure`,
+      `${error.dataPath ? error.dataPath : "input"} ${error.message}`
     )
-  })
-
-  return convertedErrors
+  }
 }
