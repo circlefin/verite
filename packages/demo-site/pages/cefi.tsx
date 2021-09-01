@@ -7,8 +7,10 @@ import Layout from "../components/Layout"
 import { LoadingButton } from "../components/LoadingButton"
 import Alert from "../components/cefi/Alert"
 import Modal from "../components/cefi/Modal"
+import NoTokensMessage from "../components/dapp/NoTokensMessage"
 import { useBalance } from "../hooks/useBalance"
 import { requireAuth } from "../lib/auth-fns"
+import { fullURL } from "../lib/utils"
 
 export const getServerSideProps = requireAuth(async () => {
   return { props: {} }
@@ -19,7 +21,7 @@ const form = createRef<HTMLFormElement>()
 const Page: NextPage = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [session] = useSession()
-  const { balance, mutate } = useBalance()
+  const { data, mutate } = useBalance()
   const [pickupLoading, setPickupLoading] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
@@ -87,6 +89,30 @@ const Page: NextPage = () => {
     return response.ok
   }
 
+  const faucetFunction = async (address: string): Promise<boolean> => {
+    try {
+      const resp = await fetch(fullURL("/api/demo/faucet"), {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({ address })
+      })
+      const json = await resp.json()
+      if (json.status !== "ok") {
+        console.error(json)
+        error(`API call to faucet failed: ${JSON.stringify(json)}`)
+        return false
+      }
+    } catch (e) {
+      console.error(e)
+      error(`API call to faucet failed: ${e.message}`)
+      return false
+    }
+
+    return true
+  }
+
   const PickupPanel = (row) => {
     const result = JSON.parse(row.result)
     const amount = result.transaction.amount
@@ -138,6 +164,25 @@ const Page: NextPage = () => {
     )
   }
 
+  if (!data) {
+    return <>Loading</>
+  }
+
+  const accountBalance = BigNumber.from(data.balance)
+
+  if (accountBalance.lte(0)) {
+    return (
+      <Layout title="Project Verity Demo">
+        <React.StrictMode>
+          <NoTokensMessage
+            faucetFunction={faucetFunction}
+            selectedAddress={data.address}
+          ></NoTokensMessage>
+        </React.StrictMode>
+      </Layout>
+    )
+  }
+
   return (
     <Layout title="Project Verity Demo">
       <React.StrictMode>
@@ -160,7 +205,7 @@ const Page: NextPage = () => {
             <span className="px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
               Balance:
               <span className="ml-3 text-lg font-bold">
-                {balance?.balance} VUSDC
+                {data.balance} VUSDC
               </span>
             </span>
           </nav>
@@ -188,8 +233,8 @@ const Page: NextPage = () => {
         </div>
 
         <div>
-          {balance?.pendingTransaction
-            ? PickupPanel(balance?.pendingTransaction)
+          {data.pendingTransaction
+            ? PickupPanel(data.pendingTransaction)
             : null}
         </div>
 
@@ -278,7 +323,7 @@ const Page: NextPage = () => {
           <p className="max-w-4xl mt-2 text-sm text-gray-500">
             You can receive VUSDC at this address:
           </p>
-          <p className="mt-2">{balance?.address}</p>
+          <p className="mt-2">{data?.address}</p>
         </div>
       </React.StrictMode>
     </Layout>
