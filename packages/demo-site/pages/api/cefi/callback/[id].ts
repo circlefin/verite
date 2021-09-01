@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findUserByAddress } from "../../../../lib/database"
+import { prisma } from "../../../../lib/database/prisma"
 import { send } from "../../../../lib/demo-fns"
 import { BadRequestError, NotFoundError } from "../../../../lib/errors"
 
@@ -14,9 +15,6 @@ type Response = {
  * The callback URL includes a JWT with information about the transaction,
  * and completed verification result from a trusted verifier. We will use
  * this information to complete the transaction.
- *
- * In a production environment, one would need to keep track of these
- * transactions so as to prevent replay attacks.
  */
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
@@ -44,8 +42,18 @@ export default apiHandler<Response>(async (req, res) => {
     throw new NotFoundError()
   }
 
+  // Find and delete pending send so it cannot be replayed or called after
+  // being canceled.
+  const pendingSend = await prisma.pendingSend.delete({ where: { id } })
+  if (!pendingSend) {
+    throw new NotFoundError()
+  }
+
   // Send funds
-  const success = await send(user, transaction)
+  const success = await send(user, {
+    address: pendingSend.to,
+    amount: pendingSend.amount
+  })
 
   if (!success) {
     throw new BadRequestError("Unable to send")

@@ -7,6 +7,7 @@ import Layout from "../components/Layout"
 import { LoadingButton } from "../components/LoadingButton"
 import Alert from "../components/cefi/Alert"
 import Modal from "../components/cefi/Modal"
+import PendingSendPanel from "../components/cefi/PendingSendPanel"
 import PickupPanel from "../components/cefi/PickupPanel"
 import NoTokensMessage from "../components/dapp/NoTokensMessage"
 import { useBalance } from "../hooks/useBalance"
@@ -24,6 +25,7 @@ const Page: NextPage = () => {
   const [session] = useSession()
   const { data, mutate } = useBalance()
   const [pickupLoading, setPickupLoading] = useState(false)
+  const [pendingSendLoading, setPendingSendLoading] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
   const [address, setAddress] = useState<string>("")
@@ -105,7 +107,7 @@ const Page: NextPage = () => {
       info("Pickup succeessful.")
     } else {
       error(
-        "Pickup failed. This can happen if the verification is expired or if the counterparty does not have sufficient funds."
+        "Pickup failed. This can happen if the counterparty canceled the request, verification is expired, or if the counterparty does not have sufficient funds."
       )
     }
 
@@ -131,6 +133,27 @@ const Page: NextPage = () => {
     }
 
     setPickupLoading(false)
+  }
+
+  const pendingSendCancel = async (id: string) => {
+    setPendingSendLoading(true)
+
+    const response = await fetch(`/api/cefi/send/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    await mutate(undefined, true)
+
+    if (response.ok) {
+      info("Cancelling transaction.")
+    } else {
+      error("Something went wrong.")
+    }
+
+    setPendingSendLoading(false)
   }
 
   const faucetFunction = async (address: string): Promise<boolean> => {
@@ -235,6 +258,16 @@ const Page: NextPage = () => {
                 pickupCancelFunction(data.pendingTransaction.id)
               }
             ></PickupPanel>
+          ) : null}
+        </div>
+
+        <div>
+          {data.pendingSend ? (
+            <PendingSendPanel
+              row={data.pendingSend}
+              loading={pendingSendLoading}
+              onCancel={() => pendingSendCancel(data.pendingSend.id)}
+            ></PendingSendPanel>
           ) : null}
         </div>
 
