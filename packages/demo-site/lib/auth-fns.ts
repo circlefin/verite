@@ -67,17 +67,9 @@ export function requireAdmin<T>(
  * const user = await currentUser(context)
  */
 export async function currentUser(
-  context: GetServerSidePropsContext
+  context: GetServerSidePropsContext | { req: NextApiRequest }
 ): Promise<User | null> {
   const session = await getSession(context)
-
-  if (session && session.user) {
-    return findUser((session.user as User).id)
-  }
-}
-
-export async function currentUser2(req: NextApiRequest): Promise<User | null> {
-  const session = await getSession({ req })
 
   if (session && session.user) {
     return findUser((session.user as User).id)

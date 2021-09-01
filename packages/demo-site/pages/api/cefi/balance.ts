@@ -1,8 +1,7 @@
 import { apiHandler, requireMethod } from "@centre/demo-site/lib/api-fns"
-import { User } from "@centre/demo-site/lib/database"
+import { currentUser } from "@centre/demo-site/lib/auth-fns"
 import { NotFoundError } from "@centre/demo-site/lib/errors"
 import { getBalance } from "@centre/demo-site/lib/eth-fns"
-import { getSession } from "next-auth/client"
 import { PendingTransaction, prisma } from "../../../lib/database/prisma"
 
 type Response = {
@@ -17,9 +16,7 @@ type Response = {
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "GET")
 
-  const session = await getSession({ req })
-  const user = session.user as User
-
+  const user = await currentUser({ req })
   if (!user) {
     throw new NotFoundError()
   }
