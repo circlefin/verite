@@ -1,12 +1,12 @@
-import { currentUser2 } from "@centre/demo-site/lib/auth-fns"
-import { send } from "@centre/demo-site/lib/demo-fns"
-import { ProcessingError } from "@centre/demo-site/lib/errors"
-import { verityTokenContractAddress } from "@centre/demo-site/lib/eth-fns"
-import { fullURL } from "@centre/demo-site/lib/utils"
 import { verificationResult } from "@centre/verity"
 import { BigNumber, Wallet } from "ethers"
 import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
+import { currentUser } from "../../../lib/auth-fns"
+import { send } from "../../../lib/demo-fns"
+import { NotFoundError, ProcessingError } from "../../../lib/errors"
+import { verityTokenContractAddress } from "../../../lib/eth-fns"
+import { fullURL } from "../../../lib/utils"
 
 type Response = {
   status: string
@@ -34,7 +34,10 @@ type Transaction = {
 export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
 
-  const user = await currentUser2(req)
+  const user = await currentUser({ req })
+  if (!user) {
+    throw new NotFoundError()
+  }
 
   // Input
   const transaction = req.body.transaction as Transaction

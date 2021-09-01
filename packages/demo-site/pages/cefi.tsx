@@ -10,9 +10,7 @@ import Modal from "../components/cefi/Modal"
 import { useBalance } from "../hooks/useBalance"
 import { requireAuth } from "../lib/auth-fns"
 
-type Props = Record<string, never>
-
-export const getServerSideProps = requireAuth<Props>(async () => {
+export const getServerSideProps = requireAuth(async () => {
   return { props: {} }
 })
 

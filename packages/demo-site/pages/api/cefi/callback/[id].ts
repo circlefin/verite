@@ -1,15 +1,15 @@
-import { apiHandler, requireMethod } from "@centre/demo-site/lib/api-fns"
-import { findUser } from "@centre/demo-site/lib/database"
-import { Transaction } from "@centre/demo-site/lib/demo-fns"
-import { ProcessingError } from "@centre/demo-site/lib/errors"
+import { VerificationInfoResponse } from "@centre/verity"
+import { Contract, Wallet } from "ethers"
+import jwt from "jsonwebtoken"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { findUser } from "../../../../lib/database"
+import { Transaction } from "../../../../lib/demo-fns"
+import { ProcessingError } from "../../../../lib/errors"
 import {
   getProvider,
   verityTokenContractAddress,
   verityTokenContractArtifact
-} from "@centre/demo-site/lib/eth-fns"
-import { VerificationInfoResponse } from "@centre/verity/dist"
-import { Contract, Wallet } from "ethers"
-import jwt from "jsonwebtoken"
+} from "../../../../lib/eth-fns"
 
 type Response = {
   status: string
