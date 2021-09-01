@@ -4,8 +4,8 @@ import { Fragment, useRef } from "react"
 
 type Props = {
   confirmFunction: () => void
-  onClose: () => void
   open: boolean
+  onClose: (open: boolean) => void
   setOpen: (open: boolean) => void
 }
 

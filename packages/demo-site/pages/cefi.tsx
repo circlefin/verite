@@ -93,10 +93,10 @@ const Page: NextPage = () => {
     return (
       <div className="bg-gray-50 sm:rounded-lg">
         <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">
+          <h3 className="text-lg font-medium leading-6 text-gray-900">
             Someone is trying to send you VUSDC
           </h3>
-          <div className="mt-2 max-w-xl text-sm text-gray-500">
+          <div className="max-w-xl mt-2 text-sm text-gray-500">
             <p>
               Someone has sent you {amount} VUSDC. Before it can be picked up,
               we must provide beneficiary information to the counterparty.
@@ -195,10 +195,10 @@ const Page: NextPage = () => {
 
         <div>
           <div>
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
               Send VUSDC
             </h3>
-            <p className="mt-2 max-w-4xl text-sm text-gray-500">
+            <p className="max-w-4xl mt-2 text-sm text-gray-500">
               In this demo, transfers of 10 or more VUSDC will require providing
               information to the counterparty.
             </p>
@@ -206,7 +206,7 @@ const Page: NextPage = () => {
 
           <form
             ref={form}
-            className="space-y-2 mt-4"
+            className="mt-4 space-y-2"
             onSubmit={async (e) => {
               e.preventDefault()
 
@@ -232,7 +232,7 @@ const Page: NextPage = () => {
                   type="text"
                   name="address"
                   id="address"
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="0x..."
                   onChange={(e) => setAddress(e.target.value)}
                 />
@@ -253,7 +253,7 @@ const Page: NextPage = () => {
                   type="text"
                   name="amount"
                   id="amount"
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="0 VUSDC"
                   onChange={(e) => setAmount(e.target.value)}
                 />
@@ -272,10 +272,10 @@ const Page: NextPage = () => {
         </div>
 
         <div className="mt-8">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">
+          <h3 className="text-lg font-medium leading-6 text-gray-900">
             Receive VUSDC
           </h3>
-          <p className="mt-2 max-w-4xl text-sm text-gray-500">
+          <p className="max-w-4xl mt-2 text-sm text-gray-500">
             You can receive VUSDC at this address:
           </p>
           <p className="mt-2">{balance?.address}</p>
