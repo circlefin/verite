@@ -34,12 +34,10 @@ export async function send(
 
   // In a production environment, one would need to call out to a verifier to get a result
   if (!verification) {
-    const mnemonic =
-      "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
     verification = await verificationResult(
       wallet.address,
       verityTokenContractAddress(),
-      mnemonic,
+      process.env.ETH_WALLET_MNEMONIC,
       parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
     )
   }
