@@ -128,7 +128,7 @@ function creditScorePresentationDefinition(
       purpose: `We can only verify Credit Score credentials that are above ${minimumCreditScore}.`,
       filter: {
         type: "number",
-        exclusiveMinimum: minimumCreditScore
+        minimum: minimumCreditScore
       }
     })
   }
