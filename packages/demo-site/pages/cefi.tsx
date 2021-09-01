@@ -143,7 +143,10 @@ const Page: NextPage = () => {
       <React.StrictMode>
         {open && (
           <Modal
-            confirmFunction={() => sendFunction(address, amount)}
+            confirmFunction={() => {
+              sendFunction(address, amount)
+              form.current.reset()
+            }}
             onClose={setOpen}
             open={open}
             setOpen={setOpen}
@@ -232,7 +235,6 @@ const Page: NextPage = () => {
                   className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                   placeholder="0x..."
                   onChange={(e) => setAddress(e.target.value)}
-                  defaultValue={address}
                 />
               </div>
             </div>
@@ -254,7 +256,6 @@ const Page: NextPage = () => {
                   className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                   placeholder="0 VUSDC"
                   onChange={(e) => setAmount(e.target.value)}
-                  defaultValue={amount}
                 />
               </div>
             </div>
