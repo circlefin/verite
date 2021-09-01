@@ -1,15 +1,8 @@
-import { VerificationInfoResponse } from "@centre/verity"
-import { Contract, Wallet } from "ethers"
 import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
-import { findUser } from "../../../../lib/database"
-import { Transaction } from "../../../../lib/demo-fns"
+import { findUserByAddress } from "../../../../lib/database"
+import { send } from "../../../../lib/demo-fns"
 import { BadRequestError, NotFoundError } from "../../../../lib/errors"
-import {
-  getProvider,
-  verityTokenContractAddress,
-  verityTokenContractArtifact
-} from "../../../../lib/eth-fns"
 
 type Response = {
   status: string
@@ -33,40 +26,28 @@ export default apiHandler<Response>(async (req, res) => {
   const payload = jwt.verify(token, process.env.AUTH_JWT_SECRET)
 
   // Validate Inputs
-  const userId = payload.sub as string
-  const transaction = payload["transaction"] as Transaction
-  const verification = payload["verification"] as VerificationInfoResponse
+  const id = payload.sub as string
+  const userAddress = payload["from"] as string
+  const transaction = {
+    address: payload["to"],
+    amount: payload["amount"]
+  }
 
-  if (!userId || !transaction || !verification) {
+  if (!id || !userAddress || !transaction.address || !transaction.amount) {
     throw new BadRequestError("Missing required body fields")
   }
 
   // Find user
-  const user = await findUser(userId)
+  const user = await findUserByAddress(userAddress)
 
   if (!user) {
     throw new NotFoundError()
   }
 
-  // Setup ETH
-  const provider = getProvider()
-  const wallet = Wallet.fromMnemonic(user.mnemonic).connect(provider)
-  const contract = new Contract(
-    verityTokenContractAddress(),
-    verityTokenContractArtifact().abi,
-    wallet
-  )
-
   // Send funds
-  const tx = await contract.validateAndTransfer(
-    transaction.address,
-    parseInt(transaction.amount, 10),
-    verification.verificationInfo,
-    verification.signature
-  )
-  const receipt = await tx.wait()
+  const success = await send(user, transaction)
 
-  if (receipt.status === 0) {
+  if (!success) {
     throw new BadRequestError("Unable to send")
   }
 

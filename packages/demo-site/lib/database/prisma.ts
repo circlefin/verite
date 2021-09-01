@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client"
 export type {
   Credential,
-  PendingTransaction,
+  PendingReceive,
+  PendingSend,
   RevocationList,
   User,
   VerificationRequest

@@ -1,7 +1,6 @@
-import { VerificationInfoResponse } from "@centre/verity"
+import { PendingSend } from "@prisma/client"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { prisma } from "../../../lib/database/prisma"
-import { Transaction } from "../../../lib/demo-fns"
 import { BadRequestError } from "../../../lib/errors"
 
 type Response = {
@@ -15,11 +14,10 @@ export default apiHandler<Response>(async (req, res) => {
   requireMethod(req, "POST")
 
   // Input
-  const verification = req.body.verification as VerificationInfoResponse
-  const transaction = req.body.transaction as Transaction
+  const transaction = req.body.transaction as PendingSend
   const callbackUrl = req.body.callbackUrl as string
 
-  if (!verification || !transaction || !callbackUrl) {
+  if (!transaction || !callbackUrl) {
     throw new BadRequestError("Missing required body fields")
   }
 
@@ -29,12 +27,13 @@ export default apiHandler<Response>(async (req, res) => {
   // that would then need to be checked.
 
   // Persist the Verification Result so it can be displayed in the UI
-  await prisma.pendingTransaction.create({
+  await prisma.pendingReceive.create({
     data: {
-      result: JSON.stringify(req.body),
-      expires: new Date(verification.verificationInfo.expiration * 1000),
-      subjectAddress: verification.verificationInfo.subjectAddress,
-      recipientAddress: transaction.address
+      from: transaction.from,
+      to: transaction.to,
+      amount: transaction.amount,
+      payload: transaction.payload,
+      callbackUrl: callbackUrl
     }
   })
 

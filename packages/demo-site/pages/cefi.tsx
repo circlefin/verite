@@ -1,4 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber"
+import { PendingReceive } from "@prisma/client"
 import { NextPage } from "next"
 import { signout, useSession } from "next-auth/client"
 import React, { createRef, useState } from "react"
@@ -113,9 +114,9 @@ const Page: NextPage = () => {
     return true
   }
 
-  const PickupPanel = (row) => {
-    const result = JSON.parse(row.result)
-    const amount = result.transaction.amount
+  const PickupPanel = (row: PendingReceive) => {
+    console.log(row)
+    const amount = row.amount
     return (
       <div className="bg-gray-50 sm:rounded-lg">
         <div className="px-4 py-5 sm:p-6">

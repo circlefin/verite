@@ -23,6 +23,14 @@ export async function findUser(id?: string): Promise<User | undefined> {
   })
 }
 
+export async function findUserByAddress(
+  address: string
+): Promise<User | undefined> {
+  return prisma.user.findFirst({
+    where: { address }
+  })
+}
+
 export async function authenticateUser(
   email: string,
   password: string
