@@ -249,13 +249,13 @@ const Page: NextPage = () => {
         </div>
 
         <div>
-          {data.pendingTransaction ? (
+          {data.pendingReceive ? (
             <PickupPanel
-              row={data.pendingTransaction}
+              row={data.pendingReceive}
               pickupLoading={pickupLoading}
-              pickupFunction={() => pickupFunction(data.pendingTransaction.id)}
+              pickupFunction={() => pickupFunction(data.pendingReceive.id)}
               pickupCancelFunction={() =>
-                pickupCancelFunction(data.pendingTransaction.id)
+                pickupCancelFunction(data.pendingReceive.id)
               }
             ></PickupPanel>
           ) : null}

@@ -6,7 +6,7 @@ import { jsonFetch } from "../lib/utils"
 type Data = {
   balance: string
   address: string
-  pendingTransaction: PendingReceive
+  pendingReceive: PendingReceive
   pendingSend: PendingSend
 }
 

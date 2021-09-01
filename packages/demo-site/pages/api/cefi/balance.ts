@@ -11,8 +11,8 @@ import { getBalance } from "../../../lib/eth-fns"
 type Response = {
   address: string
   balance: string
-  pendingTransaction?: PendingReceive
-  pendingSend: PendingSend
+  pendingReceive?: PendingReceive
+  pendingSend?: PendingSend
 }
 
 /**
@@ -42,7 +42,7 @@ export default apiHandler<Response>(async (req, res) => {
   res.json({
     address: user.address,
     balance: balance.toString(),
-    pendingTransaction: pendingReceive,
+    pendingReceive: pendingReceive,
     pendingSend: pendingSend
   })
 })
