@@ -2,7 +2,7 @@ import { VerificationInfoResponse } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { prisma } from "../../../lib/database/prisma"
 import { Transaction } from "../../../lib/demo-fns"
-import { ProcessingError } from "../../../lib/errors"
+import { BadRequestError } from "../../../lib/errors"
 
 type Response = {
   status: string
@@ -20,7 +20,7 @@ export default apiHandler<Response>(async (req, res) => {
   const callbackUrl = req.body.callbackUrl as string
 
   if (!verification || !transaction || !callbackUrl) {
-    throw new ProcessingError()
+    throw new BadRequestError("Missing required body fields")
   }
 
   // In a production environment, now would be a good time to perform

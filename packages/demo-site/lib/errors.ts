@@ -19,3 +19,14 @@ export class MethodNotAllowedError extends Error {
     this.details = details
   }
 }
+
+export class BadRequestError extends Error {
+  status = 400
+  details?: string
+
+  constructor(details?: string) {
+    super("Bad request")
+    this.name = "BadRequestError"
+    this.details = details
+  }
+}

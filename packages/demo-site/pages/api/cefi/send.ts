@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { currentUser } from "../../../lib/auth-fns"
 import { send } from "../../../lib/demo-fns"
-import { NotFoundError, ProcessingError } from "../../../lib/errors"
+import { NotFoundError, BadRequestError } from "../../../lib/errors"
 import { verityTokenContractAddress } from "../../../lib/eth-fns"
 import { fullURL } from "../../../lib/utils"
 
@@ -43,14 +43,14 @@ export default apiHandler<Response>(async (req, res) => {
   const transaction = req.body.transaction as Transaction
 
   if (!transaction) {
-    throw new ProcessingError()
+    throw new BadRequestError("Missing transaction")
   }
 
   // If the amount is less than 10, go ahead and send it
   if (BigNumber.from(transaction.amount).lt(10)) {
     const success = await send(user, transaction)
     if (!success) {
-      throw new ProcessingError()
+      throw new BadRequestError("Failed to send")
     }
 
     res.status(200).json({ status: "ok" })

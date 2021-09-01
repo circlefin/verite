@@ -1,6 +1,6 @@
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { prisma } from "../../../../lib/database/prisma"
-import { NotFoundError, ProcessingError } from "../../../../lib/errors"
+import { NotFoundError, BadRequestError } from "../../../../lib/errors"
 
 type Response = {
   status: string
@@ -48,7 +48,7 @@ export default apiHandler<Response>(async (req, res) => {
   })
 
   if (!response.ok) {
-    throw new ProcessingError()
+    throw new BadRequestError("Unable to send")
   }
 
   // Success
