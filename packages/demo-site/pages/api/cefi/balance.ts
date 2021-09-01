@@ -1,8 +1,8 @@
-import { apiHandler, requireMethod } from "@centre/demo-site/lib/api-fns"
-import { currentUser } from "@centre/demo-site/lib/auth-fns"
-import { NotFoundError } from "@centre/demo-site/lib/errors"
-import { getBalance } from "@centre/demo-site/lib/eth-fns"
+import { apiHandler, requireMethod } from "../../../lib/api-fns"
+import { currentUser } from "../../../lib/auth-fns"
 import { PendingTransaction, prisma } from "../../../lib/database/prisma"
+import { NotFoundError } from "../../../lib/errors"
+import { getBalance } from "../../../lib/eth-fns"
 
 type Response = {
   address: string

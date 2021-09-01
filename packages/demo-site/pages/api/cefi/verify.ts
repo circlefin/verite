@@ -1,8 +1,8 @@
-import { Transaction } from "@centre/demo-site/lib/demo-fns"
-import { ProcessingError } from "@centre/demo-site/lib/errors"
 import { VerificationInfoResponse } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { prisma } from "../../../lib/database/prisma"
+import { Transaction } from "../../../lib/demo-fns"
+import { ProcessingError } from "../../../lib/errors"
 
 type Response = {
   status: string
