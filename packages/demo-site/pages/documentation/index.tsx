@@ -1,13 +1,6 @@
 import { NextPage } from "next"
 import Link from "next/link"
 import Layout from "../../components/Layout"
-import { requireAuth } from "../../lib/auth-fns"
-
-export const getServerSideProps = requireAuth(async () => {
-  return {
-    props: {}
-  }
-})
 
 type Reference = {
   title: string
