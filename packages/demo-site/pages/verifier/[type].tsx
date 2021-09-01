@@ -1,7 +1,3 @@
-import {
-  createVerificationRequest,
-  VerificationRequestResponse
-} from "@centre/demo-site/lib/verification-request"
 import { Disclosure } from "@headlessui/react"
 import { BadgeCheckIcon, XCircleIcon } from "@heroicons/react/outline"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
@@ -12,6 +8,10 @@ import QRCode from "qrcode.react"
 import useSWR from "swr"
 import VerifierLayout from "../../components/verifier/Layout"
 import { fullURL, jsonFetch } from "../../lib/utils"
+import {
+  createVerificationRequest,
+  VerificationRequestResponse
+} from "../../lib/verification-request"
 
 type Props = {
   verification: VerificationRequestResponse

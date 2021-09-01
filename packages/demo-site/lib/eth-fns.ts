@@ -1,11 +1,11 @@
-import { Web3Provider } from "@ethersproject/providers"
+import { Provider, Web3Provider } from "@ethersproject/providers"
 import { UnsupportedChainIdError } from "@web3-react/core"
 import {
   InjectedConnector,
   NoEthereumProviderError,
   UserRejectedRequestError
 } from "@web3-react/injected-connector"
-import { Contract, ContractInterface } from "ethers"
+import { ethers, Contract, ContractInterface, BigNumber } from "ethers"
 
 /**
  * Representats the supported ETH networks. For now, we only
@@ -46,6 +46,17 @@ export function getEthErrorMessage(error: Error): string {
   }
 }
 
+export async function getBalance(address: string): Promise<BigNumber> {
+  const provider = getProvider()
+
+  const contract = new Contract(
+    verityTokenContractAddress(),
+    verityTokenContractArtifact().abi,
+    provider
+  )
+  return await contract["balanceOf"](address)
+}
+
 /**
  * Format an ethereum address for easier reading. This method lowercases
  * the address and adds an ellipsis to make it easier to read.
@@ -78,4 +89,18 @@ export function verityTokenContractAddress(): string | undefined {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const json = require("../contracts/contract-address.json")
   return json.Token
+}
+
+export function getProvider(): Provider {
+  const chainId = parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
+  let provider: Provider
+  if (chainId === 1337) {
+    provider = new ethers.providers.JsonRpcProvider()
+  } else {
+    const network = ethers.providers.getNetwork(chainId)
+    provider = ethers.providers.getDefaultProvider(network, {
+      alchemy: process.env.ALCHEMY_API_KEY
+    })
+  }
+  return provider
 }

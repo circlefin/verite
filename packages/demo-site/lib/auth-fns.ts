@@ -1,4 +1,8 @@
-import { GetServerSideProps, GetServerSidePropsContext } from "next"
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  NextApiRequest
+} from "next"
 import { getSession } from "next-auth/client"
 import { findUser, User } from "./database"
 
@@ -63,7 +67,7 @@ export function requireAdmin<T>(
  * const user = await currentUser(context)
  */
 export async function currentUser(
-  context: GetServerSidePropsContext
+  context: GetServerSidePropsContext | { req: NextApiRequest }
 ): Promise<User | null> {
   const session = await getSession(context)
 

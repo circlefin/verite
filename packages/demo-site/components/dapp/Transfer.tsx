@@ -1,7 +1,7 @@
-import { classNames } from "@centre/demo-site/lib/react-fns"
 import type { VerificationInfoResponse } from "@centre/verity"
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
 import { FC, useState } from "react"
+import { classNames } from "../../lib/react-fns"
 import type { VerificationRequestResponse } from "../../lib/verification-request"
 import { LoadingButton } from "../LoadingButton"
 import TransferStatus from "./TransferStatus"

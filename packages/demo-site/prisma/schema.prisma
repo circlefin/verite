@@ -29,6 +29,8 @@ model User {
   password    String @default("testing")
   role        String @default("member")
   creditScore Int?
+  mnemonic    String @default("")
+  address     String @default("")
 }
 
 model VerificationRequest {
@@ -36,4 +38,12 @@ model VerificationRequest {
   payload String
   status  String  @default("pending")
   result  String?
+}
+
+model PendingTransaction {
+  id               String @id @default(uuid())
+  result           String
+  expires          DateTime
+  subjectAddress   String
+  recipientAddress String
 }
