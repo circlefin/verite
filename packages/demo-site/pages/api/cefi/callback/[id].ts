@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findUser } from "../../../../lib/database"
 import { Transaction } from "../../../../lib/demo-fns"
-import { ProcessingError } from "../../../../lib/errors"
+import { BadRequestError, NotFoundError } from "../../../../lib/errors"
 import {
   getProvider,
   verityTokenContractAddress,
@@ -38,14 +38,14 @@ export default apiHandler<Response>(async (req, res) => {
   const verification = payload["verification"] as VerificationInfoResponse
 
   if (!userId || !transaction || !verification) {
-    throw new ProcessingError()
+    throw new BadRequestError("Missing required body fields")
   }
 
   // Find user
   const user = await findUser(userId)
 
   if (!user) {
-    throw new ProcessingError()
+    throw new NotFoundError()
   }
 
   // Setup ETH
@@ -67,7 +67,7 @@ export default apiHandler<Response>(async (req, res) => {
   const receipt = await tx.wait()
 
   if (receipt.status === 0) {
-    throw new ProcessingError()
+    throw new BadRequestError("Unable to send")
   }
 
   res.json({ status: "ok" })

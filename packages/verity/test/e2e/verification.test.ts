@@ -6,8 +6,8 @@ import {
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
-import { validateCredentialApplication } from "../../lib/validators/validateCredentialApplication"
-import { processVerificationSubmission } from "../../lib/validators/validators"
+import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
+import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
 import { generateVerificationRequest } from "../../lib/verification-request-fns"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
@@ -47,15 +47,9 @@ describe("verification", () => {
     ])
 
     // 4. VERIFIER: Verifies submission
-    const result = await processVerificationSubmission(
+    await validateVerificationSubmission(
       submission,
       kycRequest.presentation_definition
-    )
-
-    expect(result).toBeDefined()
-    expect(result.presentation).toBeDefined()
-    expect(result.presentation_submission!.definition_id).toEqual(
-      kycRequest.presentation_definition.id
     )
   })
 })

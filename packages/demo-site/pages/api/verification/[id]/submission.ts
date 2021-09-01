@@ -1,5 +1,5 @@
 import {
-  processVerificationSubmission,
+  validateVerificationSubmission,
   VerificationInfoResponse,
   verificationResult
 } from "@centre/verity"
@@ -9,7 +9,7 @@ import {
   findVerificationRequest,
   updateVerificationRequestStatus
 } from "../../../../lib/database/verificationRequests"
-import { NotFoundError, ProcessingError } from "../../../../lib/errors"
+import { NotFoundError } from "../../../../lib/errors"
 
 type PostResponse = { status: string; result?: VerificationInfoResponse }
 
@@ -31,14 +31,10 @@ export default apiHandler<PostResponse>(async (req, res) => {
   }
 
   try {
-    const processedSubmission = await processVerificationSubmission(
+    await validateVerificationSubmission(
       submission,
       verificationRequest.presentation_definition
     )
-
-    if (!processedSubmission.accepted()) {
-      throw new ProcessingError(processedSubmission.errors())
-    }
   } catch (err) {
     await updateVerificationRequestStatus(
       verificationRequest.request.id,

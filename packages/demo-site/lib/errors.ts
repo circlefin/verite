@@ -1,5 +1,3 @@
-import { ValidationFailure } from "@centre/verity/dist"
-
 export class NotFoundError extends Error {
   status = 404
   details?: string
@@ -22,13 +20,13 @@ export class MethodNotAllowedError extends Error {
   }
 }
 
-export class ProcessingError extends Error {
+export class BadRequestError extends Error {
   status = 400
-  failures: ValidationFailure[]
+  details?: string
 
-  constructor(failures: ValidationFailure[] = []) {
-    super("Processing Error")
-    this.name = "ProcessingError"
-    this.failures = failures
+  constructor(details?: string) {
+    super("Bad request")
+    this.name = "BadRequestError"
+    this.details = details
   }
 }
