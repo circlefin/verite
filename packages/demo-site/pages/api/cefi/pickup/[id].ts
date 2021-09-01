@@ -8,12 +8,22 @@ type Response = {
 }
 
 /**
- * API call for receiver to pickup a pending transaction.
+ * API call for receiver to pickup or decline a pending transaction.
  *
  * This could be fully automated by the receiving counterparty if it so
  * desired, but we display a prompt in the UI for demo purposes.
  */
 export default apiHandler<Response>(async (req, res) => {
+  // This method is overloaded to support deleting pending receives
+  if (req.method.toLowerCase() === "delete") {
+    const id = req.query.id as string
+    await prisma.pendingReceive.delete({
+      where: { id }
+    })
+    res.status(200).json({ status: "ok" })
+    return
+  }
+
   requireMethod(req, "POST")
 
   const user = await currentUser({ req })
