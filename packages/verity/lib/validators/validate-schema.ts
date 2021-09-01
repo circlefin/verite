@@ -1,5 +1,4 @@
 import Ajv from "ajv"
-import { ValidationFailure } from "../../types/Validation"
 import { Verifiable, W3CCredential, W3CPresentation } from "../../types/W3C"
 import { ValidationError } from "../errors"
 
@@ -7,13 +6,12 @@ const ajv = new Ajv()
 
 export function validateSchema(
   input: Verifiable<W3CCredential | W3CPresentation>,
-  schema: Record<string, unknown>,
-  errors: ValidationFailure[]
+  schema: Record<string, unknown>
 ): boolean {
   const validate = ajv.compile(schema)
   const valid = validate(input)
   if (!valid) {
-    errors.push(...ajvErrorToVerificationFailures(validate.errors))
+    console.error(validate.errors)
   }
   return valid as boolean
 }

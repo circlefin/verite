@@ -1,4 +1,2 @@
-export * from "./Matches"
-export * from "./ProcessedVerificationSubmission"
-export * from "./validators"
-export * from "./validateCredentialApplication"
+export * from "./validate-verification-submission"
+export * from "./validate-credential-application"

@@ -163,7 +163,7 @@ function trustedAuthorityConstraint(
   trustedAuthorities: string[] = []
 ): InputDescriptorConstraintField {
   return {
-    path: ["$.issuer", "$.vc.issuer", "$.iss", "$.issuer.id"],
+    path: ["$.issuer.id", "$.issuer", "$.vc.issuer", "$.iss"],
     purpose: "We can only verify credentials attested by a trusted authority.",
     filter: {
       type: "string",
