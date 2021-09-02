@@ -6,7 +6,7 @@ type Props = {
   title: string
 }
 
-const AdminLayout: FC<Props> = ({ title, children }) => {
+const RevocationLayout: FC<Props> = ({ title, children }) => {
   const [session] = useSession()
 
   return (
@@ -31,4 +31,4 @@ const AdminLayout: FC<Props> = ({ title, children }) => {
   )
 }
 
-export default AdminLayout
+export default RevocationLayout

@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
-import AdminLayout from "../../components/admin/Layout"
+import RevocationLayout from "../../components/revocation/Layout"
 import { currentUser, requireAdmin } from "../../lib/auth-fns"
 import { allUsers } from "../../lib/database"
 import type { User } from "../../lib/database"
@@ -21,7 +21,7 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
 
 const AdminPage: NextPage<Props> = ({ user, users }) => {
   return (
-    <AdminLayout title="Credential Administration">
+    <RevocationLayout title="Credential Administration">
       <div className="prose max-w-none">
         <h2>Simulating an Issuer&apos;s Compliance Tool</h2>
         <p>
@@ -49,7 +49,7 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
         <div className="divide-y divide-gray-200">
           {users.map((record) => (
             <div key={record.email}>
-              <Link href={`/admin/users/${record.id}`} passHref>
+              <Link href={`/revocation/users/${record.id}`} passHref>
                 <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
                   <div className="ml-3">
                     <span className="text-sm text-gray-900">
@@ -71,7 +71,7 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
           ))}
         </div>
       </div>
-    </AdminLayout>
+    </RevocationLayout>
   )
 }
 

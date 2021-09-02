@@ -8,7 +8,7 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import Link from "next/link"
-import AdminLayout from "../../../components/admin/Layout"
+import RevocationLayout from "../../../components/revocation/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
 import {
   allRevocationLists,
@@ -68,7 +68,7 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/admin"
+        destination: "/revocation"
       }
     }
   }
@@ -111,7 +111,7 @@ function CredentialTable({
             </td>
             <td>
               <Link
-                href={`/admin/credentials/${credential?.credential?.credential?.proof?.jwt}`}
+                href={`/revocation/credentials/${credential?.credential?.credential?.proof?.jwt}`}
               >
                 Details
               </Link>
@@ -144,7 +144,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
   )
 
   return (
-    <AdminLayout title={user.email}>
+    <RevocationLayout title={user.email}>
       <div className="prose">
         <h2>Issuer Review: {user.email}</h2>
         <p>
@@ -164,7 +164,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
         <h2>Revoked Credentials</h2>
         <CredentialTable credentials={revokedCredentials} />
 
-        <Link href="/admin" passHref>
+        <Link href="/revocation" passHref>
           <button
             type="button"
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -174,7 +174,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
           </button>
         </Link>
       </div>
-    </AdminLayout>
+    </RevocationLayout>
   )
 }
 
