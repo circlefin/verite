@@ -1,3 +1,4 @@
+import EmptyAccount from "@centre/demo-site/components/cefi/Empty"
 import Tabs from "@centre/demo-site/components/cefi/Tabs"
 import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
@@ -182,6 +183,8 @@ const Page: NextPage = () => {
             ></PendingSendPanel>
           ) : null}
         </div>
+
+        <EmptyAccount></EmptyAccount>
       </React.StrictMode>
     </Layout>
   )
