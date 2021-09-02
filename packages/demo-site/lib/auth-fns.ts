@@ -44,10 +44,10 @@ export function requireAuth<T>(
 export function requireAdmin<T>(
   getServerSideProps: GetServerSideProps<T>
 ): GetServerSideProps<T> {
-  return requireAuth<T>(async (context) => {
+  return async (context) => {
     const user = await currentUser(context)
 
-    if (user.role !== "admin") {
+    if (user?.role !== "admin") {
       return {
         redirect: {
           destination: `/`,
@@ -57,7 +57,7 @@ export function requireAdmin<T>(
     }
 
     return getServerSideProps(context)
-  })
+  }
 }
 
 /**
