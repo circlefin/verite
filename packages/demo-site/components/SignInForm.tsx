@@ -6,12 +6,22 @@ type Props = {
   redirectTo?: string
 }
 
+const sampleUsers = [
+  { email: "alice@test.com", password: "testing" },
+  { email: "bob@test.com", password: "testing" },
+  { email: "sean@test.com", password: "testing" },
+  { email: "kim@test.com", password: "testing" },
+  { email: "brice@test.com", password: "testing" },
+  { email: "matt@test.com", password: "testing" }
+]
+
+type SampleUser = typeof sampleUsers[0]
+
 const SignInForm: FC<Props> = ({ redirectTo }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [currentLoadingUser, setCurrentLoadingUser] = useState<SampleUser>(null)
   const [isFormLoading, setIsFormLoading] = useState(false)
-  const [isAliceLoading, setIsAliceLoading] = useState(false)
-  const [isBobLoading, setIsBobLoading] = useState(false)
 
   const emailSignin = (e) => {
     e.preventDefault()
@@ -19,8 +29,13 @@ const SignInForm: FC<Props> = ({ redirectTo }) => {
     signIn("credentials", { email, password, callbackUrl: redirectTo })
   }
 
-  const signInAs = (email: string, password = "testing") => {
-    signIn("credentials", { email, password, callbackUrl: redirectTo })
+  const signInAs = (sampleUser: SampleUser) => {
+    setCurrentLoadingUser(sampleUser)
+    signIn("credentials", {
+      email: sampleUser.email,
+      password: sampleUser.password,
+      callbackUrl: redirectTo
+    })
   }
 
   return (
@@ -87,27 +102,19 @@ const SignInForm: FC<Props> = ({ redirectTo }) => {
           </span>
         </div>
       </div>
-      <div className="flex items-center space-x-4">
-        <LoadingButton
-          loading={isAliceLoading}
-          onClick={() => {
-            setIsAliceLoading(true)
-            signInAs("alice@test.com")
-          }}
-          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
-        >
-          Alice (Admin)
-        </LoadingButton>
-        <LoadingButton
-          loading={isBobLoading}
-          onClick={() => {
-            setIsBobLoading(true)
-            signInAs("bob@test.com")
-          }}
-          className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
-        >
-          Bob
-        </LoadingButton>
+      <div className="grid grid-cols-2 gap-4">
+        {sampleUsers.map((sampleUser) => (
+          <LoadingButton
+            key={sampleUser.email}
+            loading={currentLoadingUser === sampleUser}
+            onClick={() => {
+              signInAs(sampleUser)
+            }}
+            className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+          >
+            {sampleUser.email}
+          </LoadingButton>
+        ))}
       </div>
     </form>
   )
