@@ -56,3 +56,11 @@ model PendingReceive {
   amount      String
   callbackUrl String
 }
+
+model History {
+  id      String @id @default(uuid())
+  payload String
+  from    String
+  to      String
+  amount  String
+}

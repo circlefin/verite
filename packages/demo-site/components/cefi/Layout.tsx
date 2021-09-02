@@ -42,7 +42,7 @@ const Layout: FC<Props> = ({ children, ...headerProps }) => {
               ) : null}
             </div>
 
-            <div className="max-w-xl mx-auto">{children}</div>
+            <div className="max-w-2xl mx-auto">{children}</div>
           </div>
           <div className="pt-8 prose-sm text-center">
             <p className="text-gray-500 font-extralight">

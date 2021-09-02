@@ -1,4 +1,5 @@
 import EmptyAccount from "@centre/demo-site/components/cefi/Empty"
+import HistoryList from "@centre/demo-site/components/cefi/HistoryList"
 import Tabs from "@centre/demo-site/components/cefi/Tabs"
 import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
@@ -184,7 +185,11 @@ const Page: NextPage = () => {
           ) : null}
         </div>
 
-        <EmptyAccount></EmptyAccount>
+        {data.history?.length > 0 ? (
+          <HistoryList history={data.history}></HistoryList>
+        ) : (
+          <EmptyAccount></EmptyAccount>
+        )}
       </React.StrictMode>
     </Layout>
   )

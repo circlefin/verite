@@ -1,8 +1,18 @@
+type Tab = {
+  name: string
+  href: string
+  current: boolean
+}
+
+type Props = {
+  tabs: Tab[]
+}
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-export default function Tabs({ tabs }) {
+export default function Tabs({ tabs }: Props): JSX.Element {
   return (
     <div>
       <div className="sm:hidden">
