@@ -40,10 +40,19 @@ model VerificationRequest {
   result  String?
 }
 
-model PendingTransaction {
-  id               String @id @default(uuid())
-  result           String
-  expires          DateTime
-  subjectAddress   String
-  recipientAddress String
+model PendingSend {
+  id       String @id @default(uuid())
+  payload  String
+  from     String
+  to       String
+  amount   String
+}
+
+model PendingReceive {
+  id          String @id @default(uuid())
+  payload     String
+  from        String
+  to          String
+  amount      String
+  callbackUrl String
 }

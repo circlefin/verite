@@ -7,6 +7,8 @@ import Layout from "../components/Layout"
 import { LoadingButton } from "../components/LoadingButton"
 import Alert from "../components/cefi/Alert"
 import Modal from "../components/cefi/Modal"
+import PendingSendPanel from "../components/cefi/PendingSendPanel"
+import PickupPanel from "../components/cefi/PickupPanel"
 import NoTokensMessage from "../components/dapp/NoTokensMessage"
 import { useBalance } from "../hooks/useBalance"
 import { requireAuth } from "../lib/auth-fns"
@@ -23,6 +25,7 @@ const Page: NextPage = () => {
   const [session] = useSession()
   const { data, mutate } = useBalance()
   const [pickupLoading, setPickupLoading] = useState(false)
+  const [pendingSendLoading, setPendingSendLoading] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
   const [address, setAddress] = useState<string>("")
@@ -89,6 +92,70 @@ const Page: NextPage = () => {
     return response.ok
   }
 
+  const pickupFunction = async (id: string) => {
+    setPickupLoading(true)
+
+    const response = await fetch(`/api/cefi/pickup/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    await mutate(undefined, true)
+
+    if (response.ok) {
+      info("Pickup succeessful.")
+    } else {
+      error(
+        "Pickup failed. This can happen if the counterparty canceled the request, verification is expired, or if the counterparty does not have sufficient funds."
+      )
+    }
+
+    setPickupLoading(false)
+  }
+
+  const pickupCancelFunction = async (id: string) => {
+    setPickupLoading(true)
+
+    const response = await fetch(`/api/cefi/pickup/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    await mutate(undefined, true)
+
+    if (response.ok) {
+      info("Pickup cancelled.")
+    } else {
+      error("Something went wrong.")
+    }
+
+    setPickupLoading(false)
+  }
+
+  const pendingSendCancel = async (id: string) => {
+    setPendingSendLoading(true)
+
+    const response = await fetch(`/api/cefi/send/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    await mutate(undefined, true)
+
+    if (response.ok) {
+      info("Cancelling transaction.")
+    } else {
+      error("Something went wrong.")
+    }
+
+    setPendingSendLoading(false)
+  }
+
   const faucetFunction = async (address: string): Promise<boolean> => {
     try {
       const resp = await fetch(fullURL("/api/demo/faucet"), {
@@ -111,57 +178,6 @@ const Page: NextPage = () => {
     }
 
     return true
-  }
-
-  const PickupPanel = (row) => {
-    const result = JSON.parse(row.result)
-    const amount = result.transaction.amount
-    return (
-      <div className="bg-gray-50 sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            Someone is trying to send you VUSDC
-          </h3>
-          <div className="max-w-xl mt-2 text-sm text-gray-500">
-            <p>
-              Someone has sent you {amount} VUSDC. Before it can be picked up,
-              we must provide beneficiary information to the counterparty.
-            </p>
-          </div>
-          <div className="mt-5">
-            <LoadingButton
-              type="submit"
-              style="dot-loader"
-              loading={pickupLoading}
-              onClick={async () => {
-                setPickupLoading(true)
-
-                const response = await fetch(`/api/cefi/pickup/${row.id}`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  }
-                })
-                await mutate(undefined, true)
-
-                if (response.ok) {
-                  info("Pickup succeessful.")
-                } else {
-                  error(
-                    "Pickup failed. This can happen if the verification is expired or if the counterparty does not have sufficient funds."
-                  )
-                }
-
-                setPickupLoading(false)
-              }}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Send information to pickup funds
-            </LoadingButton>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   if (!data) {
@@ -233,9 +249,26 @@ const Page: NextPage = () => {
         </div>
 
         <div>
-          {data.pendingTransaction
-            ? PickupPanel(data.pendingTransaction)
-            : null}
+          {data.pendingReceive ? (
+            <PickupPanel
+              row={data.pendingReceive}
+              pickupLoading={pickupLoading}
+              pickupFunction={() => pickupFunction(data.pendingReceive.id)}
+              pickupCancelFunction={() =>
+                pickupCancelFunction(data.pendingReceive.id)
+              }
+            ></PickupPanel>
+          ) : null}
+        </div>
+
+        <div>
+          {data.pendingSend ? (
+            <PendingSendPanel
+              row={data.pendingSend}
+              loading={pendingSendLoading}
+              onCancel={() => pendingSendCancel(data.pendingSend.id)}
+            ></PendingSendPanel>
+          ) : null}
         </div>
 
         <div>

@@ -1,12 +1,11 @@
-import { verificationResult } from "@centre/verity"
-import { BigNumber, Wallet } from "ethers"
+import { BigNumber } from "ethers"
 import jwt from "jsonwebtoken"
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
-import { currentUser } from "../../../lib/auth-fns"
-import { send } from "../../../lib/demo-fns"
-import { NotFoundError, BadRequestError } from "../../../lib/errors"
-import { verityTokenContractAddress } from "../../../lib/eth-fns"
-import { fullURL } from "../../../lib/utils"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { currentUser } from "../../../../lib/auth-fns"
+import { prisma } from "../../../../lib/database/prisma"
+import { send } from "../../../../lib/demo-fns"
+import { NotFoundError, BadRequestError } from "../../../../lib/errors"
+import { fullURL } from "../../../../lib/utils"
 
 type Response = {
   status: string
@@ -57,30 +56,27 @@ export default apiHandler<Response>(async (req, res) => {
     return
   }
 
-  // In a production environment, one would need to call out to a verifier to get a result
-  const wallet = Wallet.fromMnemonic(user.mnemonic)
-  const verification = await verificationResult(
-    wallet.address,
-    verityTokenContractAddress(),
-    process.env.ETH_WALLET_MNEMONIC,
-    parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
-  )
+  // Create pending send
+  const pendingSend = await prisma.pendingSend.create({
+    data: {
+      from: user.address,
+      to: transaction.address,
+      amount: transaction.amount,
+      payload: JSON.stringify({}) // TODO: This should be a verifiable presentation
+    }
+  })
 
   // Create JWT for callback
-  const token = jwt.sign(
-    { transaction, verification },
-    process.env.AUTH_JWT_SECRET,
-    {
-      subject: user.id,
-      algorithm: "HS256",
-      expiresIn: "1h"
-    }
-  )
+  const token = jwt.sign(pendingSend, process.env.AUTH_JWT_SECRET, {
+    subject: pendingSend.id,
+    algorithm: "HS256",
+    expiresIn: "1h"
+  })
 
+  // Create API call payload
   const payload = {
     callbackUrl: fullURL(`/api/cefi/callback/${token}`),
-    transaction,
-    verification
+    transaction: pendingSend
   }
 
   // Call out to other service letting them know the results

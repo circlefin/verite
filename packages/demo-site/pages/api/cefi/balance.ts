@@ -1,13 +1,18 @@
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { currentUser } from "../../../lib/auth-fns"
-import { PendingTransaction, prisma } from "../../../lib/database/prisma"
+import {
+  PendingReceive,
+  PendingSend,
+  prisma
+} from "../../../lib/database/prisma"
 import { NotFoundError } from "../../../lib/errors"
 import { getBalance } from "../../../lib/eth-fns"
 
 type Response = {
   address: string
   balance: string
-  pendingTransaction?: PendingTransaction
+  pendingReceive?: PendingReceive
+  pendingSend?: PendingSend
 }
 
 /**
@@ -21,9 +26,15 @@ export default apiHandler<Response>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  const pendingTransactions = await prisma.pendingTransaction.findMany({
+  const pendingReceive = await prisma.pendingReceive.findFirst({
     where: {
-      recipientAddress: user.address
+      to: user.address
+    }
+  })
+
+  const pendingSend = await prisma.pendingSend.findFirst({
+    where: {
+      from: user.address
     }
   })
 
@@ -31,6 +42,7 @@ export default apiHandler<Response>(async (req, res) => {
   res.json({
     address: user.address,
     balance: balance.toString(),
-    pendingTransaction: pendingTransactions[0]
+    pendingReceive: pendingReceive,
+    pendingSend: pendingSend
   })
 })

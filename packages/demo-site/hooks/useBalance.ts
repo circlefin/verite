@@ -1,4 +1,4 @@
-import { PendingTransaction } from "@prisma/client"
+import { PendingReceive, PendingSend } from "@prisma/client"
 import useSWR from "swr"
 import { KeyedMutator } from "swr/dist/types"
 import { jsonFetch } from "../lib/utils"
@@ -6,7 +6,8 @@ import { jsonFetch } from "../lib/utils"
 type Data = {
   balance: string
   address: string
-  pendingTransaction: PendingTransaction
+  pendingReceive: PendingReceive
+  pendingSend: PendingSend
 }
 
 type AccountSummary = {
