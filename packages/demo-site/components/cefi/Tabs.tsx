@@ -1,30 +1,8 @@
-/*
-  This example requires Tailwind CSS v2.0+
-
-  This example requires some changes to your config:
-
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-const tabs = [
-  { name: "My Account", href: "#", current: true },
-  { name: "Send", href: "#", current: false },
-  { name: "Receive", href: "#", current: false }
-]
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-export default function Tabs() {
+export default function Tabs({ tabs }) {
   return (
     <div>
       <div className="sm:hidden">
