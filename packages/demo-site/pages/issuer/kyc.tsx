@@ -23,7 +23,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const qrCodeData = challengeTokenUrlWrapper(
-    fullURL(`/api/manifests/kyc/${authToken}`)
+    fullURL(`/api/issuance/manifests/kyc/${authToken}`)
   )
 
   const response = await fetch(qrCodeData.challengeTokenUrl)
