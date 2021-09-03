@@ -1,12 +1,17 @@
-import Alert from "@centre/demo-site/components/cefi/Alert"
-import Tabs from "@centre/demo-site/components/cefi/Tabs"
-import { useBalance } from "@centre/demo-site/hooks/useBalance"
 import { BigNumber } from "ethers"
 import { NextPage } from "next"
 import React, { createRef, useState } from "react"
 import { LoadingButton } from "../../components/LoadingButton"
+import Alert from "../../components/cefi/Alert"
 import Layout from "../../components/cefi/Layout"
 import Modal from "../../components/cefi/Modal"
+import Tabs from "../../components/cefi/Tabs"
+import { useBalance } from "../../hooks/useBalance"
+import { requireAuth } from "../../lib/auth-fns"
+
+export const getServerSideProps = requireAuth(async () => {
+  return { props: {} }
+})
 
 const form = createRef<HTMLFormElement>()
 

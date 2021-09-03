@@ -1,9 +1,14 @@
-import Layout from "@centre/demo-site/components/cefi/Layout"
-import Tabs from "@centre/demo-site/components/cefi/Tabs"
-import { useBalance } from "@centre/demo-site/hooks/useBalance"
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import React from "react"
+import Layout from "../../components/cefi/Layout"
+import Tabs from "../../components/cefi/Tabs"
+import { useBalance } from "../../hooks/useBalance"
+import { requireAuth } from "../../lib/auth-fns"
+
+export const getServerSideProps = requireAuth(async () => {
+  return { props: {} }
+})
 
 const Page: NextPage = () => {
   const { data } = useBalance()
