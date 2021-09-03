@@ -1,4 +1,5 @@
 import { PendingReceive } from "@centre/demo-site/lib/database"
+import { useSession } from "next-auth/client"
 import { LoadingButton } from "../LoadingButton"
 
 type Props = {
@@ -14,7 +15,21 @@ export default function PickupPanel({
   pickupFunction,
   pickupCancelFunction
 }: Props): JSX.Element {
+  const [session] = useSession()
+  const user = session.user
+
   const amount = row.amount
+
+  const credential = (
+    <pre className="text-sm text-gray-500 mt-4">
+      {user.name}
+      <br />
+      123 Main Street
+      <br />
+      Boston, MA
+    </pre>
+  )
+
   return (
     <div className="bg-gray-50 sm:rounded-lg">
       <div className="px-4 py-5 sm:p-6">
@@ -26,6 +41,7 @@ export default function PickupPanel({
             Someone has sent you {amount} VUSDC. Before it can be picked up, we
             must provide beneficiary information to the counterparty.
           </p>
+          <pre>{credential}</pre>
         </div>
         <div className="mt-5 space-x-4">
           <LoadingButton
