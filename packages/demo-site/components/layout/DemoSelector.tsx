@@ -57,7 +57,7 @@ const DemoSelector: FC = () => {
       {({ open }) => (
         <>
           <div className="relative w-full mt-1">
-            <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-default focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
               <span className="block text-gray-800 truncate">
                 {selected ? selected.title : "Select a Demo"}
               </span>
@@ -89,7 +89,7 @@ const DemoSelector: FC = () => {
                     key={demo.href}
                     className={({ active }) =>
                       classNames(
-                        active ? "text-white bg-indigo-600" : "text-gray-900",
+                        active ? "text-white bg-blue-600" : "text-gray-900",
                         "cursor-default select-none relative py-2 pl-3 pr-9"
                       )
                     }
@@ -110,7 +110,7 @@ const DemoSelector: FC = () => {
                           {selected && (
                             <span
                               className={classNames(
-                                active ? "text-white" : "text-indigo-600",
+                                active ? "text-white" : "text-blue-600",
                                 "absolute inset-y-0 right-0 flex items-center pr-4"
                               )}
                             >
@@ -123,7 +123,7 @@ const DemoSelector: FC = () => {
                         </div>
                         <p
                           className={classNames(
-                            active ? "text-indigo-200" : "text-gray-500",
+                            active ? "text-blue-200" : "text-gray-500",
                             "mt-2"
                           )}
                         >
