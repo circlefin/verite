@@ -47,7 +47,16 @@ export function requireAdmin<T>(
   return async (context) => {
     const user = await currentUser(context)
 
-    if (user?.role !== "admin") {
+    if (!user) {
+      return {
+        redirect: {
+          destination: `/signin?redirectTo=${context.resolvedUrl}`,
+          permanent: false
+        }
+      }
+    }
+
+    if (user.role !== "admin") {
       return {
         redirect: {
           destination: `/`,
