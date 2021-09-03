@@ -33,7 +33,6 @@ const users: UserInput[] = [
   {
     email: "alice@test.com",
     password: "testing",
-    role: "admin",
     creditScore: 750,
     mnemonic: aliceWallet.mnemonic.phrase,
     address: aliceWallet.address
@@ -41,7 +40,6 @@ const users: UserInput[] = [
   {
     email: "bob@test.com",
     password: "testing",
-    role: "admin",
     creditScore: 320,
     mnemonic: bobWallet.mnemonic.phrase,
     address: bobWallet.address
@@ -49,7 +47,6 @@ const users: UserInput[] = [
   {
     email: "kim@test.com",
     password: "testing",
-    role: "admin",
     creditScore: 751,
     mnemonic: kimWallet.mnemonic.phrase,
     address: kimWallet.address
@@ -57,7 +54,6 @@ const users: UserInput[] = [
   {
     email: "brice@test.com",
     password: "testing",
-    role: "admin ",
     creditScore: 752,
     mnemonic: briceWallet.mnemonic.phrase,
     address: briceWallet.address
@@ -65,7 +61,6 @@ const users: UserInput[] = [
   {
     email: "matt@test.com",
     password: "testing",
-    role: "admin",
     creditScore: 400,
     mnemonic: mattWallet.mnemonic.phrase,
     address: mattWallet.address
@@ -73,7 +68,6 @@ const users: UserInput[] = [
   {
     email: "sean@test.com",
     password: "testing",
-    role: "admin",
     creditScore: 850,
     mnemonic: seanWallet.mnemonic.phrase,
     address: seanWallet.address

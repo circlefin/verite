@@ -14,7 +14,7 @@ import Link from "next/link"
 import { useState } from "react"
 import RevokeButton from "../../../components/issuer/RevokeButton"
 import RevocationLayout from "../../../components/revocation/Layout"
-import { requireAdmin } from "../../../lib/auth-fns"
+import { requireAuth } from "../../../lib/auth-fns"
 import { findUserByCredential, User } from "../../../lib/database"
 
 type Props = {
@@ -25,7 +25,7 @@ type Props = {
   user: User
 }
 
-export const getServerSideProps = requireAdmin<Props>(async (context) => {
+export const getServerSideProps = requireAuth<Props>(async (context) => {
   const jwt = context.params.jwt as string
   const credential = (await decodeVerifiableCredential(
     jwt

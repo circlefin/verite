@@ -2,7 +2,7 @@ import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
 import RevocationLayout from "../../components/revocation/Layout"
-import { currentUser, requireAdmin } from "../../lib/auth-fns"
+import { currentUser, requireAuth } from "../../lib/auth-fns"
 import { allUsers } from "../../lib/database"
 import type { User } from "../../lib/database"
 
@@ -11,7 +11,7 @@ type Props = {
   users: User[]
 }
 
-export const getServerSideProps = requireAdmin<Props>(async (context) => {
+export const getServerSideProps = requireAuth<Props>(async (context) => {
   const users = await allUsers()
   const user = await currentUser(context)
   return {

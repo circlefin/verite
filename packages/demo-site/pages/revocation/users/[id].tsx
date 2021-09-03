@@ -9,7 +9,7 @@ import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import Link from "next/link"
 import RevocationLayout from "../../../components/revocation/Layout"
-import { requireAdmin } from "../../../lib/auth-fns"
+import { requireAuth } from "../../../lib/auth-fns"
 import {
   allRevocationLists,
   DecodedDatabaseCredential,
@@ -28,7 +28,7 @@ type Props = {
   user: User
 }
 
-export const getServerSideProps = requireAdmin<Props>(async (context) => {
+export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await findUser(context.params.id as string)
 
   // Create list of credentials

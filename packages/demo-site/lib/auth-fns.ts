@@ -35,43 +35,6 @@ export function requireAuth<T>(
 }
 
 /**
- * Require admin authentication for a next.js page GetServerSideProps method.
- *
- * @remark This method is a wrapper around your existing getServerSideProps method
- *
- * @example
- * export const getServerSideProps = requireAdmin(async (context) => { ... })
- */
-export function requireAdmin<T>(
-  getServerSideProps: GetServerSideProps<T>,
-  signInPath = "/signin"
-): GetServerSideProps<T> {
-  return async (context) => {
-    const user = await currentUser(context)
-
-    if (!user) {
-      return {
-        redirect: {
-          destination: `${signInPath}?redirectTo=${context.resolvedUrl}`,
-          permanent: false
-        }
-      }
-    }
-
-    if (user.role !== "admin") {
-      return {
-        redirect: {
-          destination: `/`,
-          permanent: false
-        }
-      }
-    }
-
-    return getServerSideProps(context)
-  }
-}
-
-/**
  * Load the current user for a next.js page GetServerSideProps method
  *
  * @example
