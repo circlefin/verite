@@ -18,7 +18,7 @@ const DappLayout: FC<Props> = ({ children, balance, symbol }) => {
   }
 
   return (
-    <Layout title="Example Dapp">
+    <Layout title="Demo: Dapp Requiring KYC">
       {balance && symbol && account && (
         <div className="flex flex-col-reverse justify-between mb-6 -mt-6 border-b border-gray-200 sm:flex-row">
           <nav

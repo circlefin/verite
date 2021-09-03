@@ -58,7 +58,7 @@ const CreditScorePage: NextPage<Props> = ({
     if (!data || data.status === 404) {
       return (
         <>
-          <h2>Issue User Experience</h2>
+          <h2>Credit Score Verifiable Credential Issue User Experience</h2>
           <p>
             Credentials contain data specific to their schema types. Compared to
             a KYC/AML credential, a credential that attests to a credit score
@@ -154,7 +154,7 @@ const CreditScorePage: NextPage<Props> = ({
   }
 
   return (
-    <IssuerLayout title="Credit Score Verifiable Credential">
+    <IssuerLayout>
       <div className="prose max-w-none">{credential(data)}</div>
     </IssuerLayout>
   )

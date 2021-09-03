@@ -144,7 +144,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
   )
 
   return (
-    <RevocationLayout title={user.email}>
+    <RevocationLayout>
       <div className="prose">
         <h2>Issuer Review: {user.email}</h2>
         <p>

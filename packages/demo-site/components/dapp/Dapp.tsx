@@ -179,7 +179,7 @@ const Dapp: FC = () => {
         setVerificationInfoSet(verification.result)
         setIsVerifying(false)
         setStatusMessage(
-          "Verification complete. You can now transfer > 10 VUSDC"
+          "Verification complete. You can now transfer 10 or more VUSDC"
         )
       } else if (verification.status === "rejected") {
         setVerification(undefined)
@@ -233,7 +233,9 @@ const Dapp: FC = () => {
 
     setVerificationInfoSet(verificationInfoSet)
     setIsVerifying(false)
-    setStatusMessage("Verification complete. You can now transfer > 10 VUSDC")
+    setStatusMessage(
+      "Verification complete. You can now transfer 10 or more VUSDC"
+    )
   }
 
   const transferTokens = async (to: string, amount: string) => {

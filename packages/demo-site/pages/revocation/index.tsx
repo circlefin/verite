@@ -21,7 +21,7 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
 
 const AdminPage: NextPage<Props> = ({ user, users }) => {
   return (
-    <RevocationLayout title="Credential Administration">
+    <RevocationLayout>
       <div className="prose max-w-none">
         <h2>Simulating an Issuer&apos;s Compliance Tool</h2>
         <p>

@@ -59,7 +59,7 @@ const KycAmlPage: NextPage<Props> = ({
     if (!data || data.status === 404) {
       return (
         <>
-          <h2>Issue User Experience</h2>
+          <h2>KYC/AML Verifiable Credential Issue User Experience</h2>
           <p className="pb-4">
             Credentials and DID data may be custodied in crypto/identity wallets
             such as browser extensions, mobile apps, or hosted wallet providers.
@@ -147,7 +147,7 @@ const KycAmlPage: NextPage<Props> = ({
   }
 
   return (
-    <IssuerLayout title="KYC/AML Verifiable Credential">
+    <IssuerLayout>
       <div className="prose max-w-none">{credential(data)}</div>
     </IssuerLayout>
   )

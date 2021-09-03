@@ -17,7 +17,7 @@ const DEMOS = [
     description: "An end-user submits a credential to a 3rd party verifier"
   },
   {
-    title: "Basic Revocation",
+    title: "Compliance & Basic Revocation",
     href: "/revocation",
     description:
       "A compliance officer revokes a previously-issued KYC credential"

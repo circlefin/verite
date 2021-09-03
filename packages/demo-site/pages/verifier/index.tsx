@@ -24,7 +24,7 @@ const items = [
 
 const VerifierPage: NextPage = () => {
   return (
-    <VerifierLayout title="Basic Verification" hideNavigation={true}>
+    <VerifierLayout>
       <div className="pb-2 prose max-w-none">
         <h2>Verify an Identity&apos;s Credentials</h2>
         <p>

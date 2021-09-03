@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const IssuerPage: NextPage = () => {
   return (
-    <IssuerLayout title="Basic Issuance" hideNavigation={true}>
+    <IssuerLayout hideNavigation={true}>
       <div className="pb-2 prose max-w-none">
         <h2>Request and Custody Verifiable Credentials</h2>
         <p>

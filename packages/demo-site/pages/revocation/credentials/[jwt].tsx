@@ -78,7 +78,7 @@ const AdminCredentialPage: NextPage<Props> = ({
   const [list, setList] = useState<RevocationListCredential>(revocationList)
 
   return (
-    <RevocationLayout title="Credential Details">
+    <RevocationLayout>
       <div className="prose max-w-none">
         <h2>{formatType(credential)}</h2>
         <p>

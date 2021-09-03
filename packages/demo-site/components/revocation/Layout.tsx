@@ -2,15 +2,11 @@ import { signOut, useSession } from "next-auth/client"
 import { FC } from "react"
 import Layout from "../Layout"
 
-type Props = {
-  title: string
-}
-
-const RevocationLayout: FC<Props> = ({ title, children }) => {
+const RevocationLayout: FC = ({ children }) => {
   const [session] = useSession()
 
   return (
-    <Layout title={title}>
+    <Layout title="Demo: Compliance &amp; Basic Revocation">
       <div className="mb-6 -mt-6 border-b border-gray-200">
         {session && (
           <div className="flex justify-between -mb-px space-x-8 sm:justify-end">
