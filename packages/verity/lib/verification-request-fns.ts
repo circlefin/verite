@@ -24,11 +24,6 @@ export function generateVerificationRequest(
   )
 
   return {
-    "@context": [
-      "https://www.w3.org/2018/credentials/v1",
-      "https://identity.foundation/presentation-exchange/definition/v1"
-    ],
-    type: ["VerifiablePresentation", "PresentationDefinition"],
     request: {
       id: id as string,
       from: from,

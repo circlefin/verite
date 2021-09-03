@@ -15,7 +15,8 @@ import { findUser, User } from "./database"
  * export const getServerSideProps = requireAuth(async (context) => { ... })
  */
 export function requireAuth<T>(
-  getServerSideProps: GetServerSideProps<T>
+  getServerSideProps: GetServerSideProps<T>,
+  signInPath = "/signin"
 ): GetServerSideProps<T> {
   return async (context) => {
     const session = await getSession(context)
@@ -23,7 +24,7 @@ export function requireAuth<T>(
     if (!session || !session.user) {
       return {
         redirect: {
-          destination: `/signin?redirectTo=${context.resolvedUrl}`,
+          destination: `${signInPath}?redirectTo=${context.resolvedUrl}`,
           permanent: false
         }
       }
@@ -42,12 +43,22 @@ export function requireAuth<T>(
  * export const getServerSideProps = requireAdmin(async (context) => { ... })
  */
 export function requireAdmin<T>(
-  getServerSideProps: GetServerSideProps<T>
+  getServerSideProps: GetServerSideProps<T>,
+  signInPath = "/signin"
 ): GetServerSideProps<T> {
   return async (context) => {
     const user = await currentUser(context)
 
-    if (user?.role !== "admin") {
+    if (!user) {
+      return {
+        redirect: {
+          destination: `${signInPath}?redirectTo=${context.resolvedUrl}`,
+          permanent: false
+        }
+      }
+    }
+
+    if (user.role !== "admin") {
       return {
         redirect: {
           destination: `/`,

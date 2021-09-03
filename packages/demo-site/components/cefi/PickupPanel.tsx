@@ -14,7 +14,6 @@ export default function PickupPanel({
   pickupFunction,
   pickupCancelFunction
 }: Props): JSX.Element {
-  console.log(row)
   const amount = row.amount
   return (
     <div className="bg-gray-50 sm:rounded-lg">
@@ -34,7 +33,7 @@ export default function PickupPanel({
             style="dot-loader"
             loading={pickupLoading}
             onClick={pickupCancelFunction}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+            className="inline-flex items-center px-4 py-2 font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
           >
             Decline
           </LoadingButton>

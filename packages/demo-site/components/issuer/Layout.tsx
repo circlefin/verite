@@ -3,13 +3,12 @@ import Layout from "../Layout"
 import AttestationNavigation from "./AttestationNavigation"
 
 type Props = {
-  title: string
   hideNavigation?: boolean
 }
 
-const IssuerLayout: FC<Props> = ({ title, children, hideNavigation }) => {
+const IssuerLayout: FC<Props> = ({ children, hideNavigation }) => {
   return (
-    <Layout title={title}>
+    <Layout title="Demo: Basic Issuance">
       <AttestationNavigation hideNavigation={hideNavigation} />
       {children}
     </Layout>

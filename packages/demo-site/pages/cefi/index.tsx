@@ -128,7 +128,7 @@ const Page: NextPage = () => {
 
   if (accountBalance.lte(0)) {
     return (
-      <Layout title="Project Verity Demo">
+      <Layout title="Demo: Centralized App with Travel Rule">
         <React.StrictMode>
           <NoTokensMessage
             faucetFunction={faucetFunction}
@@ -150,7 +150,7 @@ const Page: NextPage = () => {
   }
 
   return (
-    <Layout title="Project Verity Demo">
+    <Layout title="Demo: Centralized App with Travel Rule">
       <React.StrictMode>
         <Tabs tabs={tabs}></Tabs>
 

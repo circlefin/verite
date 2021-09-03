@@ -1,9 +1,4 @@
 {
-  "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://identity.foundation/presentation-exchange/definition/v1"
-  ],
-  "type": ["VerifiablePresentation", "PresentationDefinition"],
   "request": {
     "id": "e2556c17-b781-4490-8b0c-d31c42571c9d",
     "from": "did:key:z6MktN192jgkc3RduEtC9QjWWbjdyVxTc3JHA7ouXrs6Vh6n",

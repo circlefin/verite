@@ -1,8 +1,6 @@
 import type { PresentationDefinition } from "./PresentationDefinition"
 
 export type VerificationRequest = {
-  "@context": string[]
-  type: string[]
   request: {
     id: string
     from: string
