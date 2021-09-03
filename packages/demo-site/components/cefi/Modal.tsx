@@ -1,5 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react"
 import { ExclamationIcon } from "@heroicons/react/outline"
+import { useSession } from "next-auth/client"
 import { Fragment, useRef } from "react"
 
 type Props = {
@@ -18,7 +19,20 @@ export default function Modal({
   open,
   setOpen
 }: Props): JSX.Element {
+  const [session] = useSession()
   const cancelButtonRef = useRef(null)
+
+  const user = session.user
+
+  const credential = (
+    <pre className="text-sm text-gray-500 mt-4">
+      {user.name}
+      <br />
+      123 Main Street
+      <br />
+      Boston, MA
+    </pre>
+  )
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -72,12 +86,15 @@ export default function Modal({
                   >
                     Share your information
                   </Dialog.Title>
-                  <div className="mt-2">
+                  <div className="mt-2 prose">
                     <p className="text-sm text-gray-500">
-                      The transfer you are about to make requires that we share
-                      your information with the counterparty. Do you want to
-                      proceed with this transaction?
+                      The transfer you are attempting to make requires that we
+                      provide your information to the intermediary financial
+                      institution handling the receipt of the funds. Do you want
+                      to proceed with this transaction?
                     </p>
+
+                    {credential}
                   </div>
                 </div>
               </div>
