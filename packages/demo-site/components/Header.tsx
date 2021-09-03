@@ -1,22 +1,9 @@
-/* This example requires Tailwind CSS v2.0+ */
-import { Disclosure } from "@headlessui/react"
-import { MenuIcon, XIcon } from "@heroicons/react/outline"
 import Head from "next/head"
-import Link from "next/link"
 import { FC } from "react"
-import { isActive, classNames } from "../lib/react-fns"
 
 export type HeaderProps = {
   title: string
 }
-
-const navigation = [
-  { name: "Issue", href: "/issuer" },
-  { name: "Verify", href: "/verifier" },
-  { name: "Revoke", href: "/revocation" },
-  { name: "Dapp", href: "/dapp" },
-  { name: "Docs", href: "/documentation" }
-]
 
 const Header: FC<HeaderProps> = ({ title }) => {
   return (
