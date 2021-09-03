@@ -48,7 +48,6 @@ const DemoSelector: FC = () => {
 
   const onSelect = (demo: Demo) => {
     setSelected(demo)
-    console.log("going to ", demo.href)
     router.push(demo.href)
   }
 
