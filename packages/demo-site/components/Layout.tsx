@@ -9,14 +9,14 @@ const Layout: FC<Props> = ({ children, ...headerProps }) => {
   return (
     <div className="text-base antialiased text-black bg-white font-inter font-feature-default">
       <div className="text-white bg-gray-900">
-        <div className="flex items-center justify-between h-16 max-w-4xl px-4 mx-auto space-x-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-between max-w-4xl px-4 mx-auto sm:space-x-8 sm:h-16 sm:flex-row sm:px-6 lg:px-8">
           <Link href="/">
             <a className="text-2xl font-extrabold tracking-tight text-center text-white hover:text-gray-400">
               Verity.id
             </a>
           </Link>
 
-          <div className="w-full px-8">
+          <div className="w-full sm:px-8">
             <DemoSelector />
           </div>
 
