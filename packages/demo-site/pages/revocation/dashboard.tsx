@@ -41,10 +41,10 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
 
         <h2>Demo Users</h2>
         <p>
-          You are currently signed in as{" "}
-          <b>
-            <em>{user.email}</em>
-          </b>
+          The Issuer Demo was recently accessed by{" "}
+          <Link href={`/revocation/users/${user.id}`} passHref>
+            <a className="italic font-bold">{user.email}</a>
+          </Link>
         </p>
         <div className="divide-y divide-gray-200">
           {users.map((record) => (
@@ -56,7 +56,7 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
                       {record.email}
                       {record.email === user.email && (
                         <span className="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          Current
+                          Recently Accessed
                         </span>
                       )}
                     </span>
