@@ -17,13 +17,8 @@ const DappLayout: FC<Props> = ({ children, balance, symbol }) => {
     window.alert(getEthErrorMessage(error))
   }
 
-  let title = "Verity Demo USDC"
-  if (symbol) {
-    title = `${title} (${symbol})`
-  }
-
   return (
-    <Layout title={title}>
+    <Layout title="Example Dapp">
       {balance && symbol && account && (
         <div className="flex flex-col-reverse justify-between mb-6 -mt-6 border-b border-gray-200 sm:flex-row">
           <nav
