@@ -7,17 +7,15 @@ type Resp = {
 }
 
 /**
- * Load the lastest credentials
+ * Find and return the latest credential created after
+ * the provided date. This method is used in the issuer demo to
+ * update the state on the web-app when a mobile app scans
+ * the QR code and requests a credential.
  */
 export default apiHandler<Resp>(async (req, res) => {
   const createdAt = new Date(req.query.createdAt as string)
 
   const credential = await findNewestCredential(createdAt)
-
-  if (!credential) {
-    res.status(404).json({ status: 404, errors: [] })
-    return
-  }
 
   res.json({ credential })
 })

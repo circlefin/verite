@@ -47,7 +47,7 @@ const KycAmlPage: NextPage<Props> = ({
 }) => {
   // Setup polling to detect a newly issued credential.
   const { data } = useSWR(
-    fullURL(`/api/demo/get-newest-credential-from?createdAt=${createdAt}`),
+    fullURL(`/api/issuance/get-newest-credential-from?createdAt=${createdAt}`),
     jsonFetch,
     {
       refreshInterval: 1000
@@ -56,7 +56,7 @@ const KycAmlPage: NextPage<Props> = ({
 
   // Newest Credential fragment
   const credential = (data) => {
-    if (!data || data.status === 404) {
+    if (!data || !data.credential) {
       return (
         <>
           <h2>KYC/AML Verifiable Credential Issue User Experience</h2>
