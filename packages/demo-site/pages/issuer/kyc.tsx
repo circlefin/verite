@@ -37,7 +37,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
       user
     }
   }
-})
+}, "/issuer")
 
 const KycAmlPage: NextPage<Props> = ({
   createdAt,

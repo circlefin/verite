@@ -27,7 +27,7 @@ export const getServerSideProps = requireAuth(async () => {
   return {
     props: {}
   }
-})
+}, "/issuer")
 
 const IssuerPickerPage: NextPage = () => {
   return (
