@@ -1,6 +1,7 @@
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { currentUser } from "../../../lib/auth-fns"
 import {
+  History,
   PendingReceive,
   PendingSend,
   prisma
@@ -11,6 +12,7 @@ import { getBalance } from "../../../lib/eth-fns"
 type Response = {
   address: string
   balance: string
+  history: History[]
   pendingReceive?: PendingReceive
   pendingSend?: PendingSend
 }
@@ -38,10 +40,24 @@ export default apiHandler<Response>(async (req, res) => {
     }
   })
 
+  const history = await prisma.history.findMany({
+    where: {
+      OR: [
+        {
+          from: user.address
+        },
+        {
+          to: user.address
+        }
+      ]
+    }
+  })
+
   const balance = await getBalance(user?.address)
   res.json({
     address: user.address,
     balance: balance.toString(),
+    history: history,
     pendingReceive: pendingReceive,
     pendingSend: pendingSend
   })

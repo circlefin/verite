@@ -52,6 +52,18 @@ export default apiHandler<Response>(async (req, res) => {
       throw new BadRequestError("Failed to send")
     }
 
+    // On success save history of the transaction for UI.
+    // This table is shared by both parties, but theoretically they wouldn't
+    // be in the same table because they would be on two distinct CeFi services.
+    await prisma.history.create({
+      data: {
+        payload: JSON.stringify({}),
+        from: user.address,
+        to: transaction.address,
+        amount: transaction.amount
+      }
+    })
+
     res.status(200).json({ status: "ok" })
     return
   }

@@ -1,11 +1,13 @@
 import { PendingReceive, PendingSend } from "@prisma/client"
 import useSWR from "swr"
 import { KeyedMutator } from "swr/dist/types"
+import { History } from "../lib/database/prisma"
 import { jsonFetch } from "../lib/utils"
 
 type Data = {
   balance: string
   address: string
+  history: History[]
   pendingReceive: PendingReceive
   pendingSend: PendingSend
 }
