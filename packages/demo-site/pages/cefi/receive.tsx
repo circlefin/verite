@@ -19,7 +19,7 @@ const Page: NextPage = () => {
   }
 
   return (
-    <Layout title="Project Verity Demo">
+    <Layout>
       <React.StrictMode>
         <Tabs tabs={tabs}></Tabs>
         <div className="mt-8 space-y-4">

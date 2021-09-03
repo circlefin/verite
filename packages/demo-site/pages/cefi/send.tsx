@@ -90,7 +90,7 @@ const Page: NextPage = () => {
   }
 
   return (
-    <Layout title="Project Verity Demo">
+    <Layout>
       <React.StrictMode>
         <Tabs tabs={tabs}></Tabs>
 
