@@ -6,10 +6,10 @@ type Props = {
   hideNavigation?: boolean
 }
 
-const IssuerLayout: FC<Props> = ({ children }) => {
+const IssuerLayout: FC<Props> = ({ children, hideNavigation }) => {
   return (
     <Layout title="Demo: Centralized App with Travel Rule">
-      <Navigation />
+      {!hideNavigation && <Navigation />}
       <div className="max-w-xl mx-auto">{children}</div>
     </Layout>
   )

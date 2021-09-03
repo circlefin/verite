@@ -1,6 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
 import React, { useState } from "react"
+import Spinner from "../..//components/Spinner"
 
 import Alert from "../../components/cefi/Alert"
 import EmptyAccount from "../../components/cefi/Empty"
@@ -121,10 +122,14 @@ const Page: NextPage = () => {
   }
 
   if (!data) {
-    return <>Loading</>
+    return (
+      <Layout hideNavigation>
+        <Spinner className="w-12 h-12 mx-auto my-12" />
+      </Layout>
+    )
   }
 
-  const accountBalance = BigNumber.from(data.balance)
+  const accountBalance = BigNumber.from(data.balance || 0)
 
   if (accountBalance.lte(0)) {
     return (
