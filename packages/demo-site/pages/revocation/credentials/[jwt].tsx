@@ -56,7 +56,7 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
       user
     }
   }
-})
+}, "/revocation")
 
 const formatType = (credential: MaybeRevocableCredential) => {
   try {

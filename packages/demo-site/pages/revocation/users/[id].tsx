@@ -79,7 +79,7 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
       credentialList
     }
   }
-})
+}, "/revocation")
 
 function CredentialTable({
   credentials

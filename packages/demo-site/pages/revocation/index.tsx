@@ -1,28 +1,34 @@
-import { ChevronRightIcon } from "@heroicons/react/solid"
+import { fullURL } from "@centre/demo-site/lib/utils"
 import { NextPage } from "next"
-import Link from "next/link"
+import { signIn, useSession } from "next-auth/client"
+import { useRouter } from "next/router"
+import { useState } from "react"
+import { LoadingButton } from "../../components/LoadingButton"
 import RevocationLayout from "../../components/revocation/Layout"
-import { currentUser, requireAdmin } from "../../lib/auth-fns"
-import { allUsers } from "../../lib/database"
-import type { User } from "../../lib/database"
 
-type Props = {
-  user: User
-  users: User[]
-}
+const RevocationPage: NextPage = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+  const [session] = useSession()
 
-export const getServerSideProps = requireAdmin<Props>(async (context) => {
-  const users = await allUsers()
-  const user = await currentUser(context)
-  return {
-    props: { user, users }
+  const signInAsCompliance = () => {
+    setIsLoading(true)
+
+    if (session) {
+      // Already signed in, move to the compliance UI
+      router.push("/revocation/dashboard")
+    } else {
+      signIn("credentials", {
+        email: "alice@test.com",
+        password: "testing",
+        callbackUrl: fullURL("/revocation/dashboard")
+      })
+    }
   }
-})
 
-const AdminPage: NextPage<Props> = ({ user, users }) => {
   return (
-    <RevocationLayout>
-      <div className="prose max-w-none">
+    <RevocationLayout hideAuth>
+      <div className="pb-2 prose max-w-none">
         <h2>Simulating an Issuer&apos;s Compliance Tool</h2>
         <p>
           This example simulates an admin tool used by issuers to manage
@@ -32,47 +38,22 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
         </p>
 
         <p>
-          To protect privacy, Verity employs{" "}
-          <Link href="https://w3c-ccg.github.io/vc-status-list-2021">
-            <a target="_blank">Status List 2021</a>
-          </Link>{" "}
-          to execute credential revocation.
+          In order to use this tool, you must first sign in as a compliance
+          officer.
         </p>
 
-        <h2>Demo Users</h2>
-        <p>
-          You are currently signed in as{" "}
-          <b>
-            <em>{user.email}</em>
-          </b>
-        </p>
-        <div className="divide-y divide-gray-200">
-          {users.map((record) => (
-            <div key={record.email}>
-              <Link href={`/revocation/users/${record.id}`} passHref>
-                <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
-                  <div className="ml-3">
-                    <span className="text-sm text-gray-900">
-                      {record.email}
-                      {record.email === user.email && (
-                        <span className="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          Current
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                  <ChevronRightIcon
-                    className="w-5 h-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                </span>
-              </Link>
-            </div>
-          ))}
-        </div>
+        <LoadingButton
+          loading={isLoading}
+          onClick={() => {
+            signInAsCompliance()
+          }}
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Log in as Compliance Officer
+        </LoadingButton>
       </div>
     </RevocationLayout>
   )
 }
 
-export default AdminPage
+export default RevocationPage
