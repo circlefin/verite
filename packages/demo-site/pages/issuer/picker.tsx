@@ -2,52 +2,46 @@ import { CalculatorIcon, UsersIcon } from "@heroicons/react/outline"
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
-import VerifierLayout from "../../components/verifier/Layout"
+import IssuerLayout from "../../components/issuer/Layout"
+import { requireAuth } from "../../lib/auth-fns"
 
 const items = [
   {
     name: "KYC/AML Attestation",
     description:
       "Proof that your account has been verified and passed KYC/AML checks",
-    href: "/verifier/kyc",
+    href: "/issuer/kyc",
     iconColor: "bg-pink-500",
     icon: UsersIcon
   },
   {
     name: "Credit Score",
-    description: "Proof of your current credit score.",
-    href: "/verifier/credit-score",
+    description: "Proof of your current credit score",
+    href: "/issuer/credit-score",
     iconColor: "bg-purple-500",
     icon: CalculatorIcon
   }
 ]
 
-const VerifierPage: NextPage = () => {
+export const getServerSideProps = requireAuth(async () => {
+  return {
+    props: {}
+  }
+}, "/issuer")
+
+const IssuerPickerPage: NextPage = () => {
   return (
-    <VerifierLayout>
+    <IssuerLayout hideNavigation={true}>
       <div className="pb-2 prose max-w-none">
-        <h2>Verify an Identity&apos;s Credentials</h2>
+        <h2>Request and Custody Verifiable Credentials</h2>
         <p>
-          Smart contracts, financial insitutions, agencies, apps, and devices
-          can verify credentials by implementing support for the{" "}
-          <Link href="https://identity.foundation/presentation-exchange/">
-            <a target="_blank">Presentation Exchange</a>
-          </Link>{" "}
-          specification.
-        </p>
-        <p>
-          This reference implemenation demonstrates how verifiers request
-          credentials, how holders format, sign, and transmit credentials in
-          response, and how information is secured and conveyed in verification
-          user experiences.
-        </p>
-        <p>
-          Note there is no user authentication required for verification. A
-          verifier does not require any knowledge of an end-user other than the
-          provided credentials to verify.
+          When you sign into your account at Circle, Coinbase, Square, or
+          another trusted institution, you might request credentials that prove
+          those providers have confirmed your identity, credit/risk score,
+          accredited investor status, or other key claims.
         </p>
         <p className="font-semibold">
-          Select the type of credential you would like to verify:
+          Select a Verifiable Credentials below to see how issuance works:
         </p>
       </div>
       <ul
@@ -88,8 +82,8 @@ const VerifierPage: NextPage = () => {
           </li>
         ))}
       </ul>
-    </VerifierLayout>
+    </IssuerLayout>
   )
 }
 
-export default VerifierPage
+export default IssuerPickerPage

@@ -2,15 +2,10 @@ import { FC } from "react"
 import Layout from "../Layout"
 import AttestationNavigation from "./AttestationNavigation"
 
-type Props = {
-  title: string
-  hideNavigation?: boolean
-}
-
-const VerifierLayout: FC<Props> = ({ title, children, hideNavigation }) => {
+const VerifierLayout: FC = ({ children }) => {
   return (
-    <Layout title={title}>
-      {!hideNavigation && <AttestationNavigation />}
+    <Layout title="Demo: Basic Verification">
+      <AttestationNavigation />
       {children}
     </Layout>
   )

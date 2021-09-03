@@ -6,6 +6,7 @@ import {
   RevocationListCredential
 } from "@centre/verity"
 import { useEffect, useState } from "react"
+import { LoadingButton } from "../LoadingButton"
 
 type Props = {
   credential: RevocableCredential
@@ -13,20 +14,10 @@ type Props = {
   onToggle?: (revocationList: RevocationListCredential) => Promise<void>
 }
 
-const doRevoke = async (credential: RevocableCredential): Promise<JWT> => {
-  const url = "/api/revoke"
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain"
-    },
-    body: credential.proof.jwt
-  })
-  return response.text()
-}
-
-const doUnrevoke = async (credential: RevocableCredential): Promise<JWT> => {
-  const url = "/api/unrevoke"
+const perform = async (
+  url: string,
+  credential: RevocableCredential
+): Promise<JWT> => {
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -42,7 +33,23 @@ export default function RevokeButton({
   defaultRevoked,
   onToggle
 }: Props): JSX.Element {
+  const [isLoading, setIsLoading] = useState(false)
   const [revoked, setRevoked] = useState<boolean>(defaultRevoked)
+
+  const doRevoke = async (credential: RevocableCredential): Promise<JWT> => {
+    setIsLoading(true)
+    const jwt = await perform("/api/revoke", credential)
+    setIsLoading(false)
+    return jwt
+  }
+
+  const doUnrevoke = async (credential: RevocableCredential): Promise<JWT> => {
+    setIsLoading(true)
+    const jwt = await perform("/api/unrevoke", credential)
+    setIsLoading(false)
+    return jwt
+  }
+
   useEffect(() => {
     ;(async () => {
       if (defaultRevoked === undefined) {
@@ -51,15 +58,10 @@ export default function RevokeButton({
     })()
   }, [credential, defaultRevoked])
 
-  if (revoked == undefined) {
+  if (revoked === undefined) {
     return (
       <>
-        <button
-          className="inline-flex items-center px-4 py-2 border 
-          border-transparent text-sm font-medium rounded-md shadow-sm 
-          text-white bg-blue-600 hover:bg-blue-700 focus:outline-none 
-          focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
+        <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           Loading
         </button>
       </>
@@ -68,7 +70,8 @@ export default function RevokeButton({
 
   return (
     <>
-      <button
+      <LoadingButton
+        loading={isLoading}
         onClick={async () => {
           const data = revoked
             ? await doUnrevoke(credential)
@@ -83,13 +86,10 @@ export default function RevokeButton({
 
           setRevoked(!revoked)
         }}
-        className="inline-flex items-center px-4 py-2 border 
-        border-transparent text-sm font-medium rounded-md shadow-sm 
-        text-white bg-blue-600 hover:bg-blue-700 focus:outline-none 
-        focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         {revoked ? "Unrevoke" : "Revoke"}
-      </button>
+      </LoadingButton>
     </>
   )
 }

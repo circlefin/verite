@@ -12,8 +12,8 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
 import { useState } from "react"
-import AdminLayout from "../../../components/admin/Layout"
 import RevokeButton from "../../../components/issuer/RevokeButton"
+import RevocationLayout from "../../../components/revocation/Layout"
 import { requireAdmin } from "../../../lib/auth-fns"
 import { findUserByCredential, User } from "../../../lib/database"
 
@@ -35,7 +35,7 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/admin"
+        destination: "/revocation"
       }
     }
   }
@@ -56,7 +56,7 @@ export const getServerSideProps = requireAdmin<Props>(async (context) => {
       user
     }
   }
-})
+}, "/revocation")
 
 const formatType = (credential: MaybeRevocableCredential) => {
   try {
@@ -78,7 +78,7 @@ const AdminCredentialPage: NextPage<Props> = ({
   const [list, setList] = useState<RevocationListCredential>(revocationList)
 
   return (
-    <AdminLayout title="Credential Details">
+    <RevocationLayout>
       <div className="prose max-w-none">
         <h2>{formatType(credential)}</h2>
         <p>
@@ -139,7 +139,7 @@ const AdminCredentialPage: NextPage<Props> = ({
         </Disclosure>
 
         <div>
-          <Link href={`/admin/users/${user.id}`} passHref>
+          <Link href={`/revocation/users/${user.id}`} passHref>
             <button
               type="button"
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -153,7 +153,7 @@ const AdminCredentialPage: NextPage<Props> = ({
           </Link>
         </div>
       </div>
-    </AdminLayout>
+    </RevocationLayout>
   )
 }
 

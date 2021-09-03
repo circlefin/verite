@@ -30,8 +30,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 const VerifierPage: NextPage<Props> = ({ verification }) => {
   const { query } = useRouter()
   const { type } = query
-  const title =
-    type === "kyc" ? "KYC/AML Verification" : "Credit Score Verification"
+  const title = type === "kyc" ? "KYC/AML" : "Credit Score"
   const { qrCodeData, challenge } = verification
 
   const { data } = useSWR(
@@ -43,11 +42,11 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
   const result = data && data.result
 
   return (
-    <VerifierLayout title={title}>
+    <VerifierLayout>
       <div className="prose max-w-none">
         {status === "pending" && (
           <>
-            <h2>Verification User Experience</h2>
+            <h2>{title} Verification User Experience</h2>
             <p>
               Using the Verity demo wallet app, scan this QR code to begin the
               verification sequence:
@@ -128,7 +127,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
 
         {(status === "approved" || status === "rejected") && (
           <p>
-            <Link href="/admin" passHref>
+            <Link href="/revocation" passHref>
               <button
                 type="button"
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
