@@ -1,22 +1,58 @@
 import fetch from "isomorphic-unfetch"
+import { v4 as uuidv4 } from "uuid"
 import type {
   ChallengeTokenUrlWrapper,
   CredentialManifest,
   ManifestWrapper,
   VerificationRequest,
-  VerificationRequestWrapper
+  SubmissionRequest,
+  VerificationRequestWrapper,
 } from "../types"
+import { generatePresentationDefinition } from "./presentation-definitions"
+
+const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 
 /**
  * Build a wrapper containing a challenge token URL for use in a QR code.
  */
 export function challengeTokenUrlWrapper(
-  challengeTokenUrl: string,
-  version = "1"
+  challengeTokenUrl: string
 ): ChallengeTokenUrlWrapper {
   return {
-    challengeTokenUrl,
-    version
+    challengeTokenUrl
+  }
+}
+
+export function createRequestCommon(
+  type: string,
+  from: string,
+  replyUrl: string,
+  statusUrl?: string,
+  opts?: Record<string, unknown>
+): SubmissionRequest {
+  const id = opts?.id || uuidv4()
+  const now = Date.now()
+  const expires = now + ONE_MONTH
+
+  const result = {
+    id: id as string,
+    type: type,
+    from: from,
+    created_time: now,
+    expires_time: expires,
+    reply_url: replyUrl,
+    body: {
+      status_url: statusUrl,
+      challenge: uuidv4()
+    }
+  }
+  return result
+}
+
+export function verificationRequestWrapper(request:VerificationRequest): VerificationRequestWrapper {
+  return {
+    request: request,
+    status: "pending"
   }
 }
 
@@ -24,29 +60,54 @@ export function challengeTokenUrlWrapper(
  * Build a CredentialManifest wrapper, containing the manifest and
  * a callback URL
  */
-export function manifestWrapper(
+ export function manifestWrapper(
   manifest: CredentialManifest,
-  callbackUrl: string
+  from: string,
+  replyUrl: string
 ): ManifestWrapper {
+  const request = createRequestCommon(
+    "https://verity.id/types/ManifestWrapper",
+    from,
+    replyUrl
+  )
+
   return {
-    manifest,
-    callbackUrl,
-    version: "1",
-    purpose: "offer"
+    ...request,
+    body: {
+      ...request.body,
+      manifest: manifest
+    }
   }
 }
 
-/**
- * Build a Verification Request wrapper
- */
-export function verificationRequestWrapper(
-  request: VerificationRequest
-): VerificationRequestWrapper {
-  return {
-    request,
-    version: "1",
-    purpose: "request"
+export function generateVerificationRequest(
+  presentationDefinitionType: string,
+  from: string, 
+  replyUrl: string, 
+  statusUrl?: string,
+  trustedAuthorities: string[] = [], 
+  opts?: Record<string, unknown>): VerificationRequest{
+  const presentationDefinition = generatePresentationDefinition(
+    presentationDefinitionType,
+    trustedAuthorities,
+    opts
+  )
+
+  const request = createRequestCommon(
+    "https://verity.id/types/VerificationRequest",
+    from,
+    replyUrl,
+    statusUrl
+  )
+
+  const presentationRequest = {
+    ...request,
+    body: {
+      ...request.body,
+      presentation_definition: presentationDefinition
+    }
   }
+  return presentationRequest
 }
 
 /**

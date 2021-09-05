@@ -25,7 +25,6 @@ describe("POST /verification/[id]/submission", () => {
     const verificationRequest = generateVerificationRequest(
       "KYCAMLAttestation",
       process.env.VERIFIER_DID,
-      process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
       fullURL("/api/verification/callback")
     )
@@ -35,13 +34,13 @@ describe("POST /verification/[id]/submission", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
     const { req, res } = createMocks({
       method: "POST",
-      query: { id: verificationRequest.request.id },
+      query: { id: verificationRequest.id },
       body: submission
     })
 
@@ -52,7 +51,7 @@ describe("POST /verification/[id]/submission", () => {
     expect(response).toEqual({ status: "approved" })
 
     const status = await fetchVerificationRequestStatus(
-      verificationRequest.request.id
+      verificationRequest.id
     )
     expect(status.status).toBe("approved")
   })
@@ -62,7 +61,6 @@ describe("POST /verification/[id]/submission", () => {
     const contract = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
     const verificationRequest = generateVerificationRequest(
       "KYCAMLAttestation",
-      process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
       fullURL(
         `/api/verification/submission?subjectAddress=${subject}&contractAddress=${contract}`
@@ -75,14 +73,14 @@ describe("POST /verification/[id]/submission", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
     const { req, res } = createMocks({
       method: "POST",
       query: {
-        id: verificationRequest.request.id,
+        id: verificationRequest.id,
         subjectAddress: subject,
         contractAddress: contract
       },
@@ -102,7 +100,7 @@ describe("POST /verification/[id]/submission", () => {
     expect(response.result.verificationInfo).toHaveProperty("subjectAddress")
 
     const status = await fetchVerificationRequestStatus(
-      verificationRequest.request.id
+      verificationRequest.id
     )
     expect(status.status).toBe("approved")
     expect(status.result).toBeDefined()
@@ -111,7 +109,6 @@ describe("POST /verification/[id]/submission", () => {
   it("rejects and returns errors on an invalid input", async () => {
     const verificationRequest = generateVerificationRequest(
       "CreditScoreAttestation",
-      process.env.VERIFIER_DID,
       process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
       fullURL("/api/verification/callback")
@@ -122,13 +119,13 @@ describe("POST /verification/[id]/submission", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
     const { req, res } = createMocks({
       method: "POST",
-      query: { id: verificationRequest.request.id },
+      query: { id: verificationRequest.id },
       body: submission
     })
 
@@ -149,7 +146,7 @@ describe("POST /verification/[id]/submission", () => {
     })
 
     const status = await fetchVerificationRequestStatus(
-      verificationRequest.request.id
+      verificationRequest.id
     )
     expect(status.status).toBe("rejected")
     expect(status.result).toBeUndefined()

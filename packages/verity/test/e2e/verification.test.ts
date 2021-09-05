@@ -8,7 +8,7 @@ import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
-import { generateVerificationRequest } from "../../lib/verification-request-fns"
+import { generateVerificationRequest } from "../../lib/waci"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
@@ -27,14 +27,13 @@ describe("verification", () => {
     const kycRequest = generateVerificationRequest(
       "KYCAMLAttestation",
       verifierDidKey.controller,
-      verifierDidKey.controller,
       "https://test.host/verify"
     )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
     const submission = await createVerificationSubmission(
       clientDidKey,
-      kycRequest.presentation_definition,
+      kycRequest.body.presentation_definition,
       verifiableCredentials
     )
 
@@ -49,7 +48,7 @@ describe("verification", () => {
     // 4. VERIFIER: Verifies submission
     await validateVerificationSubmission(
       submission,
-      kycRequest.presentation_definition
+      kycRequest.body.presentation_definition
     )
   })
 })
