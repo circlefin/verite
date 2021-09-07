@@ -1,5 +1,5 @@
-import { CreditScoreAttestation, KYCAMLAttestation } from "@centre/verity/types"
 import Ajv from "ajv"
+import { CreditScoreAttestation, KYCAMLAttestation } from "../../types"
 import { ValidationError } from "../errors"
 export { findSchemaById } from "./schemas"
 
