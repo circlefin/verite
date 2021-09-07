@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/client"
 import Head from "next/head"
 import { FC } from "react"
 
@@ -8,13 +7,6 @@ export type HeaderProps = {
 }
 
 const Header: FC<HeaderProps> = ({ title, theme }) => {
-  const [session] = useSession()
-
-  const circle = ["alice@test.com", "sean@test.com", "matt@test.com"]
-
-  if (circle.includes(session?.user?.email)) {
-    theme = "red"
-  }
   return (
     <>
       <Head>
