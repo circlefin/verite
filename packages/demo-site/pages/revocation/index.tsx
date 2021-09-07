@@ -1,10 +1,10 @@
-import { fullURL } from "@centre/demo-site/lib/utils"
 import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/client"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { LoadingButton } from "../../components/LoadingButton"
 import RevocationLayout from "../../components/revocation/Layout"
+import { fullURL } from "../../lib/utils"
 
 const RevocationPage: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false)
