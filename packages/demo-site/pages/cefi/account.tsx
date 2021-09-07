@@ -18,8 +18,7 @@ export const getServerSideProps = requireAuth(async () => {
 })
 
 const Page: NextPage = () => {
-  const { data, mutate } = useBalance()
-  const [pickupLoading, setPickupLoading] = useState(false)
+  const { data } = useBalance()
   const [message, setMessage] = useState<{ text: string; type: string }>()
 
   const error = (text: string) => {
@@ -28,49 +27,6 @@ const Page: NextPage = () => {
 
   const info = (text: string) => {
     setMessage({ text, type: "success" })
-  }
-
-  const pickupFunction = async (id: string) => {
-    setPickupLoading(true)
-
-    const response = await fetch(`/api/cefi/pickup/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    await mutate(undefined, true)
-
-    if (response.ok) {
-      info("Pickup succeessful.")
-    } else {
-      error(
-        "Pickup failed. This can happen if the counterparty canceled the request, verification is expired, or if the counterparty does not have sufficient funds."
-      )
-    }
-
-    setPickupLoading(false)
-  }
-
-  const pickupCancelFunction = async (id: string) => {
-    setPickupLoading(true)
-
-    const response = await fetch(`/api/cefi/pickup/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-
-    await mutate(undefined, true)
-
-    if (response.ok) {
-      info("Pickup cancelled.")
-    } else {
-      error("Something went wrong.")
-    }
-
-    setPickupLoading(false)
   }
 
   const faucetFunction = async (address: string): Promise<boolean> => {
@@ -141,19 +97,6 @@ const Page: NextPage = () => {
             type={message?.type}
             onDismiss={() => setMessage(null)}
           />
-        </div>
-
-        <div className="my-4">
-          {data.pendingReceive ? (
-            <PickupPanel
-              row={data.pendingReceive}
-              pickupLoading={pickupLoading}
-              pickupFunction={() => pickupFunction(data.pendingReceive.id)}
-              pickupCancelFunction={() =>
-                pickupCancelFunction(data.pendingReceive.id)
-              }
-            ></PickupPanel>
-          ) : null}
         </div>
 
         {data.history?.length > 0 ? (
