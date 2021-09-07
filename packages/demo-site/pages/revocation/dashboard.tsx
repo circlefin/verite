@@ -3,23 +3,32 @@ import { NextPage } from "next"
 import Link from "next/link"
 import RevocationLayout from "../../components/revocation/Layout"
 import { currentUser, requireAuth } from "../../lib/auth-fns"
-import { allUsers } from "../../lib/database"
+import { allUsers, prisma } from "../../lib/database"
 import type { User } from "../../lib/database"
 
 type Props = {
-  user: User
   users: User[]
+  lastIssuedUserId?: string
 }
 
-export const getServerSideProps = requireAuth<Props>(async (context) => {
+export const getServerSideProps = requireAuth<Props>(async () => {
   const users = await allUsers()
-  const user = await currentUser(context)
+  const credential = await prisma.credential.findFirst({
+    select: {
+      userId: true
+    },
+    orderBy: {
+      createdAt: "desc"
+    }
+  })
+  const lastIssuedUserId = credential?.userId || null
+
   return {
-    props: { user, users }
+    props: { users, lastIssuedUserId }
   }
 }, "/revocation")
 
-const AdminPage: NextPage<Props> = ({ user, users }) => {
+const AdminPage: NextPage<Props> = ({ lastIssuedUserId, users }) => {
   return (
     <RevocationLayout>
       <div className="prose max-w-none">
@@ -40,23 +49,17 @@ const AdminPage: NextPage<Props> = ({ user, users }) => {
         </p>
 
         <h2>Demo Users</h2>
-        <p>
-          The Issuer Demo was recently accessed by{" "}
-          <Link href={`/revocation/users/${user.id}`} passHref>
-            <a className="italic font-bold">{user.email}</a>
-          </Link>
-        </p>
         <div className="divide-y divide-gray-200">
-          {users.map((record) => (
-            <div key={record.email}>
-              <Link href={`/revocation/users/${record.id}`} passHref>
+          {users.map((user) => (
+            <div key={user.email}>
+              <Link href={`/revocation/users/${user.id}`} passHref>
                 <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
                   <div className="ml-3">
                     <span className="text-sm text-gray-900">
-                      {record.email}
-                      {record.email === user.email && (
+                      {user.email}
+                      {user.id === lastIssuedUserId && (
                         <span className="ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          Recently Accessed
+                          Recently Issued
                         </span>
                       )}
                     </span>

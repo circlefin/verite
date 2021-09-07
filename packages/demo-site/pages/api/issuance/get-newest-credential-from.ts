@@ -1,6 +1,6 @@
 import { MaybeRevocableCredential } from "@centre/verity"
 import { apiHandler } from "../../../lib/api-fns"
-import { findNewestCredential } from "../../../lib/database/credentials"
+import { findNewestCredentialSinceDate } from "../../../lib/database/credentials"
 
 type Resp = {
   credential: MaybeRevocableCredential
@@ -15,7 +15,7 @@ type Resp = {
 export default apiHandler<Resp>(async (req, res) => {
   const createdAt = new Date(req.query.createdAt as string)
 
-  const credential = await findNewestCredential(createdAt)
+  const credential = await findNewestCredentialSinceDate(createdAt)
 
   res.json({ credential })
 })
