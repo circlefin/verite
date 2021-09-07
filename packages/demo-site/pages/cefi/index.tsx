@@ -1,8 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
 import React, { useState } from "react"
-import Spinner from "../..//components/Spinner"
-
+import Spinner from "../../components/Spinner"
 import Alert from "../../components/cefi/Alert"
 import EmptyAccount from "../../components/cefi/Empty"
 import HistoryList from "../../components/cefi/HistoryList"
