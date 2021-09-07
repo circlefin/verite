@@ -1,3 +1,4 @@
+import { CredentialManifest } from "./CredentialManifest"
 import type { PresentationDefinition } from "./PresentationDefinition"
 
 /**
@@ -26,5 +27,11 @@ export type SubmissionRequest = {
 export type VerificationRequest = SubmissionRequest & {
   body: {
     presentation_definition: PresentationDefinition
+  }
+}
+
+export type CredentialOffer = SubmissionRequest & {
+  body: {
+    manifest: CredentialManifest
   }
 }

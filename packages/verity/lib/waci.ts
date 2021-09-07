@@ -53,8 +53,7 @@ export function verificationRequestWrapper(
   request: VerificationRequest
 ): VerificationRequestWrapper {
   return {
-    request: request,
-    status: "pending"
+    request: request
   }
 }
 
@@ -74,10 +73,12 @@ export function manifestWrapper(
   )
 
   return {
-    ...request,
-    body: {
-      ...request.body,
-      manifest: manifest
+    request: {
+      ...request,
+      body: {
+        ...request.body,
+        manifest: manifest
+      }
     }
   }
 }
@@ -100,7 +101,8 @@ export function generateVerificationRequest(
     "https://verity.id/types/VerificationRequest",
     from,
     replyUrl,
-    statusUrl
+    statusUrl,
+    opts
   )
 
   const presentationRequest = {

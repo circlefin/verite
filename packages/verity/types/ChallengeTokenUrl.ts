@@ -1,6 +1,8 @@
-import { CredentialManifest } from "./CredentialManifest"
-import { SubmissionRequest, VerificationRequest } from "./VerificationRequest"
-import { VerificationInfoResponse } from "./VerificationResult"
+import {
+  CredentialOffer,
+  SubmissionRequest,
+  VerificationRequest
+} from "./VerificationRequest"
 
 /**
  * A Wrapper object to be used to as a QR Code payload pointing to
@@ -10,14 +12,10 @@ export type ChallengeTokenUrlWrapper = {
   challengeTokenUrl: string
 }
 
-export type ManifestWrapper = SubmissionRequest & {
-  body: {
-    manifest: CredentialManifest
-  }
+export type RequestWrapper<T extends SubmissionRequest> = {
+  request: T
 }
 
-export type VerificationRequestWrapper = {
-  request: VerificationRequest
-  status: string
-  result?: VerificationInfoResponse
-}
+export type ManifestWrapper = RequestWrapper<CredentialOffer>
+
+export type VerificationRequestWrapper = RequestWrapper<VerificationRequest>
