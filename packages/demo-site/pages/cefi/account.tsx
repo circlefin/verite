@@ -6,7 +6,6 @@ import Alert from "../../components/cefi/Alert"
 import EmptyAccount from "../../components/cefi/Empty"
 import HistoryList from "../../components/cefi/HistoryList"
 import Layout from "../../components/cefi/Layout"
-import PendingSendPanel from "../../components/cefi/PendingSendPanel"
 import PickupPanel from "../../components/cefi/PickupPanel"
 import Tabs from "../../components/cefi/Tabs"
 import NoTokensMessage from "../../components/dapp/NoTokensMessage"
@@ -21,7 +20,6 @@ export const getServerSideProps = requireAuth(async () => {
 const Page: NextPage = () => {
   const { data, mutate } = useBalance()
   const [pickupLoading, setPickupLoading] = useState(false)
-  const [pendingSendLoading, setPendingSendLoading] = useState(false)
   const [message, setMessage] = useState<{ text: string; type: string }>()
 
   const error = (text: string) => {
@@ -73,27 +71,6 @@ const Page: NextPage = () => {
     }
 
     setPickupLoading(false)
-  }
-
-  const pendingSendCancel = async (id: string) => {
-    setPendingSendLoading(true)
-
-    const response = await fetch(`/api/cefi/send/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-
-    await mutate(undefined, true)
-
-    if (response.ok) {
-      info("Cancelling transaction.")
-    } else {
-      error("Something went wrong.")
-    }
-
-    setPendingSendLoading(false)
   }
 
   const faucetFunction = async (address: string): Promise<boolean> => {
@@ -176,16 +153,6 @@ const Page: NextPage = () => {
                 pickupCancelFunction(data.pendingReceive.id)
               }
             ></PickupPanel>
-          ) : null}
-        </div>
-
-        <div className="my-4">
-          {data.pendingSend ? (
-            <PendingSendPanel
-              row={data.pendingSend}
-              loading={pendingSendLoading}
-              onCancel={() => pendingSendCancel(data.pendingSend.id)}
-            ></PendingSendPanel>
           ) : null}
         </div>
 
