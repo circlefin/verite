@@ -1,8 +1,9 @@
-import PickupPanel from "@centre/demo-site/components/cefi/PickupPanel"
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import React, { useState } from "react"
+import Alert from "../../components/cefi/Alert"
 import Layout from "../../components/cefi/Layout"
+import PickupPanel from "../../components/cefi/PickupPanel"
 import Tabs from "../../components/cefi/Tabs"
 import { useBalance } from "../../hooks/useBalance"
 import { requireAuth } from "../../lib/auth-fns"
@@ -81,6 +82,15 @@ const Page: NextPage = () => {
     <Layout>
       <React.StrictMode>
         <Tabs tabs={tabs}></Tabs>
+
+        <div className={`${message ? "block" : "hidden"} my-4`}>
+          <Alert
+            text={message?.text}
+            type={message?.type}
+            onDismiss={() => setMessage(null)}
+          />
+        </div>
+
         <div className="mt-8 space-y-4">
           {data.pendingReceive ? (
             <PickupPanel

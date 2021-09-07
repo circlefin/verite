@@ -100,7 +100,9 @@ const Page: NextPage = () => {
         </div>
 
         {data.history?.length > 0 ? (
-          <HistoryList history={data.history}></HistoryList>
+          <div className="my-8">
+            <HistoryList history={data.history}></HistoryList>
+          </div>
         ) : (
           <EmptyAccount></EmptyAccount>
         )}
