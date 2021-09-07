@@ -3,10 +3,9 @@ import { v4 as uuidv4 } from "uuid"
 import type {
   ChallengeTokenUrlWrapper,
   CredentialManifest,
-  ManifestWrapper,
   VerificationRequest,
   SubmissionRequest,
-  VerificationRequestWrapper
+  CredentialOffer
 } from "../types"
 import { generatePresentationDefinition } from "./presentation-definitions"
 
@@ -49,14 +48,6 @@ export function createRequestCommon(
   return result
 }
 
-export function verificationRequestWrapper(
-  request: VerificationRequest
-): VerificationRequestWrapper {
-  return {
-    request: request
-  }
-}
-
 /**
  * Build a CredentialManifest wrapper, containing the manifest and
  * a callback URL
@@ -65,20 +56,18 @@ export function manifestWrapper(
   manifest: CredentialManifest,
   from: string,
   replyUrl: string
-): ManifestWrapper {
+): CredentialOffer {
   const request = createRequestCommon(
-    "https://verity.id/types/ManifestWrapper",
+    "https://verity.id/typesCredentialOffer",
     from,
     replyUrl
   )
 
   return {
-    request: {
-      ...request,
-      body: {
-        ...request.body,
-        manifest: manifest
-      }
+    ...request,
+    body: {
+      ...request.body,
+      manifest: manifest
     }
   }
 }
@@ -124,7 +113,7 @@ export function generateVerificationRequest(
  */
 export async function handleScan(
   scanData: string
-): Promise<ManifestWrapper | VerificationRequestWrapper | undefined> {
+): Promise<CredentialOffer | VerificationRequest | undefined> {
   const payload = json(scanData) as ChallengeTokenUrlWrapper
 
   if (!payload.challengeTokenUrl) {

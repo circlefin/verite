@@ -17,10 +17,10 @@ describe("GET /api/issuance/manifests/[type]/[token]", () => {
 
     await handler(req, res)
 
-    const request = res._getJSONData().request
-    const manifest = request.body.manifest
+    const json = res._getJSONData()
+    const manifest = json.body.manifest
     expect(res.statusCode).toBe(200)
-    expect(request.reply_url).toBeDefined()
+    expect(json.reply_url).toBeDefined()
     expect(manifest.id).toEqual("KYCAMLAttestation")
     expect(manifest).toMatchSnapshot()
   })
@@ -37,10 +37,10 @@ describe("GET /api/issuance/manifests/[type]/[token]", () => {
 
     await handler(req, res)
 
-    const request = res._getJSONData().request
-    const manifest = request.body.manifest
+    const json = res._getJSONData()
+    const manifest = json.body.manifest
     expect(res.statusCode).toBe(200)
-    expect(request.reply_url).toBeDefined()
+    expect(json.reply_url).toBeDefined()
     expect(manifest.id).toEqual("CreditScoreAttestation")
     expect(manifest).toMatchSnapshot()
   })

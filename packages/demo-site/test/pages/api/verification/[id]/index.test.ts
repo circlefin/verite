@@ -23,7 +23,7 @@ describe("GET /verification/[id]", () => {
 
     const presentation = res._getJSONData()
     expect(res.statusCode).toBe(200)
-    expect(presentation.request).toEqual(verificationRequest)
+    expect(presentation).toEqual(verificationRequest)
   })
 
   it("returns a 404 if given an invalid id", async () => {

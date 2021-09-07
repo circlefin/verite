@@ -1,8 +1,7 @@
 import {
   ChallengeTokenUrlWrapper,
   challengeTokenUrlWrapper,
-  generateVerificationRequest,
-  verificationRequestWrapper
+  generateVerificationRequest
 } from "@centre/verity"
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationRequest } from "./database/verificationRequests"
@@ -56,7 +55,7 @@ export async function createVerificationRequest(
   await saveVerificationRequest(verificationRequest)
   return {
     id,
-    challenge: verificationRequestWrapper(verificationRequest),
+    challenge: verificationRequest,
     qrCodeData: challengeTokenUrlWrapper(
       fullURL(`/api/verification/${verificationRequest.id}`)
     )
