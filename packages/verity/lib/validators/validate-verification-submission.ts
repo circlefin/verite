@@ -141,8 +141,8 @@ async function ensureNotRevoked(
 
   if (anyRevoked) {
     throw new ValidationError(
-      "Revoked Credentials",
-      "At least one of the provided verified credentials has been revoked"
+      "Revoked Credential",
+      "The selected verified credential has been revoked"
     )
   }
 }
@@ -157,8 +157,8 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
 
   if (anyExpired) {
     throw new ValidationError(
-      "Expired Credentials",
-      "At least one of the provided verified credentials has expired"
+      "Expired Credential",
+      "The selected verified credential has expired"
     )
   }
 }

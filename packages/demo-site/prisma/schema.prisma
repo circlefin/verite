@@ -27,7 +27,6 @@ model User {
   id          String @id @default(uuid())
   email       String @unique
   password    String @default("testing")
-  role        String @default("member")
   creditScore Int?
   mnemonic    String @default("")
   address     String @default("")
@@ -41,11 +40,11 @@ model VerificationRequest {
 }
 
 model PendingSend {
-  id       String @id @default(uuid())
-  payload  String
-  from     String
-  to       String
-  amount   String
+  id      String @id @default(uuid())
+  payload String
+  from    String
+  to      String
+  amount  String
 }
 
 model PendingReceive {

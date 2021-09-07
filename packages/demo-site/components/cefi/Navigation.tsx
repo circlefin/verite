@@ -13,7 +13,7 @@ const Layout: FC = () => {
           <span className="px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
             Balance:
             <span className="ml-3 text-lg font-bold">
-              {data?.balance} VUSDC
+              {data?.balance || "0"} VUSDC
             </span>
           </span>
         </nav>

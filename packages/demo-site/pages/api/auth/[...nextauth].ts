@@ -36,8 +36,6 @@ export default NextAuth({
       // @ts-ignore
       session.user.id = user.id
       // @ts-ignore
-      session.user.role = user.role
-      // @ts-ignore
       session.user.address = user.address
 
       let name: string
@@ -60,7 +58,6 @@ export default NextAuth({
     jwt: async (token, user?: User) => {
       if (user) {
         token.uid = user.id
-        token.role = user.role
       }
       return Promise.resolve(token)
     }
