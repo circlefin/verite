@@ -18,6 +18,6 @@ export type ManifestWrapper = SubmissionRequest & {
 
 export type VerificationRequestWrapper = {
   request: VerificationRequest
-  status: string,
+  status: string
   result?: VerificationInfoResponse
 }

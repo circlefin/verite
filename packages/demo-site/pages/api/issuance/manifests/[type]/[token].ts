@@ -14,5 +14,11 @@ export default apiHandler<ManifestWrapper>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  res.json(manifestWrapper(manifest, process.env.ISSUER_DID, fullURL(`/api/issuance/${token}`)))
+  res.json(
+    manifestWrapper(
+      manifest,
+      process.env.ISSUER_DID,
+      fullURL(`/api/issuance/${token}`)
+    )
+  )
 })

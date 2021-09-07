@@ -4,8 +4,8 @@ import type { PresentationDefinition } from "./PresentationDefinition"
  * Base class for requests kicking off Credential Issuance and Presentation Evchange.
  * Additional notes on JWM format:
  * - namespaced `type` values in this implementation include:
- *    https://verity.id/types/ManifestWrapper | https://verity.id/types/VerificationRequest 
- * - implementors should consider using `from` and `reply_to` especially when these 
+ *    https://verity.id/types/ManifestWrapper | https://verity.id/types/VerificationRequest
+ * - implementors should consider using `from` and `reply_to` especially when these
  *   entities differ and additional application-specific validation should be performed.
  */
 export type SubmissionRequest = {
@@ -28,4 +28,3 @@ export type VerificationRequest = SubmissionRequest & {
     presentation_definition: PresentationDefinition
   }
 }
-

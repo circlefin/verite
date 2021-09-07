@@ -50,9 +50,7 @@ describe("POST /verification/[id]/submission", () => {
     expect(res.statusCode).toBe(200)
     expect(response).toEqual({ status: "approved" })
 
-    const status = await fetchVerificationRequestStatus(
-      verificationRequest.id
-    )
+    const status = await fetchVerificationRequestStatus(verificationRequest.id)
     expect(status.status).toBe("approved")
   })
 
@@ -99,9 +97,7 @@ describe("POST /verification/[id]/submission", () => {
     expect(response.result.verificationInfo).toHaveProperty("message")
     expect(response.result.verificationInfo).toHaveProperty("subjectAddress")
 
-    const status = await fetchVerificationRequestStatus(
-      verificationRequest.id
-    )
+    const status = await fetchVerificationRequestStatus(verificationRequest.id)
     expect(status.status).toBe("approved")
     expect(status.result).toBeDefined()
   })
@@ -145,9 +141,7 @@ describe("POST /verification/[id]/submission", () => {
       ]
     })
 
-    const status = await fetchVerificationRequestStatus(
-      verificationRequest.id
-    )
+    const status = await fetchVerificationRequestStatus(verificationRequest.id)
     expect(status.status).toBe("rejected")
     expect(status.result).toBeUndefined()
   })

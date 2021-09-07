@@ -6,7 +6,7 @@ import type {
   ManifestWrapper,
   VerificationRequest,
   SubmissionRequest,
-  VerificationRequestWrapper,
+  VerificationRequestWrapper
 } from "../types"
 import { generatePresentationDefinition } from "./presentation-definitions"
 
@@ -49,7 +49,9 @@ export function createRequestCommon(
   return result
 }
 
-export function verificationRequestWrapper(request:VerificationRequest): VerificationRequestWrapper {
+export function verificationRequestWrapper(
+  request: VerificationRequest
+): VerificationRequestWrapper {
   return {
     request: request,
     status: "pending"
@@ -60,7 +62,7 @@ export function verificationRequestWrapper(request:VerificationRequest): Verific
  * Build a CredentialManifest wrapper, containing the manifest and
  * a callback URL
  */
- export function manifestWrapper(
+export function manifestWrapper(
   manifest: CredentialManifest,
   from: string,
   replyUrl: string
@@ -82,11 +84,12 @@ export function verificationRequestWrapper(request:VerificationRequest): Verific
 
 export function generateVerificationRequest(
   presentationDefinitionType: string,
-  from: string, 
-  replyUrl: string, 
+  from: string,
+  replyUrl: string,
   statusUrl?: string,
-  trustedAuthorities: string[] = [], 
-  opts?: Record<string, unknown>): VerificationRequest{
+  trustedAuthorities: string[] = [],
+  opts?: Record<string, unknown>
+): VerificationRequest {
   const presentationDefinition = generatePresentationDefinition(
     presentationDefinitionType,
     trustedAuthorities,

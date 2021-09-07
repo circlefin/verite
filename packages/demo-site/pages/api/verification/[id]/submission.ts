@@ -36,10 +36,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
       verificationRequest.body.presentation_definition
     )
   } catch (err) {
-    await updateVerificationRequestStatus(
-      verificationRequest.id,
-      "rejected"
-    )
+    await updateVerificationRequestStatus(verificationRequest.id, "rejected")
 
     throw err
   }
