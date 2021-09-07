@@ -4,13 +4,16 @@ import Navigation from "./Navigation"
 
 type Props = {
   hideNavigation?: boolean
+  fullWidth?: boolean
 }
 
-const IssuerLayout: FC<Props> = ({ children, hideNavigation }) => {
+const IssuerLayout: FC<Props> = ({ children, fullWidth, hideNavigation }) => {
   return (
     <Layout title="Demo: Centralized App with Travel Rule">
       {!hideNavigation && <Navigation />}
-      <div className="max-w-xl mx-auto">{children}</div>
+      <div className={`${!fullWidth ? "max-w-xl" : null} mx-auto`}>
+        {children}
+      </div>
     </Layout>
   )
 }

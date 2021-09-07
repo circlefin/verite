@@ -13,6 +13,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const session = await getSession(context)
   const redirectTo = (context.query.redirectTo || "/issuer") as string
 
+  // There is a special Sign In page for the CeFi demo
+  if (["/cefi/account", "/cefi/send", "/cefi/receive"].includes(redirectTo)) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/cefi"
+      }
+    }
+  }
+
   if (session) {
     return {
       redirect: {
