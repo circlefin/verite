@@ -86,7 +86,7 @@ const Page: NextPage = () => {
   }
 
   return (
-    <Layout fullWidth={true}>
+    <Layout>
       <React.StrictMode>
         <Tabs tabs={tabs}></Tabs>
 

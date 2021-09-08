@@ -5,10 +5,9 @@ import Navigation from "./Navigation"
 
 type Props = {
   hideNavigation?: boolean
-  fullWidth?: boolean
 }
 
-const IssuerLayout: FC<Props> = ({ children, fullWidth, hideNavigation }) => {
+const IssuerLayout: FC<Props> = ({ children, hideNavigation }) => {
   const [session] = useSession()
 
   const circle = ["alice@test.com", "sean@test.com", "matt@test.com"]
@@ -21,9 +20,7 @@ const IssuerLayout: FC<Props> = ({ children, fullWidth, hideNavigation }) => {
   return (
     <Layout title="Demo: Centralized App with Travel Rule" theme={theme}>
       {!hideNavigation && <Navigation />}
-      <div className={`${!fullWidth ? "max-w-xl" : null} mx-auto`}>
-        {children}
-      </div>
+      <div>{children}</div>
     </Layout>
   )
 }
