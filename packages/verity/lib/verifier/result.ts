@@ -4,14 +4,14 @@ import type { KYCVerificationInfo, VerificationInfoResponse } from "../../types"
 export const verificationResult = async (
   subjectAddress: string,
   contractAddress: string,
-  mnemonic: string,
+  signerPrivateKey: string,
   chainId: number
 ): Promise<VerificationInfoResponse> => {
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new signer trusted signer when needed.
-  // We use the same mnemonic here that the deploy script used in order to get
+  // We use the same account here that the deploy script used in order to get
   // a signer that is already registered as trusted in the contract.
-  const signer: Wallet = ethers.Wallet.fromMnemonic(mnemonic)
+  const signer: Wallet = new ethers.Wallet(signerPrivateKey)
 
   // This would be best done from current block.timestamp. Expirations allow verifiers
   // to control how long a particular result is considered valid. Block timestanps

@@ -24,7 +24,7 @@ export default apiHandler<Response>(async (req, res) => {
   const verification = await verificationResult(
     signer.address,
     verityTokenContractAddress(),
-    process.env.ETH_WALLET_MNEMONIC,
+    process.env.VERIFIER_PRIVATE_KEY,
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
