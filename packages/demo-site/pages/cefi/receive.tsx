@@ -1,6 +1,7 @@
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import React, { useState } from "react"
+import Spinner from "../../components/Spinner"
 import Alert from "../../components/cefi/Alert"
 import Layout from "../../components/cefi/Layout"
 import PickupPanel from "../../components/cefi/PickupPanel"
@@ -75,7 +76,12 @@ const Page: NextPage = () => {
   ]
 
   if (!data) {
-    return null
+    return (
+      <Layout>
+        <Tabs tabs={tabs}></Tabs>
+        <Spinner className="w-12 h-12 mx-auto my-12" />
+      </Layout>
+    )
   }
 
   return (

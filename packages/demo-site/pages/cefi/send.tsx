@@ -2,6 +2,7 @@ import { BigNumber } from "ethers"
 import { NextPage } from "next"
 import React, { createRef, useState } from "react"
 import { LoadingButton } from "../../components/LoadingButton"
+import Spinner from "../../components/Spinner"
 import Alert from "../../components/cefi/Alert"
 import Layout from "../../components/cefi/Layout"
 import Modal from "../../components/cefi/Modal"
@@ -114,7 +115,12 @@ const Page: NextPage = () => {
   ]
 
   if (!data) {
-    return null
+    return (
+      <Layout>
+        <Tabs tabs={tabs}></Tabs>
+        <Spinner className="w-12 h-12 mx-auto my-12" />
+      </Layout>
+    )
   }
 
   return (
