@@ -39,17 +39,30 @@ const Layout: FC = () => {
   return (
     <>
       <div className="flex flex-col-reverse justify-between mb-6 -mt-6 border-b border-gray-200 sm:flex-row">
-        <nav className="flex justify-center -mb-px space-x-8" aria-label="Tabs">
+        <nav
+          className="flex justify-center -mb-px space-x-8 sm:w-1/3"
+          aria-label="Tabs"
+        >
           <span className="px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-            Balance:
-            <span className="ml-3 text-lg font-bold">
-              {data?.balance || "0"} VUSDC
-            </span>
+            {data ? (
+              <>
+                Balance:
+                <span className="ml-3 text-lg font-bold">
+                  {data?.balance || "0"} VUSDC
+                </span>
+              </>
+            ) : (
+              <div className="text-lg font-bold">&nbsp;</div>
+            )}
           </span>
         </nav>
-        {logo ? <div className="flex items-center">{logo}</div> : null}
+        {logo ? (
+          <div className="flex items-center justify-center sm:w-1/3">
+            {logo}
+          </div>
+        ) : null}
         {session ? (
-          <div className="flex justify-between -mb-px space-x-8">
+          <div className="flex justify-end -mb-px space-x-8 sm:w-1/3">
             <span className="flex items-center px-1 py-4 text-sm font-medium text-gray-500 whitespace-nowrap">
               {session?.user?.email}
             </span>
