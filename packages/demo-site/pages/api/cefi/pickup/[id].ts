@@ -1,5 +1,5 @@
-import { currentUser } from "@centre/demo-site/lib/auth-fns"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { currentUser } from "../../../../lib/auth-fns"
 import { prisma } from "../../../../lib/database/prisma"
 import { NotFoundError, BadRequestError } from "../../../../lib/errors"
 

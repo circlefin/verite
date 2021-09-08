@@ -1,5 +1,5 @@
-import { PendingReceive } from "@centre/demo-site/lib/database"
 import { useSession } from "next-auth/client"
+import { PendingReceive } from "../../lib/database"
 import { LoadingButton } from "../LoadingButton"
 
 type Props = {

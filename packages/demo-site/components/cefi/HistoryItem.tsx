@@ -1,4 +1,5 @@
 import { CashIcon } from "@heroicons/react/solid"
+import { formatDistanceToNow } from "date-fns"
 import { useSession } from "next-auth/client"
 import { History } from "../../lib/database/prisma"
 
@@ -25,6 +26,10 @@ export default function HistoryItem({ item }: Props): JSX.Element {
   return (
     <>
       <tr className="bg-white">
+        <td className="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
+          {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+        </td>
+
         <td className="max-w-0 w-full px-6 py-4 whitespace-nowrap text-sm text-gray-900">
           <div className="flex">
             <span className="group inline-flex space-x-2 truncate text-sm">

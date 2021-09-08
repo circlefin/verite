@@ -1,6 +1,6 @@
-import SignInForm from "@centre/demo-site/components/SignInForm"
 import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
+import SignInForm from "../../components/SignInForm"
 import IssuerLayout from "../../components/issuer/Layout"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

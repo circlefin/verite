@@ -50,6 +50,9 @@ export default apiHandler<Response>(async (req, res) => {
           to: user.address
         }
       ]
+    },
+    orderBy: {
+      createdAt: "desc"
     }
   })
 

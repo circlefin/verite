@@ -5,6 +5,7 @@ import { LoadingButton } from "../../components/LoadingButton"
 import Alert from "../../components/cefi/Alert"
 import Layout from "../../components/cefi/Layout"
 import Modal from "../../components/cefi/Modal"
+import PendingSendPanel from "../../components/cefi/PendingSendPanel"
 import Tabs from "../../components/cefi/Tabs"
 import { useBalance } from "../../hooks/useBalance"
 import { requireAuth } from "../../lib/auth-fns"
@@ -22,6 +23,7 @@ const Page: NextPage = () => {
   const [address, setAddress] = useState<string>("")
   const [amount, setAmount] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
+  const [pendingSendLoading, setPendingSendLoading] = useState(false)
 
   const error = (text: string) => {
     setMessage({ text, type: "error" })
@@ -84,6 +86,27 @@ const Page: NextPage = () => {
     return response.ok
   }
 
+  const pendingSendCancel = async (id: string) => {
+    setPendingSendLoading(true)
+
+    const response = await fetch(`/api/cefi/send/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    await mutate(undefined, true)
+
+    if (response.ok) {
+      info("Cancelling transaction.")
+    } else {
+      error("Something went wrong.")
+    }
+
+    setPendingSendLoading(false)
+  }
+
   const tabs = [
     { name: "My Account", href: "/cefi", current: false },
     { name: "Send", href: "/cefi/send", current: true },
@@ -118,6 +141,16 @@ const Page: NextPage = () => {
             setOpen={setOpen}
           ></Modal>
         )}
+
+        <div className="my-4">
+          {data.pendingSend ? (
+            <PendingSendPanel
+              row={data.pendingSend}
+              loading={pendingSendLoading}
+              onCancel={() => pendingSendCancel(data.pendingSend.id)}
+            ></PendingSendPanel>
+          ) : null}
+        </div>
         <div className="mt-8">
           <div>
             <h3 className="text-lg font-medium leading-6 text-gray-900">

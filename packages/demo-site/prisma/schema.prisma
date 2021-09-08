@@ -57,9 +57,10 @@ model PendingReceive {
 }
 
 model History {
-  id      String @id @default(uuid())
-  payload String
-  from    String
-  to      String
-  amount  String
+  id        String @id @default(uuid())
+  payload   String
+  from      String
+  to        String
+  amount    String
+  createdAt DateTime @default(now())
 }
