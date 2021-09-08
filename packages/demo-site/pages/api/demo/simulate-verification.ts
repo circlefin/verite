@@ -15,14 +15,14 @@ export default apiHandler<VerificationInfoResponse>(async (req, res) => {
 
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new trusted signer when needed.
-  // We use the same mnemonic here that the deploy script used in order to get
+  // We use the same account here that the deploy script used in order to get
   // a signer that is already registered as trusted in the contract.
-  const mnemonic = process.env.ETH_WALLET_MNEMONIC
+  const privateKey = process.env.VERIFIER_PRIVATE_KEY
 
   const result = await verificationResult(
     subjectAddress,
     contractAddress,
-    mnemonic,
+    privateKey,
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
