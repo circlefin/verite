@@ -1,8 +1,7 @@
 import {
   ChallengeTokenUrlWrapper,
   challengeTokenUrlWrapper,
-  generateVerificationRequest,
-  verificationRequestWrapper
+  generateVerificationRequest
 } from "@centre/verity"
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationRequest } from "./database/verificationRequests"
@@ -32,7 +31,7 @@ export async function createVerificationRequest(
   // If the request includes a subjectAddress and contractAddress query
   // parameter, we will use it to generate an ETH verification result.
   const id = uuidv4()
-  const replyTo = replyUrl(id, subjectAddress, contractAddress)
+  const replyUrl = toReplyUrl(id, subjectAddress, contractAddress)
 
   const requestOpts: Record<string, unknown> = {
     id
@@ -48,25 +47,22 @@ export async function createVerificationRequest(
   const verificationRequest = generateVerificationRequest(
     ATTESTATION_TYPE_MAPPINGS[type],
     process.env.VERIFIER_DID,
-    process.env.VERIFIER_DID,
-    replyTo,
+    replyUrl,
     fullURL(`/api/verification/${id}/callback`),
     [process.env.ISSUER_DID],
     requestOpts
   )
-
   await saveVerificationRequest(verificationRequest)
-
   return {
     id,
-    challenge: verificationRequestWrapper(verificationRequest),
+    challenge: verificationRequest,
     qrCodeData: challengeTokenUrlWrapper(
-      fullURL(`/api/verification/${verificationRequest.request.id}`)
+      fullURL(`/api/verification/${verificationRequest.id}`)
     )
   }
 }
 
-function replyUrl(
+function toReplyUrl(
   id: string,
   subjectAddress?: string,
   contractAddress?: string

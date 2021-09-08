@@ -10,7 +10,7 @@ export async function saveVerificationRequest(
 ): Promise<VerificationRequest> {
   await prisma.verificationRequest.create({
     data: {
-      id: verificationRequest.request.id,
+      id: verificationRequest.id,
       payload: JSON.stringify(verificationRequest),
       status
     }

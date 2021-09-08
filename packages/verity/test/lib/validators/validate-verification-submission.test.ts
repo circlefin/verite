@@ -9,7 +9,7 @@ import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
-import { generateVerificationRequest } from "../../../lib/verification-request-fns"
+import { generateVerificationRequest } from "../../../lib/waci"
 import type {
   EncodedVerificationSubmission,
   VerificationRequest
@@ -50,7 +50,6 @@ describe("Submission validator", () => {
     const verificationRequest = generateVerificationRequest(
       "KYCAMLAttestation",
       verifierDidKey.controller,
-      verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did]
@@ -58,14 +57,14 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
     await expect(
       validateVerificationSubmission(
         submission,
-        verificationRequest.presentation_definition
+        verificationRequest.body.presentation_definition
       )
     ).resolves.not.toThrow()
   })
@@ -97,7 +96,6 @@ describe("Submission validator", () => {
     const verificationRequest = generateVerificationRequest(
       "CreditScoreAttestation",
       verifierDidKey.controller,
-      verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
@@ -106,14 +104,14 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
     await expect(
       validateVerificationSubmission(
         submission,
-        verificationRequest.presentation_definition
+        verificationRequest.body.presentation_definition
       )
     ).resolves.not.toThrow()
   })
@@ -146,7 +144,6 @@ describe("Submission validator", () => {
     const verificationRequest = generateVerificationRequest(
       "KYCAMLAttestation",
       verifierDidKey.controller,
-      verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
       ["NOT TRUSTED"]
@@ -154,7 +151,7 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
@@ -193,7 +190,6 @@ describe("Submission validator", () => {
     const verificationRequest = generateVerificationRequest(
       "CreditScoreAttestation",
       verifierDidKey.controller,
-      verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
@@ -202,7 +198,7 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
@@ -242,7 +238,6 @@ describe("Submission validator", () => {
     const verificationRequest = generateVerificationRequest(
       "CreditScoreAttestation",
       verifierDidKey.controller,
-      verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did]
@@ -250,7 +245,7 @@ describe("Submission validator", () => {
 
     const submission = await createVerificationSubmission(
       clientDidKey,
-      verificationRequest.presentation_definition,
+      verificationRequest.body.presentation_definition,
       clientVC
     )
 
@@ -272,7 +267,7 @@ async function expectValidationError(
   try {
     await validateVerificationSubmission(
       submission,
-      verificationRequest.presentation_definition
+      verificationRequest.body.presentation_definition
     )
   } catch (e) {
     error = e as ValidationError

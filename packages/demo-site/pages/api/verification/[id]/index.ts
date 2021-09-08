@@ -1,5 +1,4 @@
-import { verificationRequestWrapper } from "@centre/verity"
-import type { VerificationRequestWrapper } from "@centre/verity"
+import type { VerificationRequest } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findVerificationRequest } from "../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../lib/errors"
@@ -9,7 +8,7 @@ import { NotFoundError } from "../../../../lib/errors"
  *
  * Returns a VerificationRequest based on `id`
  */
-export default apiHandler<VerificationRequestWrapper>(async (req, res) => {
+export default apiHandler<VerificationRequest>(async (req, res) => {
   requireMethod(req, "GET")
 
   const verificationRequest = await findVerificationRequest(
@@ -20,5 +19,5 @@ export default apiHandler<VerificationRequestWrapper>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  res.json(verificationRequestWrapper(verificationRequest))
+  res.json(verificationRequest)
 })

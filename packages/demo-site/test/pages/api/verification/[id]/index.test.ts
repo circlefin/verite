@@ -9,7 +9,6 @@ describe("GET /verification/[id]", () => {
     const verificationRequest = generateVerificationRequest(
       "KYCAMLAttestation",
       process.env.VERIFIER_DID,
-      process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
       fullURL("/api/verification/callback")
     )
@@ -17,14 +16,14 @@ describe("GET /verification/[id]", () => {
 
     const { req, res } = createMocks({
       method: "GET",
-      query: { id: verificationRequest.request.id }
+      query: { id: verificationRequest.id }
     })
 
     await handler(req, res)
 
     const presentation = res._getJSONData()
     expect(res.statusCode).toBe(200)
-    expect(presentation.request).toEqual(verificationRequest)
+    expect(presentation).toEqual(verificationRequest)
   })
 
   it("returns a 404 if given an invalid id", async () => {

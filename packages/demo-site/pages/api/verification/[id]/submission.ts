@@ -33,13 +33,10 @@ export default apiHandler<PostResponse>(async (req, res) => {
   try {
     await validateVerificationSubmission(
       submission,
-      verificationRequest.presentation_definition
+      verificationRequest.body.presentation_definition
     )
   } catch (err) {
-    await updateVerificationRequestStatus(
-      verificationRequest.request.id,
-      "rejected"
-    )
+    await updateVerificationRequestStatus(verificationRequest.id, "rejected")
 
     throw err
   }
@@ -59,7 +56,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
   }
 
   await updateVerificationRequestStatus(
-    verificationRequest.request.id,
+    verificationRequest.id,
     "approved",
     result
   )
