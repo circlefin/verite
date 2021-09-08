@@ -51,7 +51,7 @@ const CeFiPage: NextPage = () => {
   )
 
   return (
-    <Layout hideNavigation={true} fullWidth={true}>
+    <Layout hideNavigation={true}>
       <div className="pb-2 prose max-w-none">
         <h2>Centralized App with Travel Rule</h2>
         <p>

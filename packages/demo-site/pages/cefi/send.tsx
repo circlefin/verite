@@ -121,112 +121,113 @@ const Page: NextPage = () => {
     <Layout>
       <React.StrictMode>
         <Tabs tabs={tabs}></Tabs>
-
-        <div className={`${message ? "block" : "hidden"} my-4`}>
-          <Alert
-            text={message?.text}
-            type={message?.type}
-            onDismiss={() => setMessage(null)}
-          />
-        </div>
-
-        {open && (
-          <Modal
-            confirmFunction={() => {
-              sendFunction(address, amount)
-              form.current.reset()
-            }}
-            onClose={setOpen}
-            open={open}
-            setOpen={setOpen}
-          ></Modal>
-        )}
-
-        <div className="my-4">
-          {data.pendingSend ? (
-            <PendingSendPanel
-              row={data.pendingSend}
-              loading={pendingSendLoading}
-              onCancel={() => pendingSendCancel(data.pendingSend.id)}
-            ></PendingSendPanel>
-          ) : null}
-        </div>
-        <div className="mt-8">
-          <div>
-            <h3 className="text-lg font-medium leading-6 text-gray-900">
-              Send VUSDC
-            </h3>
-            <p className="max-w-4xl mt-2 text-sm text-gray-500">
-              In this demo, transfers of 10 or more VUSDC will require providing
-              information to the counterparty.
-            </p>
+        <div className="max-w-xl mx-auto">
+          <div className={`${message ? "block" : "hidden"} my-4`}>
+            <Alert
+              text={message?.text}
+              type={message?.type}
+              onDismiss={() => setMessage(null)}
+            />
           </div>
 
-          <form
-            ref={form}
-            className="mt-4 space-y-2"
-            onSubmit={async (e) => {
-              e.preventDefault()
+          {open && (
+            <Modal
+              confirmFunction={() => {
+                sendFunction(address, amount)
+                form.current.reset()
+              }}
+              onClose={setOpen}
+              open={open}
+              setOpen={setOpen}
+            ></Modal>
+          )}
 
-              if (promptBeforeSend(amount)) {
-                return
-              }
-
-              await sendFunction(address, amount)
-              form.current.reset()
-            }}
-          >
+          <div className="my-4">
+            {data.pendingSend ? (
+              <PendingSendPanel
+                row={data.pendingSend}
+                loading={pendingSendLoading}
+                onCancel={() => pendingSendCancel(data.pendingSend.id)}
+              ></PendingSendPanel>
+            ) : null}
+          </div>
+          <div className="mt-8">
             <div>
-              <label
-                htmlFor="address"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Recipient Address
-              </label>
-              <div className="mt-1">
-                <input
-                  disabled={loading}
-                  required={true}
-                  type="text"
-                  name="address"
-                  id="address"
-                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="0x..."
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </div>
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                Send VUSDC
+              </h3>
+              <p className="max-w-4xl mt-2 text-sm text-gray-500">
+                In this demo, transfers of 10 or more VUSDC will require
+                providing information to the counterparty.
+              </p>
             </div>
 
-            <div>
-              <label
-                htmlFor="amount"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Amount of VUSDC
-              </label>
-              <div className="mt-1">
-                <input
-                  disabled={loading}
-                  required={true}
-                  type="text"
-                  name="amount"
-                  id="amount"
-                  className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="0 VUSDC"
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-              </div>
-            </div>
+            <form
+              ref={form}
+              className="mt-4 space-y-2"
+              onSubmit={async (e) => {
+                e.preventDefault()
 
-            <LoadingButton
-              type="submit"
-              style="dot-loader"
-              loading={loading}
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                if (promptBeforeSend(amount)) {
+                  return
+                }
+
+                await sendFunction(address, amount)
+                form.current.reset()
+              }}
             >
-              Transfer
-            </LoadingButton>
-          </form>
+              <div>
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Recipient Address
+                </label>
+                <div className="mt-1">
+                  <input
+                    disabled={loading}
+                    required={true}
+                    type="text"
+                    name="address"
+                    id="address"
+                    className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="0x..."
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="amount"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Amount of VUSDC
+                </label>
+                <div className="mt-1">
+                  <input
+                    disabled={loading}
+                    required={true}
+                    type="text"
+                    name="amount"
+                    id="amount"
+                    className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="0 VUSDC"
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <LoadingButton
+                type="submit"
+                style="dot-loader"
+                loading={loading}
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Transfer
+              </LoadingButton>
+            </form>
+          </div>
         </div>
       </React.StrictMode>
     </Layout>

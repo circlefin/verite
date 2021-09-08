@@ -83,40 +83,42 @@ const Page: NextPage = () => {
       <React.StrictMode>
         <Tabs tabs={tabs}></Tabs>
 
-        <div className={`${message ? "block" : "hidden"} my-4`}>
-          <Alert
-            text={message?.text}
-            type={message?.type}
-            onDismiss={() => setMessage(null)}
-          />
-        </div>
+        <div className="max-w-xl mx-auto">
+          <div className={`${message ? "block" : "hidden"} my-4`}>
+            <Alert
+              text={message?.text}
+              type={message?.type}
+              onDismiss={() => setMessage(null)}
+            />
+          </div>
 
-        <div className="mt-8 space-y-4">
-          {data.pendingReceive ? (
-            <PickupPanel
-              row={data.pendingReceive}
-              pickupLoading={pickupLoading}
-              pickupFunction={() => pickupFunction(data.pendingReceive.id)}
-              pickupCancelFunction={() =>
-                pickupCancelFunction(data.pendingReceive.id)
-              }
-            ></PickupPanel>
-          ) : null}
+          <div className="mt-8 space-y-4">
+            {data.pendingReceive ? (
+              <PickupPanel
+                row={data.pendingReceive}
+                pickupLoading={pickupLoading}
+                pickupFunction={() => pickupFunction(data.pendingReceive.id)}
+                pickupCancelFunction={() =>
+                  pickupCancelFunction(data.pendingReceive.id)
+                }
+              ></PickupPanel>
+            ) : null}
 
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            Receive VUSDC
-          </h3>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              Receive VUSDC
+            </h3>
 
-          <p className="max-w-4xltext-sm text-gray-500">
-            You can receive VUSDC at this address:
-          </p>
-          <p>{data?.address}</p>
+            <p className="max-w-4xltext-sm text-gray-500">
+              You can receive VUSDC at this address:
+            </p>
+            <p>{data?.address}</p>
 
-          <QRCode
-            value={data?.address}
-            className="w-48 h-48"
-            renderAs="svg"
-          ></QRCode>
+            <QRCode
+              value={data?.address}
+              className="w-48 h-48"
+              renderAs="svg"
+            ></QRCode>
+          </div>
         </div>
       </React.StrictMode>
     </Layout>
