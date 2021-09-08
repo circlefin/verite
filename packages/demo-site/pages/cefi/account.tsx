@@ -52,9 +52,16 @@ const Page: NextPage = () => {
     return true
   }
 
+  const tabs = [
+    { name: "My Account", href: "/cefi", current: true },
+    { name: "Send", href: "/cefi/send", current: false },
+    { name: "Receive", href: "/cefi/receive", current: false }
+  ]
+
   if (!data) {
     return (
-      <Layout hideNavigation>
+      <Layout>
+        <Tabs tabs={tabs}></Tabs>
         <Spinner className="w-12 h-12 mx-auto my-12" />
       </Layout>
     )
@@ -73,16 +80,6 @@ const Page: NextPage = () => {
         </React.StrictMode>
       </Layout>
     )
-  }
-
-  const tabs = [
-    { name: "My Account", href: "/cefi", current: true },
-    { name: "Send", href: "/cefi/send", current: false },
-    { name: "Receive", href: "/cefi/receive", current: false }
-  ]
-
-  if (!data) {
-    return null
   }
 
   return (
