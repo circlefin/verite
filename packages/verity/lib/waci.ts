@@ -58,7 +58,7 @@ export function manifestWrapper(
   replyUrl: string
 ): CredentialOffer {
   const request = createRequestCommon(
-    "https://verity.id/typesCredentialOffer",
+    "https://verity.id/types/CredentialOffer",
     from,
     replyUrl
   )
