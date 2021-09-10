@@ -140,13 +140,15 @@ export const findCredentialsByUserIdAndType = async (
  * @returns a decoded credential
  */
 export const findNewestCredentialSinceDate = async (
-  createdAt: Date
+  createdAt: Date,
+  userId?: string
 ): Promise<MaybeRevocableCredential | undefined> => {
   const result = await prisma.credential.findFirst({
     where: {
       createdAt: {
         gt: createdAt
-      }
+      },
+      userId: userId
     },
     orderBy: {
       createdAt: "desc"

@@ -47,7 +47,9 @@ const KycAmlPage: NextPage<Props> = ({
 }) => {
   // Setup polling to detect a newly issued credential.
   const { data } = useSWR(
-    fullURL(`/api/issuance/get-newest-credential-from?createdAt=${createdAt}`),
+    fullURL(
+      `/api/issuance/get-newest-credential-from?userId=${user.id}&createdAt=${createdAt}`
+    ),
     jsonFetch,
     {
       refreshInterval: 1000
