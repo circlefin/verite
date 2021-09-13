@@ -1,7 +1,10 @@
 import {
   randomDidKey,
   createCredentialApplication,
-  decodeVerifiablePresentation
+  decodeVerifiablePresentation,
+  challengeTokenUrlWrapper,
+  ChallengeTokenUrlWrapper,
+  CredentialOffer
 } from "@centre/verity"
 import type {
   CredentialManifest,
@@ -10,29 +13,84 @@ import type {
   W3CPresentation
 } from "@centre/verity"
 import Head from "next/head"
+import QRCode from "qrcode.react"
 import { useState } from "react"
-import useSWR from "swr"
-import type { NextPage } from "next"
+import jwt from "jsonwebtoken"
 
 type Presentation = Verifiable<W3CPresentation | RevocablePresentation>
 
-const jsonFetch = (url: string): Promise<Record<string, unknown>> =>
-  fetch(url).then((res) => res.json())
+type ServerProps = {
+  props: {
+    challenge: ChallengeTokenUrlWrapper
+  }
+}
 
-export default function Home(): JSX.Element {
+export const getServerSideProps = (): ServerProps => {
+  /**
+   * Note: This code is run on the server
+   *
+   * For this demo, we intend to issue a credential to a mobile wallet. We
+   * assume that user 1 is signed in to the current browser session. However,
+   * the mobile wallet likely will not share an authenticated session. To tie
+   * the two together, we will embed a JWT into the url the mobile wallet will
+   * ultimately call to issue the credential.
+   */
+
+  const secret = process.env.NEXT_PUBLIC_JWT_SECRET
+  const token = jwt.sign({}, secret, {
+    subject: "1",
+    algorithm: "HS256",
+    expiresIn: "1h"
+  })
+
+  // Create the challengeTokenUrl response
+  // In a production environment, the URL would need to be absolute, but for
+  // sake of simplicity we will just use a path since the demo is entirely
+  // within the browser.
+  const url = `/api/challenges/${token}`
+  const challenge = challengeTokenUrlWrapper(url)
+  return {
+    props: {
+      challenge
+    }
+  }
+}
+
+export default function Home({
+  challenge
+}: {
+  challenge: ChallengeTokenUrlWrapper
+}): JSX.Element {
+  // To simulate a mobile wallet, we generate a random keypair.
   const subject = randomDidKey()
 
-  const [response, setResponse] = useState()
+  // Challenge Response
+  const [challengeResponse, setChallengeResponse] = useState()
+
+  // Credential Response
+  const [credentialResponse, setCredentialResponse] = useState()
+  // Decoded Presentation from the credential response
   const [presentation, setPresentation] = useState<Presentation>()
 
-  // Fetch the Credential Manifests for the supported credentials
-  const manifests = useSWR("/api/manifests", jsonFetch).data as
-    | CredentialManifest[]
-    | undefined
+  // Determine what page we're on
+  let page: string
+  if (presentation && credentialResponse) {
+    page = "credential"
+  } else if (challengeResponse) {
+    page = "manifest"
+  } else {
+    page = "challenge"
+  }
 
-  // Handle empty state
-  if (!manifests) {
-    return <></>
+  // Simulate scanning the QR Code
+  const simulateScan = async (challenge: ChallengeTokenUrlWrapper) => {
+    const url = challenge.challengeTokenUrl
+    const response = await fetch(url)
+    if (response.ok) {
+      const json = await response.json()
+      setChallengeResponse(json)
+      return json
+    }
   }
 
   // API call to apply for a credential
@@ -50,13 +108,48 @@ export default function Home(): JSX.Element {
     if (response.ok) {
       const json = await response.json()
       const presentation = await decodeVerifiablePresentation(json.presentation)
-      setResponse(json)
+      setCredentialResponse(json)
       setPresentation(presentation)
     }
   }
 
+  // Component to render the QR code
+  const Scan = ({ challenge }) => {
+    return (
+      <>
+        <div className="bg-white shadow sm:rounded-lg">
+          <div className="px-4 py-5 sm:p-6">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+              Scan this QR Code with your mobile wallet
+            </h3>
+            <div className="prose">
+              <QRCode
+                value={JSON.stringify(challenge)}
+                className="w-48 h-48"
+                renderAs="svg"
+              />
+              <pre>{JSON.stringify(challenge, null, 4)}</pre>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  simulateScan(challenge)
+                }}
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+              >
+                Simulate Scanning
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   // Component to render a Manifest
-  const Manifest = ({ manifest }: { manifest: CredentialManifest }) => {
+  const Manifest = ({ response }: { response: CredentialOffer }) => {
+    const manifest = response.body.manifest
+
     const output = manifest.output_descriptors[0]
     const title = output.name
     const description = output.description
@@ -123,7 +216,7 @@ export default function Home(): JSX.Element {
   }
 
   return (
-    <div className="min-h-screen py-2">
+    <div className="min-h-screen py-2 bg-gray-50">
       <Head>
         <title>Verity Demo: Issuer</title>
         <link rel="icon" href="/favicon.ico" />
@@ -137,12 +230,19 @@ export default function Home(): JSX.Element {
             self-custodied identity wallet.
           </p>
           <p>
-            The page first loads the list of{" "}
+            The page first prompts a compatible mobile wallet to scan a QR code.
+            The data encoded includes a JWT to help tie identity of the mobile
+            wallet to that of the current authenticated browser session.
+          </p>
+          <p>
+            The returned{" "}
             <a href="https://identity.foundation/credential-manifest/">
-              Credential Manifests
+              Credential Manifest
             </a>{" "}
-            provided by the API. We use those manifests to render a title and
-            description. We then use{" "}
+            can be processed and show the user what is being requested.
+          </p>
+          <p>
+            Finally, we use{" "}
             <a href="https://identity.foundation/presentation-exchange">
               Presentation Exchange
             </a>{" "}
@@ -150,15 +250,15 @@ export default function Home(): JSX.Element {
           </p>
         </div>
 
-        <div className="flex flex-row space-x-8">
-          {manifests.map((manifest: CredentialManifest) => {
-            return <Manifest manifest={manifest} key={manifest.id}></Manifest>
-          })}
-        </div>
+        {page === "challenge" ? <Scan challenge={challenge}></Scan> : null}
 
-        {presentation && response ? (
+        {page === "manifest" ? (
+          <Manifest response={challengeResponse}></Manifest>
+        ) : null}
+
+        {page === "credential" ? (
           <Credential
-            response={response}
+            response={credentialResponse}
             presentation={presentation}
           ></Credential>
         ) : null}

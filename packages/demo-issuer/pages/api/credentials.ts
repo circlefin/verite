@@ -1,10 +1,9 @@
 import {
   buildAndSignFulfillment,
-  randomDidKey,
-  didKeyToIssuer,
   decodeCredentialApplication,
   KYCAMLAttestation,
-  CreditScoreAttestation
+  CreditScoreAttestation,
+  buildIssuer
 } from "@centre/verity"
 import { NextApiRequest, NextApiResponse } from "next"
 
@@ -16,10 +15,14 @@ export default async function credentials(
    * Get signer (issuer)
    *
    * When creating a Verifiable Credential, it is signed with the private key
-   * of the issuer. In this example, we generate a random one. However, a
-   * production environment would load this from some persistent store.
+   * of the issuer. In this demo we load from the environment variable. In a
+   * production environment you would want to be sure to keep the secret
+   * secure.
    */
-  const signer = didKeyToIssuer(randomDidKey())
+  const issuer = buildIssuer(
+    process.env.NEXT_PUBLIC_ISSUER_DID,
+    process.env.NEXT_PUBLIC_ISSUER_SECRET
+  )
 
   /**
    * Using Presentation Exchange, the client will submit a credential
@@ -58,7 +61,7 @@ export default async function credentials(
 
   // Generate the Verifiable Presentation
   const presentation = await buildAndSignFulfillment(
-    signer,
+    issuer,
     application,
     attestation
   )
