@@ -24,10 +24,6 @@ const Page: NextPage = () => {
     setMessage({ text, type: "error" })
   }
 
-  const info = (text: string) => {
-    setMessage({ text, type: "success" })
-  }
-
   const faucetFunction = async (address: string): Promise<boolean> => {
     try {
       const resp = await fetch(fullURL("/api/demo/faucet"), {

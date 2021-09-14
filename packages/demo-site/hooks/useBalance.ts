@@ -20,7 +20,9 @@ type AccountSummary = {
 }
 
 export const useBalance = (): AccountSummary => {
-  const { data, error, mutate } = useSWR(`/api/cefi/balance`, jsonFetch)
+  const { data, error, mutate } = useSWR(`/api/cefi/balance`, jsonFetch, {
+    refreshInterval: 2000
+  })
 
   return {
     data: data as Data,
