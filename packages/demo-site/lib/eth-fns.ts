@@ -8,7 +8,7 @@ import {
 import { ethers, Contract, ContractInterface, BigNumber } from "ethers"
 
 /**
- * Representats the supported ETH networks. For now, we only
+ * Represents the supported ETH networks. For now, we only
  * want to support `hardhat` which is served from port 8545, and
  * Ropsten. You can change it in the hardhat.config.js config file.
  *
@@ -26,7 +26,7 @@ export const supportedChainIds = [
 // 1337 // Hardhat
 
 /**
- * The connector for the etherum interface.
+ * The connector for the ethereum interface.
  */
 export const injectedConnector = new InjectedConnector({ supportedChainIds })
 
