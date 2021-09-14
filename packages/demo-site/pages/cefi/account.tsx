@@ -73,6 +73,14 @@ const Page: NextPage = () => {
     return (
       <Layout>
         <React.StrictMode>
+          <div className={`${message ? "block" : "hidden"} my-4`}>
+            <Alert
+              text={message?.text}
+              type={message?.type}
+              onDismiss={() => setMessage(null)}
+            />
+          </div>
+
           <NoTokensMessage
             faucetFunction={faucetFunction}
             selectedAddress={data.address}
