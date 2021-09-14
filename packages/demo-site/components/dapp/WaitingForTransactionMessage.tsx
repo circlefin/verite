@@ -15,7 +15,7 @@ const WaitingForTransactionMessage: FC<Props> = ({ txHash }) => {
             aria-hidden="true"
           />
         </div>
-        <div className="ml-3">
+        <div className="ml-3 overflow-scroll">
           <p className="text-sm font-medium text-yellow-800">
             Waiting for transaction <strong>{txHash}</strong> to be mined
           </p>
