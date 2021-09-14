@@ -434,7 +434,7 @@ const Dapp: FC = () => {
                   aria-hidden="true"
                 />
               </div>
-              <div className="ml-3">
+              <div className="ml-3 overflow-scroll">
                 <p className="text-sm font-medium text-blue-800">
                   {statusMessage}
                 </p>

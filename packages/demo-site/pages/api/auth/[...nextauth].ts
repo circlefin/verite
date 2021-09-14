@@ -33,26 +33,10 @@ export default NextAuth({
         return Promise.reject()
       }
 
-      // @ts-ignore
       session.user.id = user.id
-      // @ts-ignore
       session.user.address = user.address
+      session.user.fullName = user.fullName
 
-      let name: string
-      if (user.email === "alice@test.com") {
-        name = "Alice Adams"
-      } else if (user.email === "bob@test.com") {
-        name = "Bob Benito"
-      } else if (user.email === "kim@test.com") {
-        name = "Kim Hamilton Duffy"
-      } else if (user.email === "matt@test.com") {
-        name = "Matt Venables"
-      } else if (user.email === "brice@test.com") {
-        name = "Brice Stacey"
-      } else if (user.email === "sean@test.com") {
-        name = "Sean Neville"
-      }
-      session.user.name = name
       return Promise.resolve(session)
     },
     jwt: async (token, user?: User) => {

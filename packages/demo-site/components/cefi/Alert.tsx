@@ -21,7 +21,7 @@ export default function Alert({ text, type, onDismiss }: Props): JSX.Element {
               aria-hidden="true"
             />
           </div>
-          <div className="ml-3">
+          <div className="ml-3 overflow-scroll">
             <p className="text-sm text-yellow-700">{text}</p>
           </div>
           <div className="pl-3 ml-auto">
@@ -50,7 +50,7 @@ export default function Alert({ text, type, onDismiss }: Props): JSX.Element {
             aria-hidden="true"
           />
         </div>
-        <div className="ml-3">
+        <div className="ml-3 overflow-scroll">
           <p className="text-sm font-medium text-green-800">{text}</p>
         </div>
         <div className="pl-3 ml-auto">

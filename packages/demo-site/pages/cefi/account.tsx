@@ -1,4 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
 import React, { useState } from "react"
 import Spinner from "../../components/Spinner"
@@ -17,15 +16,11 @@ export const getServerSideProps = requireAuth(async () => {
 })
 
 const Page: NextPage = () => {
-  const { data } = useBalance()
+  const { data, accountBalance } = useBalance()
   const [message, setMessage] = useState<{ text: string; type: string }>()
 
   const error = (text: string) => {
     setMessage({ text, type: "error" })
-  }
-
-  const info = (text: string) => {
-    setMessage({ text, type: "success" })
   }
 
   const faucetFunction = async (address: string): Promise<boolean> => {
@@ -67,12 +62,18 @@ const Page: NextPage = () => {
     )
   }
 
-  const accountBalance = BigNumber.from(data.balance || 0)
-
   if (accountBalance.lte(0)) {
     return (
       <Layout>
         <React.StrictMode>
+          <div className={`${message ? "block" : "hidden"} my-4`}>
+            <Alert
+              text={message?.text}
+              type={message?.type}
+              onDismiss={() => setMessage(null)}
+            />
+          </div>
+
           <NoTokensMessage
             faucetFunction={faucetFunction}
             selectedAddress={data.address}

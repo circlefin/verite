@@ -32,7 +32,7 @@ const logoForSession = (session): JSX.Element => {
 
 const Layout: FC = () => {
   const [session] = useSession()
-  const { data } = useBalance()
+  const { data, accountBalance } = useBalance()
 
   const logo = logoForSession(session)
 
@@ -48,7 +48,7 @@ const Layout: FC = () => {
               <>
                 Balance:
                 <span className="ml-3 text-lg font-bold">
-                  {data?.balance || "0"} VUSDC
+                  {accountBalance.toString()} VUSDC
                 </span>
               </>
             ) : (
