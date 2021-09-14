@@ -2,7 +2,7 @@ import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
 import RevocationLayout from "../../components/revocation/Layout"
-import { currentUser, requireAuth } from "../../lib/auth-fns"
+import { requireAuth } from "../../lib/auth-fns"
 import { allUsers, prisma } from "../../lib/database"
 import type { User } from "../../lib/database"
 
