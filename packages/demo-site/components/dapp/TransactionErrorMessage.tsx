@@ -19,7 +19,7 @@ const TransactionErrorMessage: FC<TransactionErrorMessageProps> = ({
             aria-hidden="true"
           />
         </div>
-        <div className="ml-3">
+        <div className="ml-3 overflow-scroll">
           <p className="text-sm font-medium text-red-800">{message}</p>
         </div>
         <div className="pl-3 ml-auto">
