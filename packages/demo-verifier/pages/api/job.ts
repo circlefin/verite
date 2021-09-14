@@ -1,4 +1,8 @@
-import { generateVerificationRequest } from "@centre/verity"
+import {
+  challengeTokenUrlWrapper,
+  PresentationDefinition
+} from "@centre/verity"
+import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 
 export default async function credentials(
@@ -6,18 +10,17 @@ export default async function credentials(
   res: NextApiResponse
 ): Promise<void> {
   /**
-   * For demo purposes, imagine that this API method requires that a user first
-   * verify their credentials. Using Presentation Exchange, we'll return a
-   * Presentation Request, that instructs the client how it can complete
-   * verification.
+   * Since the request will be fulfilled by a mobile wallet, that does not
+   * necessarily share the same authentication as the browser, we will include
+   * a JWT in the request to tie the two clients together.
    */
-  const presentationRequest = generateVerificationRequest(
-    "KYCAMLAttestation", // type
-    process.env.NEXT_PUBLIC_VERIFIER_DID, // verifier did
-    "/api/verifications", // replyUrl
-    "/api/callback", // callbackUrl
-    [process.env.NEXT_PUBLIC_ISSUER_DID] // trusted authorities
-  )
+  const token = jwt.sign({}, process.env.JWT_SECRET, {
+    subject: req.query.subjectAddress as string,
+    algorithm: "HS256",
+    expiresIn: "1h"
+  })
 
-  res.status(200).json(presentationRequest)
+  const challenge = challengeTokenUrlWrapper(`/api/verifications/${token}`)
+
+  res.status(200).json(challenge)
 }
