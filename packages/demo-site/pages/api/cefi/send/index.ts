@@ -74,7 +74,7 @@ export default apiHandler<Response>(async (req, res) => {
       from: user.address,
       to: transaction.address,
       amount: transaction.amount,
-      payload: JSON.stringify({}) // TODO: This should be a verifiable presentation
+      payload: JSON.stringify({})
     }
   })
 
