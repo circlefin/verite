@@ -1,4 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber"
 import { NextPage } from "next"
 import React, { useState } from "react"
 import Spinner from "../../components/Spinner"
@@ -17,7 +16,7 @@ export const getServerSideProps = requireAuth(async () => {
 })
 
 const Page: NextPage = () => {
-  const { data } = useBalance()
+  const { data, accountBalance } = useBalance()
   const [message, setMessage] = useState<{ text: string; type: string }>()
 
   const error = (text: string) => {
@@ -62,8 +61,6 @@ const Page: NextPage = () => {
       </Layout>
     )
   }
-
-  const accountBalance = BigNumber.from(data.balance || 0)
 
   if (accountBalance.lte(0)) {
     return (
