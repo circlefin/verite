@@ -25,7 +25,7 @@ export async function send(
   }
 
   const provider = getProvider()
-  const wallet = Wallet.fromMnemonic(user.mnemonic).connect(provider)
+  const wallet = new Wallet(user.privateKey, provider)
   const contract = new Contract(
     verityTokenContractAddress(),
     verityTokenContractArtifact().abi,

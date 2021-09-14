@@ -21,8 +21,8 @@ export default function PickupPanel({
   const amount = row.amount
 
   const credential = (
-    <pre className="text-sm text-gray-500 mt-4">
-      {user.name}
+    <pre className="mt-4 text-sm text-gray-500">
+      {user.fullName}
       <br />
       123 Main Street
       <br />

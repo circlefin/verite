@@ -6,79 +6,34 @@ const prisma = new PrismaClient()
 
 type UserInput = Partial<User> & {
   email: string
-  mnemonic: string
-  address: string
 }
-// Users
-const aliceWallet = Wallet.fromMnemonic(
-  "doctor card season nasty dose refuse arrest enroll lock rely nerve reject"
-)
-const bobWallet = Wallet.fromMnemonic(
-  "feed flame cable lock kind jar diet security auction kitten question stand"
-)
-const kimWallet = Wallet.fromMnemonic(
-  "alcohol talk chronic mistake invest tumble horse pattern monster inner ivory awesome"
-)
-const briceWallet = Wallet.fromMnemonic(
-  "chase scrub final fossil onion enter imitate enable amused salad predict trigger"
-)
-const mattWallet = Wallet.fromMnemonic(
-  "hard laptop lucky green conduct maze gravity state welcome stomach camera grunt"
-)
-const seanWallet = Wallet.fromMnemonic(
-  "milk power apple shallow spatial speak infant bind split spice brief wave"
-)
 
-const users: UserInput[] = [
-  {
-    email: "alice@test.com",
-    password: "testing",
-    creditScore: 750,
-    mnemonic: aliceWallet.mnemonic.phrase,
-    address: aliceWallet.address
-  },
-  {
-    email: "bob@test.com",
-    password: "testing",
-    creditScore: 320,
-    mnemonic: bobWallet.mnemonic.phrase,
-    address: bobWallet.address
-  },
-  {
-    email: "kim@test.com",
-    password: "testing",
-    creditScore: 751,
-    mnemonic: kimWallet.mnemonic.phrase,
-    address: kimWallet.address
-  },
-  {
-    email: "brice@test.com",
-    password: "testing",
-    creditScore: 752,
-    mnemonic: briceWallet.mnemonic.phrase,
-    address: briceWallet.address
-  },
-  {
-    email: "matt@test.com",
-    password: "testing",
-    creditScore: 400,
-    mnemonic: mattWallet.mnemonic.phrase,
-    address: mattWallet.address
-  },
-  {
-    email: "sean@test.com",
-    password: "testing",
-    creditScore: 850,
-    mnemonic: seanWallet.mnemonic.phrase,
-    address: seanWallet.address
-  }
+const USERS: UserInput[] = [
+  { email: "alice@test.com", fullName: "Alice Test" },
+  { email: "bob@test.com", fullName: "Bob Test" },
+  { email: "kim@test.com", fullName: "Kim Test" },
+  { email: "sean@test.com", fullName: "Sean Test" },
+  { email: "brice@test.com", fullName: "Brice Test" },
+  { email: "matt@test.com", fullName: "Matt Test" }
 ]
 
 async function main() {
-  await asyncMap(users, async (user) => {
+  await asyncMap(USERS, async (user) => {
     console.info(`Creating user ${user.email}...`)
+
+    const wallet = Wallet.createRandom()
+    const data = Object.assign(
+      {},
+      {
+        creditScore: 750,
+        address: wallet.address,
+        privateKey: wallet.privateKey
+      },
+      user
+    ) as UserInput
+
     return prisma.user.create({
-      data: user
+      data
     })
   })
 }

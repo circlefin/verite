@@ -9,7 +9,7 @@ export async function userFactory(opts?: Partial<User>): Promise<User> {
   return prisma.user.create({
     data: {
       email,
-      mnemonic: wallet.mnemonic.phrase,
+      privateKey: wallet.privateKey,
       address: wallet.address,
       ...opts
     }

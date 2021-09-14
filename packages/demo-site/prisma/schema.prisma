@@ -27,9 +27,10 @@ model User {
   id          String @id @default(uuid())
   email       String @unique
   password    String @default("testing")
-  creditScore Int?
-  mnemonic    String @default("")
+  fullName    String @default("Test User")
+  creditScore Int    @default(700)
   address     String @default("")
+  privateKey  String @default("")
 }
 
 model VerificationRequest {
@@ -57,7 +58,7 @@ model PendingReceive {
 }
 
 model History {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   payload   String
   from      String
   to        String
