@@ -86,7 +86,7 @@ To watch for changes to @centre/verity, run:
 npm run dev:verity
 ```
 
-### @centre/demo-site:
+### @centre/demo-site
 
 ```
 npm run dev:site
@@ -108,16 +108,13 @@ Deploy the contract
 npm run hardhat:deploy
 ```
 
+Add funds to the in-app faucet. In development, the faucet address is `0x695f7BC02730E0702bf9c8C102C254F595B24161`, so the following command will supply it with funds:
+
+```
+npm run hardhat:faucet 0x695f7BC02730E0702bf9c8C102C254F595B24161
+```
+
 You can find more [detailed information](./packages/contract) in the package.
-
-## Sample Users
-
-The following users are added to the development environment by default:
-
-| id  | email          | password |
-| --- | -------------- | -------- |
-| 1   | alice@test.com | testing  |
-| 2   | bob@test.com   | testing  |
 
 ## Testing
 
