@@ -1,5 +1,6 @@
-import { randomBytes } from "crypto"
 import { randomDidKey } from "@centre/verity"
+import { randomBytes } from "crypto"
+import { Wallet } from "ethers"
 
 async function setup(): Promise<void> {
   const issuerDidKey = await randomDidKey()
@@ -19,6 +20,10 @@ async function setup(): Promise<void> {
     )}`
   )
   console.log(`JWT_SECRET=${jwtSecret}`)
+
+  // Create a random address to represent the address of our smart contract
+  const wallet = Wallet.createRandom()
+  console.log(`CONTRACT_ADDRESS=${wallet.address}`)
 }
 
 setup()

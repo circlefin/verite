@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@centre/verity": "*",
+    "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
     "next": "latest",
     "qrcode.react": "^1.0.1",
