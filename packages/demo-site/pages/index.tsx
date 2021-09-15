@@ -158,10 +158,10 @@ const Home: NextPage = () => {
       </div>
 
       <div>
-        <Link href="/issuer">
+        <Link href="/demos">
           <a className="flex items-center justify-center w-full px-4 py-2 pt-4 pb-4 font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm text-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             <BadgeCheckIcon className="mr-2 -ml-1 w-7 h-7" aria-hidden="true" />
-            Begin the Demo
+            View the Demos
           </a>
         </Link>
       </div>
