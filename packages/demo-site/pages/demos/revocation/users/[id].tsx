@@ -8,15 +8,15 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import Link from "next/link"
-import RevocationLayout from "../../../components/revocation/Layout"
-import { requireAuth } from "../../../lib/auth-fns"
+import RevocationLayout from "../../../../components/revocation/Layout"
+import { requireAuth } from "../../../../lib/auth-fns"
 import {
   allRevocationLists,
   DecodedDatabaseCredential,
   findCredentialsByUserId,
   findUser
-} from "../../../lib/database"
-import type { User } from "../../../lib/database"
+} from "../../../../lib/database"
+import type { User } from "../../../../lib/database"
 
 type CredentialList = Array<{
   credential: DecodedDatabaseCredential
@@ -68,7 +68,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/revocation"
+        destination: "/demos/revocation"
       }
     }
   }
@@ -79,7 +79,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
       credentialList
     }
   }
-}, "/revocation")
+}, "/demos/revocation")
 
 function CredentialTable({
   credentials
@@ -164,7 +164,7 @@ const AdminUserPage: NextPage<Props> = ({ credentialList, user }) => {
         <h2>Revoked Credentials</h2>
         <CredentialTable credentials={revokedCredentials} />
 
-        <Link href="/revocation" passHref>
+        <Link href="/demos/revocation" passHref>
           <button
             type="button"
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"

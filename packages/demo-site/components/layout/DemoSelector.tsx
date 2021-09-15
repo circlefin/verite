@@ -18,7 +18,7 @@ const DEMOS = [
   },
   {
     title: "Compliance & Basic Revocation",
-    href: "/revocation",
+    href: "/demos/revocation",
     description:
       "A compliance officer revokes a previously-issued KYC credential"
   },

@@ -12,10 +12,10 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
 import { useState } from "react"
-import RevokeButton from "../../../components/issuer/RevokeButton"
-import RevocationLayout from "../../../components/revocation/Layout"
-import { requireAuth } from "../../../lib/auth-fns"
-import { findUserByCredential, User } from "../../../lib/database"
+import RevokeButton from "../../../../components/issuer/RevokeButton"
+import RevocationLayout from "../../../../components/revocation/Layout"
+import { requireAuth } from "../../../../lib/auth-fns"
+import { findUserByCredential, User } from "../../../../lib/database"
 
 type Props = {
   credential: RevocableCredential
@@ -35,7 +35,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/revocation"
+        destination: "/demos/revocation"
       }
     }
   }
@@ -56,7 +56,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
       user
     }
   }
-}, "/revocation")
+}, "/demos/revocation")
 
 const formatType = (credential: MaybeRevocableCredential) => {
   try {

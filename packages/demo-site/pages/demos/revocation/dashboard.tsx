@@ -1,10 +1,10 @@
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
-import RevocationLayout from "../../components/revocation/Layout"
-import { requireAuth } from "../../lib/auth-fns"
-import { allUsers, prisma } from "../../lib/database"
-import type { User } from "../../lib/database"
+import RevocationLayout from "../../../components/revocation/Layout"
+import { requireAuth } from "../../../lib/auth-fns"
+import { allUsers, prisma } from "../../../lib/database"
+import type { User } from "../../../lib/database"
 
 type Props = {
   users: User[]
@@ -26,7 +26,7 @@ export const getServerSideProps = requireAuth<Props>(async () => {
   return {
     props: { users, lastIssuedUserId }
   }
-}, "/revocation")
+}, "/demos/revocation")
 
 const AdminPage: NextPage<Props> = ({ lastIssuedUserId, users }) => {
   return (

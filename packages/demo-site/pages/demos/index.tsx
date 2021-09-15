@@ -17,6 +17,11 @@ const DemosIndex: FC = () => {
           </Link>
         </li>
         <li>
+          <Link href="/demos/revocation">
+            <a>Revocation</a>
+          </Link>
+        </li>
+        <li>
           <Link href="/demos/cefi">
             <a>Cefi</a>
           </Link>

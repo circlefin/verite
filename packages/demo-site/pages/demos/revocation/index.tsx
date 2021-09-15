@@ -2,9 +2,9 @@ import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/client"
 import { useRouter } from "next/router"
 import { useState } from "react"
-import { LoadingButton } from "../../components/LoadingButton"
-import RevocationLayout from "../../components/revocation/Layout"
-import { fullURL } from "../../lib/utils"
+import { LoadingButton } from "../../../components/LoadingButton"
+import RevocationLayout from "../../../components/revocation/Layout"
+import { fullURL } from "../../../lib/utils"
 
 const RevocationPage: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -16,12 +16,12 @@ const RevocationPage: NextPage = () => {
 
     if (session) {
       // Already signed in, move to the compliance UI
-      router.push("/revocation/dashboard")
+      router.push("/demos/revocation/dashboard")
     } else {
       signIn("credentials", {
         email: "alice@test.com",
         password: "testing",
-        callbackUrl: fullURL("/revocation/dashboard")
+        callbackUrl: fullURL("/demos/revocation/dashboard")
       })
     }
   }

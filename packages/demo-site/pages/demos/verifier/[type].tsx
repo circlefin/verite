@@ -127,7 +127,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
 
         {(status === "approved" || status === "rejected") && (
           <p>
-            <Link href="/revocation" passHref>
+            <Link href="/demos/revocation" passHref>
               <button
                 type="button"
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
