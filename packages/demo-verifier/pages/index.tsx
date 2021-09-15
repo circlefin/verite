@@ -231,7 +231,7 @@ export default function Home(): JSX.Element {
     )
   }
 
-  // Component to render the final succcessful result
+  // Component to render the final successful result
   const VerificationResult = ({ result }) => {
     return (
       <>
