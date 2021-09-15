@@ -1,29 +1,25 @@
-# Next.js + Tailwind CSS Example
+# Demo Verifier
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v2.2)](https://blog.tailwindcss.com/tailwindcss-2-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+This is a simple example of how to verify a credential with a self-custodied identity wallet.
 
-It uses the new [`Just-in-Time Mode`](https://tailwindcss.com/docs/just-in-time-mode) for Tailwind CSS.
+The page first prompts a compatible mobile wallet to scan a QR code. The data encoded includes a JWT to help tie identity of the mobile wallet to that of the current authenticated browser session and the given verification request.
 
-## Preview
+Using [Presentation Exchange](https://identity.foundation/presentation-exchange), the server can define the constraints that satisfying its needs. The mobile wallet can then submit credentials for verification.
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+To use the resulting verification in an Ethereum smart constract, the verifier will return a signature using [EIP-712](https://eips.ethereum.org/EIPS/eip-712).
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+## Getting Started
 
-## Deploy your own
-
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
+```sh
+npm run dev
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+## Verification via Hosted Wallet
+
+Verification via a hosted wallet could look the same, but the mechanism for sharing the `challengeTokenUrl` would be different. In this demo, we have the mobile wallet scan the QR code. In a hosted solution, we might have the user copy-paste the data, which is otherwise unweildy between devices. Then, the hosted wallet could behave just as a mobile wallet and continue verifyication.
+
+The major difference between any solution is the median of exchange. Given that hosted wallets are available 24/7, you could imagine a scenario where many hosted services participate in a shared mempool. Before a hosted wallet submits a transaction to network, it could broadcast to the mempool a Verification Request and counterparties could complete the verification request in real-time.
+
+## Issuance to metamask
+
+Issuance to metamask, or some browser-based extension wallet, is very similar. Since the verifying service is likely a web application, it could interact with MM as if it were a dApp. Note that this is contingent on metamask actually supporting Verity.
