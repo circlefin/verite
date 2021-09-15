@@ -11,6 +11,7 @@ To use the resulting verification in an Ethereum smart constract, the verifier w
 ## Getting Started
 
 ```sh
+npm run setup
 npm run dev
 ```
 

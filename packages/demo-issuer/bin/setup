@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+echo "Setting up environment variables..."
+npm run ts-node ./bin/env.ts --silent > .env.development.local
