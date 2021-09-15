@@ -9,7 +9,7 @@
     "./packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w @centre/verity -w @centre/demo-site",
     "build:verity": "npm run build --workspace @centre/verity",
     "check": "run-s type-check lint test",
     "clean": "npm run clean --workspaces --if-present",
