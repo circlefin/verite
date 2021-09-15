@@ -24,19 +24,19 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
         <div className="max-w-3xl mx-auto">
           <header className="flex flex-col items-center justify-between p-4 pt-8 space-y-4 sm:p-8 sm:flex-row sm:space-y-0">
             <Link href="/">
-              <a className="text-2xl font-extrabold tracking-tight text-center text-gray-700 hover:text-gray-500">
+              <a className="text-2xl font-extrabold tracking-tight text-center text-gray-900 hover:text-blue-500">
                 Verity.id
               </a>
             </Link>
 
             <div className="flex items-center justify-between space-x-4">
               <Link href="/demos">
-                <a className="px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-700 hover:text-white">
+                <a className="px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-blue-500 hover:text-white">
                   Demos
                 </a>
               </Link>
               <Link href="/documentation">
-                <a className="px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-700 hover:text-white">
+                <a className="px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-blue-500 hover:text-white">
                   Documentation
                 </a>
               </Link>
