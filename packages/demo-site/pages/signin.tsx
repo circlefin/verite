@@ -14,11 +14,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const redirectTo = (context.query.redirectTo || "/issuer") as string
 
   // There is a special Sign In page for the CeFi demo
-  if (["/cefi/account", "/cefi/send", "/cefi/receive"].includes(redirectTo)) {
+  if (
+    ["/demos/cefi/account", "/demos/cefi/send", "/demos/cefi/receive"].includes(
+      redirectTo
+    )
+  ) {
     return {
       redirect: {
         permanent: false,
-        destination: "/cefi"
+        destination: "/demos/cefi"
       }
     }
   }

@@ -30,7 +30,7 @@ const DEMOS = [
   },
   {
     title: "Centralized app with travel rule",
-    href: "/cefi",
+    href: "/demos/cefi",
     description:
       "An example of how a centralized service could satisfy Travel Rule requirements before performing a transaction"
   }

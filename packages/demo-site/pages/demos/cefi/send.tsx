@@ -1,15 +1,15 @@
 import { BigNumber } from "ethers"
 import { NextPage } from "next"
 import React, { createRef, useState } from "react"
-import { LoadingButton } from "../../components/LoadingButton"
-import Spinner from "../../components/Spinner"
-import Alert from "../../components/cefi/Alert"
-import Layout from "../../components/cefi/Layout"
-import Modal from "../../components/cefi/Modal"
-import PendingSendPanel from "../../components/cefi/PendingSendPanel"
-import Tabs from "../../components/cefi/Tabs"
-import { useBalance } from "../../hooks/useBalance"
-import { requireAuth } from "../../lib/auth-fns"
+import { LoadingButton } from "../../../components/LoadingButton"
+import Spinner from "../../../components/Spinner"
+import Alert from "../../../components/cefi/Alert"
+import Layout from "../../../components/cefi/Layout"
+import Modal from "../../../components/cefi/Modal"
+import PendingSendPanel from "../../../components/cefi/PendingSendPanel"
+import Tabs from "../../../components/cefi/Tabs"
+import { useBalance } from "../../../hooks/useBalance"
+import { requireAuth } from "../../../lib/auth-fns"
 
 export const getServerSideProps = requireAuth(async () => {
   return { props: {} }
@@ -109,9 +109,9 @@ const Page: NextPage = () => {
   }
 
   const tabs = [
-    { name: "My Account", href: "/cefi", current: false },
-    { name: "Send", href: "/cefi/send", current: true },
-    { name: "Receive", href: "/cefi/receive", current: false }
+    { name: "My Account", href: "/demos/cefi", current: false },
+    { name: "Send", href: "/demos/cefi/send", current: true },
+    { name: "Receive", href: "/demos/cefi/receive", current: false }
   ]
 
   if (!data) {
