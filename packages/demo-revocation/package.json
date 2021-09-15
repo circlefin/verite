@@ -1,11 +1,13 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "dev": "next dev",
+    "lint": "next lint",
     "setup": "./bin/setup",
-    "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\""
+    "start": "next start",
+    "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
+    "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
     "@centre/verity": "*",

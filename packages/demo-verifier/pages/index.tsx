@@ -149,7 +149,7 @@ export default function Home(): JSX.Element {
       <>
         <div className="bg-white shadow sm:rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
               Scan this QR Code with your mobile wallet
             </h3>
             <div className="prose">
@@ -165,7 +165,7 @@ export default function Home(): JSX.Element {
                   e.preventDefault()
                   simulateScan(challenge)
                 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                className="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
               >
                 Simulate Scanning
               </button>
@@ -192,24 +192,24 @@ export default function Home(): JSX.Element {
         <div className="px-4 py-5 sm:p-6">
           {result === true ? (
             <span className="flex flex-row items-center">
-              <CheckIcon className="inline text-green-500 h-16 w-16"></CheckIcon>
+              <CheckIcon className="inline w-16 h-16 text-green-500"></CheckIcon>
               <span className="text-xl">Verified</span>
             </span>
           ) : null}
 
           {result === false ? (
             <span className="flex flex-row items-center">
-              <XIcon className="inline text-red-500 h-16 w-16"></XIcon>
+              <XIcon className="inline w-16 h-16 text-red-500"></XIcon>
               <span className="text-xl">Not Verified</span>
             </span>
           ) : null}
 
           {result === undefined ? (
             <>
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
                 {title}
               </h3>
-              <div className="mt-2 max-w-xl text-sm text-gray-500">
+              <div className="max-w-xl mt-2 text-sm text-gray-500">
                 <p>{description}</p>
               </div>
               <div className="mt-5">
@@ -219,7 +219,7 @@ export default function Home(): JSX.Element {
                     e.preventDefault()
                     verifyCredential(presentationRequest, credential)
                   }}
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                  className="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
                 >
                   Verify Credential
                 </button>
@@ -231,16 +231,16 @@ export default function Home(): JSX.Element {
     )
   }
 
-  // Component to render the final succcessful result
+  // Component to render the final successful result
   const VerificationResult = ({ result }) => {
     return (
       <>
         <div className="bg-white shadow sm:rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
               Verification Signature
             </h3>
-            <div className="mt-2 max-w-xl text-sm text-gray-500">
+            <div className="max-w-xl mt-2 text-sm text-gray-500">
               <p>
                 After successful verification, the verifier will return a
                 VerificationInfo object. These are encoded, hashed, and signed
@@ -248,10 +248,10 @@ export default function Home(): JSX.Element {
                 <a href="https://eips.ethereum.org/EIPS/eip-712">EIP-712</a>.
                 This signature, can be used when calling a compatible smart
                 contract to guarantee the calling address satisfies the
-                verifier's requirements.
+                verifier&apos;s requirements.
               </p>
             </div>
-            <div className="prose mt-4">
+            <div className="mt-4 prose">
               <pre>{JSON.stringify(result, null, 4)}</pre>
             </div>
           </div>
@@ -267,7 +267,7 @@ export default function Home(): JSX.Element {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="w-full px-20 pb-20 pt-10 space-y-8">
+      <main className="w-full px-20 pt-10 pb-20 space-y-8">
         <div className="prose">
           <h1>Verifier Demo</h1>
           <p>
