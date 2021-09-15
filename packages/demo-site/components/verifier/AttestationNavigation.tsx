@@ -3,13 +3,13 @@ import { FC } from "react"
 import { isActive, classNames } from "../../lib/react-fns"
 
 const tabs = [
-  { name: "KYC/AML", href: "/verifier/kyc" },
-  { name: "Credit Score", href: "/verifier/credit-score" }
+  { name: "KYC/AML", href: "/demos/verifier/kyc" },
+  { name: "Credit Score", href: "/demos/verifier/credit-score" }
 ]
 
 const AttestationNavigation: FC = () => {
   return (
-    <div className="mb-6 -mt-6 border-b border-gray-200">
+    <div className="mb-6 border-b border-gray-200">
       <nav className="flex -mb-px space-x-8" aria-label="Tabs">
         {tabs.map((tab) => (
           <Link key={tab.name} href={tab.href}>

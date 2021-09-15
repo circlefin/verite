@@ -8,8 +8,8 @@ type Props = {
 }
 
 const tabs = [
-  { name: "KYC/AML", href: "/issuer/kyc" },
-  { name: "Credit Score", href: "/issuer/credit-score" }
+  { name: "KYC/AML", href: "/demos/issuer/kyc" },
+  { name: "Credit Score", href: "/demos/issuer/credit-score" }
 ]
 
 const AttestationNavigation: FC<Props> = ({ hideNavigation }) => {
@@ -21,7 +21,7 @@ const AttestationNavigation: FC<Props> = ({ hideNavigation }) => {
         hideNavigation
           ? "justify-end"
           : "justify-between flex-col-reverse sm:flex-row",
-        "flex mb-6 -mt-6 border-b border-gray-200"
+        "flex mb-6  border-b border-gray-200"
       )}
     >
       {!hideNavigation && (

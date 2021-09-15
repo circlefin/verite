@@ -1,13 +1,13 @@
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import React, { useState } from "react"
-import Spinner from "../../components/Spinner"
-import Alert from "../../components/cefi/Alert"
-import Layout from "../../components/cefi/Layout"
-import PickupPanel from "../../components/cefi/PickupPanel"
-import Tabs from "../../components/cefi/Tabs"
-import { useBalance } from "../../hooks/useBalance"
-import { requireAuth } from "../../lib/auth-fns"
+import Spinner from "../../../components/Spinner"
+import Alert from "../../../components/cefi/Alert"
+import Layout from "../../../components/cefi/Layout"
+import PickupPanel from "../../../components/cefi/PickupPanel"
+import Tabs from "../../../components/cefi/Tabs"
+import { useBalance } from "../../../hooks/useBalance"
+import { requireAuth } from "../../../lib/auth-fns"
 
 export const getServerSideProps = requireAuth(async () => {
   return { props: {} }
@@ -70,9 +70,9 @@ const Page: NextPage = () => {
   }
 
   const tabs = [
-    { name: "My Account", href: "/cefi", current: false },
-    { name: "Send", href: "/cefi/send", current: false },
-    { name: "Receive", href: "/cefi/receive", current: true }
+    { name: "My Account", href: "/demos/cefi", current: false },
+    { name: "Send", href: "/demos/cefi/send", current: false },
+    { name: "Receive", href: "/demos/cefi/receive", current: true }
   ]
 
   if (!data) {

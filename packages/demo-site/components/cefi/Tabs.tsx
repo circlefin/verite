@@ -24,7 +24,7 @@ export default function Tabs({ tabs }: Props): JSX.Element {
         <select
           id="tabs"
           name="tabs"
-          className="block w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          className="block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
           defaultValue={tabs.find((tab) => tab.current).name}
         >
           {tabs.map((tab) => (
@@ -54,7 +54,7 @@ export default function Tabs({ tabs }: Props): JSX.Element {
                 <span
                   aria-hidden="true"
                   className={classNames(
-                    tab.current ? "bg-indigo-500" : "bg-transparent",
+                    tab.current ? "bg-blue-500" : "bg-transparent",
                     "absolute inset-x-0 bottom-0 h-0.5"
                   )}
                 />

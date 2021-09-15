@@ -1,15 +1,15 @@
 import { NextPage } from "next"
 import React, { useState } from "react"
-import Spinner from "../../components/Spinner"
-import Alert from "../../components/cefi/Alert"
-import EmptyAccount from "../../components/cefi/Empty"
-import HistoryList from "../../components/cefi/HistoryList"
-import Layout from "../../components/cefi/Layout"
-import Tabs from "../../components/cefi/Tabs"
-import NoTokensMessage from "../../components/dapp/NoTokensMessage"
-import { useBalance } from "../../hooks/useBalance"
-import { requireAuth } from "../../lib/auth-fns"
-import { fullURL } from "../../lib/utils"
+import Spinner from "../../../components/Spinner"
+import Alert from "../../../components/cefi/Alert"
+import EmptyAccount from "../../../components/cefi/Empty"
+import HistoryList from "../../../components/cefi/HistoryList"
+import Layout from "../../../components/cefi/Layout"
+import Tabs from "../../../components/cefi/Tabs"
+import NoTokensMessage from "../../../components/dapp/NoTokensMessage"
+import { useBalance } from "../../../hooks/useBalance"
+import { requireAuth } from "../../../lib/auth-fns"
+import { fullURL } from "../../../lib/utils"
 
 export const getServerSideProps = requireAuth(async () => {
   return { props: {} }
@@ -48,9 +48,9 @@ const Page: NextPage = () => {
   }
 
   const tabs = [
-    { name: "My Account", href: "/cefi", current: true },
-    { name: "Send", href: "/cefi/send", current: false },
-    { name: "Receive", href: "/cefi/receive", current: false }
+    { name: "My Account", href: "/demos/cefi", current: true },
+    { name: "Send", href: "/demos/cefi/send", current: false },
+    { name: "Receive", href: "/demos/cefi/receive", current: false }
   ]
 
   if (!data) {

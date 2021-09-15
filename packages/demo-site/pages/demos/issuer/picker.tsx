@@ -2,22 +2,22 @@ import { CalculatorIcon, UsersIcon } from "@heroicons/react/outline"
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
-import IssuerLayout from "../../components/issuer/Layout"
-import { requireAuth } from "../../lib/auth-fns"
+import IssuerLayout from "../../../components/issuer/Layout"
+import { requireAuth } from "../../../lib/auth-fns"
 
 const items = [
   {
     name: "KYC/AML Attestation",
     description:
       "Proof that your account has been verified and passed KYC/AML checks",
-    href: "/issuer/kyc",
+    href: "/demos/issuer/kyc",
     iconColor: "bg-pink-500",
     icon: UsersIcon
   },
   {
     name: "Credit Score",
     description: "Proof of your current credit score",
-    href: "/issuer/credit-score",
+    href: "/demos/issuer/credit-score",
     iconColor: "bg-purple-500",
     icon: CalculatorIcon
   }
@@ -27,7 +27,7 @@ export const getServerSideProps = requireAuth(async () => {
   return {
     props: {}
   }
-}, "/issuer")
+}, "/demos/issuer")
 
 const IssuerPickerPage: NextPage = () => {
   return (

@@ -2,21 +2,21 @@ import { CalculatorIcon, UsersIcon } from "@heroicons/react/outline"
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
-import VerifierLayout from "../../components/verifier/Layout"
+import VerifierLayout from "../../../components/verifier/Layout"
 
 const items = [
   {
     name: "KYC/AML Attestation",
     description:
       "Proof that your account has been verified and passed KYC/AML checks",
-    href: "/verifier/kyc",
+    href: "/demos/verifier/kyc",
     iconColor: "bg-pink-500",
     icon: UsersIcon
   },
   {
     name: "Credit Score",
     description: "Proof of your current credit score.",
-    href: "/verifier/credit-score",
+    href: "/demos/verifier/credit-score",
     iconColor: "bg-purple-500",
     icon: CalculatorIcon
   }
