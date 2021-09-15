@@ -11,7 +11,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
   const session = await getSession(context)
-  const redirectTo = (context.query.redirectTo || "/issuer") as string
+  const redirectTo = (context.query.redirectTo || "/demos/issuer") as string
 
   // There is a special Sign In page for the CeFi demo
   if (

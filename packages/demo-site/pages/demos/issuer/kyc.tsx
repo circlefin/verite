@@ -6,11 +6,11 @@ import { NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
-import IssuerLayout from "../../components/issuer/Layout"
-import { currentUser, requireAuth } from "../../lib/auth-fns"
-import { temporaryAuthToken } from "../../lib/database"
-import type { User } from "../../lib/database"
-import { fullURL, jsonFetch } from "../../lib/utils"
+import IssuerLayout from "../../../components/issuer/Layout"
+import { currentUser, requireAuth } from "../../../lib/auth-fns"
+import { temporaryAuthToken } from "../../../lib/database"
+import type { User } from "../../../lib/database"
+import { fullURL, jsonFetch } from "../../../lib/utils"
 
 type Props = {
   createdAt: string
@@ -37,7 +37,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
       user
     }
   }
-}, "/issuer")
+}, "/demos/issuer")
 
 const KycAmlPage: NextPage<Props> = ({
   createdAt,

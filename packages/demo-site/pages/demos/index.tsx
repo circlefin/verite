@@ -7,6 +7,11 @@ const DemosIndex: FC = () => {
     <Layout title="Demos">
       <ul>
         <li>
+          <Link href="/demos/issuer">
+            <a>Issuer</a>
+          </Link>
+        </li>
+        <li>
           <Link href="/demos/cefi">
             <a>Cefi</a>
           </Link>

@@ -7,7 +7,7 @@ import { classNames } from "../../lib/react-fns"
 const DEMOS = [
   {
     title: "Basic Issuance",
-    href: "/issuer",
+    href: "/demos/issuer",
     description:
       "An end-user requests KYC or Credit Score credentials from an issuer"
   },
