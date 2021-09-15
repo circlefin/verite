@@ -91,10 +91,12 @@ const Home: NextPage = () => {
       </div>
 
       <div>
-        <button className="flex justify-center w-full px-4 py-2 pt-4 pb-4 font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm text-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          <BadgeCheckIcon className="mr-2 -ml-1 w-7 h-7" aria-hidden="true" />
-          <Link href="/issuer">Begin the Demo</Link>
-        </button>
+        <Link href="/issuer">
+          <a className="flex justify-center w-full px-4 py-2 pt-4 pb-4 font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm text-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <BadgeCheckIcon className="mr-2 -ml-1 w-7 h-7" aria-hidden="true" />
+            Begin the Demo
+          </a>
+        </Link>
       </div>
     </Layout>
   )
