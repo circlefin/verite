@@ -1,14 +1,9 @@
 {
   "name": "@centre/contract",
   "scripts": {
-    "build": "",
-    "clean": "",
     "hardhat:node": "npx hardhat node",
     "hardhat:deploy": "npx hardhat run scripts/deploy.ts --network localhost",
-    "hardhat:faucet": "npx hardhat --network localhost faucet",
-    "lint": "",
-    "test": "",
-    "type-check": ""
+    "hardhat:faucet": "npx hardhat --network localhost faucet"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

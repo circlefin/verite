@@ -50,7 +50,9 @@ const issueRevocationList = async () => {
  * issuer, but for the sake of the demo's focus on verification, we will do it
  * here.
  */
-const issueCredential = async (revocationList: RevocationListCredential) => {
+const issueCredential = async (
+  revocationList: RevocationListCredential
+): Promise<RevocableCredential> => {
   // We will create a random did to represent our own identity wallet
   const subject = randomDidKey()
 
@@ -85,7 +87,7 @@ const issueCredential = async (revocationList: RevocationListCredential) => {
 
   const decoded = await decodeVerifiableCredential(encoded)
 
-  return decoded
+  return decoded as RevocableCredential
 }
 
 export default function Home(): JSX.Element {
@@ -208,7 +210,7 @@ export default function Home(): JSX.Element {
               setRevocationList(list)
             }
           }}
-          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+          className="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
         >
           {revoked ? "Unrevoke" : "Revoke"}
         </button>
@@ -227,7 +229,7 @@ export default function Home(): JSX.Element {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="w-full px-20 pb-20 pt-10 space-y-8">
+      <main className="w-full px-20 pt-10 pb-20 space-y-8">
         <div className="prose">
           <h1>Revocation Demo</h1>
           <p>
@@ -237,7 +239,7 @@ export default function Home(): JSX.Element {
             </a>
             . The revocation status is essentially stored in a compressed and
             encoded bitstring, with each credential having its own index. If the
-            bit at the index is a 1, the credential is revoked. Otherwise, it's
+            bit at the index is a 1, the credential is revoked. Otherwise, it is
             not revoked.
           </p>
           <p>
@@ -265,7 +267,7 @@ export default function Home(): JSX.Element {
           </ul>
           <p>
             When revoking and unrevoking a credential. Notice that the
-            Revocation List Credential changes, but the KYC credential doesn't.
+            Revocation List Credential changes, but the KYC credential does not.
           </p>
         </div>
         <RevokeButton

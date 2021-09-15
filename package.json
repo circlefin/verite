@@ -9,10 +9,10 @@
     "./packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspaces --if-present",
     "build:verity": "npm run build --workspace @centre/verity",
     "check": "run-s type-check lint test",
-    "clean": "npm run clean --workspaces",
+    "clean": "npm run clean --workspaces --if-present",
     "db:migrate": "npm run db:migrate --workspace @centre/demo-site",
     "db:reset": "npm run db:reset --workspace @centre/demo-site",
     "db:seed": "npm run db:seed --workspace @centre/demo-site",
@@ -24,15 +24,15 @@
     "hardhat:node": "npm run hardhat:node --workspace @centre/contract",
     "hardhat:deploy": "npm run hardhat:deploy --workspace @centre/contract",
     "hardhat:faucet": "npm run hardhat:faucet --workspace @centre/contract",
-    "format": "npm run format --workspaces",
-    "lint": "npm run lint --workspaces",
+    "format": "npm run format --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
     "prepare": "npm run build:verity",
     "prisma": "npx -w @centre/demo-site prisma",
     "setup": "./bin/setup",
     "setup:ci": "npm run setup:ci --workspace @centre/demo-site",
     "start": "npm run start --workspace @centre/demo-site",
-    "test": "npm test --workspaces",
-    "type-check": "npm run type-check --workspaces"
+    "test": "npm test --workspaces --if-present",
+    "type-check": "npm run type-check --workspaces --if-present"
   },
   "dependencies": {
     "npm-run-all": "^4.1.5"
