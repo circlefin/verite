@@ -13,7 +13,7 @@ const DEMOS = [
   },
   {
     title: "Basic Verification",
-    href: "/verifier",
+    href: "/demos/verifier",
     description: "An end-user submits a credential to a 3rd party verifier"
   },
   {

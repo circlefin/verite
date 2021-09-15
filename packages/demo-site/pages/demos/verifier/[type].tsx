@@ -6,12 +6,12 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
-import VerifierLayout from "../../components/verifier/Layout"
-import { fullURL, jsonFetch } from "../../lib/utils"
+import VerifierLayout from "../../../components/verifier/Layout"
+import { fullURL, jsonFetch } from "../../../lib/utils"
 import {
   createVerificationRequest,
   VerificationRequestResponse
-} from "../../lib/verification-request"
+} from "../../../lib/verification-request"
 
 type Props = {
   verification: VerificationRequestResponse

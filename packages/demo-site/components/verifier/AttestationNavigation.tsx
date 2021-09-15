@@ -3,8 +3,8 @@ import { FC } from "react"
 import { isActive, classNames } from "../../lib/react-fns"
 
 const tabs = [
-  { name: "KYC/AML", href: "/verifier/kyc" },
-  { name: "Credit Score", href: "/verifier/credit-score" }
+  { name: "KYC/AML", href: "/demos/verifier/kyc" },
+  { name: "Credit Score", href: "/demos/verifier/credit-score" }
 ]
 
 const AttestationNavigation: FC = () => {
