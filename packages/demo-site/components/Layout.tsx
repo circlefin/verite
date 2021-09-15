@@ -37,7 +37,7 @@ const Layout: FC<Props> = ({ children, title }) => {
           </header>
           <main className="max-w-4xl p-4 mx-auto bg-white sm:p-8 rounded-xl">
             {title && (
-              <h1 className="pb-4 text-2xl font-bold text-gray-900 sm:pb-10 sm:text-3xl">
+              <h1 className="pb-4 mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                 {title}
               </h1>
             )}
