@@ -1,5 +1,6 @@
 import {
   generateVerificationRequest,
+  InputDescriptorConstraintStatusDirective,
   PresentationDefinition,
   validateVerificationSubmission,
   verificationResult
@@ -52,7 +53,7 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
         constraints: {
           statuses: {
             active: {
-              directive: "required"
+              directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
           fields: [
