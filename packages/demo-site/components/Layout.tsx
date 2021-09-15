@@ -2,18 +2,25 @@ import { compact } from "lodash"
 import Head from "next/head"
 import Link from "next/link"
 import { FC } from "react"
+import { classNames } from "../lib/react-fns"
 
 type Props = {
   title?: string
+  bgColor?: string
 }
 
-const Layout: FC<Props> = ({ children, title }) => {
+const Layout: FC<Props> = ({ children, title, bgColor }) => {
   return (
     <>
       <Head>
         <title>{compact(["Verity.id", title]).join(" | ")}</title>
       </Head>
-      <div className="min-h-screen px-4 text-base antialiased text-black bg-gray-100 font-inter font-feature-default">
+      <div
+        className={classNames(
+          bgColor || "bg-gray-100",
+          "min-h-screen px-4 text-base antialiased text-black font-inter font-feature-default"
+        )}
+      >
         <div className="max-w-3xl mx-auto">
           <header className="flex flex-col items-center justify-between p-4 pt-8 space-y-4 sm:p-8 sm:flex-row sm:space-y-0">
             <Link href="/">

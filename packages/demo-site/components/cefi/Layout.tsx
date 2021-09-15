@@ -10,15 +10,16 @@ type Props = {
 const IssuerLayout: FC<Props> = ({ children, hideNavigation }) => {
   const [session] = useSession()
 
-  const circle = ["alice@test.com", "sean@test.com", "matt@test.com"]
-
-  let theme = "blue"
-  if (circle.includes(session?.user?.email)) {
-    theme = "red"
+  const trapezoid = ["alice@test.com", "sean@test.com", "matt@test.com"]
+  let bgColor
+  if (session) {
+    bgColor = trapezoid.includes(session?.user?.email)
+      ? "bg-red-100"
+      : "bg-blue-100"
   }
 
   return (
-    <Layout title="Demo: Centralized App with Travel Rule" theme={theme}>
+    <Layout title="Demo: Centralized App with Travel Rule" bgColor={bgColor}>
       {!hideNavigation && <Navigation />}
       <div>{children}</div>
     </Layout>
