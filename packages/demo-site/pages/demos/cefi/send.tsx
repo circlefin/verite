@@ -196,7 +196,7 @@ const Page: NextPage = () => {
                     type="text"
                     name="address"
                     id="address"
-                    className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     placeholder="0x..."
                     onChange={(e) => setAddress(e.target.value)}
                   />
@@ -217,7 +217,7 @@ const Page: NextPage = () => {
                     type="text"
                     name="amount"
                     id="amount"
-                    className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     placeholder="0 VUSDC"
                     onChange={(e) => setAmount(e.target.value)}
                   />
