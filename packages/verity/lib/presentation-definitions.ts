@@ -159,6 +159,15 @@ function creditScorePresentationDefinition(
   }
 }
 
+/**
+ * This constraint will enforce that the credential was issued by one of the
+ * `trustedAuthorities`. Pattern matching is a simple regex, so we anchor the
+ * DIDs to ensure it matches completely.
+ *
+ * Note that the inputs here are assumed to be Ethereum addresses. If you were
+ * to accept arbitrary input, you would need better handling of the regex
+ * pattern.
+ */
 function trustedAuthorityConstraint(
   trustedAuthorities: string[] = []
 ): InputDescriptorConstraintField {
@@ -167,7 +176,7 @@ function trustedAuthorityConstraint(
     purpose: "We can only verify credentials attested by a trusted authority.",
     filter: {
       type: "string",
-      pattern: trustedAuthorities.join("|")
+      pattern: trustedAuthorities.map((issuer) => `^${issuer}$`).join("|")
     }
   }
 }
