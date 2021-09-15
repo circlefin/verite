@@ -48,12 +48,12 @@ const AdminPage: NextPage<Props> = ({ lastIssuedUserId, users }) => {
           to execute credential revocation.
         </p>
 
-        <h2>Demo Users</h2>
+        <h2>Users</h2>
         <div className="divide-y divide-gray-200">
           {users.map((user) => (
             <div key={user.email}>
-              <Link href={`/revocation/users/${user.id}`} passHref>
-                <span className="flex justify-between py-4 cursor-pointer hover:bg-gray-50">
+              <Link href={`/demos/revocation/users/${user.id}`} passHref>
+                <a className="flex justify-between py-4 !no-underline cursor-pointer hover:bg-gray-50">
                   <div className="ml-3">
                     <span className="text-sm text-gray-900">
                       {user.email}
@@ -68,7 +68,7 @@ const AdminPage: NextPage<Props> = ({ lastIssuedUserId, users }) => {
                     className="w-5 h-5 text-gray-400"
                     aria-hidden="true"
                   />
-                </span>
+                </a>
               </Link>
             </div>
           ))}

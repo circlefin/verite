@@ -21,7 +21,7 @@ const AttestationNavigation: FC<Props> = ({ hideNavigation }) => {
         hideNavigation
           ? "justify-end"
           : "justify-between flex-col-reverse sm:flex-row",
-        "flex mb-6 -mt-6 border-b border-gray-200"
+        "flex mb-6  border-b border-gray-200"
       )}
     >
       {!hideNavigation && (

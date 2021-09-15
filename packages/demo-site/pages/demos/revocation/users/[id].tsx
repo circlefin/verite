@@ -111,7 +111,7 @@ function CredentialTable({
             </td>
             <td>
               <Link
-                href={`/revocation/credentials/${credential?.credential?.credential?.proof?.jwt}`}
+                href={`/demos/revocation/credentials/${credential?.credential?.credential?.proof?.jwt}`}
               >
                 Details
               </Link>
