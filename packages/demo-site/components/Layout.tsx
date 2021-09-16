@@ -14,6 +14,8 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
     <>
       <Head>
         <title>{compact(["Verity.id", title]).join(" | ")}</title>
+        <link rel="icon" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/path/to/apple-touch-icon.png" />
       </Head>
       <div
         className={classNames(
