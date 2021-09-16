@@ -4,11 +4,14 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
+    "setup": "./bin/setup",
     "start": "next start",
+    "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
     "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
     "@centre/verity": "*",
+    "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
     "next": "latest",
     "qrcode.react": "^1.0.1",
@@ -19,6 +22,7 @@
   "devDependencies": {
     "autoprefixer": "^10.2.6",
     "postcss": "^8.3.5",
-    "tailwindcss": "^2.2.4"
+    "tailwindcss": "^2.2.4",
+    "ts-node": "^10.1.0"
   }
 }

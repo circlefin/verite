@@ -1,6 +1,5 @@
 import { randomBytes } from "crypto"
 import { randomDidKey } from "@centre/verity"
-import internalIP from "internal-ip"
 
 async function setup(): Promise<void> {
   const issuerDidKey = await randomDidKey()

@@ -89,8 +89,7 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
                 "We can only verify credentials attested by a trusted authority.",
               filter: {
                 type: "string",
-                pattern:
-                  "^did:key:z6MktD288XZYEwedyKzWPpHZzoJ4k7iz5R39PtcVR4F7Lkpg$"
+                pattern: `^${process.env.NEXT_PUBLIC_ISSUER_DID}$`
               }
             }
           ]

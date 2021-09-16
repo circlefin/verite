@@ -11,6 +11,7 @@ Finally, we use [Presentation Exchange](https://identity.foundation/presentation
 ## Getting Started
 
 ```sh
+npm run setup
 npm run dev
 ```
 

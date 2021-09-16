@@ -7,5 +7,6 @@ Since Verifiable Credentials cannot be tampered (aka they are read-only), you ca
 ## Getting Started
 
 ```sh
+npm run setup
 npm run dev
 ```
