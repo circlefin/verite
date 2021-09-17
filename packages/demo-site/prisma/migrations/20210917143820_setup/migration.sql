@@ -1,3 +1,12 @@
+-- NOTE: Locally we use a SQLite database, but in production we use a PostgreSQL
+-- database. Be sure to keep this migration file capable of being run on both
+-- PostgreSQL and SQLite.
+--
+-- For example, Prisma uses the DATETIME type instead of TIMESTAMP when
+-- generating migrations for SQLite. However, PostgreSQL does not support
+-- DATETIME, so we need to use TIMESTAMP, which is supported by both SQLite and
+-- PostgreSQL.
+
 -- CreateTable
 CREATE TABLE "Credential" (
     "id" TEXT NOT NULL PRIMARY KEY,
