@@ -4,6 +4,7 @@ import { Provider } from "next-auth/client"
 import { AppProps } from "next/app"
 import App from "next/app"
 import "tailwindcss/tailwind.css"
+import NextNprogress from "nextjs-progressbar"
 import Cookies from "universal-cookie"
 import RequirePassword from "../components/RequirePassword"
 import { PASSWORD_PROTECTION_COOKIE } from "../lib/react-fns"
@@ -19,6 +20,7 @@ function DemoApp({ Component, pageProps }: AppProps): JSX.Element {
     <Provider session={pageProps.session}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <RequirePassword {...pageProps}>
+          <NextNprogress color="#3B82F6" options={{ showSpinner: false }} />
           <Component {...pageProps} />
         </RequirePassword>
       </Web3ReactProvider>
