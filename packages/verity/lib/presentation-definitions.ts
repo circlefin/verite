@@ -80,10 +80,9 @@ function kycPresentationDefinition(
           },
           is_holder: [
             {
-              field_id: [
-                "subjectId"
-              ],
-              directive: InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
+              field_id: ["subjectId"],
+              directive:
+                InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
             }
           ],
           fields

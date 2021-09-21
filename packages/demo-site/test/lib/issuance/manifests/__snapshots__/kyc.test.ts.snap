@@ -6,13 +6,11 @@ Object {
     "jwt_vc": Object {
       "alg": Array [
         "EdDSA",
-        "ES256K",
       ],
     },
     "jwt_vp": Object {
       "alg": Array [
         "EdDSA",
-        "ES256K",
       ],
     },
   },
@@ -104,7 +102,6 @@ Object {
       "jwt_vp": Object {
         "alg": Array [
           "EdDSA",
-          "ES256K",
         ],
       },
     },
