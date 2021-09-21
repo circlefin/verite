@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid"
 import { createVerificationSubmission } from "../../lib/client/verification-submission"
 import {
   createCredentialApplication,
@@ -59,7 +60,7 @@ async function getClientVerifiableCredential(
   const { manifest, issuer } = await generateManifestAndIssuer()
 
   // 0. PREREQ: Ensure client has a valid KYC credential
-  const application = await createCredentialApplication(clientDidKey, manifest)
+  const application = await createCredentialApplication(clientDidKey, manifest,  { challenge: uuidv4() })
   await validateCredentialApplication(application, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)

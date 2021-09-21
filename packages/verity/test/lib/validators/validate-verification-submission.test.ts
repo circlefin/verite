@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid"
 import { createVerificationSubmission } from "../../../lib/client/verification-submission"
 import {
   createCredentialApplication,
@@ -28,7 +29,7 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer()
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest
+      manifest, { challenge: uuidv4() }
     )
 
     await validateCredentialApplication(application, manifest)
@@ -75,7 +76,8 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest
+      manifest,
+      { challenge: uuidv4() }
     )
 
     await validateCredentialApplication(application, manifest)
@@ -122,7 +124,8 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer()
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest
+      manifest,
+      { challenge: uuidv4() }
     )
 
     await validateCredentialApplication(application, manifest)
@@ -168,7 +171,8 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest
+      manifest,
+      { challenge: uuidv4() }
     )
 
     await validateCredentialApplication(application, manifest)
@@ -215,7 +219,8 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest
+      manifest,
+      { challenge: uuidv4() }
     )
 
     await validateCredentialApplication(application, manifest)

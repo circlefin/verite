@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid"
 import {
   createCredentialApplication,
   decodeCredentialApplication
@@ -19,7 +20,8 @@ describe("createCredentialApplication", () => {
 
     const credentialApplication = await createCredentialApplication(
       clientDidKey,
-      kycManifest
+      kycManifest,
+      { challenge: uuidv4() }
     )
 
     expect(credentialApplication.credential_application).toBeDefined()
@@ -44,7 +46,8 @@ describe("decodeCredentialApplication", () => {
 
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest
+      manifest,
+      { challenge: uuidv4() }
     )
 
     // overwrite with expired VP

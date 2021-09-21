@@ -30,7 +30,8 @@ export function getManifestIdFromCredentialApplication(
  */
 export async function createCredentialApplication(
   didKey: DidKey,
-  manifest: CredentialManifest
+  manifest: CredentialManifest,
+  options: any
 ): Promise<EncodedCredentialApplication> {
   const client = didKeyToIssuer(didKey)
 
@@ -61,7 +62,7 @@ export async function createCredentialApplication(
   }
 
   const payload = verifiablePresentationPayload(client.did)
-  const vp = await createVerifiablePresentationJwt(payload, client)
+  const vp = await createVerifiablePresentationJwt(payload, client, options)
 
   return {
     credential_application: credentialApplication,

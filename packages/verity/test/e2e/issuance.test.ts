@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid"
 import {
   createCredentialApplication,
   decodeCredentialApplication
@@ -31,7 +32,8 @@ describe("issuance", () => {
      */
     const credentialApplication = await createCredentialApplication(
       clientDidKey,
-      manifest
+      manifest,
+      { challenge: uuidv4() }
     )
 
     /**
