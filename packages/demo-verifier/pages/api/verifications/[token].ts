@@ -1,6 +1,7 @@
 import {
   generateVerificationRequest,
   InputDescriptorConstraintStatusDirective,
+  InputDescriptorConstraintSubjectConstraintDirective,
   PresentationDefinition,
   validateVerificationSubmission,
   verificationResult
@@ -56,6 +57,14 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
               directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
+          is_holder: [
+            {
+              field_id: [
+                "subjectId"
+              ],
+              directive: InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
+            }
+          ],
           fields: [
             {
               path: [
@@ -91,6 +100,15 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
                 type: "string",
                 pattern: `^${process.env.NEXT_PUBLIC_ISSUER_DID}$`
               }
+            },
+            {
+              id: "subjectId",
+              path: [
+                "$.credentialSubject.id",
+                "$.vc.credentialSubject.id",
+                "$.id"
+              ],
+              purpose: "We need to ensure the holder and the subject have the same identifier"
             }
           ]
         }

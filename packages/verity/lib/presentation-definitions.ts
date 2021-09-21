@@ -1,6 +1,7 @@
 import {
   InputDescriptorConstraintField,
-  InputDescriptorConstraintStatusDirective
+  InputDescriptorConstraintStatusDirective,
+  InputDescriptorConstraintSubjectConstraintDirective
 } from "../types/InputDescriptor"
 import { PresentationDefinition } from "../types/PresentationDefinition"
 
@@ -77,6 +78,14 @@ function kycPresentationDefinition(
               directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
+          is_holder: [
+            {
+              field_id: [
+                "subjectId"
+              ],
+              directive: InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
+            }
+          ],
           fields
         }
       }

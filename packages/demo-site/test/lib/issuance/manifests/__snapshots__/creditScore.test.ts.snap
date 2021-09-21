@@ -18,7 +18,6 @@ Object {
   },
   "id": "CreditScoreAttestation",
   "issuer": Object {
-    "comment": "JSON-LD definition at https://verity.id/.well_known/did.json",
     "id": "did:web:verity.id",
     "name": "Verity",
     "styles": Object {},
