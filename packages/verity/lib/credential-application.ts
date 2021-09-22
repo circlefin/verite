@@ -1,5 +1,8 @@
 import { createVerifiablePresentationJwt } from "did-jwt-vc"
-import { CreatePresentationOptions } from "did-jwt-vc/lib/types"
+import {
+  CreatePresentationOptions,
+  VerifyPresentationOptions
+} from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   EncodedCredentialApplication,
@@ -80,10 +83,12 @@ export async function createCredentialApplication(
  * returns the decoded application.
  */
 export async function decodeCredentialApplication(
-  credentialApplication: EncodedCredentialApplication
+  credentialApplication: EncodedCredentialApplication,
+  options?: VerifyPresentationOptions
 ): Promise<DecodedCredentialApplication> {
   const decodedPresentation = await decodeVerifiablePresentation(
-    credentialApplication.presentation
+    credentialApplication.presentation,
+    options
   )
 
   return {

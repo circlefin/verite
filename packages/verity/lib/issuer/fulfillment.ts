@@ -2,6 +2,7 @@ import {
   createVerifiableCredentialJwt,
   createVerifiablePresentationJwt
 } from "did-jwt-vc"
+import { CreatePresentationOptions } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   DescriptorMap,
@@ -53,7 +54,8 @@ export async function buildAndSignFulfillment(
   signer: Issuer,
   application: DecodedCredentialApplication,
   attestation: KYCAMLAttestation | CreditScoreAttestation,
-  payload: Partial<CredentialPayload> = {}
+  payload: Partial<CredentialPayload> = {},
+  options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
   const encodedCredentials = await buildAndSignVerifiableCredential(
     signer,
@@ -64,7 +66,8 @@ export async function buildAndSignFulfillment(
 
   const encodedPresentation = await createVerifiablePresentationJwt(
     verifiablePresentationPayload(signer.did, encodedCredentials),
-    signer
+    signer,
+    options
   )
 
   return {

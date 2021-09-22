@@ -1,4 +1,5 @@
 import Ajv from "ajv"
+import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
 import jsonpath from "jsonpath"
 import type {
   DecodedVerificationSubmission,
@@ -185,10 +186,12 @@ function validateCredentialAgainstSchema(
  */
 export async function validateVerificationSubmission(
   submission: EncodedVerificationSubmission,
-  definition: PresentationDefinition
+  definition: PresentationDefinition,
+  options?: VerifyPresentationOptions
 ): Promise<void> {
   const presentation = await decodeVerifiablePresentation(
-    submission.presentation
+    submission.presentation,
+    options
   )
 
   const decoded: DecodedVerificationSubmission = {

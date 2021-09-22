@@ -15,6 +15,7 @@ import {
   requiresRevocableCredentials,
   validateCredentialApplication
 } from "@centre/verity"
+import { v4 as uuidv4 } from "uuid"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { findUserFromTemporaryAuthToken, User } from "../../../lib/database"
 import {
