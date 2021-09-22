@@ -15,6 +15,28 @@ import {
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 
 /**
+ * This file contains a set of functions to help interact with mobile wallets.
+ * You can use any method of communication, but for the demo we decided to
+ * have the mobile wallet scan a QR code.
+ *
+ * QR codes get more complex as you put more data in them. Consequently, the
+ * QR code will encode a simple object with a `challengeTokenUrl` property that
+ * references a URL. The client will scan the QR code and then follow the URL
+ * provided.
+ *
+ * After following the URL, the client will receive a payload resembling the
+ * schema as defined by the WACI protcol. https://identity.foundation/waci-presentation-exchange/#json-message
+ * The actual data we wish to communicate to the client will be found in the
+ * body property of the response. For example, it might contain the Credential
+ * Manifest, a Presentation Request, a status URL for checking a verification,
+ * or the challenge string necessary for signing presentations.
+ *
+ * Most importantly, we have made some modifications, such as adding a
+ * `replyUrl` to instruct the client where to submit their credential
+ * application.
+ */
+
+/**
  * Build a wrapper containing a challenge token URL for use in a QR code.
  */
 export function challengeTokenUrlWrapper(
