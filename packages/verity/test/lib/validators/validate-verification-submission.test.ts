@@ -6,14 +6,14 @@ import {
 } from "../../../lib/credential-application"
 import { ValidationError } from "../../../lib/errors"
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
+import {
+  creditScoreVerificationRequest,
+  kycVerificationRequest
+} from "../../../lib/submission-requests"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
-import {
-  creditScoreVerificationRequest,
-  kycVerificationRequest
-} from "../../../lib/waci"
 import type {
   EncodedVerificationSubmission,
   VerificationRequest
