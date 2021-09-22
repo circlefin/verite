@@ -1,7 +1,6 @@
 export * from "./client"
 export * from "./errors"
 export * from "./issuer"
-export * from "./presentation-definitions"
 export * from "./submission-requests"
 export * from "./utils"
 export * from "./validators"
