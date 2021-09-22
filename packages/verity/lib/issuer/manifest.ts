@@ -12,7 +12,11 @@ export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"
 export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
   "ProofOfControlPresentationDefinition"
 
-export function createManifest(
+/**
+ * Helper function for common properties between both KYC and Credit Score
+ * Manifests.
+ */
+function createManifest(
   manifestId: string,
   issuer: CredentialIssuer,
   outputDescriptors: OutputDescriptor[]
