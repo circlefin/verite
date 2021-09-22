@@ -7,7 +7,10 @@ import type {
   SubmissionRequest,
   CredentialOffer
 } from "../types"
-import { generatePresentationDefinition } from "./presentation-definitions"
+import {
+  creditScorePresentationDefinition,
+  kycPresentationDefinition
+} from "./presentation-definitions"
 
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
 
@@ -22,21 +25,20 @@ export function challengeTokenUrlWrapper(
   }
 }
 
-export function createRequestCommon(
+function buildRequestCommon(
+  id: string,
   type: string,
   from: string,
   replyUrl: string,
-  statusUrl?: string,
-  opts?: Record<string, unknown>
+  statusUrl?: string
 ): SubmissionRequest {
-  const id = opts?.id || uuidv4()
   const now = Date.now()
   const expires = now + ONE_MONTH
 
   const result = {
-    id: id as string,
-    type: type,
-    from: from,
+    id,
+    type,
+    from,
     created_time: now,
     expires_time: expires,
     reply_url: replyUrl,
@@ -53,11 +55,13 @@ export function createRequestCommon(
  * a callback URL
  */
 export function manifestWrapper(
+  id: string,
   manifest: CredentialManifest,
   from: string,
   replyUrl: string
 ): CredentialOffer {
-  const request = createRequestCommon(
+  const request = buildRequestCommon(
+    id,
     "https://verity.id/types/CredentialOffer",
     from,
     replyUrl
@@ -72,36 +76,59 @@ export function manifestWrapper(
   }
 }
 
-export function generateVerificationRequest(
-  presentationDefinitionType: string,
+export function kycVerificationRequest(
+  id: string,
+  from: string,
+  replyUrl: string,
+  statusUrl?: string,
+  trustedAuthorities: string[] = []
+): VerificationRequest {
+  const definition = kycPresentationDefinition(trustedAuthorities)
+  const request = buildRequestCommon(
+    id,
+    "https://verity.id/types/VerificationRequest",
+    from,
+    replyUrl,
+    statusUrl
+  )
+
+  return {
+    ...request,
+    body: {
+      ...request.body,
+      presentation_definition: definition
+    }
+  }
+}
+
+export function creditScoreVerificationRequest(
+  id: string,
   from: string,
   replyUrl: string,
   statusUrl?: string,
   trustedAuthorities: string[] = [],
-  opts?: Record<string, unknown>
+  minimumCreditScore?: number
 ): VerificationRequest {
-  const presentationDefinition = generatePresentationDefinition(
-    presentationDefinitionType,
+  const definition = creditScorePresentationDefinition(
     trustedAuthorities,
-    opts
+    minimumCreditScore
   )
 
-  const request = createRequestCommon(
+  const request = buildRequestCommon(
+    id,
     "https://verity.id/types/VerificationRequest",
     from,
     replyUrl,
-    statusUrl,
-    opts
+    statusUrl
   )
 
-  const presentationRequest = {
+  return {
     ...request,
     body: {
       ...request.body,
-      presentation_definition: presentationDefinition
+      presentation_definition: definition
     }
   }
-  return presentationRequest
 }
 
 /**

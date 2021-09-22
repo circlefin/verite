@@ -1,7 +1,9 @@
 import {
   ChallengeTokenUrlWrapper,
   challengeTokenUrlWrapper,
-  generateVerificationRequest
+  creditScoreVerificationRequest,
+  kycVerificationRequest,
+  VerificationRequest
 } from "@centre/verity"
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationRequest } from "./database/verificationRequests"
@@ -24,35 +26,39 @@ export async function createVerificationRequest(
   subjectAddress?: string,
   contractAddress?: string
 ): Promise<VerificationRequestResponse> {
-  if (type !== "kyc" && type !== "credit-score") {
-    throw new NotFoundError()
-  }
-
   // If the request includes a subjectAddress and contractAddress query
   // parameter, we will use it to generate an ETH verification result.
   const id = uuidv4()
   const replyUrl = toReplyUrl(id, subjectAddress, contractAddress)
 
-  const requestOpts: Record<string, unknown> = {
-    id
-  }
-
-  // If the verification request requires a credit score, set the
-  // minimum acceptable score.
-  if (type === "credit-score") {
-    requestOpts.minimumCreditScore = 600
-  }
-
   // Build the verification request for display
-  const verificationRequest = generateVerificationRequest(
-    ATTESTATION_TYPE_MAPPINGS[type],
-    process.env.VERIFIER_DID,
-    replyUrl,
-    fullURL(`/api/verification/${id}/callback`),
-    [process.env.ISSUER_DID],
-    requestOpts
-  )
+  let verificationRequest: VerificationRequest
+
+  if (type === "kyc") {
+    verificationRequest = kycVerificationRequest(
+      id,
+      process.env.VERIFIER_DID,
+      replyUrl,
+      fullURL(`/api/verification/${id}/callback`),
+      [process.env.ISSUER_DID]
+    )
+  } else if (type === "credit-score") {
+    // If the verification request requires a credit score, set the
+    // minimum acceptable score.
+    verificationRequest = creditScoreVerificationRequest(
+      id,
+      process.env.VERIFIER_DID,
+      replyUrl,
+      fullURL(`/api/verification/${id}/callback`),
+      [process.env.ISSUER_DID],
+      /* minimumCreditScore: */ 600
+    )
+  } else {
+    throw new NotFoundError()
+  }
+
   await saveVerificationRequest(verificationRequest)
+
   return {
     id,
     challenge: verificationRequest,

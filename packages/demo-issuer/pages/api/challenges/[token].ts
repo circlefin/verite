@@ -1,5 +1,6 @@
 import { createKycAmlManifest, manifestWrapper } from "@centre/verity"
 import { NextApiRequest, NextApiResponse } from "next"
+import { v4 as uuidv4 } from "uuid"
 
 export default async function helloAPI(
   req: NextApiRequest,
@@ -17,6 +18,7 @@ export default async function helloAPI(
   // sake of simplicity we will just use a path since the demo is entirely
   // within the browser.
   const wrapper = manifestWrapper(
+    uuidv4(),
     manifest,
     process.env.NEXT_PUBLIC_ISSUER_DID,
     `/api/credentials/${req.query.token}`

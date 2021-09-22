@@ -1,13 +1,14 @@
-import { generateVerificationRequest } from "@centre/verity"
+import { kycVerificationRequest } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
+import { v4 as uuidv4 } from "uuid"
 import { saveVerificationRequest } from "../../../../../lib/database"
 import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/verification/[id]/index"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {
-    const verificationRequest = generateVerificationRequest(
-      "KYCAMLAttestation",
+    const verificationRequest = kycVerificationRequest(
+      uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
       fullURL("/api/verification/callback")
