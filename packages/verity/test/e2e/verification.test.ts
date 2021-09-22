@@ -1,14 +1,15 @@
+import { v4 as uuidv4 } from "uuid"
 import { createVerificationSubmission } from "../../lib/client/verification-submission"
 import {
   createCredentialApplication,
   decodeCredentialApplication
-} from "../../lib/credential-application-fns"
+} from "../../lib/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
+import { kycVerificationRequest } from "../../lib/submission-requests"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
-import { generateVerificationRequest } from "../../lib/waci"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
@@ -24,8 +25,8 @@ describe("verification", () => {
     )
 
     // 2. VERIFIER: Discovery of verification requirements
-    const kycRequest = generateVerificationRequest(
-      "KYCAMLAttestation",
+    const kycRequest = kycVerificationRequest(
+      uuidv4(),
       verifierDidKey.controller,
       "https://test.host/verify"
     )

@@ -1,7 +1,7 @@
 import {
   createCredentialApplication,
   decodeCredentialApplication
-} from "../../lib/credential-application-fns"
+} from "../../lib/credential-application"
 import { VerificationError } from "../../lib/errors"
 import { createKycAmlManifest } from "../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
