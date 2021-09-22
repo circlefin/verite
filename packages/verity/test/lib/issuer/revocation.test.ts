@@ -1,4 +1,5 @@
 import { Bits } from "@fry/bits"
+import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import {
   generateRevocationList,
   isRevoked,
@@ -13,8 +14,7 @@ import {
   expandBitstring,
   expandBitstringToBooleans,
   generateBitstring,
-  buildIssuer,
-  signVerifiableCredential
+  buildIssuer
 } from "../../../lib/utils"
 import type {
   CredentialPayload,
@@ -78,7 +78,7 @@ const credentialFactory = async (
       statusListCredential: "http://example.com/revocation"
     }
   }
-  const vcJwt = await signVerifiableCredential(signer, vcPayload)
+  const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocableCredential>
 }
 
@@ -150,7 +150,7 @@ describe("Status List 2021", () => {
           foo: "bar"
         }
       }
-      const vcJwt = await signVerifiableCredential(signer, vcPayload)
+      const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, statusList)
@@ -193,7 +193,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await signVerifiableCredential(signer, vcPayload)
+      const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, statusList)
@@ -236,7 +236,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await signVerifiableCredential(signer, vcPayload)
+      const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, statusList)
