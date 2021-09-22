@@ -1,4 +1,5 @@
 import {
+  generatePresentationDefinition,
   generateVerificationRequest,
   InputDescriptorConstraintStatusDirective,
   PresentationDefinition,
@@ -37,66 +38,10 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
    * will require an authorityId, an approvate date, and issued by
    * did:key:z6MktD288XZYEwedyKzWPpHZzoJ4k7iz5R39PtcVR4F7Lkpg
    */
-  const definition: PresentationDefinition = {
-    id: "KYCAMLPresentationDefinition",
-    input_descriptors: [
-      {
-        id: "kycaml_input",
-        name: "Proof of KYC",
-        purpose: "Please provide a valid credential from a KYC/AML issuer",
-        schema: [
-          {
-            uri: "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation",
-            required: true
-          }
-        ],
-        constraints: {
-          statuses: {
-            active: {
-              directive: InputDescriptorConstraintStatusDirective.REQUIRED
-            }
-          },
-          fields: [
-            {
-              path: [
-                "$.credentialSubject.KYCAMLAttestation.authorityId",
-                "$.vc.credentialSubject.KYCAMLAttestation.authorityId",
-                "$.KYCAMLAttestation.authorityId"
-              ],
-              purpose:
-                "The KYC/AML Attestation requires the field: 'authorityId'.",
-              predicate: "required",
-              filter: {
-                type: "string"
-              }
-            },
-            {
-              path: [
-                "$.credentialSubject.KYCAMLAttestation.approvalDate",
-                "$.vc.credentialSubject.KYCAMLAttestation.approvalDate",
-                "$.KYCAMLAttestation.approvalDate"
-              ],
-              purpose:
-                "The KYC/AML Attestation requires the field: 'approvalDate'.",
-              predicate: "required",
-              filter: {
-                type: "string"
-              }
-            },
-            {
-              path: ["$.issuer.id", "$.issuer", "$.vc.issuer", "$.iss"],
-              purpose:
-                "We can only verify credentials attested by a trusted authority.",
-              filter: {
-                type: "string",
-                pattern: `^${process.env.NEXT_PUBLIC_ISSUER_DID}$`
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
+  const definition = generatePresentationDefinition(
+    /* type: */ "KYCAMLAttestation",
+    /* trustedAuthorities: */ [process.env.NEXT_PUBLIC_ISSUER_DID]
+  )
 
   /**
    * Generate a new JWT for the final API call. This includes not only the
