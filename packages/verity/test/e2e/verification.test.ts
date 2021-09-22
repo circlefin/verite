@@ -2,7 +2,7 @@ import { createVerificationSubmission } from "../../lib/client/verification-subm
 import {
   createCredentialApplication,
   decodeCredentialApplication
-} from "../../lib/credential-application-fns"
+} from "../../lib/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
