@@ -3,14 +3,17 @@ import { createVerificationSubmission } from "../../../lib/client/verification-s
 import {
   createCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/credential-application-fns"
+} from "../../../lib/credential-application"
 import { ValidationError } from "../../../lib/errors"
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
+import {
+  creditScoreVerificationRequest,
+  kycVerificationRequest
+} from "../../../lib/submission-requests"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
-import { generateVerificationRequest } from "../../../lib/waci"
 import type {
   EncodedVerificationSubmission,
   VerificationRequest
@@ -48,8 +51,8 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = generateVerificationRequest(
-      "KYCAMLAttestation",
+    const verificationRequest = kycVerificationRequest(
+      uuidv4(),
       verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
@@ -94,13 +97,13 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = generateVerificationRequest(
-      "CreditScoreAttestation",
+    const verificationRequest = creditScoreVerificationRequest(
+      uuidv4(),
       verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
-      { minimumCreditScore: creditScoreAttestationFixture.score }
+      creditScoreAttestationFixture.score
     )
 
     const submission = await createVerificationSubmission(
@@ -142,8 +145,8 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = generateVerificationRequest(
-      "KYCAMLAttestation",
+    const verificationRequest = kycVerificationRequest(
+      uuidv4(),
       verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
@@ -188,13 +191,13 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = generateVerificationRequest(
-      "CreditScoreAttestation",
+    const verificationRequest = creditScoreVerificationRequest(
+      uuidv4(),
       verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
-      { minimumCreditScore }
+      minimumCreditScore
     )
 
     const submission = await createVerificationSubmission(
@@ -236,8 +239,8 @@ describe("Submission validator", () => {
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     // Generate Credit Score Request, even though we have a KYC credential
-    const verificationRequest = generateVerificationRequest(
-      "CreditScoreAttestation",
+    const verificationRequest = creditScoreVerificationRequest(
+      uuidv4(),
       verifierDidKey.controller,
       "https://test.host/verify",
       "https://other.host/callback",
