@@ -1,8 +1,18 @@
-import { verifyCredential, verifyPresentation } from "did-jwt-vc"
-import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
+import {
+  createVerifiableCredentialJwt,
+  createVerifiablePresentationJwt,
+  verifyCredential,
+  verifyPresentation
+} from "did-jwt-vc"
+import {
+  CreatePresentationOptions,
+  VerifyPresentationOptions
+} from "did-jwt-vc/lib/types"
 import type {
+  CredentialPayload,
+  Issuer,
   JWT,
-  JwtPresentationPayload,
+  JwtCredentialPayload,
   VerifiableCredential,
   RevocableCredential,
   RevocationListCredential,
@@ -14,19 +24,14 @@ import type {
 import { VerificationError } from "../errors"
 import { didKeyResolver } from "./did-fns"
 
-export function verifiablePresentationPayload(
-  subject: string,
-  vcJwt: VerifiableCredential | VerifiableCredential[] = []
-): JwtPresentationPayload {
-  return {
-    sub: subject,
-    vp: {
-      "@context": ["https://www.w3.org/2018/credentials/v1"],
-      type: ["VerifiablePresentation"],
-      holder: subject,
-      verifiableCredential: [vcJwt].flat()
-    }
-  }
+/**
+ * Encodes a JWT with the Verifiable Credential payload.
+ */
+export async function encodeVerifiableCredential(
+  payload: CredentialPayload | JwtCredentialPayload,
+  signer: Issuer
+): Promise<JWT> {
+  return createVerifiableCredentialJwt(payload, signer)
 }
 
 /**
@@ -46,6 +51,27 @@ export async function decodeVerifiableCredential(
       err as Error
     )
   }
+}
+
+/**
+ * Encodes a JWT with the Verifiable Presentation payload.
+ */
+export async function encodeVerifiablePresentation(
+  subject: string,
+  vcJwt: VerifiableCredential | VerifiableCredential[] = [],
+  signer: Issuer,
+  options?: CreatePresentationOptions
+): Promise<JWT> {
+  const payload = {
+    sub: subject,
+    vp: {
+      "@context": ["https://www.w3.org/2018/credentials/v1"],
+      type: ["VerifiablePresentation"],
+      holder: subject,
+      verifiableCredential: [vcJwt].flat()
+    }
+  }
+  return createVerifiablePresentationJwt(payload, signer, options)
 }
 
 /**

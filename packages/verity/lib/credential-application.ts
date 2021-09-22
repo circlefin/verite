@@ -1,4 +1,3 @@
-import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import {
   CreatePresentationOptions,
   VerifyPresentationOptions
@@ -15,7 +14,7 @@ import type {
 import {
   decodeVerifiablePresentation,
   didKeyToIssuer,
-  verifiablePresentationPayload
+  encodeVerifiablePresentation
 } from "./utils"
 
 /**
@@ -65,8 +64,12 @@ export async function createCredentialApplication(
     }
   }
 
-  const payload = verifiablePresentationPayload(client.did)
-  const vp = await createVerifiablePresentationJwt(payload, client, options)
+  const vp = await encodeVerifiablePresentation(
+    client.did,
+    undefined,
+    client,
+    options
+  )
 
   return {
     credential_application: credentialApplication,

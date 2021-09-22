@@ -1,5 +1,8 @@
-import { createVerifiableCredentialJwt } from "did-jwt-vc"
-import { buildIssuer, decodeVerifiableCredential } from "../lib/utils"
+import {
+  buildIssuer,
+  decodeVerifiableCredential,
+  encodeVerifiableCredential
+} from "../lib/utils"
 import type { JwtCredentialPayload } from "../types"
 
 describe("VC signing", () => {
@@ -23,7 +26,7 @@ describe("VC signing", () => {
         }
       }
     }
-    const result = await createVerifiableCredentialJwt(vcPayload, signer)
+    const result = await encodeVerifiableCredential(vcPayload, signer)
     const decoded = await decodeVerifiableCredential(result)
     expect(decoded.type.length).toEqual(1)
     expect(decoded.type[0]).toEqual("VerifiableCredential")

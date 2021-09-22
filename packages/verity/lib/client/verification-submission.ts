@@ -1,4 +1,3 @@
-import { createVerifiablePresentationJwt } from "did-jwt-vc"
 import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
@@ -9,7 +8,7 @@ import type {
   Verifiable,
   W3CCredential
 } from "../../types"
-import { didKeyToIssuer, verifiablePresentationPayload } from "../utils"
+import { didKeyToIssuer, encodeVerifiablePresentation } from "../utils"
 
 export async function createVerificationSubmission(
   didKey: DidKey,
@@ -33,8 +32,12 @@ export async function createVerificationSubmission(
     )
   }
 
-  const payload = verifiablePresentationPayload(client.did, verifiedCredential)
-  const vp = await createVerifiablePresentationJwt(payload, client, options)
+  const vp = await encodeVerifiablePresentation(
+    client.did,
+    verifiedCredential,
+    client,
+    options
+  )
 
   return {
     presentation_submission: presentationSubmission,
