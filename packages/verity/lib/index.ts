@@ -1,5 +1,4 @@
 export * from "./client"
-export * from "./credential-application"
 export * from "./errors"
 export * from "./issuer"
 export * from "./presentation-definitions"

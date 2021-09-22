@@ -1,30 +1,12 @@
-import {
-  CreatePresentationOptions,
-  VerifyPresentationOptions
-} from "did-jwt-vc/lib/types"
+import { CreatePresentationOptions } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   EncodedCredentialApplication,
   CredentialManifest,
   DescriptorMap,
-  DidKey,
-  GenericCredentialApplication,
-  DecodedCredentialApplication
-} from "../types"
-import {
-  decodeVerifiablePresentation,
-  didKeyToIssuer,
-  encodeVerifiablePresentation
-} from "./utils"
-
-/**
- * Fetches the manifest id from a credential application
- */
-export function getManifestIdFromCredentialApplication(
-  application: GenericCredentialApplication
-): string {
-  return application.credential_application.manifest_id
-}
+  DidKey
+} from "../../types"
+import { didKeyToIssuer, encodeVerifiablePresentation } from "../utils"
 
 /**
  * Generates a Credential Application as response to a Credential Manifest
@@ -75,27 +57,5 @@ export async function createCredentialApplication(
     credential_application: credentialApplication,
     presentation_submission: presentationSubmission,
     presentation: vp
-  }
-}
-
-/**
- * Decode an encoded Credential Application.
- *
- * A Credential Application contains an encoded Verifiable Presentation in it's
- * `presentation` field. This method decodes the Verifiable Presentation and
- * returns the decoded application.
- */
-export async function decodeCredentialApplication(
-  credentialApplication: EncodedCredentialApplication,
-  options?: VerifyPresentationOptions
-): Promise<DecodedCredentialApplication> {
-  const decodedPresentation = await decodeVerifiablePresentation(
-    credentialApplication.presentation,
-    options
-  )
-
-  return {
-    ...credentialApplication,
-    presentation: decodedPresentation
   }
 }

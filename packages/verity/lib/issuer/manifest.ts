@@ -1,10 +1,15 @@
+import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
 import type {
+  EncodedCredentialApplication,
+  GenericCredentialApplication,
+  DecodedCredentialApplication,
   CredentialIssuer,
   CredentialManifest,
   EntityStyle,
   OutputDescriptor,
   PresentationDefinition
 } from "../../types"
+import { decodeVerifiablePresentation } from "../utils"
 
 export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreAttestation"
 export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"
@@ -190,4 +195,35 @@ export function createCreditScoreManifest(
     issuer,
     outputDescriptors
   )
+}
+
+/**
+ * Fetches the manifest id from a credential application
+ */
+export function getManifestIdFromCredentialApplication(
+  application: GenericCredentialApplication
+): string {
+  return application.credential_application.manifest_id
+}
+
+/**
+ * Decode an encoded Credential Application.
+ *
+ * A Credential Application contains an encoded Verifiable Presentation in it's
+ * `presentation` field. This method decodes the Verifiable Presentation and
+ * returns the decoded application.
+ */
+export async function decodeCredentialApplication(
+  credentialApplication: EncodedCredentialApplication,
+  options?: VerifyPresentationOptions
+): Promise<DecodedCredentialApplication> {
+  const decodedPresentation = await decodeVerifiablePresentation(
+    credentialApplication.presentation,
+    options
+  )
+
+  return {
+    ...credentialApplication,
+    presentation: decodedPresentation
+  }
 }

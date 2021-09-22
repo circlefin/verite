@@ -1,9 +1,9 @@
-import {
-  createCredentialApplication,
-  decodeCredentialApplication
-} from "../../lib/credential-application"
+import { createCredentialApplication } from "../../lib/client/issuance"
 import { VerificationError } from "../../lib/errors"
-import { createKycAmlManifest } from "../../lib/issuer/manifest"
+import {
+  decodeCredentialApplication,
+  createKycAmlManifest
+} from "../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
 
