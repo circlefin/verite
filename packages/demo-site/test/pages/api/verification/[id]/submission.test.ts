@@ -37,7 +37,8 @@ describe("POST /verification/[id]/submission", () => {
     const submission = await createVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
-      clientVC
+      clientVC,
+      { challenge: verificationRequest.body.challenge }
     )
 
     const { req, res } = createMocks({
@@ -74,7 +75,8 @@ describe("POST /verification/[id]/submission", () => {
     const submission = await createVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
-      clientVC
+      clientVC,
+      { challenge: verificationRequest.body.challenge }
     )
 
     const { req, res } = createMocks({
@@ -118,7 +120,8 @@ describe("POST /verification/[id]/submission", () => {
     const submission = await createVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
-      clientVC
+      clientVC,
+      { challenge: verificationRequest.body.challenge }
     )
 
     const { req, res } = createMocks({

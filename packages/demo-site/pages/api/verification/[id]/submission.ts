@@ -30,10 +30,15 @@ export default apiHandler<PostResponse>(async (req, res) => {
     throw new NotFoundError()
   }
 
+  const options = {
+    challenge: verificationRequest.body.challenge
+  }
+
   try {
     await validateVerificationSubmission(
       submission,
-      verificationRequest.body.presentation_definition
+      verificationRequest.body.presentation_definition,
+      options
     )
   } catch (err) {
     await updateVerificationRequestStatus(verificationRequest.id, "rejected")
