@@ -20,8 +20,7 @@ describe("createCredentialApplication", () => {
 
     const credentialApplication = await createCredentialApplication(
       clientDidKey,
-      kycManifest,
-      { challenge: uuidv4() }
+      kycManifest
     )
 
     expect(credentialApplication.credential_application).toBeDefined()
@@ -46,8 +45,7 @@ describe("decodeCredentialApplication", () => {
 
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest,
-      { challenge: uuidv4() }
+      manifest
     )
 
     // overwrite with expired VP

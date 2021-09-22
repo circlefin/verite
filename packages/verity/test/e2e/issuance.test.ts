@@ -32,8 +32,7 @@ describe("issuance", () => {
      */
     const credentialApplication = await createCredentialApplication(
       clientDidKey,
-      manifest,
-      { challenge: uuidv4() }
+      manifest
     )
 
     /**

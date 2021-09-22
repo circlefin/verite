@@ -60,7 +60,7 @@ async function getClientVerifiableCredential(
   const { manifest, issuer } = await generateManifestAndIssuer()
 
   // 0. PREREQ: Ensure client has a valid KYC credential
-  const application = await createCredentialApplication(clientDidKey, manifest,  { challenge: uuidv4() })
+  const application = await createCredentialApplication(clientDidKey, manifest)
   await validateCredentialApplication(application, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)

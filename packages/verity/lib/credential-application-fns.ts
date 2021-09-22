@@ -1,4 +1,5 @@
 import { createVerifiablePresentationJwt } from "did-jwt-vc"
+import { CreatePresentationOptions } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   EncodedCredentialApplication,
@@ -31,7 +32,7 @@ export function getManifestIdFromCredentialApplication(
 export async function createCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest,
-  options: any
+  options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
   const client = didKeyToIssuer(didKey)
 

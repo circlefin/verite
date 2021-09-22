@@ -29,7 +29,7 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer()
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest, { challenge: uuidv4() }
+      manifest
     )
 
     await validateCredentialApplication(application, manifest)
@@ -76,8 +76,7 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest,
-      { challenge: uuidv4() }
+      manifest
     )
 
     await validateCredentialApplication(application, manifest)
@@ -124,8 +123,7 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer()
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest,
-      { challenge: uuidv4() }
+      manifest
     )
 
     await validateCredentialApplication(application, manifest)
@@ -171,8 +169,7 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest,
-      { challenge: uuidv4() }
+      manifest
     )
 
     await validateCredentialApplication(application, manifest)
@@ -219,8 +216,7 @@ describe("Submission validator", () => {
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const application = await createCredentialApplication(
       clientDidKey,
-      manifest,
-      { challenge: uuidv4() }
+      manifest
     )
 
     await validateCredentialApplication(application, manifest)

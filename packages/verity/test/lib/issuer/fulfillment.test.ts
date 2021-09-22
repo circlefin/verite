@@ -18,8 +18,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const manifest = createKycAmlManifest(credentialIssuer)
     const credentialApplication = await createCredentialApplication(
       clientDidKey,
-      manifest,
-      { challenge: uuidv4() }
+      manifest
     )
     const decodedApplication = await decodeCredentialApplication(
       credentialApplication
