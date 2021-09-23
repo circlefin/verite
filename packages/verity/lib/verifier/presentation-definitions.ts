@@ -6,23 +6,19 @@ import {
 } from "../../types/InputDescriptor"
 import { PresentationDefinition } from "../../types/PresentationDefinition"
 
-const subjectIsHolderConstraint: InputDescriptorConstraintSubjectConstraint[] =  [
-  {
-    field_id: [
-      "subjectId"
-    ],
-    directive: InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
-  }
-]
+const subjectIsHolderConstraint: InputDescriptorConstraintSubjectConstraint[] =
+  [
+    {
+      field_id: ["subjectId"],
+      directive: InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
+    }
+  ]
 
 const subjectIsHolderField: InputDescriptorConstraintField = {
   id: "subjectId",
-  path: [
-    "$.credentialSubject.id",
-    "$.vc.credentialSubject.id",
-    "$.id"
-  ],
-  purpose: "We need to ensure the holder and the subject have the same identifier"
+  path: ["$.credentialSubject.id", "$.vc.credentialSubject.id", "$.id"],
+  purpose:
+    "We need to ensure the holder and the subject have the same identifier"
 }
 
 /**
