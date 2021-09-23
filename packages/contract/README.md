@@ -4,6 +4,8 @@ This recipe illustrates how to register a web app's or dApp's verification with 
 
 ## Getting Started
 
+This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (requires npm v7 or greater), and as such, the dependencies for all included packages are installed from the root level using `npm install`. Do not run `npm install` from this directory.
+
 This app leverages hardhat for local development and react for the dApp.
 
 Run a standalone node in a separate terminal:
