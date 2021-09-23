@@ -6,6 +6,8 @@ Since Verifiable Credentials cannot be tampered (aka they are read-only), you ca
 
 ## Getting Started
 
+This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (requires npm v7 or greater), and as such, the dependencies for all included packages are installed from the root level using `npm install`. Do not run `npm install` from this directory.
+
 ```sh
 npm run setup
 npm run dev
