@@ -11,10 +11,10 @@ import type {
   W3CCredential
 } from "../../types"
 import {
+  encodeVerifiableCredential,
   decodeVerifiableCredential,
   expandBitstring,
-  generateBitstring,
-  signVerifiableCredential
+  generateBitstring
 } from "../utils"
 
 /**
@@ -53,7 +53,7 @@ export const generateRevocationList = async (
     }
   }
 
-  const vcJwt = await signVerifiableCredential(signer, vcPayload)
+  const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }
 

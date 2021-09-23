@@ -1,10 +1,19 @@
 import { omit } from "lodash"
 import { hasPaths } from "../../../lib"
-import {
-  createKycAmlManifest,
-  validateManifestFormat
-} from "../../../lib/issuer/manifest"
+import { createKycAmlManifest } from "../../../lib/issuer/manifest"
 import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { CredentialManifest } from "../../../types"
+
+function validateManifestFormat(
+  manifest: CredentialManifest | Record<string, unknown>
+): boolean {
+  return hasPaths(manifest, [
+    "id",
+    "version",
+    "issuer.id",
+    "output_descriptors[0]"
+  ])
+}
 
 describe("createKycAmlManifest", () => {
   it("builds a KYC/AML manifest", async () => {

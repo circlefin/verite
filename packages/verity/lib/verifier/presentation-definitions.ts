@@ -1,8 +1,8 @@
 import {
   InputDescriptorConstraintField,
   InputDescriptorConstraintStatusDirective
-} from "../types/InputDescriptor"
-import { PresentationDefinition } from "../types/PresentationDefinition"
+} from "../../types/InputDescriptor"
+import { PresentationDefinition } from "../../types/PresentationDefinition"
 
 /**
  * Build a Presentation Definition requesting a KYC/AML Attestation

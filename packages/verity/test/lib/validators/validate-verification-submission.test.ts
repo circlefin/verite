@@ -1,11 +1,10 @@
 import { v4 as uuidv4 } from "uuid"
-import { createVerificationSubmission } from "../../../lib/client/verification-submission"
+import { ValidationError } from "../../../lib/errors"
+import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import {
   createCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/credential-application"
-import { ValidationError } from "../../../lib/errors"
-import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
+} from "../../../lib/issuer/manifest"
 import {
   creditScoreVerificationRequest,
   kycVerificationRequest
@@ -14,6 +13,7 @@ import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
+import { createVerificationSubmission } from "../../../lib/verifier/submission"
 import type {
   EncodedVerificationSubmission,
   VerificationRequest

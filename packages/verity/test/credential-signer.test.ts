@@ -1,7 +1,7 @@
 import {
   buildIssuer,
   decodeVerifiableCredential,
-  signVerifiableCredential
+  encodeVerifiableCredential
 } from "../lib/utils"
 import type { JwtCredentialPayload } from "../types"
 
@@ -26,7 +26,7 @@ describe("VC signing", () => {
         }
       }
     }
-    const result = await signVerifiableCredential(signer, vcPayload)
+    const result = await encodeVerifiableCredential(vcPayload, signer)
     const decoded = await decodeVerifiableCredential(result)
     expect(decoded.type.length).toEqual(1)
     expect(decoded.type[0]).toEqual("VerifiableCredential")
