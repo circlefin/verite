@@ -2,9 +2,9 @@
 
 This is a simple example of how to verify a credential with a self-custodied identity wallet.
 
-The page first prompts a compatible mobile wallet to scan a QR code. The data encoded includes a JWT to help tie identity of the mobile wallet to that of the current authenticated browser session and the given verification request.
+The page first prompts a compatible mobile wallet to scan a QR code. The data encoded includes a unique request identifier and a challenge to be signed, helping tie the mobile wallet holder to the current authenticated browser session and the given verification request.
 
-Using [Presentation Exchange](https://identity.foundation/presentation-exchange), the server can define the constraints that satisfying its needs. The mobile wallet can then submit credentials for verification.
+Using [Presentation Exchange](https://identity.foundation/presentation-exchange), the server can define the constraints that satisfy its requirements. The mobile wallet can then submit credentials for verification.
 
 To use the resulting verification in an Ethereum smart constract, the verifier will return a signature using [EIP-712](https://eips.ethereum.org/EIPS/eip-712).
 
@@ -19,9 +19,9 @@ npm run dev
 
 ## Verification via Hosted Wallet
 
-Verification via a hosted wallet could look the same, but the mechanism for sharing the `challengeTokenUrl` would be different. In this demo, we have the mobile wallet scan the QR code. In a hosted solution, we might have the user copy-paste the data, which is otherwise unweildy between devices. Then, the hosted wallet could behave just as a mobile wallet and continue verifyication.
+Verification via a hosted wallet could look the same, but the mechanism for sharing the `challengeTokenUrl` would be different. In this demo, we have the mobile wallet scan the QR code. In a hosted solution, we might have the user copy-paste the data, which is otherwise unweildy between devices. Then, the hosted wallet could behave just as a mobile wallet and continue verification.
 
-The major difference between any solution is the median of exchange. Given that hosted wallets are available 24/7, you could imagine a scenario where many hosted services participate in a shared mempool. Before a hosted wallet submits a transaction to network, it could broadcast to the mempool a Verification Request and counterparties could complete the verification request in real-time.
+The major difference between any solution is the medium of exchange. Given that hosted wallets are available 24/7, you could imagine a scenario where many hosted services participate in a shared mempool. Before a hosted wallet submits a transaction to network, it could broadcast to the mempool a Verification Request and counterparties could complete the verification request in real-time.
 
 ## Issuance to metamask
 
