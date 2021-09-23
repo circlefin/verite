@@ -1,8 +1,29 @@
 import {
   InputDescriptorConstraintField,
-  InputDescriptorConstraintStatusDirective
+  InputDescriptorConstraintStatusDirective,
+  InputDescriptorConstraintSubjectConstraint,
+  InputDescriptorConstraintSubjectConstraintDirective
 } from "../../types/InputDescriptor"
 import { PresentationDefinition } from "../../types/PresentationDefinition"
+
+const subjectIsHolderConstraint: InputDescriptorConstraintSubjectConstraint[] =  [
+  {
+    field_id: [
+      "subjectId"
+    ],
+    directive: InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
+  }
+]
+
+const subjectIsHolderField: InputDescriptorConstraintField = {
+  id: "subjectId",
+  path: [
+    "$.credentialSubject.id",
+    "$.vc.credentialSubject.id",
+    "$.id"
+  ],
+  purpose: "We need to ensure the holder and the subject have the same identifier"
+}
 
 /**
  * Build a Presentation Definition requesting a KYC/AML Attestation
@@ -32,6 +53,8 @@ export function kycPresentationDefinition(
     }
   })
 
+  fields.push(subjectIsHolderField)
+
   if (trustedAuthorities.length > 0) {
     fields.push(trustedAuthorityConstraint(trustedAuthorities))
   }
@@ -55,6 +78,7 @@ export function kycPresentationDefinition(
               directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
+          is_holder: subjectIsHolderConstraint,
           fields
         }
       }
@@ -91,6 +115,8 @@ export function creditScorePresentationDefinition(
       }
     }
   })
+
+  fields.push(subjectIsHolderField)
 
   if (trustedAuthorities.length > 0) {
     fields.push(trustedAuthorityConstraint(trustedAuthorities))
@@ -130,6 +156,7 @@ export function creditScorePresentationDefinition(
               directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
+          is_holder: subjectIsHolderConstraint,
           fields
         }
       }
