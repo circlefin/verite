@@ -7,9 +7,34 @@ import type {
   SubmissionRequest,
   CredentialOffer
 } from "../types"
-import { generatePresentationDefinition } from "./presentation-definitions"
+import {
+  creditScorePresentationDefinition,
+  kycPresentationDefinition
+} from "./verifier/presentation-definitions"
 
 const ONE_MONTH = 1000 * 60 * 60 * 24 * 30
+
+/**
+ * This file contains a set of functions to help interact with mobile wallets.
+ * You can use any method of communication, but for the demo we decided to
+ * have the mobile wallet scan a QR code.
+ *
+ * QR codes get more complex as you put more data in them. Consequently, the
+ * QR code will encode a simple object with a `challengeTokenUrl` property that
+ * references a URL. The client will scan the QR code and then follow the URL
+ * provided.
+ *
+ * After following the URL, the client will receive a payload resembling the
+ * schema as defined by the WACI protcol. https://identity.foundation/waci-presentation-exchange/#json-message
+ * The actual data we wish to communicate to the client will be found in the
+ * body property of the response. For example, it might contain the Credential
+ * Manifest, a Presentation Request, a status URL for checking a verification,
+ * or the challenge string necessary for signing presentations.
+ *
+ * Most importantly, we have made some modifications, such as adding a
+ * `replyUrl` to instruct the client where to submit their credential
+ * application.
+ */
 
 /**
  * Build a wrapper containing a challenge token URL for use in a QR code.
@@ -22,21 +47,20 @@ export function challengeTokenUrlWrapper(
   }
 }
 
-export function createRequestCommon(
+function buildRequestCommon(
+  id: string,
   type: string,
   from: string,
   replyUrl: string,
-  statusUrl?: string,
-  opts?: Record<string, unknown>
+  statusUrl?: string
 ): SubmissionRequest {
-  const id = opts?.id || uuidv4()
   const now = Date.now()
   const expires = now + ONE_MONTH
 
   const result = {
-    id: id as string,
-    type: type,
-    from: from,
+    id,
+    type,
+    from,
     created_time: now,
     expires_time: expires,
     reply_url: replyUrl,
@@ -53,11 +77,13 @@ export function createRequestCommon(
  * a callback URL
  */
 export function manifestWrapper(
+  id: string,
   manifest: CredentialManifest,
   from: string,
   replyUrl: string
 ): CredentialOffer {
-  const request = createRequestCommon(
+  const request = buildRequestCommon(
+    id,
     "https://verity.id/types/CredentialOffer",
     from,
     replyUrl
@@ -72,36 +98,59 @@ export function manifestWrapper(
   }
 }
 
-export function generateVerificationRequest(
-  presentationDefinitionType: string,
+export function kycVerificationRequest(
+  id: string,
+  from: string,
+  replyUrl: string,
+  statusUrl?: string,
+  trustedAuthorities: string[] = []
+): VerificationRequest {
+  const definition = kycPresentationDefinition(trustedAuthorities)
+  const request = buildRequestCommon(
+    id,
+    "https://verity.id/types/VerificationRequest",
+    from,
+    replyUrl,
+    statusUrl
+  )
+
+  return {
+    ...request,
+    body: {
+      ...request.body,
+      presentation_definition: definition
+    }
+  }
+}
+
+export function creditScoreVerificationRequest(
+  id: string,
   from: string,
   replyUrl: string,
   statusUrl?: string,
   trustedAuthorities: string[] = [],
-  opts?: Record<string, unknown>
+  minimumCreditScore?: number
 ): VerificationRequest {
-  const presentationDefinition = generatePresentationDefinition(
-    presentationDefinitionType,
+  const definition = creditScorePresentationDefinition(
     trustedAuthorities,
-    opts
+    minimumCreditScore
   )
 
-  const request = createRequestCommon(
+  const request = buildRequestCommon(
+    id,
     "https://verity.id/types/VerificationRequest",
     from,
     replyUrl,
-    statusUrl,
-    opts
+    statusUrl
   )
 
-  const presentationRequest = {
+  return {
     ...request,
     body: {
       ...request.body,
-      presentation_definition: presentationDefinition
+      presentation_definition: definition
     }
   }
-  return presentationRequest
 }
 
 /**

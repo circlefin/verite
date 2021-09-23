@@ -2,13 +2,15 @@
 
 This is a simple example of how to issue a credential to a self-custodied identity wallet.
 
-The page first prompts a compatible mobile wallet to scan a QR code. The data encoded includes a JWT to help tie identity of the mobile wallet to that of the current authenticated browser session.
+The page first prompts a compatible mobile wallet to scan a QR code. The data encoded includes a JWT to help tie the mobile wallet to the current authenticated browser session.
 
 The returned [Credential Manifest](https://identity.foundation/credential-manifest/) can be processed and show the user what is being requested.
 
 Finally, we use [Presentation Exchange](https://identity.foundation/presentation-exchange) to request the credential.
 
 ## Getting Started
+
+This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (requires npm v7 or greater), and as such, the dependencies for all included packages are installed from the root level using `npm install`. Do not run `npm install` from this directory.
 
 ```sh
 npm run setup

@@ -1,5 +1,6 @@
 {
-  "name": "root",
+  "name": "verity",
+  "license": "MIT",
   "private": true,
   "engines": {
     "node": ">=14.0.0",
@@ -18,7 +19,6 @@
     "db:seed": "npm run db:seed --workspace @centre/demo-site",
     "db:studio": "npm run db:studio --workspace @centre/demo-site",
     "dev": "run-p dev:verity dev:site",
-    "dev:all": "run-p hardhat:node dev:verity dev:site hardhat:deploy",
     "dev:site": "npm run dev --workspace @centre/demo-site",
     "dev:verity": "npm run dev --workspace @centre/verity",
     "hardhat:node": "npm run hardhat:node --workspace @centre/contract",

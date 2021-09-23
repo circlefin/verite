@@ -1,4 +1,4 @@
-import { createVerifiablePresentationJwt } from "did-jwt-vc"
+import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   DescriptorMap,
@@ -8,12 +8,13 @@ import type {
   Verifiable,
   W3CCredential
 } from "../../types"
-import { didKeyToIssuer, verifiablePresentationPayload } from "../utils"
+import { didKeyToIssuer, encodeVerifiablePresentation } from "../utils"
 
 export async function createVerificationSubmission(
   didKey: DidKey,
   presentationDefinition: PresentationDefinition,
-  verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[]
+  verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
+  options?: VerifyPresentationOptions
 ): Promise<EncodedVerificationSubmission> {
   const client = didKeyToIssuer(didKey)
 
@@ -31,8 +32,12 @@ export async function createVerificationSubmission(
     )
   }
 
-  const payload = verifiablePresentationPayload(client.did, verifiedCredential)
-  const vp = await createVerifiablePresentationJwt(payload, client)
+  const vp = await encodeVerifiablePresentation(
+    client.did,
+    verifiedCredential,
+    client,
+    options
+  )
 
   return {
     presentation_submission: presentationSubmission,

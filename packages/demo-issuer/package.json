@@ -1,4 +1,6 @@
 {
+  "name": "@centre/demo-issuer",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "build": "next build",

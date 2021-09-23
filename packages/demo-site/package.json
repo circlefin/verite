@@ -1,6 +1,7 @@
 {
   "name": "@centre/demo-site",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "build": "./bin/build",
@@ -34,7 +35,7 @@
     "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
-    "next": "11.1.1",
+    "next": "11.1.2",
     "next-auth": "^3.27.1",
     "nextjs-progressbar": "^0.0.11",
     "qrcode.react": "^1.0.1",

@@ -11,10 +11,10 @@ import type {
   W3CCredential
 } from "../../types"
 import {
+  encodeVerifiableCredential,
   decodeVerifiableCredential,
   expandBitstring,
-  generateBitstring,
-  signVerifiableCredential
+  generateBitstring
 } from "../utils"
 
 /**
@@ -53,7 +53,7 @@ export const generateRevocationList = async (
     }
   }
 
-  const vcJwt = await signVerifiableCredential(signer, vcPayload)
+  const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }
 
@@ -126,6 +126,10 @@ export const isRevoked = async (
   const statusList =
     revocationStatusList || (await fetchStatusList(revocableCredential))
 
+  // This is business logic that would be left up to the Verifier. For this
+  // demo, we assume if there is no revocation list or the API call fails
+  // the credential is not revoked. More stringent controls may need to exist
+  // for different use cases.
   if (!statusList) {
     return false
   }
@@ -157,13 +161,23 @@ export async function fetchStatusList(
   const url = (credential as RevocableCredential).credentialStatus
     .statusListCredential
 
+  // Set 10 second timeout for fetching the revocation list.
+  // For demo purposes, this is a sufficient amount of time to wait until
+  // giving up. Otherwise, the verification step would continue seemingly
+  // forever. Use cases beyond a demo may require different timeouts and
+  // behavior.
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 10_000)
   try {
-    const response = await fetch(url)
+    const response = await fetch(url, { signal: controller.signal })
+    clearTimeout(timeout)
 
     if (response.status === 200) {
       return response.json()
     }
-  } catch (e) {}
+  } catch (e) {
+    // Return nothing if API call fails or timesout
+  }
 }
 
 /**

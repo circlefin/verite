@@ -1,5 +1,9 @@
 # demo-site
 
-## Sample DID Document
+This package contains demos showcasing issuance, verification, and revocation of Verifiable Credentials using the verity standards.
 
-A did:web identifier must be prefixed with a fully qualified domain name that is secured by a TLS/SSL certificate; for now, a sample one is available at [http://localhost:3000/.well-known/did.json](http://localhost:3000/.well-known/did.json) with domain https://www.example.com.
+There are also demos showcasing a DeFi use-case as well as a Custody-service example.
+
+# Getting Started
+
+This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (requires npm v7 or greater), and as such, the dependencies for all included packages are installed from the root level using `npm install`. Do not run `npm install` from this directory.

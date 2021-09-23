@@ -1,36 +1,13 @@
 import {
   InputDescriptorConstraintField,
-  InputDescriptorConstraintStatusDirective,
-  InputDescriptorConstraintSubjectConstraintDirective
-} from "../types/InputDescriptor"
-import { PresentationDefinition } from "../types/PresentationDefinition"
-
-/**
- * Build a Presentation Definition requesting a KYC/AML Attestation or
- * a Credit Score Attestation
- */
-export function generatePresentationDefinition(
-  type: string,
-  trustedAuthorities: string[],
-  opts?: Record<string, unknown>
-): PresentationDefinition {
-  switch (type) {
-    case "CreditScoreAttestation":
-      return creditScorePresentationDefinition(
-        trustedAuthorities,
-        opts?.minimumCreditScore as number
-      )
-    case "KYCAMLAttestation":
-      return kycPresentationDefinition(trustedAuthorities)
-    default:
-      throw new Error("Invalid attestation type requested")
-  }
-}
+  InputDescriptorConstraintStatusDirective
+} from "../../types/InputDescriptor"
+import { PresentationDefinition } from "../../types/PresentationDefinition"
 
 /**
  * Build a Presentation Definition requesting a KYC/AML Attestation
  */
-function kycPresentationDefinition(
+export function kycPresentationDefinition(
   trustedAuthorities: string[] = []
 ): PresentationDefinition {
   const requiredFields: Record<string, string> = {
@@ -78,13 +55,6 @@ function kycPresentationDefinition(
               directive: InputDescriptorConstraintStatusDirective.REQUIRED
             }
           },
-          is_holder: [
-            {
-              field_id: ["subjectId"],
-              directive:
-                InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
-            }
-          ],
           fields
         }
       }
@@ -95,7 +65,7 @@ function kycPresentationDefinition(
 /**
  * Build a Presentation Definition requesting a Credit Score Attestation
  */
-function creditScorePresentationDefinition(
+export function creditScorePresentationDefinition(
   trustedAuthorities: string[] = [],
   minimumCreditScore?: number
 ): PresentationDefinition {
