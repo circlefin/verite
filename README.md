@@ -235,3 +235,10 @@ npm run db:seed
 ```
 npm run prisma studio
 ```
+
+## Contributors
+
+- [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
+- [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
+- [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
+- [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))

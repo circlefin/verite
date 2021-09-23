@@ -26,3 +26,10 @@ Issuance to a hosted wallet would look the same, but the mechanism for sharing t
 Issuance to metamask, or some browser-based extension wallet, is very similar. Since the issuing service is likely a web application, it could interact with MM as if it were a dApp. Additionally, MM being a wallet, it already has a set of keypairs that can be used to identify the user, however it could create its own for holding identity.
 
 Note that this is contingent on metamask actually supporting Verity.
+
+## Contributors
+
+- [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
+- [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
+- [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
+- [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))

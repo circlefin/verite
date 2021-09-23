@@ -2,6 +2,12 @@
   "name": "@centre/demo-revocation",
   "license": "MIT",
   "private": true,
+  "contributors": [
+    "Kim Hamilton Duffy (https://github.com/kimdhamilton",
+    "Sean Neville (https://github.com/psnevio)",
+    "Brice Stacey <brice@m2.xyz> (https://m2.xyz)",
+    "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
+  ],
   "scripts": {
     "build": "next build",
     "dev": "next dev",

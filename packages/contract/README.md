@@ -53,9 +53,9 @@ When using the hardhat network, there are 20 built-in accounts each with 1000 ET
 
 Assuming you have configured a Ropsten network, you will need to fund the account you configured. There are several Ropsten faucets available:
 
-- https://faucet.dimensions.network/
-- https://faucet.ropsten.be/
-- https://faucet.egorfine.com/
+- <https://faucet.dimensions.network/>
+- <https://faucet.ropsten.be/>
+- <https://faucet.egorfine.com/>
 
 A few ETH is generally enough.
 
@@ -64,3 +64,10 @@ The hardhat faucet task, e.g. running `npx hardhat faucet <address>` sends 1 ETH
 The demo-site faucet (both the dapp and the CeFi demos) sends 0.1 ETH and 100 VUSDC.
 
 Since the full, fixed supply is issued to the contract creator, we used that same account as our faucet. The address is `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
+
+## Contributors
+
+- [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
+- [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
+- [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
+- [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))
