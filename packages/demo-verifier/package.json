@@ -1,4 +1,6 @@
 {
+  "name": "@centre/demo-verifier",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "build": "next build",

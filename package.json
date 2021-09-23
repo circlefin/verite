@@ -1,5 +1,6 @@
 {
-  "name": "root",
+  "name": "verity",
+  "license": "MIT",
   "private": true,
   "engines": {
     "node": ">=14.0.0",
