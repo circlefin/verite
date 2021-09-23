@@ -90,6 +90,14 @@ const extRefs: Array<Reference> = [
   {
     title: "Presentation Exchange",
     link: "https://identity.foundation/presentation-exchange/"
+  },
+  {
+    title: "Credential Manifest",
+    link: "https://identity.foundation/credential-manifest/"
+  },
+  {
+    title: "Wallet and Credential Interactions for Presentations",
+    link: "https://identity.foundation/waci-presentation-exchange"
   }
 ]
 
