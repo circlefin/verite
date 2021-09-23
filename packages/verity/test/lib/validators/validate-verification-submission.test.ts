@@ -1,8 +1,10 @@
 import { v4 as uuidv4 } from "uuid"
-import { createCredentialApplication } from "../../../lib/client/issuance"
 import { ValidationError } from "../../../lib/errors"
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
-import { decodeCredentialApplication } from "../../../lib/issuer/manifest"
+import {
+  createCredentialApplication,
+  decodeCredentialApplication
+} from "../../../lib/issuer/manifest"
 import {
   creditScoreVerificationRequest,
   kycVerificationRequest

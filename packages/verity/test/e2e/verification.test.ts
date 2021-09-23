@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from "uuid"
-import { createCredentialApplication } from "../../lib/client/issuance"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
-import { decodeCredentialApplication } from "../../lib/issuer/manifest"
+import {
+  createCredentialApplication,
+  decodeCredentialApplication
+} from "../../lib/issuer/manifest"
 import { kycVerificationRequest } from "../../lib/submission-requests"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"

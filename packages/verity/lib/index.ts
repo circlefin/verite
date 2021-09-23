@@ -1,4 +1,3 @@
-export * from "./client"
 export * from "./errors"
 export * from "./issuer"
 export * from "./submission-requests"

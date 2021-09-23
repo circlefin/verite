@@ -1,6 +1,6 @@
-import { createCredentialApplication } from "../../lib/client/issuance"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import {
+  createCredentialApplication,
   decodeCredentialApplication,
   createKycAmlManifest
 } from "../../lib/issuer/manifest"

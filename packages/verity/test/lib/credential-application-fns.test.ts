@@ -1,6 +1,6 @@
-import { createCredentialApplication } from "../../lib/client/issuance"
 import { VerificationError } from "../../lib/errors"
 import {
+  createCredentialApplication,
   decodeCredentialApplication,
   createKycAmlManifest
 } from "../../lib/issuer/manifest"
