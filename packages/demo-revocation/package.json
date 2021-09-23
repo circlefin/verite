@@ -1,4 +1,6 @@
 {
+  "name": "@centre/demo-revocation",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "build": "next build",

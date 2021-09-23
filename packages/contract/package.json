@@ -1,5 +1,7 @@
 {
   "name": "@centre/contract",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "hardhat:node": "npx hardhat node",
     "hardhat:deploy": "npx hardhat run scripts/deploy.ts --network localhost",
