@@ -63,12 +63,12 @@ const credentialFactory = async (
 ): Promise<RevocableCredential> => {
   const vcPayload: Revocable<CredentialPayload> = {
     "@context": ["https://www.w3.org/2018/credentials/v1"],
-    sub: "did:web:m2.xyz",
+    sub: "did:web:example.com",
     type: ["VerifiableCredential"],
     issuer: signer.did,
     issuanceDate: new Date(),
     credentialSubject: {
-      id: "did:web:m2.xyz",
+      id: "did:web:example.com",
       foo: "bar"
     },
     credentialStatus: {
@@ -141,12 +141,12 @@ describe("Status List 2021", () => {
 
       const vcPayload: CredentialPayload = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
-        sub: "did:web:m2.xyz",
+        sub: "did:web:example.com",
         type: ["VerifiableCredential"],
         issuer,
         issuanceDate: issued,
         credentialSubject: {
-          id: "did:web:m2.xyz",
+          id: "did:web:example.com",
           foo: "bar"
         }
       }
@@ -178,12 +178,12 @@ describe("Status List 2021", () => {
 
       const vcPayload: Revocable<CredentialPayload> = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
-        sub: "did:web:m2.xyz",
+        sub: "did:web:example.com",
         type: ["VerifiableCredential"],
         issuer,
         issuanceDate: new Date(),
         credentialSubject: {
-          id: "did:web:m2.xyz",
+          id: "did:web:example.com",
           foo: "bar"
         },
         credentialStatus: {
@@ -221,12 +221,12 @@ describe("Status List 2021", () => {
 
       const vcPayload: Revocable<CredentialPayload> = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
-        sub: "did:web:m2.xyz",
+        sub: "did:web:example.com",
         type: ["VerifiableCredential"],
         issuer,
         issuanceDate: new Date(),
         credentialSubject: {
-          id: "did:web:m2.xyz",
+          id: "did:web:example.com",
           foo: "bar"
         },
         credentialStatus: {
