@@ -40,7 +40,7 @@ function createManifest(
     id: PROOF_OF_CONTROL_PRESENTATION_DEF_ID,
     format: {
       jwt_vp: {
-        alg: ["EdDSA", "ES256K"]
+        alg: ["EdDSA"]
       }
     },
     input_descriptors: [
@@ -64,10 +64,10 @@ function createManifest(
     issuer,
     format: {
       jwt_vc: {
-        alg: ["EdDSA", "ES256K"]
+        alg: ["EdDSA"]
       },
       jwt_vp: {
-        alg: ["EdDSA", "ES256K"]
+        alg: ["EdDSA"]
       }
     },
     output_descriptors: outputDescriptors,

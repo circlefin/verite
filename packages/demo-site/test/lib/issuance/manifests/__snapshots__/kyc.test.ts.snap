@@ -6,19 +6,16 @@ Object {
     "jwt_vc": Object {
       "alg": Array [
         "EdDSA",
-        "ES256K",
       ],
     },
     "jwt_vp": Object {
       "alg": Array [
         "EdDSA",
-        "ES256K",
       ],
     },
   },
   "id": "KYCAMLAttestation",
   "issuer": Object {
-    "comment": "JSON-LD definition at https://verity.id/.well_known/did.json",
     "id": "did:web:verity.id",
     "name": "Verity",
     "styles": Object {},
@@ -105,7 +102,6 @@ Object {
       "jwt_vp": Object {
         "alg": Array [
           "EdDSA",
-          "ES256K",
         ],
       },
     },
