@@ -1,4 +1,5 @@
 import Ajv from "ajv"
+import { verifyJWT } from "did-jwt"
 import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
 import jsonpath from "jsonpath"
 import type {
@@ -14,7 +15,12 @@ import type {
 } from "../../types"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
+import {
+  asyncSome,
+  decodeVerifiablePresentation,
+  isExpired,
+  didKeyResolver
+} from "../utils"
 import { findSchemaById, validateAttestationSchema } from "./validate-schema"
 
 const ajv = new Ajv()
@@ -181,6 +187,29 @@ function validateCredentialAgainstSchema(
   })
 }
 
+async function ensureHolderIsSubject(
+  presentation: Verifiable<W3CPresentation>
+): Promise<void> {
+  if (!presentation.verifiableCredential) {
+    throw new ValidationError("No Credential", "No Verifiable Credential Given")
+  }
+
+  const holder = presentation.holder
+  // Credential subject id is in the format did:web:subject#controller.
+  // We will strip off the controller if it exists for easier comparison.
+  const subject =
+    presentation.verifiableCredential[0].credentialSubject.id?.replace(
+      /#.+$/,
+      ""
+    )
+  if (holder !== subject) {
+    throw new ValidationError(
+      "Signing Error",
+      "Presentation is not signed by the subject."
+    )
+  }
+}
+
 /**
  * Validate a verifiable presentation against a presentation definition
  */
@@ -198,6 +227,13 @@ export async function validateVerificationSubmission(
     presentation_submission: submission.presentation_submission,
     presentation
   }
+
+  /**
+   * Check that the Verified Presentation was signed by the subject of the
+   * Verified Credential. This ensures that the person submitting the
+   * Presentation is the credential subject.
+   */
+  await ensureHolderIsSubject(presentation)
 
   /**
    * Check the verifiable credentials to ensure non are revoked. To check
