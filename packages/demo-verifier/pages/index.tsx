@@ -49,7 +49,7 @@ const issueCredential = async () => {
   // Generate the signed, encoded credential
   const encoded = await buildAndSignVerifiableCredential(
     issuer,
-    subject.id,
+    subject.controller,
     attestation
   )
 
@@ -118,8 +118,6 @@ export default function Home(): JSX.Element {
       verificationRequest.body.presentation_definition,
       credential
     )
-
-    console.log(subject)
 
     const response = await fetch(verificationRequest.reply_url, {
       method: "POST",
