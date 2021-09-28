@@ -80,7 +80,7 @@ const issueCredential = async (
   // Generate the signed, encoded credential
   const encoded = await buildAndSignVerifiableCredential(
     issuer,
-    subject.id,
+    subject,
     attestation,
     { credentialStatus }
   )

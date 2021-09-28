@@ -7,13 +7,13 @@ async function setup(): Promise<void> {
   const verifierDidKey = await randomDidKey()
   const jwtSecret = randomBytes(256).toString("base64")
 
-  console.log(`NEXT_PUBLIC_ISSUER_DID=${issuerDidKey.controller}`)
+  console.log(`NEXT_PUBLIC_ISSUER_DID=${issuerDidKey.subject}`)
   console.log(
     `NEXT_PUBLIC_ISSUER_SECRET=${Buffer.from(issuerDidKey.privateKey).toString(
       "hex"
     )}`
   )
-  console.log(`VERIFIER_DID=${verifierDidKey.controller}`)
+  console.log(`VERIFIER_DID=${verifierDidKey.subject}`)
   console.log(
     `VERIFIER_PRIVATE_KEY=0x${Buffer.from(verifierDidKey.privateKey).toString(
       "hex"

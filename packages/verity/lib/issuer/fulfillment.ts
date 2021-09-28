@@ -1,4 +1,5 @@
 import { CreatePresentationOptions } from "did-jwt-vc/lib/types"
+import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 import type {
   DescriptorMap,
@@ -8,6 +9,7 @@ import type {
   DecodedCredentialApplication,
   CreditScoreAttestation,
   CredentialPayload,
+  DidKey,
   JWT
 } from "../../types"
 import {
@@ -20,11 +22,18 @@ import {
  */
 export function buildAndSignVerifiableCredential(
   signer: Issuer,
-  holderDid: string,
+  subject: string | DidKey,
   attestation: KYCAMLAttestation | CreditScoreAttestation,
   payload: Partial<CredentialPayload> = {}
 ): Promise<JWT> {
   const type = attestation["@type"]
+
+  let subjectId: string
+  if (isString(subject)) {
+    subjectId = subject
+  } else {
+    subjectId = subject.subject
+  }
 
   const vcPayload: CredentialPayload = Object.assign(
     {
@@ -34,7 +43,7 @@ export function buildAndSignVerifiableCredential(
       ],
       type: ["VerifiableCredential", type],
       credentialSubject: {
-        id: holderDid,
+        id: subjectId,
         [type]: attestation
       },
       issuanceDate: new Date(),

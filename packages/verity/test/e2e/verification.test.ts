@@ -27,7 +27,7 @@ describe("verification", () => {
     // 2. VERIFIER: Discovery of verification requirements
     const kycRequest = kycVerificationRequest(
       uuidv4(),
-      verifierDidKey.controller,
+      verifierDidKey.subject,
       "https://test.host/verify"
     )
 

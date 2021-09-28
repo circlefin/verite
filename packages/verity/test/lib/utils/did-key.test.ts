@@ -11,19 +11,20 @@ describe("generateDidKey()", () => {
       "hex"
     )
 
-    const didKey = await generateDidKey({ secureRandom: () => bytes })
+    const didKey = generateDidKey({ secureRandom: () => bytes })
 
     expect(didKey.publicKey).toBeDefined()
     expect(didKey.privateKey).toBeDefined()
     expect(didKey.controller.startsWith("did:key")).toBe(true)
-    expect(didKey.id.startsWith(didKey.controller)).toBe(true)
+    expect(didKey.subject.startsWith("did:key")).toBe(true)
+    expect(didKey.id.startsWith(didKey.subject)).toBe(true)
   })
 })
 
 describe("didKeyToIssuer()", () => {
   it("converts a DidKey to an Issuer", async () => {
-    const didKey = await randomDidKey()
-    const issuer = await didKeyToIssuer(didKey)
-    expect(issuer.did).toBe(didKey.controller)
+    const didKey = randomDidKey()
+    const issuer = didKeyToIssuer(didKey)
+    expect(issuer.did).toBe(didKey.subject)
   })
 })

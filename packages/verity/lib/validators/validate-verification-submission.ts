@@ -181,6 +181,23 @@ function validateCredentialAgainstSchema(
   })
 }
 
+async function ensureHolderIsSubject(
+  presentation: Verifiable<W3CPresentation>
+): Promise<void> {
+  if (!presentation.verifiableCredential) {
+    throw new ValidationError("No Credential", "No Verifiable Credential Given")
+  }
+
+  const holder = presentation.holder
+  const subject = presentation.verifiableCredential[0].credentialSubject.id
+  if (holder !== subject) {
+    throw new ValidationError(
+      "Signing Error",
+      "Presentation is not signed by the subject."
+    )
+  }
+}
+
 /**
  * Validate a verifiable presentation against a presentation definition
  */
@@ -198,6 +215,13 @@ export async function validateVerificationSubmission(
     presentation_submission: submission.presentation_submission,
     presentation
   }
+
+  /**
+   * Check that the Verified Presentation was signed by the subject of the
+   * Verified Credential. This ensures that the person submitting the
+   * Presentation is the credential subject.
+   */
+  await ensureHolderIsSubject(presentation)
 
   /**
    * Check the verifiable credentials to ensure non are revoked. To check

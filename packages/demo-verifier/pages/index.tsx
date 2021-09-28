@@ -7,7 +7,8 @@ import {
   RevocableCredential,
   createVerificationSubmission,
   VerificationRequest,
-  ChallengeTokenUrlWrapper
+  ChallengeTokenUrlWrapper,
+  didKeyToIssuer
 } from "@centre/verity"
 import type { Verifiable } from "@centre/verity"
 import Head from "next/head"
@@ -16,6 +17,8 @@ import { useState } from "react"
 import useSWRImmutable from "swr/immutable"
 import { W3CCredential } from "did-jwt-vc"
 import { CheckIcon, XIcon } from "@heroicons/react/solid"
+
+const holder = randomDidKey()
 
 /**
  * Issue a Verifiable Credential. This would traditionally be issued by the
@@ -31,7 +34,7 @@ const issueCredential = async () => {
   )
 
   // We will create a random did to represent our own identity wallet
-  const subject = randomDidKey()
+  const subject = holder
 
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = {
@@ -46,7 +49,7 @@ const issueCredential = async () => {
   // Generate the signed, encoded credential
   const encoded = await buildAndSignVerifiableCredential(
     issuer,
-    subject.id,
+    subject,
     attestation
   )
 
@@ -109,7 +112,7 @@ export default function Home(): JSX.Element {
     verificationRequest: VerificationRequest,
     credential: Verifiable<W3CCredential> | RevocableCredential
   ) => {
-    const subject = randomDidKey()
+    const subject = holder
     const request = await createVerificationSubmission(
       subject,
       verificationRequest.body.presentation_definition,
