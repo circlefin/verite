@@ -34,6 +34,7 @@ export function generateDidKey({ secureRandom }: GenerateDidKeyParams): DidKey {
 
   return {
     id: id,
+    subject: `did:key:${methodSpecificId}`,
     controller: controller,
     publicKey: key.publicKey,
     privateKey: key.secretKey
@@ -58,7 +59,7 @@ export function randomDidKey(): DidKey {
  * @returns an `Issuer` instance using the `DidKey` private key
  */
 export function didKeyToIssuer(didKey: DidKey): Issuer {
-  return buildIssuer(didKey.controller, didKey.privateKey)
+  return buildIssuer(didKey.subject, didKey.privateKey)
 }
 
 export function buildIssuer(

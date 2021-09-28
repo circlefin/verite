@@ -5,7 +5,7 @@ async function setup(): Promise<void> {
   const issuerDidKey = randomDidKey()
   const jwtSecret = randomBytes(256).toString("base64")
 
-  console.log(`NEXT_PUBLIC_ISSUER_DID=${issuerDidKey.controller}`)
+  console.log(`NEXT_PUBLIC_ISSUER_DID=${issuerDidKey.subject}`)
   console.log(
     `NEXT_PUBLIC_ISSUER_SECRET=${Buffer.from(issuerDidKey.privateKey).toString(
       "hex"

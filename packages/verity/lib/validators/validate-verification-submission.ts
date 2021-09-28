@@ -1,5 +1,4 @@
 import Ajv from "ajv"
-import { verifyJWT } from "did-jwt"
 import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
 import jsonpath from "jsonpath"
 import type {
@@ -15,12 +14,7 @@ import type {
 } from "../../types"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import {
-  asyncSome,
-  decodeVerifiablePresentation,
-  isExpired,
-  didKeyResolver
-} from "../utils"
+import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
 import { findSchemaById, validateAttestationSchema } from "./validate-schema"
 
 const ajv = new Ajv()
@@ -198,6 +192,8 @@ async function ensureHolderIsSubject(
   // Credential subject id is in the format did:web:subject#controller.
   // We will strip off the controller if it exists for easier comparison.
   const subject = presentation.verifiableCredential[0].credentialSubject.id
+  console.log(holder)
+  console.log(subject)
   if (holder !== subject) {
     throw new ValidationError(
       "Signing Error",

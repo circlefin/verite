@@ -53,7 +53,7 @@ describe("Submission validator", () => {
 
     const verificationRequest = kycVerificationRequest(
       uuidv4(),
-      verifierDidKey.controller,
+      verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did]
@@ -99,7 +99,7 @@ describe("Submission validator", () => {
 
     const verificationRequest = creditScoreVerificationRequest(
       uuidv4(),
-      verifierDidKey.controller,
+      verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
@@ -147,7 +147,7 @@ describe("Submission validator", () => {
 
     const verificationRequest = kycVerificationRequest(
       uuidv4(),
-      verifierDidKey.controller,
+      verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
       ["NOT TRUSTED"]
@@ -193,7 +193,7 @@ describe("Submission validator", () => {
 
     const verificationRequest = creditScoreVerificationRequest(
       uuidv4(),
-      verifierDidKey.controller,
+      verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did],
@@ -241,7 +241,7 @@ describe("Submission validator", () => {
     // Generate Credit Score Request, even though we have a KYC credential
     const verificationRequest = creditScoreVerificationRequest(
       uuidv4(),
-      verifierDidKey.controller,
+      verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
       [issuer.did]

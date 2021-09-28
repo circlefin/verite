@@ -16,9 +16,9 @@ describe("issuance", () => {
     /**
      * The issuer and the client get a DID
      */
-    const issuerDidKey = await randomDidKey()
+    const issuerDidKey = randomDidKey()
     const issuer = didKeyToIssuer(issuerDidKey)
-    const clientDidKey = await randomDidKey()
+    const clientDidKey = randomDidKey()
 
     /**
      * The issuer generates a QR code for the client to scan
@@ -65,7 +65,7 @@ describe("issuance", () => {
         expect(verifiableCredential.proof).toBeDefined()
 
         const credentialSubject = verifiableCredential.credentialSubject
-        expect(credentialSubject.id).toEqual(clientDidKey.controller)
+        expect(credentialSubject.id).toEqual(clientDidKey.subject)
 
         const credentialStatus = verifiableCredential.credentialStatus
         expect(credentialStatus.id).toEqual(

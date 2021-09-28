@@ -49,7 +49,7 @@ const issueCredential = async () => {
   // Generate the signed, encoded credential
   const encoded = await buildAndSignVerifiableCredential(
     issuer,
-    subject.controller,
+    subject,
     attestation
   )
 
