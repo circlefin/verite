@@ -189,11 +189,7 @@ async function ensureHolderIsSubject(
   }
 
   const holder = presentation.holder
-  // Credential subject id is in the format did:web:subject#controller.
-  // We will strip off the controller if it exists for easier comparison.
   const subject = presentation.verifiableCredential[0].credentialSubject.id
-  console.log(holder)
-  console.log(subject)
   if (holder !== subject) {
     throw new ValidationError(
       "Signing Error",
