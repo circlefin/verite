@@ -27,8 +27,8 @@ import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("Submission validator", () => {
   it("validates a KYC Verification Submission", async () => {
-    const clientDidKey = await randomDidKey()
-    const verifierDidKey = await randomDidKey()
+    const clientDidKey = randomDidKey()
+    const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
     const application = await createCredentialApplication(
       clientDidKey,
@@ -74,8 +74,8 @@ describe("Submission validator", () => {
   })
 
   it("validates a Credit Score Verification Submission", async () => {
-    const clientDidKey = await randomDidKey()
-    const verifierDidKey = await randomDidKey()
+    const clientDidKey = randomDidKey()
+    const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const application = await createCredentialApplication(
       clientDidKey,
@@ -121,8 +121,8 @@ describe("Submission validator", () => {
   })
 
   it("rejects if the issuer is not trusted", async () => {
-    const clientDidKey = await randomDidKey()
-    const verifierDidKey = await randomDidKey()
+    const clientDidKey = randomDidKey()
+    const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
     const application = await createCredentialApplication(
       clientDidKey,
@@ -167,8 +167,8 @@ describe("Submission validator", () => {
   })
 
   it("rejects if the credit score is too low", async () => {
-    const clientDidKey = await randomDidKey()
-    const verifierDidKey = await randomDidKey()
+    const clientDidKey = randomDidKey()
+    const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const application = await createCredentialApplication(
       clientDidKey,
@@ -214,8 +214,8 @@ describe("Submission validator", () => {
   })
 
   it("rejects if the submission includes a KYC credential when a Credit Score is required", async () => {
-    const clientDidKey = await randomDidKey()
-    const verifierDidKey = await randomDidKey()
+    const clientDidKey = randomDidKey()
+    const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const application = await createCredentialApplication(
       clientDidKey,
@@ -257,6 +257,53 @@ describe("Submission validator", () => {
       submission,
       verificationRequest,
       "Credential did not match constraint: The Credit Score Attestation requires the field: 'score'."
+    )
+  })
+
+  it("rejects if the submission is not signed by the subject", async () => {
+    const clientDidKey = randomDidKey()
+    const verifierDidKey = randomDidKey()
+    const { manifest, issuer } = await generateManifestAndIssuer()
+    const application = await createCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+
+    await validateCredentialApplication(application, manifest)
+
+    const decodedApplication = await decodeCredentialApplication(application)
+
+    const fulfillment = await buildAndSignFulfillment(
+      issuer,
+      decodedApplication,
+      kycAmlAttestationFixture,
+      { credentialStatus: revocationListFixture }
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(
+      fulfillment.presentation
+    )
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const verificationRequest = kycVerificationRequest(
+      uuidv4(),
+      verifierDidKey.subject,
+      "https://test.host/verify",
+      "https://other.host/callback",
+      [issuer.did]
+    )
+
+    const differentHolderThanSubject = randomDidKey()
+    const submission = await createVerificationSubmission(
+      differentHolderThanSubject,
+      verificationRequest.body.presentation_definition,
+      clientVC
+    )
+
+    await expectValidationError(
+      submission,
+      verificationRequest,
+      "Presentation is not signed by the subject."
     )
   })
 })
