@@ -12,3 +12,10 @@ This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using
 npm run setup
 npm run dev
 ```
+
+## Contributors
+
+- [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
+- [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
+- [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
+- [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))

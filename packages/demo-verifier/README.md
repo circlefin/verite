@@ -26,3 +26,10 @@ The major difference between any solution is the medium of exchange. Given that 
 ## Issuance to metamask
 
 Issuance to metamask, or some browser-based extension wallet, is very similar. Since the verifying service is likely a web application, it could interact with MM as if it were a dApp. Note that this is contingent on metamask actually supporting Verity.
+
+## Contributors
+
+- [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
+- [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
+- [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
+- [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))

@@ -2,6 +2,12 @@
   "name": "verity",
   "license": "MIT",
   "private": true,
+  "contributors": [
+    "Kim Hamilton Duffy (https://github.com/kimdhamilton",
+    "Sean Neville (https://github.com/psnevio)",
+    "Brice Stacey <brice@m2.xyz> (https://m2.xyz)",
+    "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
+  ],
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=7.0.0"

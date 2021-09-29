@@ -2,6 +2,12 @@
   "name": "@centre/contract",
   "license": "MIT",
   "private": true,
+  "contributors": [
+    "Kim Hamilton Duffy (https://github.com/kimdhamilton",
+    "Sean Neville (https://github.com/psnevio)",
+    "Brice Stacey <brice@m2.xyz> (https://m2.xyz)",
+    "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
+  ],
   "scripts": {
     "hardhat:node": "npx hardhat node",
     "hardhat:deploy": "npx hardhat run scripts/deploy.ts --network localhost",
