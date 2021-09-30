@@ -80,26 +80,23 @@ function validateInputDescriptors(
       return
     }
 
-    // iterate over all schemas in the descriptor
-    descriptor.schema.forEach((schema) => {
-      const credentials = credentialMap.get(schema.uri)
+    const credentials = credentialMap.get(descriptor.id)
 
-      if (!credentials || !credentials.length) {
-        // no credentials found for this schema, nothing to validate
-        return
-      }
+    if (!credentials || !credentials.length) {
+      // no credentials found for this schema, nothing to validate
+      return
+    }
 
-      credentials.forEach((credential) => {
-        // iterate over each field in the constraint and validate it against
-        // the credential.
-        fields.forEach((field) => {
-          if (!validateField(field, credential)) {
-            throw new ValidationError(
-              `Credential failed to meet criteria specified by input descriptor ${descriptor.id}`,
-              `Credential did not match constraint: ${field.purpose}`
-            )
-          }
-        })
+    credentials.forEach((credential) => {
+      // iterate over each field in the constraint and validate it against
+      // the credential.
+      fields.forEach((field) => {
+        if (!validateField(field, credential)) {
+          throw new ValidationError(
+            `Credential failed to meet criteria specified by input descriptor ${descriptor.id}`,
+            `Credential did not match constraint: ${field.purpose}`
+          )
+        }
       })
     })
   })
@@ -123,7 +120,7 @@ function mapInputsToDescriptors(
     }
 
     const credentials = jsonpath.query(submission, d.path)
-    return map.set(match.schema[0].uri, credentials)
+    return map.set(match.id, credentials)
   }, new Map<string, Verifiable<W3CCredential>[]>())
 }
 
@@ -165,16 +162,25 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
 }
 
 function validateCredentialAgainstSchema(
-  credentialMap: Map<string, Verifiable<W3CCredential>[]>
+  credentialMap: Map<string, Verifiable<W3CCredential>[]>,
+  descriptors?: InputDescriptor[]
 ): void {
-  credentialMap.forEach((credentials, uri) => {
-    const schema = findSchemaById(uri)
+  if (!descriptors) {
+    // no input descriptors, so there is nothing to validate
+    return
+  }
+
+  // iterate over all input descriptors to find the relevant credentials
+  descriptors.forEach((descriptor) => {
+    const credentials = credentialMap.get(descriptor.id)
+
+    const schema = findSchemaById(descriptor.schema[0].uri)
 
     if (!schema) {
-      throw new ValidationError(`Unknown schema: ${uri}`)
+      throw new ValidationError(`Unknown schema: ${descriptor.schema[0].uri}`)
     }
 
-    credentials.forEach((credential) => {
+    credentials?.forEach((credential) => {
       const type = credential.type[credential.type.length - 1]
       validateAttestationSchema(credential.credentialSubject[type], schema)
     })
@@ -254,5 +260,5 @@ export async function validateVerificationSubmission(
   /**
    * Validate that each credential matches the expected schema
    */
-  validateCredentialAgainstSchema(credentialMap)
+  validateCredentialAgainstSchema(credentialMap, definition.input_descriptors)
 }
