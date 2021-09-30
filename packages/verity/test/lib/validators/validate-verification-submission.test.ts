@@ -303,7 +303,7 @@ describe("Submission validator", () => {
     await expectValidationError(
       submission,
       verificationRequest,
-      "Presentation is not signed by the subject."
+      "Presentation holder is not the subject."
     )
   })
 })
