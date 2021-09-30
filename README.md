@@ -69,6 +69,8 @@ This will start your server at [http://localhost:3000](http://localhost:3000)
 
 ### Manually running services
 
+It is recommended that you run `npm run clean` before manually running a service.
+
 #### @centre/demo-site
 
 First, you should follow the above steps for deploying the contract to
