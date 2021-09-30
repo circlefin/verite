@@ -187,21 +187,69 @@ function validateCredentialAgainstSchema(
   })
 }
 
+/**
+ * The Presentation Exchange spec includes an `is_holder` constraint.
+ * We can use that property to find the fields that must match the holder.
+ *
+ * In this demo, we use it to ensure that the holder, or person submitting
+ * the presentation is the subject of the credential. This will ensure that
+ * no one can use someone else's credential.
+ *
+ * The spec is a mildly convoluted, allowing multiple is_holder properties,
+ * each with multiple fields that map to input descriptors by id, and then
+ * the input descriptors mapping to actual values in the credential with
+ * json paths.
+ *
+ * A more simple implementation would look like this if one did not want to
+ * support the is_holder property:
+ *
+ * const holder = presentation.holder
+ * const subject = presentation.verifiableCredential[0].credentialSubject.id
+ *  if (holder !== subject) {
+ *    throw new ValidationError(
+ *      "Signing Error",
+ *      "Presentation is not signed by the subject."
+ *    )
+ *  }
+ */
 async function ensureHolderIsSubject(
-  presentation: Verifiable<W3CPresentation>
+  credentialMap: Map<string, Verifiable<W3CCredential>[]>,
+  presentation: Verifiable<W3CPresentation>,
+  definition: PresentationDefinition
 ): Promise<void> {
   if (!presentation.verifiableCredential) {
     throw new ValidationError("No Credential", "No Verifiable Credential Given")
   }
 
-  const holder = presentation.holder
-  const subject = presentation.verifiableCredential[0].credentialSubject.id
-  if (holder !== subject) {
-    throw new ValidationError(
-      "Signing Error",
-      "Presentation is not signed by the subject."
-    )
-  }
+  definition.input_descriptors.forEach((descriptor) => {
+    // Each input descriptor can have an is_holder property.
+    const isHolders = descriptor.constraints?.is_holder
+    if (isHolders) {
+      isHolders.forEach((isHolder) => {
+        //
+        const fieldIds = isHolder.field_id
+        fieldIds.forEach((fieldId) => {
+          // Find the fields with matching ids
+          const fields = descriptor.constraints?.fields?.filter((field) => {
+            return field.id === fieldId
+          })
+          fields?.forEach((field) => {
+            const credentials = credentialMap.get(descriptor.id)
+            credentials?.forEach((credential) => {
+              const value = findFirstMatchingPathForField(field, credential)
+              const holder = presentation.holder
+              if (holder !== value) {
+                throw new ValidationError(
+                  "Invalid Credential",
+                  "Presentation holder is not the subject."
+                )
+              }
+            })
+          })
+        })
+      })
+    }
+  })
 }
 
 /**
@@ -223,13 +271,6 @@ export async function validateVerificationSubmission(
   }
 
   /**
-   * Check that the Verified Presentation was signed by the subject of the
-   * Verified Credential. This ensures that the person submitting the
-   * Presentation is the credential subject.
-   */
-  await ensureHolderIsSubject(presentation)
-
-  /**
    * Check the verifiable credentials to ensure non are revoked. To check
    * revocation status, we must either have a local cached copy of the revocation
    * list, or fetch the list from the location described in the credential.
@@ -248,6 +289,12 @@ export async function validateVerificationSubmission(
   ensureNotExpired(presentation)
 
   const credentialMap = mapInputsToDescriptors(decoded, definition)
+  /**
+   * Check that the Verified Presentation was signed by the subject of the
+   * Verified Credential. This ensures that the person submitting the
+   * Presentation is the credential subject.
+   */
+  await ensureHolderIsSubject(credentialMap, presentation, definition)
 
   /**
    * Check the verifiable credentials to ensure they meet the requirements
