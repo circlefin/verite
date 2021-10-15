@@ -2,9 +2,10 @@ import { randomBytes } from "crypto"
 import * as ed25519 from "@stablelib/ed25519"
 import * as didKeyEd25519 from "@transmute/did-key-ed25519"
 import { EdDSASigner } from "did-jwt"
-import { Resolvable, DIDResolutionResult } from "did-resolver"
+import { DIDResolutionResult, DIDResolver, Resolver } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
+import { getResolver as getWebResolver } from "web-did-resolver"
 import type { DidKey, Issuer } from "../../types"
 
 type GenerateDidKeyParams = {
@@ -78,9 +79,9 @@ export function buildIssuer(
  *
  * @remark This resolver is used to verify the signature of a did:key JWT.
  */
-export const didKeyResolver: Resolvable = {
-  resolve: async (didUrl: string): Promise<DIDResolutionResult> => {
-    const result = await didKeyEd25519.resolve(didUrl)
+export function getKeyResolver(): Record<string, DIDResolver> {
+  async function resolve(did: string): Promise<DIDResolutionResult> {
+    const result = await didKeyEd25519.resolve(did)
 
     return {
       didResolutionMetadata: {},
@@ -88,4 +89,17 @@ export const didKeyResolver: Resolvable = {
       didDocumentMetadata: {}
     }
   }
+
+  return { key: resolve }
 }
+
+const didWebResolver = getWebResolver()
+const didKeyResolver = getKeyResolver()
+
+/**
+ * A did resolver that handles both did:key and did:web
+ */
+export const didResolver = new Resolver({
+  ...didWebResolver,
+  ...didKeyResolver
+})

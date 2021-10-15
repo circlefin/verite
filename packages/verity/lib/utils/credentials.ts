@@ -22,7 +22,7 @@ import type {
   RevocablePresentation
 } from "../../types"
 import { VerificationError } from "../errors"
-import { didKeyResolver } from "./did-fns"
+import { didResolver } from "./did-fns"
 
 /**
  * Encodes a JWT with the Verifiable Credential payload.
@@ -43,7 +43,7 @@ export async function decodeVerifiableCredential(
   Verifiable<W3CCredential> | RevocableCredential | RevocationListCredential
 > {
   try {
-    const res = await verifyCredential(vcJwt, didKeyResolver)
+    const res = await verifyCredential(vcJwt, didResolver)
     return res.verifiableCredential
   } catch (err) {
     throw new VerificationError(
@@ -82,7 +82,7 @@ export async function decodeVerifiablePresentation(
   options?: VerifyPresentationOptions
 ): Promise<Verifiable<W3CPresentation> | RevocablePresentation> {
   try {
-    const res = await verifyPresentation(vpJwt, didKeyResolver, options)
+    const res = await verifyPresentation(vpJwt, didResolver, options)
     return res.verifiablePresentation
   } catch (err) {
     throw new VerificationError(
