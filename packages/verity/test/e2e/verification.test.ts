@@ -4,11 +4,11 @@ import {
   decodeCredentialApplication
 } from "../../lib/issuer/application"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
-import { kycVerificationRequest } from "../../lib/submission-requests"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
+import { kycVerificationRequest } from "../../lib/verifier/presentation-request"
 import { buildVerificationSubmission } from "../../lib/verifier/submission"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
