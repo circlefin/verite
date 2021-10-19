@@ -1,5 +1,5 @@
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
-import { CreatePresentationOptions } from "did-jwt-vc/lib/types"
+import type { CreatePresentationOptions } from "did-jwt-vc/src/types"
 import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 import type {

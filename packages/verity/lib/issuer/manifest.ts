@@ -1,7 +1,7 @@
-import {
+import type {
   CreatePresentationOptions,
   VerifyPresentationOptions
-} from "did-jwt-vc/lib/types"
+} from "did-jwt-vc/src/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   CredentialIssuer,

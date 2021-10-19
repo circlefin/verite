@@ -3,10 +3,10 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
-import {
+import type {
   CreatePresentationOptions,
   VerifyPresentationOptions
-} from "did-jwt-vc/lib/types"
+} from "did-jwt-vc/src/types"
 import type {
   Issuer,
   JWT,

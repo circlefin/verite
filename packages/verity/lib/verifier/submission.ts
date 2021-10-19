@@ -1,4 +1,4 @@
-import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
+import type { VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   DescriptorMap,
