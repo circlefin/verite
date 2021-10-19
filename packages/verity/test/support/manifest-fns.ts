@@ -1,6 +1,6 @@
 import {
-  createCreditScoreManifest,
-  createKycAmlManifest
+  buildCreditScoreManifest,
+  buildKycAmlManifest
 } from "../../lib/issuer/manifest"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { CredentialManifest } from "../../types/CredentialManifest"
@@ -19,8 +19,8 @@ export async function generateManifestAndIssuer(
   const credentialIssuer = { id: issuer.did, name: "Verity" }
   const manifest =
     manifestType === "kyc"
-      ? createKycAmlManifest(credentialIssuer)
-      : createCreditScoreManifest(credentialIssuer)
+      ? buildKycAmlManifest(credentialIssuer)
+      : buildCreditScoreManifest(credentialIssuer)
 
   return { manifest, issuer }
 }

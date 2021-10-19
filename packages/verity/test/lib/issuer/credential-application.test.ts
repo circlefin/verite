@@ -3,7 +3,7 @@ import {
   buildCredentialApplication,
   decodeCredentialApplication
 } from "../../../lib/issuer/credential-application"
-import { createKycAmlManifest } from "../../../lib/issuer/manifest"
+import { buildKycAmlManifest } from "../../../lib/issuer/manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
@@ -15,7 +15,7 @@ describe("buildCredentialApplication", () => {
     // 1. CLIENT: The client gets a DID
     const clientDidKey = await randomDidKey()
     const credentialIssuer = { id: issuer.did, name: "Verity" }
-    const kycManifest = createKycAmlManifest(credentialIssuer)
+    const kycManifest = buildKycAmlManifest(credentialIssuer)
 
     const credentialApplication = await buildCredentialApplication(
       clientDidKey,

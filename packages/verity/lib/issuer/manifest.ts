@@ -17,7 +17,7 @@ export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
  * Helper function for common properties between both KYC and Credit Score
  * Manifests.
  */
-function createManifest(
+function buildManifest(
   manifestId: string,
   issuer: CredentialIssuer,
   outputDescriptors: OutputDescriptor[]
@@ -70,7 +70,7 @@ export function requiresRevocableCredentials(
   return manifest.id === KYCAML_ATTESTATION_MANIFEST_ID
 }
 
-export function createKycAmlManifest(
+export function buildKycAmlManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
@@ -126,14 +126,14 @@ export function createKycAmlManifest(
     }
   ]
 
-  return createManifest(
+  return buildManifest(
     KYCAML_ATTESTATION_MANIFEST_ID,
     issuer,
     outputDescriptors
   )
 }
 
-export function createCreditScoreManifest(
+export function buildCreditScoreManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
@@ -186,7 +186,7 @@ export function createCreditScoreManifest(
     }
   ]
 
-  return createManifest(
+  return buildManifest(
     CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
     issuer,
     outputDescriptors

@@ -1,4 +1,4 @@
-import { createKycAmlManifest, buildCredentialOffer } from "@centre/verity"
+import { buildKycAmlManifest, buildCredentialOffer } from "@centre/verity"
 import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
 
@@ -7,7 +7,7 @@ export default async function helloAPI(
   res: NextApiResponse
 ): Promise<void> {
   // Generate manifest
-  const manifest = createKycAmlManifest({
+  const manifest = buildKycAmlManifest({
     id: process.env.NEXT_PUBLIC_ISSUER_DID,
     name: "Verity"
   })

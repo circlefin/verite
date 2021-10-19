@@ -1,7 +1,7 @@
 import { omit } from "lodash"
 import { hasPaths } from "../../../lib"
 import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
-import { createKycAmlManifest } from "../../../lib/issuer/manifest"
+import { buildKycAmlManifest } from "../../../lib/issuer/manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { CredentialManifest } from "../../../types"
 
@@ -16,13 +16,13 @@ function validateManifestFormat(
   ])
 }
 
-describe("createKycAmlManifest", () => {
+describe("buildKycAmlManifest", () => {
   it("builds a KYC/AML manifest", async () => {
     const issuerDidKey = await randomDidKey()
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
 
-    const manifest = createKycAmlManifest(credentialIssuer)
+    const manifest = buildKycAmlManifest(credentialIssuer)
 
     expect(manifest.id).toEqual("KYCAMLAttestation")
     expect(validateManifestFormat(manifest)).toBe(true)
@@ -34,7 +34,7 @@ describe("validateManifestFormat", () => {
     const issuerDidKey = await randomDidKey()
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
-    const manifest = omit(createKycAmlManifest(credentialIssuer), [
+    const manifest = omit(buildKycAmlManifest(credentialIssuer), [
       "format",
       "presentation_definition"
     ])
@@ -46,7 +46,7 @@ describe("validateManifestFormat", () => {
     const issuerDidKey = await randomDidKey()
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
-    const manifest = createKycAmlManifest(credentialIssuer)
+    const manifest = buildKycAmlManifest(credentialIssuer)
 
     expect(hasPaths(manifest, ["presentation_definition", "format"])).toBe(true)
     expect(validateManifestFormat(manifest)).toBe(true)
@@ -56,7 +56,7 @@ describe("validateManifestFormat", () => {
     const issuerDidKey = await randomDidKey()
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
-    const manifest = createKycAmlManifest(credentialIssuer)
+    const manifest = buildKycAmlManifest(credentialIssuer)
     const requiredKeys = ["id", "version", "issuer", "output_descriptors"]
 
     requiredKeys.forEach((key) => {
@@ -74,7 +74,7 @@ describe("buildCredentialOffer", () => {
 
     // Build a Manifest
     const credentialIssuer = { id: issuer.did, name: "Verity" }
-    const manifest = createKycAmlManifest(credentialIssuer)
+    const manifest = buildKycAmlManifest(credentialIssuer)
 
     // Inputs
     const id = "8117fe2e-1e8c-4c3f-87a4-700424f8e92f"

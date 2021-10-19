@@ -4,7 +4,7 @@ import {
   decodeCredentialApplication
 } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
-import { createKycAmlManifest } from "../../lib/issuer/manifest"
+import { buildKycAmlManifest } from "../../lib/issuer/manifest"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
@@ -24,8 +24,8 @@ describe("issuance", () => {
     /**
      * The issuer generates a QR code for the client to scan
      */
-    const credentialIssuer = { id: issuer.did, name: "Example Issuer" }
-    const manifest = createKycAmlManifest(credentialIssuer)
+    const credentialIssuer = { id: issuer.did, name: "Verity" }
+    const manifest = buildKycAmlManifest(credentialIssuer)
 
     /**
      * The client scans the QR code and generates a credential application
@@ -119,7 +119,7 @@ describe("issuance", () => {
      * The issuer generates a QR code for the client to scan
      */
     const credentialIssuer = { id: issuer.did, name: "Example Issuer" }
-    const manifest = createKycAmlManifest(credentialIssuer)
+    const manifest = buildKycAmlManifest(credentialIssuer)
 
     /**
      * The client scans the QR code and generates a credential application
