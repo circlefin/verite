@@ -7,8 +7,7 @@ import {
   RevocableCredential,
   createVerificationSubmission,
   VerificationRequest,
-  ChallengeTokenUrlWrapper,
-  didKeyToIssuer
+  ChallengeTokenUrlWrapper
 } from "@centre/verity"
 import type { Verifiable } from "@centre/verity"
 import Head from "next/head"

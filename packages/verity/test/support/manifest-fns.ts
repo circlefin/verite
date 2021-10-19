@@ -2,9 +2,9 @@ import {
   createCreditScoreManifest,
   createKycAmlManifest
 } from "../../lib/issuer/manifest"
-import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
+import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { CredentialManifest } from "../../types/CredentialManifest"
-import { Issuer } from "../../types/W3C"
+import { Issuer } from "../../types/DidJwt"
 
 type GenerateManifestAndIssuer = {
   manifest: CredentialManifest
@@ -15,7 +15,7 @@ export async function generateManifestAndIssuer(
   manifestType = "kyc"
 ): Promise<GenerateManifestAndIssuer> {
   const issuerDidKey = await randomDidKey()
-  const issuer = didKeyToIssuer(issuerDidKey)
+  const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
   const credentialIssuer = { id: issuer.did, name: "Verity" }
   const manifest =
     manifestType === "kyc"

@@ -1,5 +1,4 @@
 import {
-  createVerifiableCredentialJwt,
   createVerifiablePresentationJwt,
   verifyCredential,
   verifyPresentation
@@ -9,10 +8,8 @@ import {
   VerifyPresentationOptions
 } from "did-jwt-vc/lib/types"
 import type {
-  CredentialPayload,
   Issuer,
   JWT,
-  JwtCredentialPayload,
   VerifiableCredential,
   RevocableCredential,
   RevocationListCredential,
@@ -23,16 +20,6 @@ import type {
 } from "../../types"
 import { VerificationError } from "../errors"
 import { didResolver } from "./did-fns"
-
-/**
- * Encodes a JWT with the Verifiable Credential payload.
- */
-export async function encodeVerifiableCredential(
-  payload: CredentialPayload | JwtCredentialPayload,
-  signer: Issuer
-): Promise<JWT> {
-  return createVerifiableCredentialJwt(payload, signer)
-}
 
 /**
  * Decodes a JWT with a Verifiable Credential payload.

@@ -1,3 +1,4 @@
+import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import { CreatePresentationOptions } from "did-jwt-vc/lib/types"
 import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
@@ -12,10 +13,7 @@ import type {
   DidKey,
   JWT
 } from "../../types"
-import {
-  encodeVerifiableCredential,
-  encodeVerifiablePresentation
-} from "../utils/credentials"
+import { encodeVerifiablePresentation } from "../utils/credentials"
 
 /**
  * Build a VerifiableCredential contaning an attestation for the given holder.
@@ -27,13 +25,7 @@ export function buildAndSignVerifiableCredential(
   payload: Partial<CredentialPayload> = {}
 ): Promise<JWT> {
   const type = attestation["@type"]
-
-  let subjectId: string
-  if (isString(subject)) {
-    subjectId = subject
-  } else {
-    subjectId = subject.subject
-  }
+  const subjectId = isString(subject) ? subject : subject.subject
 
   const vcPayload: CredentialPayload = Object.assign(
     {
@@ -52,7 +44,7 @@ export function buildAndSignVerifiableCredential(
     payload
   )
 
-  return encodeVerifiableCredential(vcPayload, signer)
+  return createVerifiableCredentialJwt(vcPayload, signer)
 }
 
 /**

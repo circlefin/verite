@@ -55,20 +55,14 @@ export function randomDidKey(): DidKey {
 }
 
 /**
- * Convert a `DidKey` object to an `Issuer` instance
- *
- * @returns an `Issuer` instance using the `DidKey` private key
+ * Build an issuer from a did and private key
  */
-export function didKeyToIssuer(didKey: DidKey): Issuer {
-  return buildIssuer(didKey.subject, didKey.privateKey)
-}
-
 export function buildIssuer(
   did: string,
   privateKey: string | Uint8Array
 ): Issuer {
   return {
-    did: did,
+    did,
     signer: EdDSASigner(privateKey),
     alg: "EdDSA"
   }

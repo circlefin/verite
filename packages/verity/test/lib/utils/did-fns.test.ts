@@ -1,6 +1,6 @@
 import nock from "nock"
 import {
-  didKeyToIssuer,
+  buildIssuer,
   didResolver,
   generateDidKey,
   randomDidKey
@@ -23,10 +23,10 @@ describe("generateDidKey()", () => {
   })
 })
 
-describe("didKeyToIssuer()", () => {
-  it("converts a DidKey to an Issuer", async () => {
+describe("buildIssuer()", () => {
+  it("builds an Issuer object", async () => {
     const didKey = randomDidKey()
-    const issuer = didKeyToIssuer(didKey)
+    const issuer = buildIssuer(didKey.subject, didKey.privateKey)
     expect(issuer.did).toBe(didKey.subject)
   })
 })

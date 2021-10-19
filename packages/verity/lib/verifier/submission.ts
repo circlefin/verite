@@ -8,7 +8,7 @@ import type {
   Verifiable,
   W3CCredential
 } from "../../types"
-import { didKeyToIssuer, encodeVerifiablePresentation } from "../utils"
+import { buildIssuer, encodeVerifiablePresentation } from "../utils"
 
 export async function createVerificationSubmission(
   didKey: DidKey,
@@ -16,7 +16,7 @@ export async function createVerificationSubmission(
   verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
   options?: VerifyPresentationOptions
 ): Promise<EncodedVerificationSubmission> {
-  const client = didKeyToIssuer(didKey)
+  const client = buildIssuer(didKey.subject, didKey.privateKey)
 
   const presentationSubmission = {
     id: uuidv4(),

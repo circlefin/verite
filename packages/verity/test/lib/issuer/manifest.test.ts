@@ -1,7 +1,7 @@
 import { omit } from "lodash"
 import { hasPaths } from "../../../lib"
 import { createKycAmlManifest } from "../../../lib/issuer/manifest"
-import { didKeyToIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { CredentialManifest } from "../../../types"
 
 function validateManifestFormat(
@@ -18,7 +18,7 @@ function validateManifestFormat(
 describe("createKycAmlManifest", () => {
   it("builds a KYC/AML manifest", async () => {
     const issuerDidKey = await randomDidKey()
-    const issuer = didKeyToIssuer(issuerDidKey)
+    const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
 
     const manifest = createKycAmlManifest(credentialIssuer)
@@ -31,7 +31,7 @@ describe("createKycAmlManifest", () => {
 describe("validateManifestFormat", () => {
   it("returns true if all required fields are present", async () => {
     const issuerDidKey = await randomDidKey()
-    const issuer = didKeyToIssuer(issuerDidKey)
+    const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
     const manifest = omit(createKycAmlManifest(credentialIssuer), [
       "format",
@@ -43,7 +43,7 @@ describe("validateManifestFormat", () => {
 
   it("ignores optional fields", async () => {
     const issuerDidKey = await randomDidKey()
-    const issuer = didKeyToIssuer(issuerDidKey)
+    const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
     const manifest = createKycAmlManifest(credentialIssuer)
 
@@ -53,7 +53,7 @@ describe("validateManifestFormat", () => {
 
   it("returns false if any of the fields are missing", async () => {
     const issuerDidKey = await randomDidKey()
-    const issuer = didKeyToIssuer(issuerDidKey)
+    const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
     const manifest = createKycAmlManifest(credentialIssuer)
     const requiredKeys = ["id", "version", "issuer", "output_descriptors"]

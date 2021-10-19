@@ -5,7 +5,7 @@ import {
   createKycAmlManifest
 } from "../../lib/issuer/manifest"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
-import { didKeyToIssuer, randomDidKey } from "../../lib/utils/did-fns"
+import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import type { RevocableCredential, RevocablePresentation } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
@@ -17,13 +17,13 @@ describe("issuance", () => {
      * The issuer and the client get a DID
      */
     const issuerDidKey = randomDidKey()
-    const issuer = didKeyToIssuer(issuerDidKey)
+    const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const clientDidKey = randomDidKey()
 
     /**
      * The issuer generates a QR code for the client to scan
      */
-    const credentialIssuer = { id: issuer.did, name: "Verity" }
+    const credentialIssuer = { id: issuer.did, name: "Example Issuer" }
     const manifest = createKycAmlManifest(credentialIssuer)
 
     /**

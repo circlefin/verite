@@ -16,7 +16,7 @@ import type {
   PresentationDefinition
 } from "../../types"
 import {
-  didKeyToIssuer,
+  buildIssuer,
   decodeVerifiablePresentation,
   encodeVerifiablePresentation
 } from "../utils"
@@ -226,7 +226,7 @@ export async function createCredentialApplication(
   manifest: CredentialManifest,
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
-  const client = didKeyToIssuer(didKey)
+  const client = buildIssuer(didKey.subject, didKey.privateKey)
 
   const credentialApplication = {
     id: uuidv4(),
