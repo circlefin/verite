@@ -1,7 +1,7 @@
 import {
   buildIssuer,
   buildAndSignFulfillment,
-  createCredentialApplication,
+  buildCredentialApplication,
   createVerificationSubmission,
   decodeVerifiablePresentation,
   randomDidKey,
@@ -155,7 +155,7 @@ describe("POST /verification/[id]/submission", () => {
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLAttestation")
   const user = await userFactory()
-  const application = await createCredentialApplication(clientDidKey, manifest)
+  const application = await buildCredentialApplication(clientDidKey, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)
 

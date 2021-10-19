@@ -1,6 +1,6 @@
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import {
-  createCredentialApplication,
+  buildCredentialApplication,
   decodeCredentialApplication,
   createKycAmlManifest
 } from "../../../lib/issuer/manifest"
@@ -15,7 +15,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
     const manifest = createKycAmlManifest(credentialIssuer)
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDidKey,
       manifest
     )

@@ -221,7 +221,7 @@ export function getManifestIdFromCredentialApplication(
  *
  * @returns an encoded & signed application that can be submitted to the issuer
  */
-export async function createCredentialApplication(
+export async function buildCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest,
   options?: CreatePresentationOptions

@@ -1,13 +1,13 @@
 import { VerificationError } from "../../lib/errors"
 import {
-  createCredentialApplication,
+  buildCredentialApplication,
   decodeCredentialApplication,
   createKycAmlManifest
 } from "../../lib/issuer/manifest"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
 
-describe("createCredentialApplication", () => {
+describe("buildCredentialApplication", () => {
   it("builds a valid credential application", async () => {
     const issuerDidKey = await randomDidKey()
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
@@ -17,7 +17,7 @@ describe("createCredentialApplication", () => {
     const credentialIssuer = { id: issuer.did, name: "Verity" }
     const kycManifest = createKycAmlManifest(credentialIssuer)
 
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDidKey,
       kycManifest
     )
@@ -42,7 +42,7 @@ describe("decodeCredentialApplication", () => {
     const expiredPresentation =
       "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
 
-    const application = await createCredentialApplication(
+    const application = await buildCredentialApplication(
       clientDidKey,
       manifest
     )

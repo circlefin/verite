@@ -1,7 +1,7 @@
 import nock from "nock"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import {
-  createCredentialApplication,
+  buildCredentialApplication,
   decodeCredentialApplication,
   createKycAmlManifest
 } from "../../lib/issuer/manifest"
@@ -30,7 +30,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDidKey,
       manifest
     )

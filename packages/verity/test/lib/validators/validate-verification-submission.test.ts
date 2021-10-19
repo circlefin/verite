@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid"
 import { ValidationError } from "../../../lib/errors"
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import {
-  createCredentialApplication,
+  buildCredentialApplication,
   decodeCredentialApplication
 } from "../../../lib/issuer/manifest"
 import {
@@ -30,7 +30,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await createCredentialApplication(
+    const application = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -77,7 +77,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const application = await createCredentialApplication(
+    const application = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -124,7 +124,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await createCredentialApplication(
+    const application = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -170,7 +170,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const application = await createCredentialApplication(
+    const application = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -217,7 +217,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
-    const application = await createCredentialApplication(
+    const application = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -264,7 +264,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await createCredentialApplication(
+    const application = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
