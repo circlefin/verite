@@ -1,4 +1,4 @@
-import { kycVerificationRequest } from "@centre/verity"
+import { buildKycPresentationRequest } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationRequest } from "../../../../../lib/database"
@@ -7,7 +7,7 @@ import handler from "../../../../../pages/api/verification/[id]/index"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycPresentationRequest(
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),

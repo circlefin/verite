@@ -1,8 +1,8 @@
 import {
   ChallengeTokenUrlWrapper,
   challengeTokenUrlWrapper,
-  creditScoreVerificationRequest,
-  kycVerificationRequest,
+  buildCreditScorePresentationRequest,
+  buildKycPresentationRequest,
   VerificationRequest
 } from "@centre/verity"
 import { v4 as uuidv4 } from "uuid"
@@ -35,7 +35,7 @@ export async function createVerificationRequest(
   let verificationRequest: VerificationRequest
 
   if (type === "kyc") {
-    verificationRequest = kycVerificationRequest(
+    verificationRequest = buildKycPresentationRequest(
       id,
       process.env.VERIFIER_DID,
       replyUrl,
@@ -45,7 +45,7 @@ export async function createVerificationRequest(
   } else if (type === "credit-score") {
     // If the verification request requires a credit score, set the
     // minimum acceptable score.
-    verificationRequest = creditScoreVerificationRequest(
+    verificationRequest = buildCreditScorePresentationRequest(
       id,
       process.env.VERIFIER_DID,
       replyUrl,

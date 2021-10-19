@@ -2,12 +2,12 @@ import {
   buildIssuer,
   buildAndSignFulfillment,
   buildCredentialApplication,
-  buildVerificationSubmission,
+  buildPresentationSubmission,
   decodeVerifiablePresentation,
   randomDidKey,
   decodeCredentialApplication,
-  kycVerificationRequest,
-  creditScoreVerificationRequest
+  buildKycPresentationRequest,
+  buildCreditScorePresentationRequest
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
@@ -24,7 +24,7 @@ import { userFactory } from "../../../../../test/factories"
 
 describe("POST /verification/[id]/submission", () => {
   it("validates the submission and updates the verification status", async () => {
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycPresentationRequest(
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
@@ -34,7 +34,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -60,7 +60,7 @@ describe("POST /verification/[id]/submission", () => {
   it("returns a result object for use in a smart contract", async () => {
     const subject = "0x39C55A1Da9F3f6338A1789fE195E8a47b9484E18"
     const contract = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycPresentationRequest(
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL(
@@ -72,7 +72,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -107,7 +107,7 @@ describe("POST /verification/[id]/submission", () => {
   })
 
   it("rejects and returns errors on an invalid input", async () => {
-    const verificationRequest = creditScoreVerificationRequest(
+    const verificationRequest = buildCreditScorePresentationRequest(
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
@@ -117,7 +117,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,

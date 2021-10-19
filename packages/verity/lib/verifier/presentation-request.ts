@@ -5,7 +5,7 @@ import {
   kycPresentationDefinition
 } from "../verifier/presentation-definitions"
 
-export function kycVerificationRequest(
+export function buildKycPresentationRequest(
   id: string,
   from: string,
   replyUrl: string,
@@ -30,7 +30,7 @@ export function kycVerificationRequest(
   }
 }
 
-export function creditScoreVerificationRequest(
+export function buildCreditScorePresentationRequest(
   id: string,
   from: string,
   replyUrl: string,

@@ -10,10 +10,10 @@ import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
 import {
-  creditScoreVerificationRequest,
-  kycVerificationRequest
+  buildCreditScorePresentationRequest,
+  buildKycPresentationRequest
 } from "../../../lib/verifier/presentation-request"
-import { buildVerificationSubmission } from "../../../lib/verifier/submission"
+import { buildPresentationSubmission } from "../../../lib/verifier/submission"
 import type {
   EncodedVerificationSubmission,
   VerificationRequest
@@ -48,7 +48,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycPresentationRequest(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
@@ -56,7 +56,7 @@ describe("Submission validator", () => {
       [issuer.did]
     )
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -91,7 +91,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = creditScoreVerificationRequest(
+    const verificationRequest = buildCreditScorePresentationRequest(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
@@ -100,7 +100,7 @@ describe("Submission validator", () => {
       creditScoreAttestationFixture.score
     )
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -136,7 +136,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycPresentationRequest(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
@@ -144,7 +144,7 @@ describe("Submission validator", () => {
       ["NOT TRUSTED"]
     )
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -179,7 +179,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = creditScoreVerificationRequest(
+    const verificationRequest = buildCreditScorePresentationRequest(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
@@ -188,7 +188,7 @@ describe("Submission validator", () => {
       minimumCreditScore
     )
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -224,7 +224,7 @@ describe("Submission validator", () => {
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     // Generate Credit Score Request, even though we have a KYC credential
-    const verificationRequest = creditScoreVerificationRequest(
+    const verificationRequest = buildCreditScorePresentationRequest(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
@@ -232,7 +232,7 @@ describe("Submission validator", () => {
       [issuer.did]
     )
 
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -267,7 +267,7 @@ describe("Submission validator", () => {
     )
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycPresentationRequest(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
@@ -276,7 +276,7 @@ describe("Submission validator", () => {
     )
 
     const differentHolderThanSubject = randomDidKey()
-    const submission = await buildVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       differentHolderThanSubject,
       verificationRequest.body.presentation_definition,
       clientVC
