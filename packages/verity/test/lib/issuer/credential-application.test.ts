@@ -2,8 +2,8 @@ import { VerificationError } from "../../../lib/errors"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/issuer/application"
-import { buildKycAmlManifest } from "../../../lib/issuer/manifest"
+} from "../../../lib/issuer/credential-application"
+import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 

@@ -1,7 +1,7 @@
 import {
   buildCreditScoreManifest,
   buildKycAmlManifest
-} from "../../lib/issuer/manifest"
+} from "../../lib/issuer/credential-manifest"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { CredentialManifest } from "../../types/CredentialManifest"
 import { Issuer } from "../../types/DidJwt"

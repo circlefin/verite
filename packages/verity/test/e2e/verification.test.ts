@@ -2,14 +2,14 @@ import { v4 as uuidv4 } from "uuid"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../lib/issuer/application"
-import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
+} from "../../lib/issuer/credential-application"
+import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
 import { buildKycPresentationRequest } from "../../lib/verifier/presentation-request"
-import { buildPresentationSubmission } from "../../lib/verifier/submission"
+import { buildPresentationSubmission } from "../../lib/verifier/presentation-submission"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"

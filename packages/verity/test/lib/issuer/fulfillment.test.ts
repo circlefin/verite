@@ -1,9 +1,9 @@
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/issuer/application"
-import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
-import { buildKycAmlManifest } from "../../../lib/issuer/manifest"
+} from "../../../lib/issuer/credential-application"
+import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
+import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"

@@ -3,8 +3,8 @@ import { ValidationError } from "../../../lib/errors"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/issuer/application"
-import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
+} from "../../../lib/issuer/credential-application"
+import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
@@ -13,7 +13,7 @@ import {
   buildCreditScorePresentationRequest,
   buildKycPresentationRequest
 } from "../../../lib/verifier/presentation-request"
-import { buildPresentationSubmission } from "../../../lib/verifier/submission"
+import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import type {
   EncodedVerificationSubmission,
   VerificationRequest

@@ -1,4 +1,4 @@
-import { buildAndSignVerifiableCredential } from "../../lib/issuer/fulfillment"
+import { buildAndSignVerifiableCredential } from "../../lib/issuer/credential-fulfillment"
 import {
   buildIssuer,
   decodeVerifiableCredential,
@@ -10,7 +10,7 @@ import { creditScoreAttestationFixture } from "../fixtures/attestations"
 export async function generateVerifiableCredential(): Promise<
   Verifiable<W3CCredential>
 > {
-  const didKey = await randomDidKey()
+  const didKey = randomDidKey()
   const signer = buildIssuer(didKey.subject, didKey.privateKey)
   const jwt = await buildAndSignVerifiableCredential(
     signer,

@@ -2,9 +2,9 @@ import nock from "nock"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../lib/issuer/application"
-import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
-import { buildKycAmlManifest } from "../../lib/issuer/manifest"
+} from "../../lib/issuer/credential-application"
+import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
+import { buildKycAmlManifest } from "../../lib/issuer/credential-manifest"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
