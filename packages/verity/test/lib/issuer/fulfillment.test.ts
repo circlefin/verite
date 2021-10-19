@@ -1,7 +1,7 @@
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/issuer/credential-application"
+} from "../../../lib/issuer/application"
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import { buildKycAmlManifest } from "../../../lib/issuer/manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"

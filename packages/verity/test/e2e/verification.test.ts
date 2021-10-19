@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../lib/issuer/credential-application"
+} from "../../lib/issuer/application"
 import { buildAndSignFulfillment } from "../../lib/issuer/fulfillment"
 import { kycVerificationRequest } from "../../lib/submission-requests"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"

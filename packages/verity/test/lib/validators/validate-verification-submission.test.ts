@@ -3,7 +3,7 @@ import { ValidationError } from "../../../lib/errors"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/issuer/credential-application"
+} from "../../../lib/issuer/application"
 import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import {
   creditScoreVerificationRequest,

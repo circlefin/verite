@@ -2,7 +2,7 @@ import { VerificationError } from "../../../lib/errors"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/issuer/credential-application"
+} from "../../../lib/issuer/application"
 import { buildKycAmlManifest } from "../../../lib/issuer/manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
