@@ -2,7 +2,6 @@ import type {
   CredentialIssuer,
   CredentialManifest,
   EntityStyle,
-  GenericCredentialApplication,
   OutputDescriptor,
   PresentationDefinition
 } from "../../types"
@@ -191,13 +190,4 @@ export function buildCreditScoreManifest(
     issuer,
     outputDescriptors
   )
-}
-
-/**
- * Fetches the manifest id from a credential application
- */
-export function getManifestIdFromCredentialApplication(
-  application: GenericCredentialApplication
-): string {
-  return application.credential_application.manifest_id
 }

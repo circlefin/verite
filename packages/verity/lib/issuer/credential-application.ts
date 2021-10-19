@@ -8,7 +8,8 @@ import type {
   DecodedCredentialApplication,
   DescriptorMap,
   DidKey,
-  EncodedCredentialApplication
+  EncodedCredentialApplication,
+  GenericCredentialApplication
 } from "../../types"
 import {
   buildIssuer,
@@ -88,4 +89,13 @@ export async function decodeCredentialApplication(
     ...credentialApplication,
     presentation: decodedPresentation
   }
+}
+
+/**
+ * Fetches the manifest id from a credential application
+ */
+export function getManifestIdFromCredentialApplication(
+  application: GenericCredentialApplication
+): string {
+  return application.credential_application.manifest_id
 }

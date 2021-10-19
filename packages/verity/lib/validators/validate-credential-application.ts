@@ -1,6 +1,6 @@
 import { CredentialManifest, GenericCredentialApplication } from "../../types"
 import { ValidationError } from "../errors"
-import { getManifestIdFromCredentialApplication } from "../issuer/manifest"
+import { getManifestIdFromCredentialApplication } from "../issuer/credential-application"
 import { hasPaths } from "../utils/has-paths"
 
 /**
