@@ -1,9 +1,7 @@
 import { omit } from "lodash"
 import { hasPaths } from "../../../lib"
-import {
-  buildCredentialOffer,
-  createKycAmlManifest
-} from "../../../lib/issuer/manifest"
+import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
+import { createKycAmlManifest } from "../../../lib/issuer/manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { CredentialManifest } from "../../../types"
 

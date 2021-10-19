@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid"
 import { ValidationError } from "../../../lib/errors"
-import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import {
   buildCredentialApplication,
   decodeCredentialApplication
-} from "../../../lib/issuer/manifest"
+} from "../../../lib/issuer/credential-application"
+import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import {
   creditScoreVerificationRequest,
   kycVerificationRequest
@@ -30,10 +30,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
+    const application = await buildCredentialApplication(clientDidKey, manifest)
 
     await validateCredentialApplication(application, manifest)
 
@@ -77,10 +74,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const application = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
+    const application = await buildCredentialApplication(clientDidKey, manifest)
 
     await validateCredentialApplication(application, manifest)
 
@@ -124,10 +118,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
+    const application = await buildCredentialApplication(clientDidKey, manifest)
 
     await validateCredentialApplication(application, manifest)
 
@@ -170,10 +161,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const application = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
+    const application = await buildCredentialApplication(clientDidKey, manifest)
 
     await validateCredentialApplication(application, manifest)
 
@@ -217,10 +205,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
-    const application = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
+    const application = await buildCredentialApplication(clientDidKey, manifest)
 
     await validateCredentialApplication(application, manifest)
 
@@ -264,10 +249,7 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
+    const application = await buildCredentialApplication(clientDidKey, manifest)
 
     await validateCredentialApplication(application, manifest)
 
