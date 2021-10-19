@@ -5,7 +5,7 @@ import {
   buildIssuer,
   decodeVerifiableCredential,
   RevocableCredential,
-  createVerificationSubmission,
+  buildVerificationSubmission,
   VerificationRequest,
   ChallengeTokenUrlWrapper
 } from "@centre/verity"
@@ -112,7 +112,7 @@ export default function Home(): JSX.Element {
     credential: Verifiable<W3CCredential> | RevocableCredential
   ) => {
     const subject = holder
-    const request = await createVerificationSubmission(
+    const request = await buildVerificationSubmission(
       subject,
       verificationRequest.body.presentation_definition,
       credential

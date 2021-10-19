@@ -9,7 +9,7 @@ import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
-import { createVerificationSubmission } from "../../lib/verifier/submission"
+import { buildVerificationSubmission } from "../../lib/verifier/submission"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
@@ -32,7 +32,7 @@ describe("verification", () => {
     )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       kycRequest.body.presentation_definition,
       verifiableCredentials

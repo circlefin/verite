@@ -2,7 +2,7 @@ import {
   buildIssuer,
   buildAndSignFulfillment,
   buildCredentialApplication,
-  createVerificationSubmission,
+  buildVerificationSubmission,
   decodeVerifiablePresentation,
   randomDidKey,
   decodeCredentialApplication,
@@ -34,7 +34,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -72,7 +72,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -117,7 +117,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,

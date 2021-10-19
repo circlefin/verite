@@ -10,7 +10,7 @@ import type {
 } from "../../types"
 import { buildIssuer, encodeVerifiablePresentation } from "../utils"
 
-export async function createVerificationSubmission(
+export async function buildVerificationSubmission(
   didKey: DidKey,
   presentationDefinition: PresentationDefinition,
   verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],

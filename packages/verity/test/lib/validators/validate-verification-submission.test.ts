@@ -13,7 +13,7 @@ import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
-import { createVerificationSubmission } from "../../../lib/verifier/submission"
+import { buildVerificationSubmission } from "../../../lib/verifier/submission"
 import type {
   EncodedVerificationSubmission,
   VerificationRequest
@@ -56,7 +56,7 @@ describe("Submission validator", () => {
       [issuer.did]
     )
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -100,7 +100,7 @@ describe("Submission validator", () => {
       creditScoreAttestationFixture.score
     )
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -144,7 +144,7 @@ describe("Submission validator", () => {
       ["NOT TRUSTED"]
     )
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -188,7 +188,7 @@ describe("Submission validator", () => {
       minimumCreditScore
     )
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -232,7 +232,7 @@ describe("Submission validator", () => {
       [issuer.did]
     )
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -276,7 +276,7 @@ describe("Submission validator", () => {
     )
 
     const differentHolderThanSubject = randomDidKey()
-    const submission = await createVerificationSubmission(
+    const submission = await buildVerificationSubmission(
       differentHolderThanSubject,
       verificationRequest.body.presentation_definition,
       clientVC
