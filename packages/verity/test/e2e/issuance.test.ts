@@ -124,7 +124,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDidKey,
       manifest
     )

@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid"
 import type {
   CredentialIssuer,
   CredentialManifest,
+  CredentialOffer,
   DecodedCredentialApplication,
   DescriptorMap,
   DidKey,
@@ -20,6 +21,8 @@ import {
   decodeVerifiablePresentation,
   encodeVerifiablePresentation
 } from "../utils"
+import { buildRequestCommon } from "../submission-requests"
+
 
 export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreAttestation"
 export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"
@@ -214,6 +217,33 @@ export function getManifestIdFromCredentialApplication(
   application: GenericCredentialApplication
 ): string {
   return application.credential_application.manifest_id
+}
+
+/**
+ * Build a Credential Offer. It is a light-weight wrapper around the Credential
+ * Manifest, including supplemental information for how to submit a subsequent
+ * Credential Application.
+ */
+export function buildCredentialOffer(
+  id: string,
+  manifest: CredentialManifest,
+  from: string,
+  replyUrl: string
+): CredentialOffer {
+  const request = buildRequestCommon(
+    id,
+    "https://verity.id/types/CredentialOffer",
+    from,
+    replyUrl
+  )
+
+  return {
+    ...request,
+    body: {
+      ...request.body,
+      manifest: manifest
+    }
+  }
 }
 
 /**
