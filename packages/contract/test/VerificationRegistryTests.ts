@@ -4,22 +4,30 @@ import { Contract, Wallet } from "ethers"
 
 describe("VerificationRegistry", function () {
   // create a wallet to generate a private key for signing verification results
-  //const signer: Wallet = ethers.Wallet.createRandom()
   const mnemonic =
     "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
   const signer: Wallet = ethers.Wallet.fromMnemonic(mnemonic)
+
+  // get a random subject address that will be used for verified subject tests
+  let subjectAddress: string
+  it("Should find a random address to use as a subject to verifiy", async function () {
+    const addresses = await ethers.getSigners()
+    const r = Math.floor(Math.random() * addresses.length)
+    subjectAddress = await addresses[r].getAddress()
+  })
+
   // deploy the contract, which makes this test the contract's owner
   let verificationRegistry: Contract
-  let verifierPubAddr: string
+  let contractOwnerAddress: string
   it("Should deploy", async function () {
     const deployer = await ethers.getContractFactory("VerificationRegistry")
     verificationRegistry = await deployer.deploy()
     await verificationRegistry.deployed()
-    verifierPubAddr = verificationRegistry.deployTransaction.from
+    contractOwnerAddress = verificationRegistry.deployTransaction.from
   })
 
   it("Should not find a verifier DID for an untrusted address", async function () {
-    await expect(verificationRegistry.getVerifier(signer.address)).to.be
+    await expect(verificationRegistry.getVerifier(contractOwnerAddress)).to.be
       .reverted
   })
 
@@ -30,18 +38,20 @@ describe("VerificationRegistry", function () {
     signer: signer.address
   }
 
-  // make this test's a verifier in the contract
+  // make the contact's owner a verifier in the contract
   it("Should become a registered verifier", async function () {
     const setVerifierTx = await verificationRegistry.addVerifier(
-      signer.address,
+      contractOwnerAddress,
       testVerifierInfo
     )
     // wait until the transaction is mined
     await setVerifierTx.wait()
   })
 
-  it("Should ensure signer address maps to a verifier", async function () {
-    const isVerifier = await verificationRegistry.isVerifier(signer.address)
+  it("Should ensure owner address maps to a verifier", async function () {
+    const isVerifier = await verificationRegistry.isVerifier(
+      contractOwnerAddress
+    )
     expect(isVerifier).to.be.true
   })
 
@@ -50,9 +60,9 @@ describe("VerificationRegistry", function () {
     expect(verifierCount).to.be.equal(1)
   })
 
-  it("Should find a verifier for signer address", async function () {
+  it("Should find a verifier for owner address", async function () {
     const retrievedVerifierInfo = await verificationRegistry.getVerifier(
-      signer.address
+      contractOwnerAddress
     )
     expect(retrievedVerifierInfo.name).to.equal(testVerifierInfo.name)
     expect(retrievedVerifierInfo.did).to.equal(testVerifierInfo.did)
@@ -60,22 +70,22 @@ describe("VerificationRegistry", function () {
   })
 
   it("Should update an existing verifier", async function () {
-    testVerifierInfo.url = ethers.utils.formatBytes32String("https://centre.io")
+    testVerifierInfo.url = "https://centre.io"
     const setVerifierTx = await verificationRegistry.updateVerifier(
-      signer.address,
+      contractOwnerAddress,
       testVerifierInfo
     )
     // wait until the transaction is mined
     await setVerifierTx.wait()
     const retrievedVerifierInfo = await verificationRegistry.getVerifier(
-      signer.address
+      contractOwnerAddress
     )
     expect(retrievedVerifierInfo.url).to.equal(testVerifierInfo.url)
   })
 
   it("Should remove a verifier", async function () {
     const removeVerifierTx = await verificationRegistry.removeVerifier(
-      signer.address
+      contractOwnerAddress
     )
     // wait until the transaction is mined
     await removeVerifierTx.wait()
@@ -86,7 +96,7 @@ describe("VerificationRegistry", function () {
   // now register a new verifier delegate for verification tests
   it("Should register a new verifier", async function () {
     const setVerifierTx = await verificationRegistry.addVerifier(
-      verifierPubAddr,
+      contractOwnerAddress,
       testVerifierInfo
     )
     // wait until the transaction is mined
@@ -95,16 +105,19 @@ describe("VerificationRegistry", function () {
     expect(verifierCount).to.be.equal(1)
   })
 
-  // get a deadline beyond which the verification expires
-  let expiration: number
-  it("Should create a deadline in seconds based on last block timestamp", async function () {
-    // note in your own code, consider providing your own API keys ( see https://docs.ethers.io/api-keys/ )
+  // get a deadline beyond which a test verification will expire
+  // note this uses an external scanner service that is rate-throttled
+  // add your own API keys to avoid the rate throttling
+  // see https://docs.ethers.io/api-keys/
+  const expiration = 9999999999
+  /*it("Should create a deadline in seconds based on last block timestamp", async function () {
     const provider = ethers.getDefaultProvider()
     const lastBlockNumber: number = await provider.getBlockNumber()
     const lastBlock = await provider.getBlock(lastBlockNumber)
     expiration = lastBlock.timestamp + 300
-  })
+  })*/
 
+  // format an EIP712 typed data structure for the test verification result
   let domain,
     types,
     verificationInfo = {}
@@ -120,14 +133,16 @@ describe("VerificationRegistry", function () {
       VerificationResult: [
         { name: "schema", type: "string" },
         { name: "subject", type: "address" },
-        { name: "expiration", type: "uint256" }
+        { name: "expiration", type: "uint256" },
+        { name: "payload", type: "bytes32" }
       ]
     }
 
     verificationInfo = {
       schema: "centre.io/credentials/kyc",
-      subject: verifierPubAddr,
-      expiration: expiration
+      subject: subjectAddress,
+      expiration: expiration,
+      payload: ethers.utils.formatBytes32String("example")
     }
   })
 
@@ -146,12 +161,14 @@ describe("VerificationRegistry", function () {
 
   // test whether a subject address has a verification and expect false
   it("Should see the subject has no registered valid verification record", async function () {
-    const isVerified = await verificationRegistry.isVerified(verifierPubAddr)
+    const isVerified = await verificationRegistry.isVerified(
+      contractOwnerAddress
+    )
     expect(isVerified).to.be.false
   })
 
   // execute the contract's proof of the verification
-  it("Should register the caller as verified and create a Verification Record", async function () {
+  it("Should register the subject as verified and create a Verification Record", async function () {
     const verificationTx = await verificationRegistry.registerVerification(
       verificationInfo,
       signature
@@ -163,7 +180,7 @@ describe("VerificationRegistry", function () {
 
   // test whether a subject address has a verification
   it("Should verify the subject has a registered and valid verification record", async function () {
-    const isVerified = await verificationRegistry.isVerified(verifierPubAddr)
+    const isVerified = await verificationRegistry.isVerified(subjectAddress)
     expect(isVerified).to.be.true
   })
 
@@ -172,7 +189,7 @@ describe("VerificationRegistry", function () {
   // get all verifications for a subject
   it("Get all verifications for a subject address", async function () {
     const records = await verificationRegistry.getVerificationsForSubject(
-      verifierPubAddr
+      subjectAddress
     )
     recordUUID = records[0].uuid
     expect(records.length).to.equal(1)
@@ -181,7 +198,7 @@ describe("VerificationRegistry", function () {
   // get all verifications for a verifier
   it("Get all verifications for a verifier address", async function () {
     const records = await verificationRegistry.getVerificationsForVerifier(
-      verifierPubAddr
+      contractOwnerAddress
     )
     recordUUID = records[0].uuid
     expect(records.length).to.equal(1)
@@ -209,39 +226,4 @@ describe("VerificationRegistry", function () {
     record = await verificationRegistry.getVerification(recordUUID)
     expect(ethers.utils.getAddress(record.subject)).to.throw
   })
-
-  /*
-  // attempt a transfer before the sender is verified
-  it("Should fail to execute a transfer when the caller is not yet verified", async function () {
-    await expect(
-      VerificationRegistry.transfer(VerificationRegistry.deployTransaction.from, 100)
-    ).to.be.reverted;
-  });
-
-  // execute the contract's proof of the verification
-  it("Should verify the caller and transfer funds", async function () {
-    const verificationTx = await VerificationRegistry.validateAndTransfer(
-      VerificationRegistry.deployTransaction.from,
-      100,
-      verificationInfo,
-      signature
-    );
-    await verificationTx.wait();
-  });
-
-  // allow reuse of result until deadline expires -- execute test again
-  it("Should reuse the verification result and transfer funds again", async function () {
-      const verificationTx = await VerificationRegistry.validateAndTransfer(
-        VerificationRegistry.deployTransaction.from, 100, verificationInfo, signature);
-      await verificationTx.wait();
-    });
-
-  it("Should create an expired result and fail to verify it", async function () {
-    verificationInfo["expiration"] = (expiration - 600);
-    signature = await signer._signTypedData(domain, types, verificationInfo);
-    await expect(VerificationRegistry.validateAndTransfer
-      (VerificationRegistry.deployTransaction.from, 100, verificationInfo, signature)
-    ).to.be.reverted;
-  });
-  */
 })

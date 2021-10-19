@@ -34,10 +34,10 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
     * A verifier will submit a verification result in this format.
     */
     struct VerificationResult {
-        string schema; // TODO should the verification registration check against supported schemas?
+        string schema;
         address subject;
         uint256 expiration; // expiration of verification (may or may not be expiration of the VC)
-        //bytes payload; // arbitrary data associated with the verification that may be employed in app logic
+        bytes32 payload; // arbitrary data associated with the verification that may be employed in app logic
     }
 
     struct VerificationRecord {
@@ -47,7 +47,7 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
         uint256 entryTime; // time at which the verification was proven and recorded (not the time of verification)
         uint256 expirationTime; // expiration of verification (may or may not be expiration of the VC)
         bool revoked; // revoked or valid and active
-    } // TODO decide if schema is needed in this struct
+    }
 
     // all verification records keyed by their uuids
     mapping(bytes32 => VerificationRecord) private _verifications;
@@ -115,7 +115,7 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
      * Verifiers can revoke Verification Records they previously created
      */
     function revokeVerification(bytes32 uuid) external onlyVerifier {
-        require(_verifications[uuid].verifier == msg.sender, "Caller is not the original verifier");
+        require(_verifications[uuid].verifier == msg.sender, "VerificationRegistry: Caller is not the original verifier");
         _verifications[uuid].revoked = true;
     }
 
@@ -125,7 +125,7 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
      */
     function removeVerification(bytes32 uuid) external {
         require((_verifications[uuid].subject == msg.sender) || (_verifications[uuid].verifier == msg.sender),
-            "Caller is neither the subject nor the verifier of the referenced record");
+            "VerificationRegistry: Caller is neither the subject nor the verifier of the referenced record");
         delete _verifications[uuid];
     }
 
@@ -156,7 +156,7 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
     modifier onlyVerifier() {
         require(
             _verifiers[msg.sender].name != 0,
-            "Caller is not a Verifier Delegate"
+            "VerificationRegistry: Caller is not a Verifier Delegate"
         );
         _;
     }
@@ -164,11 +164,11 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
     /**
      * The Owner adds a Verifier Delegate to the contract.
      */
-    function addVerifier(address signingAddr, VerifierInfo memory verifierInfo) external onlyOwner {
-        require(_verifiers[signingAddr].name == 0, "Verifier Address Exists");
-        _verifiers[signingAddr] = verifierInfo;
+    function addVerifier(address verifierAddress, VerifierInfo memory verifierInfo) external onlyOwner {
+        require(_verifiers[verifierAddress].name == 0, "VerificationRegistry: Verifier Address Exists");
+        _verifiers[verifierAddress] = verifierInfo;
         _verifierCount++;
-        emit VerifierAdded(signingAddr, verifierInfo);
+        emit VerifierAdded(verifierAddress, verifierInfo);
     }
 
     /**
@@ -188,28 +188,28 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
     /**
      * Request information about a Verifier Delegate based on its signing address.
      */
-    function getVerifier(address signingAddr) external view returns (VerifierInfo memory) {
-        require(_verifiers[signingAddr].name != 0, "Unknown Verifier Address");
-        return _verifiers[signingAddr];
+    function getVerifier(address verifierAddress) external view returns (VerifierInfo memory) {
+        require(_verifiers[verifierAddress].name != 0, "VerificationRegistry: Unknown Verifier Address");
+        return _verifiers[verifierAddress];
     }
 
     /**
      * The onwer updates an existing Verifier Delegate's did, URL, and name.
      */
-    function updateVerifier(address signingAddr, VerifierInfo memory verifierInfo) external onlyOwner {
-        require(_verifiers[signingAddr].name != 0, "Unknown Verifier Address");
-        _verifiers[signingAddr] = verifierInfo;
-        emit VerifierUpdated(signingAddr, verifierInfo);
+    function updateVerifier(address verifierAddress, VerifierInfo memory verifierInfo) external onlyOwner {
+        require(_verifiers[verifierAddress].name != 0, "VerificationRegistry: Unknown Verifier Address");
+        _verifiers[verifierAddress] = verifierInfo;
+        emit VerifierUpdated(verifierAddress, verifierInfo);
     }
 
     /**
      * The owner can remove a Verifier Delegate from the contract.
      */
-    function removeVerifier(address signingAddr) external onlyOwner {
-        require(_verifiers[signingAddr].name != 0, "Verifier Address Does Not Exist");
-        delete _verifiers[signingAddr];
+    function removeVerifier(address verifierAddress) external onlyOwner {
+        require(_verifiers[verifierAddress].name != 0, "VerificationRegistry: Verifier Address Does Not Exist");
+        delete _verifiers[verifierAddress];
         _verifierCount--;
-        emit VerifierRemoved(signingAddr);
+        emit VerifierRemoved(verifierAddress);
     }
 
     /**
@@ -231,23 +231,26 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
         // their own expiration times, and to prevent other subjects from using this same verification.
         
         bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
-          keccak256("VerificationResult(string schema,address subject,uint256 expiration)"),
+          keccak256("VerificationResult(string schema,address subject,uint256 expiration,bytes32 payload)"),
           keccak256(bytes(verificationResult.schema)),
           verificationResult.subject,
-          verificationResult.expiration
+          verificationResult.expiration,
+          verificationResult.payload
         )));
         
+        // TODO add hook so that payload data can be evaluated against contract logic
+
         // use OpenZeppelin ECDSA to recover the public address corresponding to the 
         // signature and regenerated hash:
         address signer = ECDSA.recover(digest, signature);
         
         require(
             _verifiers[msg.sender].signer == signer,
-            "Verifiable Credential: Signed digest cannot be verified"
+            "VerificationRegistry:: Signed digest cannot be verified"
         );
         require(
             verificationResult.expiration > block.timestamp,
-            "Verifiable Credential: Verification confirmation expired"
+            "VerificationRegistry:: Verification confirmation expired"
         );
 
         // create a VerificationRecord and persist it, map it to verifier, map it to subject
