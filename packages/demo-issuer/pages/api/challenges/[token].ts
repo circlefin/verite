@@ -1,4 +1,4 @@
-import { createKycAmlManifest, manifestWrapper } from "@centre/verity"
+import { createKycAmlManifest, buildCredentialOffer } from "@centre/verity"
 import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
 
@@ -17,7 +17,7 @@ export default async function helloAPI(
   // In a production environment, the URL would need to be absolute, but for
   // sake of simplicity we will just use a path since the demo is entirely
   // within the browser.
-  const wrapper = manifestWrapper(
+  const wrapper = buildCredentialOffer(
     uuidv4(),
     manifest,
     process.env.NEXT_PUBLIC_ISSUER_DID,

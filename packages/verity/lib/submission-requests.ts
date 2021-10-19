@@ -73,10 +73,11 @@ function buildRequestCommon(
 }
 
 /**
- * Build a CredentialManifest wrapper, containing the manifest and
- * a callback URL
+ * Build a Credential Offer. It is a light-weight wrapper around the Credential
+ * Manifest, including supplemental information for how to submit a subsequent
+ * Credential Application.
  */
-export function manifestWrapper(
+export function buildCredentialOffer(
   id: string,
   manifest: CredentialManifest,
   from: string,
