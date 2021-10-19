@@ -59,7 +59,7 @@ const issueCredential = async (
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
-    authorityId: "verity.id",
+    authorityId: "did:web:verity.id",
     approvalDate: new Date().toISOString(),
     authorityName: "verity.id",
     authorityUrl: "https://verity.id",
