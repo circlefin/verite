@@ -109,13 +109,13 @@ describe("VerificationRegistry", function () {
   // note this uses an external scanner service that is rate-throttled
   // add your own API keys to avoid the rate throttling
   // see https://docs.ethers.io/api-keys/
-  const expiration = 9999999999
-  /*it("Should create a deadline in seconds based on last block timestamp", async function () {
+  let expiration = 9999999999
+  it("Should create a deadline in seconds based on last block timestamp", async function () {
     const provider = ethers.getDefaultProvider()
     const lastBlockNumber: number = await provider.getBlockNumber()
     const lastBlock = await provider.getBlock(lastBlockNumber)
     expiration = lastBlock.timestamp + 300
-  })*/
+  })
 
   // format an EIP712 typed data structure for the test verification result
   let domain,
@@ -137,7 +137,6 @@ describe("VerificationRegistry", function () {
         { name: "payload", type: "bytes32" }
       ]
     }
-
     verificationInfo = {
       schema: "centre.io/credentials/kyc",
       subject: subjectAddress,
@@ -208,6 +207,65 @@ describe("VerificationRegistry", function () {
   it("Get a verification using its uuid", async function () {
     const record = await verificationRegistry.getVerification(recordUUID)
     expect(ethers.utils.getAddress(record.subject)).not.to.throw
+  })
+
+  // deploy the permissioned token
+  let token: Contract
+  let tokenOwner: string
+  it("Should deploy token", async function () {
+    const deployer = await ethers.getContractFactory("PermissionedToken")
+    token = await deployer.deploy("Permissioned Token", "PUSD", "100000000000")
+    await token.deployed()
+    tokenOwner = token.deployTransaction.from
+  })
+
+  // set the registry for the token to check in its transfer hook
+  it("Should set registry in token", async function () {
+    const setRegistryTx = await token.setRegistry(verificationRegistry.address)
+    setRegistryTx.wait()
+  })
+
+  // ensure hook causes a failure prior to verification
+  it("Should fail to transfer", async function () {
+    const addresses = await ethers.getSigners()
+    let randomAddress = subjectAddress
+    do {
+      const r = Math.floor(Math.random() * addresses.length)
+      randomAddress = await addresses[r].getAddress()
+    } while (randomAddress == subjectAddress)
+    await expect(token.transfer(randomAddress, 10)).to.be.reverted
+  })
+
+  // register owner as verified
+  it("Should register token owner as verified", async function () {
+    verificationInfo = {
+      schema: "centre.io/credentials/kyc",
+      subject: tokenOwner,
+      expiration: expiration,
+      payload: ethers.utils.formatBytes32String("example")
+    }
+    const signature = await signer._signTypedData(
+      domain,
+      types,
+      verificationInfo
+    )
+    const verificationTx = await verificationRegistry.registerVerification(
+      verificationInfo,
+      signature
+    )
+    await verificationTx.wait()
+    const isVerified = await verificationRegistry.isVerified(tokenOwner)
+    expect(isVerified).to.be.true
+  })
+
+  // owner transfers to subjectAddress
+  it("Should transfer", async function () {
+    const transferTx = await token.transfer(subjectAddress, 10)
+    transferTx.wait()
+    const subjectBalance = ethers.BigNumber.from(
+      await token.balanceOf(subjectAddress)
+    )
+    expect(subjectBalance.eq(ethers.BigNumber.from(10)))
   })
 
   // revoke a verification

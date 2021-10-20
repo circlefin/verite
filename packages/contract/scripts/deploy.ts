@@ -47,14 +47,25 @@ async function main() {
   // We also set up a trusted verifier for demo purposes
   await createTrustedVerifier(token)
 
-  // TODO add new deployment of VerificationRegistry
+  // deploy of VerificationRegistry
   const RegistryFactory: ContractFactory = await hre.ethers.getContractFactory(
     "VerificationRegistry"
   )
   const registryContract: Contract = await RegistryFactory.deploy()
   await registryContract.deployed()
-
   console.log("Registry address:", registryContract.address)
+
+  // deploy PermissionedToken
+  const PTokenFactory: ContractFactory = await hre.ethers.getContractFactory(
+    "PermissionedToken"
+  )
+  const PToken: Contract = await PTokenFactory.deploy(
+    "Permissioned Token",
+    "PUSD",
+    "100000000000"
+  )
+  await PToken.deployed()
+  console.log("Permissioned Token Address:", PToken.address)
 }
 
 async function createTrustedVerifier(token: Contract) {
