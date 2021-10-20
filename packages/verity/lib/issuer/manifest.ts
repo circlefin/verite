@@ -1,7 +1,7 @@
-import {
+import type {
   CreatePresentationOptions,
   VerifyPresentationOptions
-} from "did-jwt-vc/lib/types"
+} from "did-jwt-vc/src/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   CredentialIssuer,
@@ -16,7 +16,7 @@ import type {
   PresentationDefinition
 } from "../../types"
 import {
-  didKeyToIssuer,
+  buildIssuer,
   decodeVerifiablePresentation,
   encodeVerifiablePresentation
 } from "../utils"
@@ -226,7 +226,7 @@ export async function createCredentialApplication(
   manifest: CredentialManifest,
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
-  const client = didKeyToIssuer(didKey)
+  const client = buildIssuer(didKey.subject, didKey.privateKey)
 
   const credentialApplication = {
     id: uuidv4(),

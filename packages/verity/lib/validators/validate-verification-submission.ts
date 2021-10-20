@@ -1,5 +1,5 @@
 import Ajv from "ajv"
-import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
+import type { VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import jsonpath from "jsonpath"
 import type {
   DecodedVerificationSubmission,
