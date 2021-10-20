@@ -51,7 +51,7 @@ function createManifest(
           "A Verifiable Presentation establishing proof of identifier control over the DID.",
         schema: [
           {
-            uri: "/.well-known/verifiablePresentationSchema.json"
+            uri: "https://verity.id/schemas/identity/1.0.0/verifiablePresentationSchema.json"
           }
         ]
       }
