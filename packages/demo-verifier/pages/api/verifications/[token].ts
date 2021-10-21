@@ -1,6 +1,6 @@
 import {
   kycPresentationDefinition,
-  buildKycPresentationRequest,
+  buildKycVerificationOffer,
   validateVerificationSubmission,
   verificationResult
 } from "@centre/verity"
@@ -60,7 +60,7 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
    * Note that this method returns a verification request that has an identical
    * definition as shown above.
    */
-  const presentationRequest = buildKycPresentationRequest(
+  const presentationRequest = buildKycVerificationOffer(
     uuidv4(),
     process.env.NEXT_PUBLIC_VERIFIER_DID, // verifier did
     `/api/verifications/${token}`, // replyUrl

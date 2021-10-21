@@ -2,8 +2,8 @@ import fetch from "isomorphic-unfetch"
 import { v4 as uuidv4 } from "uuid"
 import type {
   ChallengeTokenUrlWrapper,
-  VerificationRequest,
-  SubmissionRequest,
+  VerificationOffer,
+  SubmissionOffer,
   CredentialOffer
 } from "../types"
 
@@ -48,7 +48,7 @@ export function buildRequestCommon(
   from: string,
   replyUrl: string,
   statusUrl?: string
-): SubmissionRequest {
+): SubmissionOffer {
   const now = Date.now()
   const expires = now + ONE_MONTH
 
@@ -76,7 +76,7 @@ export function buildRequestCommon(
  */
 export async function handleScan(
   scanData: string
-): Promise<CredentialOffer | VerificationRequest | undefined> {
+): Promise<CredentialOffer | VerificationOffer | undefined> {
   const payload = json(scanData) as ChallengeTokenUrlWrapper
 
   if (!payload.challengeTokenUrl) {

@@ -1,7 +1,7 @@
 import { CredentialManifest } from "./CredentialManifest"
-import { SubmissionRequest } from "./SubmissionRequest"
+import { SubmissionOffer } from "./SubmissionOffer"
 
-export type CredentialOffer = SubmissionRequest & {
+export type CredentialOffer = SubmissionOffer & {
   body: {
     manifest: CredentialManifest
   }

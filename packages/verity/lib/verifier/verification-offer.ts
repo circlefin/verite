@@ -1,17 +1,17 @@
-import type { VerificationRequest } from "../../types"
+import type { VerificationOffer } from "../../types"
 import { buildRequestCommon } from "../submission-requests"
 import {
   creditScorePresentationDefinition,
   kycPresentationDefinition
-} from "../verifier/presentation-definitions"
+} from "./presentation-definitions"
 
-export function buildKycPresentationRequest(
+export function buildKycVerificationOffer(
   id: string,
   from: string,
   replyUrl: string,
   statusUrl?: string,
   trustedAuthorities: string[] = []
-): VerificationRequest {
+): VerificationOffer {
   const definition = kycPresentationDefinition(trustedAuthorities)
   const request = buildRequestCommon(
     id,
@@ -30,14 +30,14 @@ export function buildKycPresentationRequest(
   }
 }
 
-export function buildCreditScorePresentationRequest(
+export function buildCreditScoreVerificationOffer(
   id: string,
   from: string,
   replyUrl: string,
   statusUrl?: string,
   trustedAuthorities: string[] = [],
   minimumCreditScore?: number
-): VerificationRequest {
+): VerificationOffer {
   const definition = creditScorePresentationDefinition(
     trustedAuthorities,
     minimumCreditScore

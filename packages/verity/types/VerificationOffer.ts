@@ -1,7 +1,7 @@
 import type { PresentationDefinition } from "./PresentationDefinition"
-import { SubmissionRequest } from "./SubmissionRequest"
+import { SubmissionOffer } from "./SubmissionOffer"
 
-export type VerificationRequest = SubmissionRequest & {
+export type VerificationOffer = SubmissionOffer & {
   body: {
     presentation_definition: PresentationDefinition
   }

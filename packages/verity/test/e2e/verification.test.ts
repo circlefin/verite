@@ -8,8 +8,8 @@ import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
-import { buildKycPresentationRequest } from "../../lib/verifier/presentation-request"
 import { buildPresentationSubmission } from "../../lib/verifier/presentation-submission"
+import { buildKycVerificationOffer } from "../../lib/verifier/verification-offer"
 import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
@@ -25,7 +25,7 @@ describe("verification", () => {
     )
 
     // 2. VERIFIER: Discovery of verification requirements
-    const kycRequest = buildKycPresentationRequest(
+    const kycRequest = buildKycVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify"

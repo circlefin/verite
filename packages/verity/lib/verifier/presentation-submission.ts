@@ -4,7 +4,7 @@ import type {
   DescriptorMap,
   DidKey,
   PresentationDefinition,
-  EncodedVerificationSubmission,
+  EncodedPresentationSubmission,
   Verifiable,
   W3CCredential
 } from "../../types"
@@ -15,7 +15,7 @@ export async function buildPresentationSubmission(
   presentationDefinition: PresentationDefinition,
   verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
   options?: VerifyPresentationOptions
-): Promise<EncodedVerificationSubmission> {
+): Promise<EncodedPresentationSubmission> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
 
   const presentationSubmission = {

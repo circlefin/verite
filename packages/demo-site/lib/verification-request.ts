@@ -1,12 +1,12 @@
 import {
   ChallengeTokenUrlWrapper,
   challengeTokenUrlWrapper,
-  buildCreditScorePresentationRequest,
-  buildKycPresentationRequest,
-  VerificationRequest
+  buildCreditScoreVerificationOffer,
+  buildKycVerificationOffer,
+  VerificationOffer
 } from "@centre/verity"
 import { v4 as uuidv4 } from "uuid"
-import { saveVerificationRequest } from "./database/verificationRequests"
+import { saveVerificationOffer } from "./database/verificationRequests"
 import { NotFoundError } from "./errors"
 import { fullURL } from "./utils"
 
@@ -21,7 +21,7 @@ export type VerificationRequestResponse = {
   qrCodeData: ChallengeTokenUrlWrapper
 }
 
-export async function createVerificationRequest(
+export async function createVerificationOffer(
   type: string,
   subjectAddress?: string,
   contractAddress?: string
@@ -32,10 +32,10 @@ export async function createVerificationRequest(
   const replyUrl = toReplyUrl(id, subjectAddress, contractAddress)
 
   // Build the verification request for display
-  let verificationRequest: VerificationRequest
+  let verificationRequest: VerificationOffer
 
   if (type === "kyc") {
-    verificationRequest = buildKycPresentationRequest(
+    verificationRequest = buildKycVerificationOffer(
       id,
       process.env.VERIFIER_DID,
       replyUrl,
@@ -45,7 +45,7 @@ export async function createVerificationRequest(
   } else if (type === "credit-score") {
     // If the verification request requires a credit score, set the
     // minimum acceptable score.
-    verificationRequest = buildCreditScorePresentationRequest(
+    verificationRequest = buildCreditScoreVerificationOffer(
       id,
       process.env.VERIFIER_DID,
       replyUrl,
@@ -57,7 +57,7 @@ export async function createVerificationRequest(
     throw new NotFoundError()
   }
 
-  await saveVerificationRequest(verificationRequest)
+  await saveVerificationOffer(verificationRequest)
 
   return {
     id,
