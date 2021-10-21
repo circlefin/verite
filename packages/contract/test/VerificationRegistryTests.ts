@@ -221,7 +221,9 @@ describe("VerificationRegistry", function () {
 
   // set the registry for the token to check in its transfer hook
   it("Should set registry in token", async function () {
-    const setRegistryTx = await token.setRegistry(verificationRegistry.address)
+    const setRegistryTx = await token.setVerificationRegistry(
+      verificationRegistry.address
+    )
     setRegistryTx.wait()
   })
 

@@ -23,67 +23,36 @@
  */
 pragma solidity ^0.8.0;
 
-import "./VerificationValidator.sol";
-
-// We import this library to be able to use console.log
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./VerificationRegistry.sol";
 import "hardhat/console.sol";
 
-contract Token is VerificationValidator {
+contract ThresholdToken is ERC20, VerificationRegistry {
 
-    string public name = "Verity Demo USDC";
-    string public symbol = "VUSDC";
+    uint256 private _CREDENTIAL_THRESHOLD = 10;
 
-    uint256 public totalSupply = 1000000;
-
-    mapping(address => uint256) balances;
-
-    uint256 private immutable _CREDENTIAL_THRESHOLD;
-
-    event Transfer(address indexed from, address indexed to, uint amount);
-
-    constructor() {
-        // The totalSupply is assigned to transaction sender, which is the account
-        // that is deploying the contract.
-        balances[msg.sender] = totalSupply;
-        _CREDENTIAL_THRESHOLD = 10;
+    constructor(uint256 initialSupply) ERC20("Example With Verficiation", "VUSDC") {
+        _mint(msg.sender, initialSupply);
     }
 
-    /**
-     * A function to transfer tokens.
-     */
-    function transfer(address to, uint256 amount) external {
-        require(balances[msg.sender] >= amount, "Not enough tokens");
-        require(amount < _CREDENTIAL_THRESHOLD, "Verifiable Credential: Transfers of this amount require validateAndTransfer");
-
-        _transfer(to, amount);
+    function _beforeTokenTransfer(address from, address to, uint256 amount)
+        internal virtual override
+    {
+        super._beforeTokenTransfer(from, to, amount);
+        require(amount < _CREDENTIAL_THRESHOLD, "Transfers of this amount require validateAndTransfer");
     }
-
+    
     /**
      * A function to confirm a credential and transact in the same transaction.
      */
     function validateAndTransfer(
         address to,
         uint256 amount,
-        KYCVerificationInfo memory verificationInfo,
+        VerificationResult memory verificationResult,
         bytes memory signature
     ) public {
-        require(balances[msg.sender] >= amount, "Not enough tokens");
-
-        // Ensure that this caller has a valid verification
-        validateKYCVerification(
-            verificationInfo,
-            signature
-        );
-
-        // After verification is confirmed, execute transfer
-        _transfer(to, amount);
-    }
-
-    /**
-     * Return the balance in the given account. 
-     */
-    function balanceOf(address account) external view returns (uint256) {
-        return balances[account];
+        registerVerificationBySubject(verificationResult,signature);
+        super.transfer(to, amount);
     }
 
     /**
@@ -93,15 +62,5 @@ contract Token is VerificationValidator {
      */
     function verificationThreshold() external view returns (uint256) {
         return _CREDENTIAL_THRESHOLD;
-    }
-
-    /**
-     * Execute the actual transfer.
-     */
-    function _transfer(address to, uint256 amount) private {
-        balances[msg.sender] -= amount;
-        balances[to] += amount;
-
-        emit Transfer(msg.sender, to, amount);
     }
 }
