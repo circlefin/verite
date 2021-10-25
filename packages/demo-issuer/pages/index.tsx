@@ -1,6 +1,6 @@
 import {
   randomDidKey,
-  createCredentialApplication,
+  buildCredentialApplication,
   decodeVerifiablePresentation,
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
@@ -95,7 +95,7 @@ export default function Home({
 
   // API call to apply for a credential
   const applyForCredential = async (manifest: CredentialManifest) => {
-    const application = await createCredentialApplication(subject, manifest)
+    const application = await buildCredentialApplication(subject, manifest)
 
     const response = await fetch("/api/credentials", {
       method: "POST",

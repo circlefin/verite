@@ -3,11 +3,11 @@ import {
   VerificationInfoResponse,
   verificationResult
 } from "@centre/verity"
-import type { EncodedVerificationSubmission } from "@centre/verity"
+import type { EncodedPresentationSubmission } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import {
-  findVerificationRequest,
-  updateVerificationRequestStatus
+  findVerificationOffer,
+  updateVerificationOfferStatus
 } from "../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../lib/errors"
 
@@ -21,8 +21,8 @@ type PostResponse = { status: string; result?: VerificationInfoResponse }
 export default apiHandler<PostResponse>(async (req, res) => {
   requireMethod(req, "POST")
 
-  const submission: EncodedVerificationSubmission = req.body
-  const verificationRequest = await findVerificationRequest(
+  const submission: EncodedPresentationSubmission = req.body
+  const verificationRequest = await findVerificationOffer(
     req.query.id as string
   )
 
@@ -41,7 +41,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
       options
     )
   } catch (err) {
-    await updateVerificationRequestStatus(verificationRequest.id, "rejected")
+    await updateVerificationOfferStatus(verificationRequest.id, "rejected")
 
     throw err
   }
@@ -60,7 +60,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
     )
   }
 
-  await updateVerificationRequestStatus(
+  await updateVerificationOfferStatus(
     verificationRequest.id,
     "approved",
     result

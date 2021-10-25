@@ -2,10 +2,10 @@ import Ajv from "ajv"
 import type { VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import jsonpath from "jsonpath"
 import type {
-  DecodedVerificationSubmission,
+  DecodedPresentationSubmission,
   InputDescriptor,
   PresentationDefinition,
-  EncodedVerificationSubmission,
+  EncodedPresentationSubmission,
   DecodedCredentialApplication,
   W3CCredential,
   W3CPresentation,
@@ -107,7 +107,7 @@ function validateInputDescriptors(
  * credentials from the submission.
  */
 function mapInputsToDescriptors(
-  submission: DecodedVerificationSubmission | DecodedCredentialApplication,
+  submission: DecodedPresentationSubmission | DecodedCredentialApplication,
   definition?: PresentationDefinition
 ): Map<string, Verifiable<W3CCredential>[]> {
   const descriptorMap = submission.presentation_submission?.descriptor_map || []
@@ -256,7 +256,7 @@ async function ensureHolderIsSubject(
  * Validate a verifiable presentation against a presentation definition
  */
 export async function validateVerificationSubmission(
-  submission: EncodedVerificationSubmission,
+  submission: EncodedPresentationSubmission,
   definition: PresentationDefinition,
   options?: VerifyPresentationOptions
 ): Promise<void> {
@@ -265,7 +265,7 @@ export async function validateVerificationSubmission(
     options
   )
 
-  const decoded: DecodedVerificationSubmission = {
+  const decoded: DecodedPresentationSubmission = {
     presentation_submission: submission.presentation_submission,
     presentation
   }

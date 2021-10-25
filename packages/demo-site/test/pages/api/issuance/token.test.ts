@@ -1,5 +1,5 @@
 import {
-  createCredentialApplication,
+  buildCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey
 } from "@centre/verity"
@@ -18,7 +18,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = randomDidKey()
     const manifest = await findManifestById("KYCAMLAttestation")
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDid,
       manifest
     )
@@ -44,7 +44,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const manifest = await findManifestById("CreditScoreAttestation")
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDid,
       manifest
     )
@@ -113,7 +113,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const kycManifest = await findManifestById("KYCAMLAttestation")
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDid,
       kycManifest
     )
@@ -150,7 +150,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey()
     const manifest = await findManifestById("KYCAMLAttestation")
-    const credentialApplication = await createCredentialApplication(
+    const credentialApplication = await buildCredentialApplication(
       clientDid,
       manifest
     )
