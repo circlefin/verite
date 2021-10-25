@@ -16,7 +16,7 @@ import type {
 import { encodeVerifiablePresentation } from "../utils/credentials"
 
 /**
- * Build a VerifiableCredential contaning an attestation for the given holder.
+ * Build a VerifiableCredential containing an attestation for the given holder.
  */
 export function buildAndSignVerifiableCredential(
   signer: Issuer,
