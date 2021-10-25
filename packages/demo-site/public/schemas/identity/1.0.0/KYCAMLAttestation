@@ -1,0 +1,32 @@
+{
+  "$ref": "#/definitions/KYCAMLAttestation",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "KYCAMLAttestation": {
+      "additionalProperties": false,
+      "properties": {
+        "@type": {
+          "const": "KYCAMLAttestation",
+          "type": "string"
+        },
+        "approvalDate": {
+          "type": "string"
+        },
+        "authorityCallbackUrl": {
+          "type": "string"
+        },
+        "authorityId": {
+          "type": "string"
+        },
+        "authorityName": {
+          "type": "string"
+        },
+        "authorityUrl": {
+          "type": "string"
+        }
+      },
+      "required": ["@type", "authorityId", "approvalDate"],
+      "type": "object"
+    }
+  }
+}

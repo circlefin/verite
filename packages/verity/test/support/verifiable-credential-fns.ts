@@ -1,13 +1,17 @@
 import { buildAndSignVerifiableCredential } from "../../lib/issuer/fulfillment"
-import { decodeVerifiableCredential } from "../../lib/utils"
-import type { Verifiable, W3CCredential } from "../../types/W3C"
+import {
+  buildIssuer,
+  decodeVerifiableCredential,
+  randomDidKey
+} from "../../lib/utils"
+import type { Verifiable, W3CCredential } from "../../types/DidJwt"
 import { creditScoreAttestationFixture } from "../fixtures/attestations"
-import { randomIssuer } from "./issuer-fns"
 
 export async function generateVerifiableCredential(): Promise<
   Verifiable<W3CCredential>
 > {
-  const signer = await randomIssuer()
+  const didKey = await randomDidKey()
+  const signer = buildIssuer(didKey.subject, didKey.privateKey)
   const jwt = await buildAndSignVerifiableCredential(
     signer,
     signer.did,

@@ -1,8 +1,8 @@
 # demo-site
 
-This package contains demos showcasing issuance, verification, and revocation of Verifiable Credentials using the verity standards.
+This package contains examples showcasing issuance, verification, and revocation of Verifiable Credentials using the verity protocols.
 
-There are also demos showcasing a DeFi use-case as well as a Custody-service example.
+Additional examples showcase a DeFi use-case and smart contract integration, and a central custody service example in which Verifiable Credentials are generated dynamically.
 
 # Getting Started
 
@@ -11,6 +11,6 @@ This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using
 ## Contributors
 
 - [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
-- [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
+- [Sean Neville](https://github.com/psnevio) ([Circle, Centre, Xdotzero](http://xdotzero.com))
 - [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
 - [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))
