@@ -51,10 +51,10 @@ contract PermissionedToken is Ownable, ERC20 {
         super._beforeTokenTransfer(from, to, amount);
         if (kycRegistryAddress != address(0)) {
             // if the registry was always present, then the sender will always have been permissioned
-            // because otherwise the registryAddress never could have received, but since the registry
+            // because otherwise it never could have received, but since the registry
             // may be removed by the Owner, we check the sender as well as receiver in this example
             require(_validCounterparty(from), "PermissionedToken: Sender is not verified");
-            require(_validCounterparty(to), "PermissionedToken: Recipient in not verified");
+            require(_validCounterparty(to), "PermissionedToken: Recipient is not verified");
         }
     }
 

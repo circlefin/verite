@@ -82,13 +82,13 @@ export function contractFetcher(
 }
 
 export function verityTokenContractArtifact(): { abi: ContractInterface } {
-  return require("../contracts/Token.json")
+  return require("../contracts/ThresholdToken.json")
 }
 
 export function verityTokenContractAddress(): string | undefined {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const json = require("../contracts/contract-address.json")
-  return json.Token
+  const json = require("../contracts/threshold-token-address.json")
+  return json.ThresholdToken
 }
 
 export function getProvider(): Provider {

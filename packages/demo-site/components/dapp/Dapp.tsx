@@ -1,6 +1,6 @@
 // This type defines the verification result and related metadata returned
 // by a verifier to this dapp
-import type { VerificationInfoResponse } from "@centre/verity"
+import type { VerificationResultResponse } from "@centre/verity"
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
 import { useWeb3React } from "@web3-react/core"
@@ -11,10 +11,10 @@ import useSWR from "swr"
 // import the contract's artifacts and address
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import TokenArtifact from "../../contracts/Token.json"
+import TokenArtifact from "../../contracts/ThresholdToken.json"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import contractAddressJSON from "../../contracts/contract-address.json"
+import contractAddressJSON from "../../contracts/threshold-token-address.json"
 import { contractFetcher } from "../../lib/eth-fns"
 import { fullURL } from "../../lib/utils"
 import type { VerificationRequestResponse } from "../../lib/verification-request"
@@ -30,7 +30,8 @@ import Transfer from "./Transfer"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
 
 const contractAddress: string =
-  process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS || contractAddressJSON.Token
+  process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS ||
+  contractAddressJSON.ThresholdToken
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -71,7 +72,7 @@ const Dapp: FC = () => {
   // verification-related state
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationInfoSet, setVerificationInfoSet] =
-    useState<VerificationInfoResponse>(null)
+    useState<VerificationResultResponse>(null)
   const [verification, setVerification] =
     useState<VerificationRequestResponse>(null)
 
@@ -179,7 +180,7 @@ const Dapp: FC = () => {
         setVerificationInfoSet(verification.result)
         setIsVerifying(false)
         setStatusMessage(
-          "Verification complete. You can now transfer 10 or more VUSDC"
+          "Verification complete. You can now transfer 10 or more THUSDC"
         )
       } else if (verification.status === "rejected") {
         setVerification(undefined)
@@ -225,7 +226,7 @@ const Dapp: FC = () => {
       },
       body: JSON.stringify(postData)
     })
-    const verificationInfoSet: VerificationInfoResponse = await res.json()
+    const verificationInfoSet: VerificationResultResponse = await res.json()
 
     // For now the verifier is merely returning a signed result as if verification succeeded.
     // What should happen is that this component polls the verifier to see when verification
@@ -234,7 +235,7 @@ const Dapp: FC = () => {
     setVerificationInfoSet(verificationInfoSet)
     setIsVerifying(false)
     setStatusMessage(
-      "Verification complete. You can now transfer 10 or more VUSDC"
+      "Verification complete. You can now transfer 10 or more THUSDC"
     )
   }
 
@@ -257,12 +258,12 @@ const Dapp: FC = () => {
 
       // send the transfer, either with verification or without
       let tx: TransactionResponse
-      const t = await token.verificationThreshold()
+      const t = await token.getThreshold()
       if (t <= amount && verificationInfoSet) {
         tx = await token.validateAndTransfer(
           to,
           amount,
-          verificationInfoSet.verificationInfo,
+          verificationInfoSet.verificationResult,
           verificationInfoSet.signature
         )
         // uncomment the following line to force verification to expire with each transfer instead of timing out:
@@ -305,7 +306,7 @@ const Dapp: FC = () => {
       // if the error is verification-related, we prompt -- this would be better handled
       // up front before the transfer, but for the sake of example, we show that
       // the contract is not relying solely on the web frontend to fire the error
-      if (message.indexOf("Verifiable Credential:") !== -1) {
+      if (message.indexOf("ThresholdToken:") !== -1) {
         setIsVerifying(true)
         setVerification(undefined)
         setVerificationInfoSet(undefined)
@@ -317,7 +318,7 @@ const Dapp: FC = () => {
       // This is the error message to kick off the Verification workflow. We
       // special case it so it is not shown to the user.
       const sentinel =
-        "Verifiable Credential: Transfers of this amount require validateAndTransfer"
+        "ThresholdToken: Transfers of this amount require sender verification"
       if (message.indexOf(sentinel) === -1) {
         // Other errors are logged and stored in the Dapp's state. This is used to
         // show them to the user, and for debugging.

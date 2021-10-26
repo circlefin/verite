@@ -1,7 +1,7 @@
-import { VerificationInfoResponse, verificationResult } from "@centre/verity"
+import { VerificationResultResponse, verificationResult } from "@centre/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 
-export default apiHandler<VerificationInfoResponse>(async (req, res) => {
+export default apiHandler<VerificationResultResponse>(async (req, res) => {
   requireMethod(req, "POST")
 
   // the dapp sends its own calling address to the verifier, and though the

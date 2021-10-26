@@ -102,14 +102,6 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
     event VerificationRevoked(bytes32 uuid);
     event VerificationRemoved(bytes32 uuid);
 
-    modifier onlyVerifier() {
-        require(
-            _verifiers[msg.sender].name != 0,
-            "VerificationRegistry: Caller is not a Verifier Delegate"
-        );
-        _;
-    }
-
     /*****************************/
     /* VERIFIER MANAGEMENT LOGIC */
     /*****************************/
@@ -171,6 +163,14 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
     /**********************/
     /* VERIFICATION LOGIC */
     /**********************/
+
+    modifier onlyVerifier() {
+        require(
+            _verifiers[msg.sender].name != 0,
+            "VerificationRegistry: Caller is not a Verifier"
+        );
+        _;
+    }
 
     /**
      * Retrieve the current total number of registered VerificationRecords 
@@ -260,8 +260,10 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
         bytes memory signature
     ) external onlyVerifier returns (VerificationRecord memory) {
         VerificationRecord memory verificationRecord = _validateVerificationResult(verificationResult, signature);
-        require(verificationRecord.verifier == msg.sender, 
-            "VerificationRegistry: Caller is not the verifier of the verification");
+        require(
+            verificationRecord.verifier == msg.sender, 
+            "VerificationRegistry: Caller is not the verifier of the verification"
+        );
         _persistVerificationRecord(verificationRecord);
         emit VerificationResultConfirmed(verificationRecord);
         return verificationRecord;
@@ -278,8 +280,10 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
         VerificationResult memory verificationResult, 
         bytes memory signature
     ) internal returns (VerificationRecord memory) {
-        require(verificationResult.subject == msg.sender, 
-            "VerificationRegistry: Caller is not the verified subject");
+        require(
+            verificationResult.subject == msg.sender, 
+            "VerificationRegistry: Caller is not the verified subject"
+        );
         VerificationRecord memory verificationRecord = _validateVerificationResult(verificationResult, signature);
         _persistVerificationRecord(verificationRecord);
         emit VerificationResultConfirmed(verificationRecord);
@@ -308,16 +312,19 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0") 
           verificationResult.payload
         )));
         
-        // use OpenZeppelin ECDSA to recover the public address corresponding to the 
-        // signature and regenerated hash
+        // recover the public address corresponding to the signature and regenerated hash
         address signerAddress = ECDSA.recover(digest, signature);
         
+        // retrieve a verifier address for the recovered address
         address verifierAddress = _signers[signerAddress];
 
+        // ensure the verifier is registered and its signer is the recovered address
         require(
             _verifiers[verifierAddress].signer == signerAddress,
             "VerificationRegistry: Signed digest cannot be verified"
         );
+
+        // ensure that the result has not expired
         require(
             verificationResult.expiration > block.timestamp,
             "VerificationRegistry: Verification confirmation expired"

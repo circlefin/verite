@@ -1,10 +1,11 @@
-export type KYCVerificationInfo = {
-  message: string
+export type VerificationResult = {
+  schema: string
+  subject: string
   expiration: number
-  subjectAddress: string
+  payload: string
 }
 
-export type VerificationInfoResponse = {
-  verificationInfo: KYCVerificationInfo
+export type VerificationResultResponse = {
+  verificationResult: VerificationResult
   signature: string
 }

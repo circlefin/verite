@@ -16,7 +16,7 @@ describe("VerificationRegistry", function () {
     subjectAddress = await addresses[r].getAddress()
   })
 
-  // deploy the contract, which makes this test the contract's owner
+  // deploy the contract, which makes this test provider the contract's owner
   let verificationRegistry: Contract
   let contractOwnerAddress: string
   it("Should deploy", async function () {
@@ -26,11 +26,12 @@ describe("VerificationRegistry", function () {
     contractOwnerAddress = verificationRegistry.deployTransaction.from
   })
 
-  it("Should not find a verifier DID for an untrusted address", async function () {
+  it("Should not find a verifier for an untrusted address", async function () {
     await expect(verificationRegistry.getVerifier(contractOwnerAddress)).to.be
       .reverted
   })
 
+  // create a test verifier
   const testVerifierInfo = {
     name: ethers.utils.formatBytes32String("Centre Consortium"),
     did: "did:web:centre.io",
@@ -38,7 +39,7 @@ describe("VerificationRegistry", function () {
     signer: signer.address
   }
 
-  // make the contact's owner a verifier in the contract
+  // make the contract's owner a verifier in the contract
   it("Should become a registered verifier", async function () {
     const setVerifierTx = await verificationRegistry.addVerifier(
       contractOwnerAddress,
@@ -93,7 +94,7 @@ describe("VerificationRegistry", function () {
     expect(verifierCount).to.be.equal(0)
   })
 
-  // now register a new verifier delegate for verification tests
+  // now register a new verifier for verification tests
   it("Should register a new verifier", async function () {
     const setVerifierTx = await verificationRegistry.addVerifier(
       contractOwnerAddress,
@@ -120,7 +121,7 @@ describe("VerificationRegistry", function () {
   // format an EIP712 typed data structure for the test verification result
   let domain,
     types,
-    verificationInfo = {}
+    verificationResult = {}
   it("Should format a structured verification result", async function () {
     domain = {
       name: "VerificationRegistry",
@@ -128,7 +129,6 @@ describe("VerificationRegistry", function () {
       chainId: 1337,
       verifyingContract: await verificationRegistry.resolvedAddress
     }
-
     types = {
       VerificationResult: [
         { name: "schema", type: "string" },
@@ -137,7 +137,7 @@ describe("VerificationRegistry", function () {
         { name: "payload", type: "bytes32" }
       ]
     }
-    verificationInfo = {
+    verificationResult = {
       schema: "centre.io/credentials/kyc",
       subject: subjectAddress,
       expiration: expiration,
@@ -148,11 +148,11 @@ describe("VerificationRegistry", function () {
   // create a digest and sign it
   let signature: string
   it("Should sign and verify typed data", async function () {
-    signature = await signer._signTypedData(domain, types, verificationInfo)
+    signature = await signer._signTypedData(domain, types, verificationResult)
     const recoveredAddress = ethers.utils.verifyTypedData(
       domain,
       types,
-      verificationInfo,
+      verificationResult,
       signature
     )
     expect(recoveredAddress).to.equal(testVerifierInfo.signer)
@@ -169,7 +169,7 @@ describe("VerificationRegistry", function () {
   // execute the contract's proof of the verification
   it("Should register the subject as verified and create a Verification Record", async function () {
     const verificationTx = await verificationRegistry.registerVerification(
-      verificationInfo,
+      verificationResult,
       signature
     )
     await verificationTx.wait()
@@ -199,7 +199,7 @@ describe("VerificationRegistry", function () {
     const records = await verificationRegistry.getVerificationsForVerifier(
       contractOwnerAddress
     )
-    recordUUID = records[0].uuid
+    expect(records[0].uuid).to.equal(recordUUID)
     expect(records.length).to.equal(1)
   })
 
@@ -240,7 +240,7 @@ describe("VerificationRegistry", function () {
 
   // register owner as verified
   it("Should register token owner as verified", async function () {
-    verificationInfo = {
+    verificationResult = {
       schema: "centre.io/credentials/kyc",
       subject: tokenOwner,
       expiration: expiration,
@@ -249,10 +249,10 @@ describe("VerificationRegistry", function () {
     const signature = await signer._signTypedData(
       domain,
       types,
-      verificationInfo
+      verificationResult
     )
     const verificationTx = await verificationRegistry.registerVerification(
-      verificationInfo,
+      verificationResult,
       signature
     )
     await verificationTx.wait()
@@ -277,10 +277,21 @@ describe("VerificationRegistry", function () {
     expect(record.revoked).to.be.true
   })
 
+  // fail transfer after revocation
+  it("Should fail to transfer after revocation", async function () {
+    await expect(token.transfer(subjectAddress, 10)).to.be.reverted
+  })
+
   // a subject can remove verifications about itself -- note nothing on chains is really ever removed
   it("Allow a subject to remove verfications about its address", async function () {
     let record = await verificationRegistry.getVerification(recordUUID)
     expect(ethers.utils.getAddress(record.subject)).not.to.throw
+    // remove verifier to ensure the subject is executing the removal, not the verifier
+    const removeVerifierTx = await verificationRegistry.removeVerifier(
+      contractOwnerAddress
+    )
+    // wait until the transaction is mined
+    await removeVerifierTx.wait()
     const removeTx = await verificationRegistry.removeVerification(recordUUID)
     removeTx.wait()
     record = await verificationRegistry.getVerification(recordUUID)

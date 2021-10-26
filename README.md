@@ -116,6 +116,12 @@ Deploy the contract
 npm run hardhat:deploy
 ```
 
+Run the contract test suite
+
+```
+npm run hardhat:test
+```
+
 Add funds to the in-app faucet. In development, the faucet address is `0x695f7BC02730E0702bf9c8C102C254F595B24161`, so the following command will supply it with funds:
 
 ```
