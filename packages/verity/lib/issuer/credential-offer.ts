@@ -1,7 +1,4 @@
-import type {
-  CredentialManifest,
-  CredentialOffer
-} from "../../types"
+import type { CredentialManifest, CredentialOffer } from "../../types"
 import { buildRequestCommon } from "../submission-requests"
 
 /**
