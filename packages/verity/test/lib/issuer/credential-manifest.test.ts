@@ -1,12 +1,37 @@
+import { omit } from "lodash"
+import { hasPaths } from "../../../lib"
 import {
   buildCreditScoreManifest,
   buildKycAmlManifest,
   requiresRevocableCredentials
 } from "../../../lib/issuer/credential-manifest"
-import { generateDidKey, randomDidKey } from "../../../lib/utils"
+import { randomDidKey } from "../../../lib/utils"
+import { CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures/dids"
 
+// Helper function to ensure the Credential Manifest has the bare-minimum
+// requirements.
+function validateManifestFormat(
+  manifest: CredentialManifest | Record<string, unknown>
+): boolean {
+  return hasPaths(manifest, [
+    "id",
+    "version",
+    "issuer.id",
+    "output_descriptors[0]",
+    "output_descriptors[0].id",
+    "output_descriptors[0].schema"
+  ])
+}
+
 describe("buildKycAmlManifest", () => {
+  it("returns a valid manifest", () => {
+    const issuerDid = didFixture(0)
+    const issuer = { id: issuerDid.subject }
+    const manifest = buildKycAmlManifest(issuer)
+    expect(validateManifestFormat(manifest)).toBe(true)
+  })
+
   it("returns a manifest", () => {
     const issuerDid = didFixture(0)
 
@@ -89,6 +114,13 @@ describe("buildKycAmlManifest", () => {
 })
 
 describe("buildCreditScoreManifest", () => {
+  it("returns a valid manifest", () => {
+    const issuerDid = didFixture(0)
+    const issuer = { id: issuerDid.subject }
+    const manifest = buildCreditScoreManifest(issuer)
+    expect(validateManifestFormat(manifest)).toBe(true)
+  })
+
   it("returns a manifest", () => {
     const issuerDid = didFixture(0)
 
@@ -180,5 +212,39 @@ describe("requiresRevocableCredentials", () => {
     const issuer = { id: issuerDid.subject }
     const manifest = buildCreditScoreManifest(issuer)
     expect(requiresRevocableCredentials(manifest)).toBeFalsy()
+  })
+})
+
+describe("validateManifestFormat", () => {
+  it("returns true if all required fields are present", () => {
+    const issuerDidKey = randomDidKey()
+    const credentialIssuer = { id: issuerDidKey.subject, name: "Verity" }
+    const manifest = omit(buildKycAmlManifest(credentialIssuer), [
+      "format",
+      "presentation_definition"
+    ])
+
+    expect(validateManifestFormat(manifest)).toBe(true)
+  })
+
+  it("ignores optional fields", () => {
+    const issuerDid = randomDidKey()
+    const credentialIssuer = { id: issuerDid.subject, name: "Verity" }
+    const manifest = buildKycAmlManifest(credentialIssuer)
+
+    expect(hasPaths(manifest, ["presentation_definition", "format"])).toBe(true)
+    expect(validateManifestFormat(manifest)).toBe(true)
+  })
+
+  it("returns false if any of the fields are missing", async () => {
+    const issuerDid = await randomDidKey()
+    const credentialIssuer = { id: issuerDid.subject, name: "Verity" }
+    const manifest = buildKycAmlManifest(credentialIssuer)
+    const requiredKeys = ["id", "version", "issuer", "output_descriptors"]
+
+    requiredKeys.forEach((key) => {
+      const omitted = omit(manifest, [key])
+      expect(validateManifestFormat(omitted)).toBe(false)
+    })
   })
 })
