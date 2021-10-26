@@ -78,14 +78,13 @@ describe("buildCredentialOffer", () => {
 
     // Inputs
     const id = "8117fe2e-1e8c-4c3f-87a4-700424f8e92f"
-    const from = "did:web:verity.id"
     const replyUrl = "http://localhost:3000/reply-url"
-    const wrapper = buildCredentialOffer(id, manifest, from, replyUrl)
+    const wrapper = buildCredentialOffer(id, manifest, replyUrl)
 
     // Validate the result includes the inputs
     expect(wrapper.id).toEqual(id)
     expect(wrapper.reply_url).toEqual("http://localhost:3000/reply-url")
-    expect(wrapper.from).toEqual(from)
+    expect(wrapper.from).toEqual(manifest.issuer.id)
     expect(wrapper.body.manifest).toEqual(manifest)
 
     // Validate the result includes additional, expected properties

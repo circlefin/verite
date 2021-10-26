@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
 import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
-import { didFixture } from "../../fixtures/dids"
 import { manifestFixture } from "../../fixtures/manifests"
 describe("buildCredentialOffer", () => {
   it("returns a Credential Offer", () => {
@@ -9,15 +8,10 @@ describe("buildCredentialOffer", () => {
     // Use Manifest fixture 0
     const manifest = manifestFixture(0)
 
-    // DID identifier of the issuer. This is redundant with the value in the Credential Manifest.
-    const from = didFixture(0).subject
-
     // URL the client should POST a Credential Application to
     const replyUrl = "http://example.com/replyUrl"
 
-    const offer = buildCredentialOffer(id, manifest, from, replyUrl)
-
-    console.log(JSON.stringify(offer))
+    const offer = buildCredentialOffer(id, manifest, replyUrl)
 
     const expected = {
       id,

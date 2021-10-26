@@ -16,11 +16,6 @@ export default apiHandler<CredentialOffer>(async (req, res) => {
   }
 
   res.json(
-    buildCredentialOffer(
-      uuidv4(),
-      manifest,
-      process.env.ISSUER_DID,
-      fullURL(`/api/issuance/${token}`)
-    )
+    buildCredentialOffer(uuidv4(), manifest, fullURL(`/api/issuance/${token}`))
   )
 })
