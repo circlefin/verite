@@ -34,6 +34,27 @@ describe("buildCredentialApplication", () => {
 })
 
 describe("decodeCredentialApplication", () => {
+  it("decodes the Credential Application", async () => {
+    const clientDidKey = await randomDidKey()
+    const { manifest } = await generateManifestAndIssuer()
+    const application = await buildCredentialApplication(clientDidKey, manifest)
+
+    const decoded = await decodeCredentialApplication(application)
+
+    expect(decoded.credential_application).toEqual(
+      application.credential_application
+    )
+    expect(decoded.presentation_submission).toEqual(
+      application.presentation_submission
+    )
+    expect(decoded.presentation).toMatchObject({
+      "@context": ["https://www.w3.org/2018/credentials/v1"],
+      verifiableCredential: [],
+      holder: clientDidKey.subject,
+      type: ["VerifiablePresentation", "CredentialApplication"]
+    })
+  })
+
   it("rejects an expired input", async () => {
     expect.assertions(1)
 

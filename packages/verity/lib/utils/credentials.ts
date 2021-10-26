@@ -47,13 +47,14 @@ export async function encodeVerifiablePresentation(
   subject: string,
   vcJwt: VerifiableCredential | VerifiableCredential[] = [],
   signer: Issuer,
-  options?: CreatePresentationOptions
+  options?: CreatePresentationOptions,
+  type?: string[]
 ): Promise<JWT> {
   const payload = {
     sub: subject,
     vp: {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
-      type: ["VerifiablePresentation"],
+      type: type ?? ["VerifiablePresentation"],
       holder: subject,
       verifiableCredential: [vcJwt].flat()
     }

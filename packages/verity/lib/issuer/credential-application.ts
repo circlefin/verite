@@ -59,7 +59,8 @@ export async function buildCredentialApplication(
     client.did,
     undefined,
     client,
-    options
+    options,
+    ["VerifiablePresentation", "CredentialApplication"]
   )
 
   return {
