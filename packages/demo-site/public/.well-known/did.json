@@ -9,7 +9,7 @@
       "id": "did:web:verity.id#FGyUsDKyzTuS/v1wZ2bpwDByJ0sPlmDbJ6px7P6n3aY=",
       "type": "Ed25519VerificationKey2018",
       "controller": "did:web:verity.id",
-      "publicKeyBase58": "FGyUsDKyzTuS/v1wZ2bpwDByJ0sPlmDbJ6px7P6n3aY="
+      "publicKeyBase64": "FGyUsDKyzTuS/v1wZ2bpwDByJ0sPlmDbJ6px7P6n3aY="
     }
   ],
   "authentication": [
