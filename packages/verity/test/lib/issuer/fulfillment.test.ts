@@ -1,9 +1,9 @@
-import { buildAndSignFulfillment } from "../../../lib/issuer/fulfillment"
 import {
-  createCredentialApplication,
-  decodeCredentialApplication,
-  createKycAmlManifest
-} from "../../../lib/issuer/manifest"
+  buildCredentialApplication,
+  decodeCredentialApplication
+} from "../../../lib/issuer/credential-application"
+import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
+import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
@@ -14,8 +14,8 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const clientDidKey = await randomDidKey()
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verity" }
-    const manifest = createKycAmlManifest(credentialIssuer)
-    const credentialApplication = await createCredentialApplication(
+    const manifest = buildKycAmlManifest(credentialIssuer)
+    const credentialApplication = await buildCredentialApplication(
       clientDidKey,
       manifest
     )

@@ -9,7 +9,7 @@ import useSWR from "swr"
 import VerifierLayout from "../../../components/verifier/Layout"
 import { fullURL, jsonFetch } from "../../../lib/utils"
 import {
-  createVerificationRequest,
+  createVerificationOffer,
   VerificationRequestResponse
 } from "../../../lib/verification-request"
 
@@ -18,7 +18,7 @@ type Props = {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const verification = await createVerificationRequest(ctx.query.type as string)
+  const verification = await createVerificationOffer(ctx.query.type as string)
 
   return {
     props: {

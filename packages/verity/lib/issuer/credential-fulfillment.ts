@@ -1,5 +1,8 @@
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
-import type { CreatePresentationOptions } from "did-jwt-vc/src/types"
+import type {
+  CreateCredentialOptions,
+  CreatePresentationOptions
+} from "did-jwt-vc/src/types"
 import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 import type {
@@ -16,13 +19,14 @@ import type {
 import { encodeVerifiablePresentation } from "../utils/credentials"
 
 /**
- * Build a VerifiableCredential contaning an attestation for the given holder.
+ * Build a VerifiableCredential containing an attestation for the given holder.
  */
 export function buildAndSignVerifiableCredential(
   signer: Issuer,
   subject: string | DidKey,
   attestation: KYCAMLAttestation | CreditScoreAttestation,
-  payload: Partial<CredentialPayload> = {}
+  payload: Partial<CredentialPayload> = {},
+  options?: CreateCredentialOptions
 ): Promise<JWT> {
   const type = attestation["@type"]
   const subjectId = isString(subject) ? subject : subject.subject
@@ -44,7 +48,7 @@ export function buildAndSignVerifiableCredential(
     payload
   )
 
-  return createVerifiableCredentialJwt(vcPayload, signer)
+  return createVerifiableCredentialJwt(vcPayload, signer, options)
 }
 
 /**
@@ -68,7 +72,8 @@ export async function buildAndSignFulfillment(
     signer.did,
     encodedCredentials,
     signer,
-    options
+    options,
+    ["VerifiablePresentation", "CredentialFulfillment"]
   )
 
   return {
