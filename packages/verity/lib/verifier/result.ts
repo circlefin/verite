@@ -1,8 +1,5 @@
 import { ethers, Wallet } from "ethers"
-import type {
-  VerificationResult,
-  VerificationResultResponse
-} from "../../types"
+import type { VerificationResultResponse } from "../../types"
 
 export const verificationResult = async (
   subjectAddress: string,
@@ -13,7 +10,7 @@ export const verificationResult = async (
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new signer trusted signer when needed.
   // We use the same account here that the deploy script used in order to get
-  // a signer that is already registered as trusted in the contract.
+  // a signer that is already registered as a verifier in the contract.
   const signer: Wallet = new ethers.Wallet(signerPrivateKey)
 
   // This would be best done from current block.timestamp. Expirations allow verifiers

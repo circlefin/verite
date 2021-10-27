@@ -306,7 +306,10 @@ const Dapp: FC = () => {
       // if the error is verification-related, we prompt -- this would be better handled
       // up front before the transfer, but for the sake of example, we show that
       // the contract is not relying solely on the web frontend to fire the error
-      if (message.indexOf("ThresholdToken:") !== -1) {
+      if (
+        message.indexOf("ThresholdToken:") !== -1 ||
+        message.indexOf("VerificationRegistry:") != -1
+      ) {
         setIsVerifying(true)
         setVerification(undefined)
         setVerificationInfoSet(undefined)
@@ -397,7 +400,8 @@ const Dapp: FC = () => {
     <DappLayout balance={balance} symbol={tokenData.symbol}>
       <div className="prose max-w-none">
         <p className="font-bold">
-          In this demo, transfers of 10 or more VUSDC will require proof of KYC.
+          In this demo, transfers of 10 or more THUSDC will require proof of
+          KYC.
         </p>
         <p>
           Other DeFi use cases include credit credentials for lower

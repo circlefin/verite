@@ -53,6 +53,13 @@ async function main() {
   await permissionedToken.deployed()
   console.log("Permissioned Token Address:", permissionedToken.address)
 
+  // set the registry on the permissioned token
+  const setRegistryTx = await permissionedToken.setVerificationRegistry(
+    registryContract.address
+  )
+  setRegistryTx.wait()
+
+  // deploy ThresholdToken
   const tTokenFactory: ContractFactory = await hre.ethers.getContractFactory(
     "ThresholdToken"
   )
@@ -60,11 +67,41 @@ async function main() {
   await thresholdToken.deployed()
   console.log("Threshold Token address:", thresholdToken.address)
 
-  // We also save the contract's artifacts and address in the frontend directory
-  saveFrontendFiles(registryContract, permissionedToken, thresholdToken)
-
-  // We also set up a trusted verifier for demo purposes
+  // set up a trusted verifier for demo purposes
   await createTrustedVerifier(registryContract, thresholdToken)
+
+  // save the contract's artifacts and address in the frontend directory
+  saveFrontendFiles(registryContract, permissionedToken, thresholdToken)
+}
+
+async function createTrustedVerifier(
+  verificationRegistry: Contract,
+  thresholdToken: Contract
+) {
+  const mnemonic =
+    "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
+  const signer: Wallet = hre.ethers.Wallet.fromMnemonic(mnemonic)
+
+  const testVerifierInfo = {
+    name: hre.ethers.utils.formatBytes32String("Centre Consortium"),
+    did: "did:web:centre.io",
+    url: "https://centre.io/about",
+    signer: signer.address
+  }
+
+  const setThresholdVerifierTx = await thresholdToken.addVerifier(
+    signer.address,
+    testVerifierInfo
+  )
+  await setThresholdVerifierTx.wait()
+
+  const setRegistryVerifierTx = await verificationRegistry.addVerifier(
+    signer.address,
+    testVerifierInfo
+  )
+  await setRegistryVerifierTx.wait()
+
+  console.log("Added trusted verifier:", signer.address)
 }
 
 function saveFrontendFiles(
@@ -116,36 +153,6 @@ function saveFrontendFiles(
     contractsDir + "/ThresholdToken.json",
     JSON.stringify(thresholdTokenArtifact, null, 2)
   )
-}
-
-async function createTrustedVerifier(
-  verificationRegistry: Contract,
-  thresholdToken: Contract
-) {
-  const mnemonic =
-    "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
-  const signer: Wallet = hre.ethers.Wallet.fromMnemonic(mnemonic)
-
-  const testVerifierInfo = {
-    name: hre.ethers.utils.formatBytes32String("Centre Consortium"),
-    did: "did:web:centre.io",
-    url: "https://centre.io/about",
-    signer: signer.address
-  }
-
-  const setThresholdVerifierTx = await thresholdToken.addVerifier(
-    signer.address,
-    testVerifierInfo
-  )
-  await setThresholdVerifierTx.wait()
-
-  const setRegistryVerifierTx = await verificationRegistry.addVerifier(
-    signer.address,
-    testVerifierInfo
-  )
-  await setRegistryVerifierTx.wait()
-
-  console.log("Added trusted verifier:", signer.address)
 }
 
 main()
