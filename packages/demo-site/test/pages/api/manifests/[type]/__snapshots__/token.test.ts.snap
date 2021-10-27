@@ -22,7 +22,7 @@ Object {
   },
   "output_descriptors": Array [
     Object {
-      "description": "Attestation that Verity has perfomed a Credit Score check for this subject",
+      "description": "Attestation that Verity has performed a Credit Score check for this subject",
       "display": Object {
         "description": Object {
           "text": "The Credit Score authority processes credit worthiness analysis, potentially employing a number of internal and external vendor providers.",

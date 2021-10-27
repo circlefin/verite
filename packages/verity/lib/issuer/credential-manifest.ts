@@ -145,7 +145,7 @@ export function buildCreditScoreManifest(
         }
       ],
       name: `Proof of Credit Score from ${issuer.name}`,
-      description: `Attestation that ${issuer.name} has perfomed a Credit Score check for this subject`,
+      description: `Attestation that ${issuer.name} has performed a Credit Score check for this subject`,
       display: {
         title: {
           text: `${issuer.name} Risk Score`

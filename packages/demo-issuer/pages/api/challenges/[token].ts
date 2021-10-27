@@ -20,7 +20,6 @@ export default async function helloAPI(
   const wrapper = buildCredentialOffer(
     uuidv4(),
     manifest,
-    process.env.NEXT_PUBLIC_ISSUER_DID,
     `/api/credentials/${req.query.token}`
   )
 

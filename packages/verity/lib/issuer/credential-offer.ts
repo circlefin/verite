@@ -1,7 +1,4 @@
-import type {
-  CredentialManifest,
-  CredentialOffer
-} from "../../types"
+import type { CredentialManifest, CredentialOffer } from "../../types"
 import { buildRequestCommon } from "../submission-requests"
 
 /**
@@ -12,13 +9,12 @@ import { buildRequestCommon } from "../submission-requests"
 export function buildCredentialOffer(
   id: string,
   manifest: CredentialManifest,
-  from: string,
   replyUrl: string
 ): CredentialOffer {
   const request = buildRequestCommon(
     id,
     "https://verity.id/types/CredentialOffer",
-    from,
+    manifest.issuer.id,
     replyUrl
   )
 
