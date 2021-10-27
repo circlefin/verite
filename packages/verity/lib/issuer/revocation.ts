@@ -1,3 +1,4 @@
+import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
 import type {
@@ -11,7 +12,6 @@ import type {
   W3CCredential
 } from "../../types"
 import {
-  encodeVerifiableCredential,
   decodeVerifiableCredential,
   expandBitstring,
   generateBitstring
@@ -53,7 +53,7 @@ export const generateRevocationList = async (
     }
   }
 
-  const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
+  const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }
 

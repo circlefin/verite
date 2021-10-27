@@ -1,7 +1,7 @@
 import type { ClaimFormatDesignation } from "./ClaimFormatDesignation"
+import type { Verifiable, W3CPresentation } from "./DidJwt"
 import type { JWT } from "./Jwt"
 import type { PresentationSubmission } from "./PresentationSubmission"
-import type { Verifiable, W3CPresentation } from "./W3C"
 
 type NarrowCredentialApplication = {
   credential_application: CredentialApplicationHeader

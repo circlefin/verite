@@ -5,10 +5,9 @@ import {
   buildIssuer,
   decodeVerifiableCredential,
   RevocableCredential,
-  createVerificationSubmission,
-  VerificationRequest,
-  ChallengeTokenUrlWrapper,
-  didKeyToIssuer
+  buildPresentationSubmission,
+  VerificationOffer,
+  ChallengeTokenUrlWrapper
 } from "@centre/verity"
 import type { Verifiable } from "@centre/verity"
 import Head from "next/head"
@@ -109,11 +108,11 @@ export default function Home(): JSX.Element {
 
   // API call to complete verification
   const verifyCredential = async (
-    verificationRequest: VerificationRequest,
+    verificationRequest: VerificationOffer,
     credential: Verifiable<W3CCredential> | RevocableCredential
   ) => {
     const subject = holder
-    const request = await createVerificationSubmission(
+    const request = await buildPresentationSubmission(
       subject,
       verificationRequest.body.presentation_definition,
       credential
@@ -180,10 +179,10 @@ export default function Home(): JSX.Element {
   }
 
   // Component to render a Manifest
-  const VerificationRequest = ({
+  const VerificationOffer = ({
     presentationRequest
   }: {
-    presentationRequest: VerificationRequest
+    presentationRequest: VerificationOffer
   }) => {
     const input =
       presentationRequest.body.presentation_definition.input_descriptors[0]
@@ -299,9 +298,9 @@ export default function Home(): JSX.Element {
 
         {page === "verification" ? (
           <>
-            <VerificationRequest
+            <VerificationOffer
               presentationRequest={verificationRequest}
-            ></VerificationRequest>
+            ></VerificationOffer>
 
             <div className="prose">
               <h2>Presentation Request</h2>

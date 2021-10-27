@@ -1,22 +1,22 @@
-import { VerifyPresentationOptions } from "did-jwt-vc/lib/types"
+import type { VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   DescriptorMap,
   DidKey,
   PresentationDefinition,
-  EncodedVerificationSubmission,
+  EncodedPresentationSubmission,
   Verifiable,
   W3CCredential
 } from "../../types"
-import { didKeyToIssuer, encodeVerifiablePresentation } from "../utils"
+import { buildIssuer, encodeVerifiablePresentation } from "../utils"
 
-export async function createVerificationSubmission(
+export async function buildPresentationSubmission(
   didKey: DidKey,
   presentationDefinition: PresentationDefinition,
   verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
   options?: VerifyPresentationOptions
-): Promise<EncodedVerificationSubmission> {
-  const client = didKeyToIssuer(didKey)
+): Promise<EncodedPresentationSubmission> {
+  const client = buildIssuer(didKey.subject, didKey.privateKey)
 
   const presentationSubmission = {
     id: uuidv4(),

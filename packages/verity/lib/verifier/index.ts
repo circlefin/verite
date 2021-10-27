@@ -1,3 +1,4 @@
 export * from "./presentation-definitions"
+export * from "./verification-offer"
 export * from "./result"
-export * from "./submission"
+export * from "./presentation-submission"
