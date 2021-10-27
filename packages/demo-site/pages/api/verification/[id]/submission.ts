@@ -1,6 +1,6 @@
 import {
   validateVerificationSubmission,
-  VerificationInfoResponse,
+  VerificationResultResponse,
   verificationResult
 } from "@centre/verity"
 import type { EncodedVerificationSubmission } from "@centre/verity"
@@ -11,7 +11,7 @@ import {
 } from "../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../lib/errors"
 
-type PostResponse = { status: string; result?: VerificationInfoResponse }
+type PostResponse = { status: string; result?: VerificationResultResponse }
 
 /**
  * POST request handler
@@ -50,7 +50,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
   // verification result suitable for the ETH network
   const subjectAddress = req.query.subjectAddress as string
   const contractAddress = req.query.contractAddress as string
-  let result: VerificationInfoResponse
+  let result: VerificationResultResponse
   if (subjectAddress && contractAddress) {
     result = await verificationResult(
       subjectAddress,

@@ -1,4 +1,4 @@
-import type { VerificationInfoResponse } from "@centre/verity"
+import type { VerificationResultResponse } from "@centre/verity"
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
 import { FC, useState } from "react"
 import { classNames } from "../../lib/react-fns"
@@ -13,7 +13,7 @@ type TransferProps = {
   simulateFunction?: () => Promise<void>
   verification?: VerificationRequestResponse
   dismissStatusMessage?: () => void
-  verificationInfoSet?: VerificationInfoResponse
+  verificationInfoSet?: VerificationResultResponse
 }
 
 const Transfer: FC<TransferProps> = ({
