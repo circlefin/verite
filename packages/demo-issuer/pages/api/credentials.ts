@@ -40,7 +40,7 @@ export default async function credentials(
   if (manifestId === "KYCAMLAttestation") {
     attestation = {
       "@type": "KYCAMLAttestation",
-      authorityId: "verity.id",
+      authorityId: "did:web:verity.id",
       approvalDate: new Date().toISOString(),
       authorityName: "verity.id",
       authorityUrl: "https://verity.id",

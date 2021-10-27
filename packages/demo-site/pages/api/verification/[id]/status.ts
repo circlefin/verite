@@ -1,6 +1,6 @@
 import type { VerificationResultResponse } from "@centre/verity"
 import { apiHandler } from "../../../../lib/api-fns"
-import { fetchVerificationRequestStatus } from "../../../../lib/database/verificationRequests"
+import { fetchVerificationOfferStatus } from "../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../lib/errors"
 
 type Resp = {
@@ -9,7 +9,7 @@ type Resp = {
 }
 
 export default apiHandler<Resp>(async (req, res) => {
-  const verificationRequest = await fetchVerificationRequestStatus(
+  const verificationRequest = await fetchVerificationOfferStatus(
     req.query.id as string
   )
 

@@ -1,6 +1,6 @@
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import {
-  createVerificationRequest,
+  createVerificationOffer,
   VerificationRequestResponse
 } from "../../../lib/verification-request"
 
@@ -16,7 +16,7 @@ export default apiHandler<VerificationRequestResponse>(async (req, res) => {
   const subjectAddress = req.query.subjectAddress as string
   const contractAddress = req.query.contractAddress as string
 
-  const result = await createVerificationRequest(
+  const result = await createVerificationOffer(
     type,
     subjectAddress,
     contractAddress

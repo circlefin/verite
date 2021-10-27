@@ -1,20 +1,20 @@
 import {
   buildIssuer,
   buildAndSignFulfillment,
-  createCredentialApplication,
-  createVerificationSubmission,
+  buildCredentialApplication,
+  buildPresentationSubmission,
   decodeVerifiablePresentation,
   randomDidKey,
   decodeCredentialApplication,
-  kycVerificationRequest,
-  creditScoreVerificationRequest
+  buildKycVerificationOffer,
+  buildCreditScoreVerificationOffer
 } from "@centre/verity"
 import type { DidKey } from "@centre/verity"
 import { createMocks } from "node-mocks-http"
 import { v4 as uuidv4 } from "uuid"
 import {
-  fetchVerificationRequestStatus,
-  saveVerificationRequest
+  fetchVerificationOfferStatus,
+  saveVerificationOffer
 } from "../../../../../lib/database"
 import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../../lib/manifest"
@@ -24,17 +24,17 @@ import { userFactory } from "../../../../../test/factories"
 
 describe("POST /verification/[id]/submission", () => {
   it("validates the submission and updates the verification status", async () => {
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
       fullURL("/api/verification/callback")
     )
-    await saveVerificationRequest(verificationRequest)
+    await saveVerificationOffer(verificationRequest)
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -53,14 +53,14 @@ describe("POST /verification/[id]/submission", () => {
     expect(res.statusCode).toBe(200)
     expect(response).toEqual({ status: "approved" })
 
-    const status = await fetchVerificationRequestStatus(verificationRequest.id)
+    const status = await fetchVerificationOfferStatus(verificationRequest.id)
     expect(status.status).toBe("approved")
   })
 
   it("returns a result object for use in a smart contract", async () => {
     const subject = "0x39C55A1Da9F3f6338A1789fE195E8a47b9484E18"
     const contract = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
-    const verificationRequest = kycVerificationRequest(
+    const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL(
@@ -68,11 +68,11 @@ describe("POST /verification/[id]/submission", () => {
       ),
       fullURL("/api/verification/callback")
     )
-    await saveVerificationRequest(verificationRequest)
+    await saveVerificationOffer(verificationRequest)
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -101,23 +101,23 @@ describe("POST /verification/[id]/submission", () => {
     expect(response.result.verificationResult).toHaveProperty("schema")
     expect(response.result.verificationResult).toHaveProperty("subject")
 
-    const status = await fetchVerificationRequestStatus(verificationRequest.id)
+    const status = await fetchVerificationOfferStatus(verificationRequest.id)
     expect(status.status).toBe("approved")
     expect(status.result).toBeDefined()
   })
 
   it("rejects and returns errors on an invalid input", async () => {
-    const verificationRequest = creditScoreVerificationRequest(
+    const verificationRequest = buildCreditScoreVerificationOffer(
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/verification/submission"),
       fullURL("/api/verification/callback")
     )
-    await saveVerificationRequest(verificationRequest)
+    await saveVerificationOffer(verificationRequest)
     const clientDidKey = await randomDidKey()
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await createVerificationSubmission(
+    const submission = await buildPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -146,7 +146,7 @@ describe("POST /verification/[id]/submission", () => {
       ]
     })
 
-    const status = await fetchVerificationRequestStatus(verificationRequest.id)
+    const status = await fetchVerificationOfferStatus(verificationRequest.id)
     expect(status.status).toBe("rejected")
     expect(status.result).toBeUndefined()
   })
@@ -155,7 +155,7 @@ describe("POST /verification/[id]/submission", () => {
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLAttestation")
   const user = await userFactory()
-  const application = await createCredentialApplication(clientDidKey, manifest)
+  const application = await buildCredentialApplication(clientDidKey, manifest)
 
   const decodedApplication = await decodeCredentialApplication(application)
 
