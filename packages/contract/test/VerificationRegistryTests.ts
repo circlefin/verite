@@ -283,15 +283,9 @@ describe("VerificationRegistry", function () {
   })
 
   // a subject can remove verifications about itself -- note nothing on chains is really ever removed
-  it("Allow a subject to remove verfications about its address", async function () {
+  it("Should remove a verification", async function () {
     let record = await verificationRegistry.getVerification(recordUUID)
     expect(ethers.utils.getAddress(record.subject)).not.to.throw
-    // remove verifier to ensure the subject is executing the removal, not the verifier
-    const removeVerifierTx = await verificationRegistry.removeVerifier(
-      contractOwnerAddress
-    )
-    // wait until the transaction is mined
-    await removeVerifierTx.wait()
     const removeTx = await verificationRegistry.removeVerification(recordUUID)
     removeTx.wait()
     record = await verificationRegistry.getVerification(recordUUID)
