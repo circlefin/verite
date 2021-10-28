@@ -1,16 +1,16 @@
 import { ethers, Wallet } from "ethers"
-import type { KYCVerificationInfo, VerificationInfoResponse } from "../../types"
+import type { VerificationResultResponse } from "../../types"
 
 export const verificationResult = async (
   subjectAddress: string,
   contractAddress: string,
   signerPrivateKey: string,
   chainId: number
-): Promise<VerificationInfoResponse> => {
+): Promise<VerificationResultResponse> => {
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new signer trusted signer when needed.
   // We use the same account here that the deploy script used in order to get
-  // a signer that is already registered as trusted in the contract.
+  // a signer that is already registered as a verifier in the contract.
   const signer: Wallet = new ethers.Wallet(signerPrivateKey)
 
   // This would be best done from current block.timestamp. Expirations allow verifiers
@@ -21,19 +21,19 @@ export const verificationResult = async (
   // VerificationInfo objects are encoded, hashed, and signed following EIP-712
   // See https://eips.ethereum.org/EIPS/eip-712
 
-  // Use the contract's remote address as part of the domain separator in the hash
   const domain = {
-    name: "VerificationValidator",
+    name: "VerificationRegistry",
     version: "1.0",
     chainId,
     verifyingContract: contractAddress
   }
 
   const types = {
-    KYCVerificationInfo: [
-      { name: "message", type: "string" },
+    VerificationResult: [
+      { name: "schema", type: "string" },
+      { name: "subject", type: "address" },
       { name: "expiration", type: "uint256" },
-      { name: "subjectAddress", type: "address" }
+      { name: "payload", type: "bytes32" }
     ]
   }
 
@@ -41,17 +41,22 @@ export const verificationResult = async (
   // verifier does not need to confirm ownership of the address, it includes
   // the address in the signed digest so that the contract can confirm it
   // and no other subject can use this signed VerificationInfo
-  const verificationInfo: KYCVerificationInfo = {
-    message: "KYC:did:web:verity.id:TT1231",
+  const verificationResult = {
+    schema: "centre.io/credentials/kyc",
+    subject: subjectAddress,
     expiration: expiration,
-    subjectAddress: subjectAddress
+    payload: ethers.utils.formatBytes32String("example")
   }
 
   // sign the structured result
-  const signature = await signer._signTypedData(domain, types, verificationInfo)
+  const signature = await signer._signTypedData(
+    domain,
+    types,
+    verificationResult
+  )
 
-  const verificationInfoSet: VerificationInfoResponse = {
-    verificationInfo: verificationInfo,
+  const verificationInfoSet: VerificationResultResponse = {
+    verificationResult: verificationResult,
     signature: signature
   }
 

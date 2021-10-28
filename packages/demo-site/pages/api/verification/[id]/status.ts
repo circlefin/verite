@@ -1,10 +1,10 @@
-import type { VerificationInfoResponse } from "@centre/verity"
+import type { VerificationResultResponse } from "@centre/verity"
 import { apiHandler } from "../../../../lib/api-fns"
 import { fetchVerificationOfferStatus } from "../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../lib/errors"
 
 type Resp = {
-  result: VerificationInfoResponse
+  result: VerificationResultResponse
   status: string
 }
 

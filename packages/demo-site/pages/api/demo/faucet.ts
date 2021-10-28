@@ -39,7 +39,7 @@ export default apiHandler<Response>(async (req, res) => {
   const tx = await contract.validateAndTransfer(
     address,
     100,
-    verification.verificationInfo,
+    verification.verificationResult,
     verification.signature
   )
   await tx.wait()

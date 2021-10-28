@@ -1,5 +1,5 @@
 import {
-  VerificationInfoResponse,
+  VerificationResultResponse,
   verificationResult
 } from "@centre/verity/dist"
 import { Contract, Wallet } from "ethers"
@@ -18,7 +18,7 @@ export type Transaction = {
 export async function send(
   user: User,
   transaction: Transaction,
-  verification?: VerificationInfoResponse
+  verification?: VerificationResultResponse
 ): Promise<boolean> {
   if (!transaction) {
     return false
@@ -45,7 +45,7 @@ export async function send(
   const tx = await contract.validateAndTransfer(
     transaction.address,
     parseInt(transaction.amount, 10),
-    verification.verificationInfo,
+    verification.verificationResult,
     verification.signature
   )
   const receipt = await tx.wait()

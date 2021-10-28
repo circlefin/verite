@@ -1,6 +1,6 @@
 import type {
   VerificationOffer,
-  VerificationInfoResponse
+  VerificationResultResponse
 } from "@centre/verity"
 import { prisma } from "./prisma"
 
@@ -35,7 +35,7 @@ export async function findVerificationOffer(
 
 export async function fetchVerificationOfferStatus(
   id: string
-): Promise<{ result: VerificationInfoResponse; status: string } | undefined> {
+): Promise<{ result: VerificationResultResponse; status: string } | undefined> {
   const record = await prisma.verificationRequest.findUnique({
     where: {
       id
@@ -53,7 +53,7 @@ export async function fetchVerificationOfferStatus(
 export async function updateVerificationOfferStatus(
   id: string,
   status: string,
-  result?: VerificationInfoResponse
+  result?: VerificationResultResponse
 ): Promise<void> {
   await prisma.verificationRequest.update({
     where: {
