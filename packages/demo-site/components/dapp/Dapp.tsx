@@ -85,7 +85,7 @@ const Dapp: FC = () => {
     library.getSigner(0)
   )
 
-  // Intial setup
+  // Initial setup
   useEffect(() => {
     // Load the token information (name, symbol)
     const getTokenData = async () => {
@@ -115,7 +115,7 @@ const Dapp: FC = () => {
       library.removeAllListeners(toMe)
       library.removeAllListeners(fromMe)
     }
-  }, [])
+  })
 
   /**
    * When we have a verification, we'll poll on it
@@ -124,7 +124,6 @@ const Dapp: FC = () => {
     const startPollingVerification = (id: string) => {
       const i = setInterval(() => fetchVerificationStatus(id), 1000)
       setPollVerificationInterval(i)
-      return i
     }
 
     const stopPollingVerification = () => {
@@ -132,17 +131,18 @@ const Dapp: FC = () => {
       setPollVerificationInterval(null)
     }
 
-    let timer
-    if (verification) {
-      timer = startPollingVerification(verification.id)
-    } else {
+    if (verification && !pollVerificationInterval) {
+      startPollingVerification(verification.id)
+    } else if (!verification) {
       stopPollingVerification()
     }
 
     return () => {
-      clearInterval(timer)
+      if (pollVerificationInterval) {
+        clearInterval(pollVerificationInterval)
+      }
     }
-  }, [verification])
+  }, [verification, pollVerificationInterval])
 
   /**
    * Start verification via demo-site verifier.
