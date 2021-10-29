@@ -1,5 +1,5 @@
-import { RevocableCredential, JWT, buildIssuer } from "@verity/verity"
-import { revokeCredential, decodeVerifiableCredential } from "@verity/verity"
+import { RevocableCredential, JWT, buildIssuer } from "@verity/core"
+import { revokeCredential, decodeVerifiableCredential } from "@verity/core"
 import { apiHandler } from "../../../../lib/api-fns"
 import {
   allRevocationLists,

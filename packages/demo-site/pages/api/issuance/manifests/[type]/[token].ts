@@ -1,5 +1,5 @@
-import type { CredentialOffer } from "@verity/verity"
-import { buildCredentialOffer } from "@verity/verity"
+import type { CredentialOffer } from "@verity/core"
+import { buildCredentialOffer } from "@verity/core"
 import { v4 as uuidv4 } from "uuid"
 import { apiHandler } from "../../../../../lib/api-fns"
 import { NotFoundError } from "../../../../../lib/errors"

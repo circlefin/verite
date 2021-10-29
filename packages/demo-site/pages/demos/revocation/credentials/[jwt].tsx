@@ -1,3 +1,5 @@
+import { Disclosure } from "@headlessui/react"
+import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import {
   decodeVerifiableCredential,
   fetchStatusList,
@@ -5,10 +7,8 @@ import {
   MaybeRevocableCredential,
   RevocableCredential,
   RevocationListCredential
-} from "@verity/verity"
-import { isRevoked } from "@verity/verity"
-import { Disclosure } from "@headlessui/react"
-import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
+} from "@verity/core"
+import { isRevoked } from "@verity/core"
 import { NextPage } from "next"
 import Link from "next/link"
 import { useState } from "react"

@@ -16,8 +16,8 @@
     "./packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @verity/verity -w @verity/demo-site",
-    "build:verity": "npm run build --workspace @verity/verity",
+    "build": "npm run build -w @verity/core -w @verity/demo-site",
+    "build:verity": "npm run build --workspace @verity/core",
     "check": "run-s type-check lint test",
     "clean": "npm run clean --workspaces --if-present",
     "db:migrate": "npm run db:migrate --workspace @verity/demo-site",
@@ -26,7 +26,7 @@
     "db:studio": "npm run db:studio --workspace @verity/demo-site",
     "dev": "run-p dev:verity dev:site",
     "dev:site": "npm run dev --workspace @verity/demo-site",
-    "dev:verity": "npm run dev --workspace @verity/verity",
+    "dev:verity": "npm run dev --workspace @verity/core",
     "hardhat:node": "npm run hardhat:node --workspace @verity/contract",
     "hardhat:deploy": "npm run hardhat:deploy --workspace @verity/contract",
     "hardhat:faucet": "npm run hardhat:faucet --workspace @verity/contract",

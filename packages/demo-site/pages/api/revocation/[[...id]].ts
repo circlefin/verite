@@ -1,4 +1,4 @@
-import type { RevocationListCredential } from "@verity/verity"
+import type { RevocationListCredential } from "@verity/core"
 import { apiHandler } from "../../../lib/api-fns"
 import { getRevocationListById } from "../../../lib/database"
 import { NotFoundError } from "../../../lib/errors"

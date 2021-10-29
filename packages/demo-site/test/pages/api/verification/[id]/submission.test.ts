@@ -8,8 +8,8 @@ import {
   decodeCredentialApplication,
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer
-} from "@verity/verity"
-import type { DidKey } from "@verity/verity"
+} from "@verity/core"
+import type { DidKey } from "@verity/core"
 import { createMocks } from "node-mocks-http"
 import { v4 as uuidv4 } from "uuid"
 import {

@@ -1,8 +1,8 @@
 // This type defines the verification result and related metadata returned
 // by a verifier to this dapp
-import type { VerificationResultResponse } from "@verity/verity"
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
+import type { VerificationResultResponse } from "@verity/core"
 import { useWeb3React } from "@web3-react/core"
 import { Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"

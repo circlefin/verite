@@ -18,7 +18,7 @@
     "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
-    "@verity/verity": "*",
+    "@verity/core": "*",
     "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
     "next": "latest",

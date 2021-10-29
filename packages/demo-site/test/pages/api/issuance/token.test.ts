@@ -2,7 +2,7 @@ import {
   buildCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey
-} from "@verity/verity"
+} from "@verity/core"
 import { createMocks } from "node-mocks-http"
 import { temporaryAuthToken } from "../../../../lib/database"
 import { findManifestById } from "../../../../lib/manifest"

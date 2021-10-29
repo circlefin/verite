@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto"
-import { randomDidKey } from "@verity/verity"
+import { randomDidKey } from "@verity/core"
 
 async function setup(): Promise<void> {
   const issuerDidKey = randomDidKey()

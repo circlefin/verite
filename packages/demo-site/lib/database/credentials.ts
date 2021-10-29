@@ -9,7 +9,7 @@ import {
   decodeVerifiableCredential,
   generateRevocationList,
   buildIssuer
-} from "@verity/verity"
+} from "@verity/core"
 import { compact, random, sample } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 import { fullURL } from "../../lib/utils"

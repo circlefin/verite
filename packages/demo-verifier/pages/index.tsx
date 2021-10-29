@@ -8,8 +8,8 @@ import {
   buildPresentationSubmission,
   VerificationOffer,
   ChallengeTokenUrlWrapper
-} from "@verity/verity"
-import type { Verifiable } from "@verity/verity"
+} from "@verity/core"
+import type { Verifiable } from "@verity/core"
 import Head from "next/head"
 import QRCode from "qrcode.react"
 import { useState } from "react"

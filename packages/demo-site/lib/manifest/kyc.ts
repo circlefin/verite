@@ -1,5 +1,5 @@
-import { buildKycAmlManifest } from "@verity/verity"
-import type { CredentialManifest } from "@verity/verity"
+import { buildKycAmlManifest } from "@verity/core"
+import type { CredentialManifest } from "@verity/core"
 import { fullURL } from "../utils"
 import { manifestIssuer } from "./issuer"
 

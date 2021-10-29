@@ -18,7 +18,7 @@
     "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
-    "@verity/verity": "*",
+    "@verity/core": "*",
     "jsonwebtoken": "^8.5.1",
     "next": "latest",
     "qrcode.react": "^1.0.1",

@@ -1,5 +1,5 @@
-import { buildCreditScoreManifest } from "@verity/verity"
-import type { CredentialManifest } from "@verity/verity"
+import { buildCreditScoreManifest } from "@verity/core"
+import type { CredentialManifest } from "@verity/core"
 import { fullURL } from "../utils"
 import { manifestIssuer } from "./issuer"
 

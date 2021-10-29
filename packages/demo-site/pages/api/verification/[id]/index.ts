@@ -1,4 +1,4 @@
-import type { VerificationOffer } from "@verity/verity"
+import type { VerificationOffer } from "@verity/core"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findVerificationOffer } from "../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../lib/errors"

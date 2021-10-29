@@ -12,7 +12,7 @@ The primary packages in this repository are:
 
 - [@verity/contract](./packages/contract) - A solidity contract requiring KYC proof for higher-value transactions
 - [@verity/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project, with additional demos for DeFi and custodial use cases.
-- [@verity/verity](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
+- [@verity/core](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
 from the `demo-site` package to help clarify each major function of verity credentials.
@@ -38,7 +38,7 @@ npm run setup
 This script will do the following:
 
 - Install all dependencies
-- Build the `@verity/verity` project
+- Build the `@verity/core` project
 - Set up the local IP hostname for `@verity/demo-site` to be used with the wallet.
 - Generate an auth JWT secret for `@verity/demo-site`
 - Generate issuer and verifier DIDs and secrets for `@verity/demo-site`
@@ -88,15 +88,15 @@ Now you can run the `demo-site`:
 npm run dev:site
 ```
 
-#### @verity/verity
+#### @verity/core
 
-To build the shared `@verity/verity` package, run:
+To build the shared `@verity/core` package, run:
 
 ```sh
 npm run build:verity
 ```
 
-To watch for changes to `@verity/verity`, run:
+To watch for changes to `@verity/core`, run:
 
 ```sh
 npm run dev:verity
@@ -132,7 +132,7 @@ You can find more [detailed information](./packages/contract) in the package.
 
 #### @verity/demo-issuer
 
-First, ensure `@verity/verity` is built.
+First, ensure `@verity/core` is built.
 
 ```
 npm run build:verity
@@ -147,7 +147,7 @@ npm run dev
 
 #### @verity/demo-verifier
 
-First, ensure `@verity/verity` is built.
+First, ensure `@verity/core` is built.
 
 ```
 npm run build:verity
@@ -162,7 +162,7 @@ npm run dev
 
 #### @verity/demo-revocation
 
-First, ensure `@verity/verity` is built.
+First, ensure `@verity/core` is built.
 
 ```
 npm run build:verity
@@ -183,7 +183,7 @@ Run tests by running
 npm run test
 ```
 
-**NOTE** Be sure to have built the `@verity/verity` package by running `npm run build:verity`.
+**NOTE** Be sure to have built the `@verity/core` package by running `npm run build:verity`.
 
 ## Developing
 

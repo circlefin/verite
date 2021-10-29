@@ -3,7 +3,7 @@ import {
   buildKycVerificationOffer,
   validateVerificationSubmission,
   verificationResult
-} from "@verity/verity"
+} from "@verity/core"
 import { NextApiRequest, NextApiResponse } from "next"
 import jwt from "jsonwebtoken"
 import { v4 as uuidv4 } from "uuid"
