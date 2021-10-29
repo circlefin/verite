@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+# This script prepares the demos for deployment. Specifically, it will
+# ensure we are using the production smart contract and will convert the
+# database connector to use postgres rather than sqlite.
+DEMO_SITE_DIR=$(pwd)
+
+# Copy the production contract
+cp -fr $DEMO_SITE_DIR/bin/fixtures/contracts $DEMO_SITE_DIR
+
+# Swap to postgres as database provider
+sed -ie 's/sqlite/postgresql/g' $DEMO_SITE_DIR/prisma/schema.prisma
+sed -ie 's/sqlite/postgresql/g' $DEMO_SITE_DIR/prisma/migrations/migration_lock.toml
+
+# Remove any backups files due to differences in OSX (FreeBSD) and Unix (GNU)
+# versions of `sed` (notice the "e" appended to the filename).
+rm -f $DEMO_SITE_DIR/prisma/schema.prismae
+rm -f $DEMO_SITE_DIR/prisma/migrations/migration_lock.tomle
+
+# Generate the prisma client
+prisma generate
+
+# Build the app
+next build

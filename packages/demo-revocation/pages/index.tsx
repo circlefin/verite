@@ -9,13 +9,13 @@ import {
   RevocationListCredential,
   revokeCredential,
   unrevokeCredential
-} from "@centre/verity"
+} from "@verity/core"
 import type {
   KYCAMLAttestation,
   Verifiable,
   W3CCredential,
   Issuer
-} from "@centre/verity"
+} from "@verity/core"
 import Head from "next/head"
 import useSWRImmutable from "swr/immutable"
 import useSWR from "swr"
