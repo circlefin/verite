@@ -10,11 +10,6 @@ import { saveVerificationOffer } from "./database/verificationRequests"
 import { NotFoundError } from "./errors"
 import { fullURL } from "./utils"
 
-const ATTESTATION_TYPE_MAPPINGS = {
-  kyc: "KYCAMLAttestation",
-  "credit-score": "CreditScoreAttestation"
-}
-
 export type VerificationRequestResponse = {
   id: string
   challenge: Record<string, unknown>
