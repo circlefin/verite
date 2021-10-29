@@ -4,7 +4,7 @@ import {
   KYCAMLAttestation,
   CreditScoreAttestation,
   buildIssuer
-} from "@centre/verity"
+} from "@verity/verity"
 import { NextApiRequest, NextApiResponse } from "next"
 
 export default async function credentials(

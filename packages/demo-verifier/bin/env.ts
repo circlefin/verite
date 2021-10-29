@@ -1,4 +1,4 @@
-import { randomDidKey } from "@centre/verity"
+import { randomDidKey } from "@verity/verity"
 import { randomBytes } from "crypto"
 import { Wallet } from "ethers"
 

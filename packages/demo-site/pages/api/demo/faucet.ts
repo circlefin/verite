@@ -1,4 +1,4 @@
-import { verificationResult } from "@centre/verity"
+import { verificationResult } from "@verity/verity"
 import { Wallet } from "@ethersproject/wallet"
 import { ethers, Contract } from "ethers"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"

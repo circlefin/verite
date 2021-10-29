@@ -1,4 +1,4 @@
-import { VerificationResultResponse, verificationResult } from "@centre/verity"
+import { VerificationResultResponse, verificationResult } from "@verity/verity"
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 
 export default apiHandler<VerificationResultResponse>(async (req, res) => {

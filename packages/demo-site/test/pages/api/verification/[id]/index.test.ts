@@ -1,4 +1,4 @@
-import { buildKycVerificationOffer } from "@centre/verity"
+import { buildKycVerificationOffer } from "@verity/verity"
 import { createMocks } from "node-mocks-http"
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationOffer } from "../../../../../lib/database"

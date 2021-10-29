@@ -5,13 +5,13 @@ import {
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
   CredentialOffer
-} from "@centre/verity"
+} from "@verity/verity"
 import type {
   CredentialManifest,
   RevocablePresentation,
   Verifiable,
   W3CPresentation
-} from "@centre/verity"
+} from "@verity/verity"
 import Head from "next/head"
 import QRCode from "qrcode.react"
 import { useState } from "react"

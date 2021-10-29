@@ -1,7 +1,7 @@
 import {
   VerificationResultResponse,
   verificationResult
-} from "@centre/verity/dist"
+} from "@verity/verity/dist"
 import { Contract, Wallet } from "ethers"
 import { User } from "./database"
 import {

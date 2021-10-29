@@ -10,16 +10,16 @@ and as such, the dependencies for all included packages are installed from the r
 
 The primary packages in this repository are:
 
-- [@centre/contract](./packages/contract) - A solidity contract requiring KYC proof for higher-value transactions
-- [@centre/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project, with additional demos for DeFi and custodial use cases.
-- [@centre/verity](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
+- [@verity/contract](./packages/contract) - A solidity contract requiring KYC proof for higher-value transactions
+- [@verity/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project, with additional demos for DeFi and custodial use cases.
+- [@verity/verity](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
 from the `demo-site` package to help clarify each major function of verity credentials.
 
-- [@centre/demo-issuer](./packages/demo-issuer) - A simplified demo of creating an issuer
-- [@centre/demo-verifier](./packages/demo-verifier) - A simplified demo of creating a credential verifier
-- [@centre/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials
+- [@verity/demo-issuer](./packages/demo-issuer) - A simplified demo of creating an issuer
+- [@verity/demo-verifier](./packages/demo-verifier) - A simplified demo of creating a credential verifier
+- [@verity/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials
 
 ## Mobile Wallet
 
@@ -38,11 +38,11 @@ npm run setup
 This script will do the following:
 
 - Install all dependencies
-- Build the `@centre/verity` project
-- Set up the local IP hostname for `@centre/demo-site` to be used with the wallet.
-- Generate an auth JWT secret for `@centre/demo-site`
-- Generate issuer and verifier DIDs and secrets for `@centre/demo-site`
-- Build and migrate the database for `@centre/demo-site`
+- Build the `@verity/verity` project
+- Set up the local IP hostname for `@verity/demo-site` to be used with the wallet.
+- Generate an auth JWT secret for `@verity/demo-site`
+- Generate issuer and verifier DIDs and secrets for `@verity/demo-site`
+- Build and migrate the database for `@verity/demo-site`
 
 ## Running the Demos
 
@@ -71,7 +71,7 @@ This will start your server at [http://localhost:3000](http://localhost:3000)
 
 It is recommended that you run `npm run clean` before manually running a service.
 
-#### @centre/demo-site
+#### @verity/demo-site
 
 First, you should follow the above steps for deploying the contract to
 a local hardhat node.
@@ -88,21 +88,21 @@ Now you can run the `demo-site`:
 npm run dev:site
 ```
 
-#### @centre/verity
+#### @verity/verity
 
-To build the shared `@centre/verity` package, run:
+To build the shared `@verity/verity` package, run:
 
 ```sh
 npm run build:verity
 ```
 
-To watch for changes to `@centre/verity`, run:
+To watch for changes to `@verity/verity`, run:
 
 ```sh
 npm run dev:verity
 ```
 
-#### @centre/contract
+#### @verity/contract
 
 Run a standalone ethereum network using hardhat in a separate terminal
 
@@ -130,9 +130,9 @@ npm run hardhat:faucet 0x695f7BC02730E0702bf9c8C102C254F595B24161
 
 You can find more [detailed information](./packages/contract) in the package.
 
-#### @centre/demo-issuer
+#### @verity/demo-issuer
 
-First, ensure `@centre/verity` is built.
+First, ensure `@verity/verity` is built.
 
 ```
 npm run build:verity
@@ -145,9 +145,9 @@ cd packages/demo-issuer
 npm run dev
 ```
 
-#### @centre/demo-verifier
+#### @verity/demo-verifier
 
-First, ensure `@centre/verity` is built.
+First, ensure `@verity/verity` is built.
 
 ```
 npm run build:verity
@@ -160,9 +160,9 @@ cd packages/demo-verifier
 npm run dev
 ```
 
-#### @centre/demo-revocation
+#### @verity/demo-revocation
 
-First, ensure `@centre/verity` is built.
+First, ensure `@verity/verity` is built.
 
 ```
 npm run build:verity
@@ -183,7 +183,7 @@ Run tests by running
 npm run test
 ```
 
-**NOTE** Be sure to have built the `@centre/verity` package by running `npm run build:verity`.
+**NOTE** Be sure to have built the `@verity/verity` package by running `npm run build:verity`.
 
 ## Developing
 

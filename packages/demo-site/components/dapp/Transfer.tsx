@@ -1,4 +1,4 @@
-import type { VerificationResultResponse } from "@centre/verity"
+import type { VerificationResultResponse } from "@verity/verity"
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
 import { FC, useState } from "react"
 import { classNames } from "../../lib/react-fns"

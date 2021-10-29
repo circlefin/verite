@@ -1,5 +1,5 @@
-import { challengeTokenUrlWrapper } from "@centre/verity"
-import type { ChallengeTokenUrlWrapper } from "@centre/verity"
+import { challengeTokenUrlWrapper } from "@verity/verity"
+import type { ChallengeTokenUrlWrapper } from "@verity/verity"
 import { Disclosure } from "@headlessui/react"
 import { ArrowCircleRightIcon } from "@heroicons/react/outline"
 import { NextPage } from "next"

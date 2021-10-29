@@ -5,8 +5,8 @@ import {
   MaybeRevocableCredential,
   RevocableCredential,
   RevocationListCredential
-} from "@centre/verity"
-import { isRevoked } from "@centre/verity"
+} from "@verity/verity"
+import { isRevoked } from "@verity/verity"
 import { Disclosure } from "@headlessui/react"
 import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"

@@ -1,4 +1,4 @@
-import { JWT } from "@centre/verity"
+import { JWT } from "@verity/verity"
 import jwt from "jsonwebtoken"
 import { prisma, User } from "./prisma"
 

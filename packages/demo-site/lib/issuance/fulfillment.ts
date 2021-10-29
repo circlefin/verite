@@ -2,8 +2,8 @@ import {
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
   KYCAML_ATTESTATION_MANIFEST_ID,
   CredentialManifest
-} from "@centre/verity"
-import type { CreditScoreAttestation, KYCAMLAttestation } from "@centre/verity"
+} from "@verity/verity"
+import type { CreditScoreAttestation, KYCAMLAttestation } from "@verity/verity"
 import type { User } from "../database"
 
 export function buildAttestationForUser(

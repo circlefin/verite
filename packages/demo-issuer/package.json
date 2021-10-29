@@ -1,5 +1,5 @@
 {
-  "name": "@centre/demo-issuer",
+  "name": "@verity/demo-issuer",
   "license": "MIT",
   "private": true,
   "contributors": [
@@ -18,7 +18,7 @@
     "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
-    "@centre/verity": "*",
+    "@verity/verity": "*",
     "jsonwebtoken": "^8.5.1",
     "next": "latest",
     "qrcode.react": "^1.0.1",

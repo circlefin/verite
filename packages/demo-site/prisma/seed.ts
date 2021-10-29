@@ -1,4 +1,4 @@
-import { asyncMap } from "@centre/verity"
+import { asyncMap } from "@verity/verity"
 import { PrismaClient, User } from "@prisma/client"
 import { Wallet } from "ethers"
 

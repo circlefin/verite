@@ -1,4 +1,4 @@
-import type { CredentialManifest } from "@centre/verity"
+import type { CredentialManifest } from "@verity/verity"
 import { creditScoreManifest } from "./creditScore"
 import { kycManifest } from "./kyc"
 

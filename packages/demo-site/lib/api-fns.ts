@@ -1,5 +1,5 @@
 import { promisify } from "util"
-import { ValidationError, VerificationError } from "@centre/verity"
+import { ValidationError, VerificationError } from "@verity/verity"
 import Cors from "cors"
 import { NextApiHandler, NextApiRequest } from "next"
 import { MethodNotAllowedError } from "./errors"
