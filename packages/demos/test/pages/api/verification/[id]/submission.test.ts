@@ -20,7 +20,7 @@ import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment
 import { findManifestById } from "../../../../../lib/manifest"
 import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/verification/[id]/submission"
-import { userFactory } from "../../../../../test/factories"
+import { userFactory } from "../../../../factories"
 
 describe("POST /verification/[id]/submission", () => {
   it("validates the submission and updates the verification status", async () => {

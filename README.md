@@ -11,11 +11,11 @@ and as such, the dependencies for all included packages are installed from the r
 The primary packages in this repository are:
 
 - [@verity/contract](./packages/contract) - A solidity contract requiring KYC proof for higher-value transactions
-- [@verity/demo-site](./packages/demo-site) - A demo walkthrough of the entire verity project, with additional demos for DeFi and custodial use cases.
+- [@verity/demos](./packages/demos) - A demo walkthrough of the entire verity project, with additional demos for DeFi and custodial use cases.
 - [@verity/core](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
-from the `demo-site` package to help clarify each major function of verity credentials.
+from the `demos` package to help clarify each major function of verity credentials.
 
 - [@verity/demo-issuer](./packages/demo-issuer) - A simplified demo of creating an issuer
 - [@verity/demo-verifier](./packages/demo-verifier) - A simplified demo of creating a credential verifier
@@ -39,10 +39,10 @@ This script will do the following:
 
 - Install all dependencies
 - Build the `@verity/core` project
-- Set up the local IP hostname for `@verity/demo-site` to be used with the wallet.
-- Generate an auth JWT secret for `@verity/demo-site`
-- Generate issuer and verifier DIDs and secrets for `@verity/demo-site`
-- Build and migrate the database for `@verity/demo-site`
+- Set up the local IP hostname for `@verity/demos` to be used with the wallet.
+- Generate an auth JWT secret for `@verity/demos`
+- Generate issuer and verifier DIDs and secrets for `@verity/demos`
+- Build and migrate the database for `@verity/demos`
 
 ## Running the Demos
 
@@ -71,7 +71,7 @@ This will start your server at [http://localhost:3000](http://localhost:3000)
 
 It is recommended that you run `npm run clean` before manually running a service.
 
-#### @verity/demo-site
+#### @verity/demos
 
 First, you should follow the above steps for deploying the contract to
 a local hardhat node.
@@ -82,7 +82,7 @@ Instead of running `npm run dev`, you'll build Verity on it's own:
 npm run build:verity
 ```
 
-Now you can run the `demo-site`:
+Now you can run the `demos`:
 
 ```sh
 npm run dev:site
@@ -215,7 +215,7 @@ npm run format
 
 ### Database
 
-The `demo-site` uses a local sqlite database to maintain state, and uses
+The `demos` uses a local sqlite database to maintain state, and uses
 [prisma](https://prisma.io) to access the database via code.
 
 There are several database scripts which can be helpful during development:

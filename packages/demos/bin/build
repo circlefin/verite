@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# This script prepares the demo-site for deployment. Specifically, it will
+# This script prepares the demos for deployment. Specifically, it will
 # ensure we are using the production smart contract and will convert the
 # database connector to use postgres rather than sqlite.
 DEMO_SITE_DIR=$(pwd)

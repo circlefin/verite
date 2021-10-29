@@ -110,7 +110,7 @@ function saveFrontendFiles(
   thresholdToken
 ) {
   const fs = require("fs")
-  const contractsDir = __dirname + "/../../demo-site/contracts"
+  const contractsDir = __dirname + "/../../demos/contracts"
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir)

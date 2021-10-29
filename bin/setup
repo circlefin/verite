@@ -6,5 +6,5 @@ npm install
 echo "Setting up verity..."
 npm run setup --workspace @verity/core
 
-echo "Setting up demo-site..."
-npm run setup --workspace @verity/demo-site
+echo "Setting up demos..."
+npm run setup --workspace @verity/demos

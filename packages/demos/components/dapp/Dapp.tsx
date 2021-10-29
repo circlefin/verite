@@ -145,7 +145,7 @@ const Dapp: FC = () => {
   }, [verification, pollVerificationInterval])
 
   /**
-   * Start verification via demo-site verifier.
+   * Start verification via demos verifier.
    */
   const createVerification = async () => {
     try {
@@ -162,9 +162,7 @@ const Dapp: FC = () => {
     } catch (e) {
       setVerification(undefined)
       setIsVerifying(false)
-      setStatusMessage(
-        "API call to Verifier failed. Are you running demo-site?"
-      )
+      setStatusMessage("API call to Verifier failed. Are you running demos?")
     }
   }
 
@@ -193,12 +191,10 @@ const Dapp: FC = () => {
       setVerificationInfoSet(undefined)
       setIsVerifying(false)
 
-      setStatusMessage(
-        "API call to Verifier failed. Are you running demo-site?"
-      )
+      setStatusMessage("API call to Verifier failed. Are you running demos?")
     }
   }
-  // End demo-site verifier
+  // End demos verifier
 
   const getVerificationResult = async () => {
     // Clear verification if one exists. This will stop polling on the

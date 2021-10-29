@@ -61,7 +61,7 @@ A few ETH is generally enough.
 
 The hardhat faucet task, e.g. running `npx hardhat faucet <address>` sends 1 ETH and 100 VUSDC.
 
-The demo-site faucet (both the dapp and the CeFi demos) sends 0.1 ETH and 100 VUSDC.
+The demos faucet (both the dapp and the CeFi demos) sends 0.1 ETH and 100 VUSDC.
 
 Since the full, fixed supply is issued to the contract creator, we used that same account as our faucet. The address is `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
 
