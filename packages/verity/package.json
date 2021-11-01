@@ -24,7 +24,7 @@
   "dependencies": {
     "@fry/bits": "^1.0.2",
     "@transmute/did-key-ed25519": "^0.3.0-unstable.4",
-    "ajv": "^6.12.6",
+    "ajv": "^8.6.3",
     "base64-js": "^1.5.1",
     "did-jwt-vc": "^2.1.6",
     "did-resolver": "^3.1.0",
