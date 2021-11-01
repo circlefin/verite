@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": true,
   "contributors": [
-    "Kim Hamilton Duffy (https://github.com/kimdhamilton",
+    "Kim Hamilton Duffy (https://github.com/kimdhamilton)",
     "Sean Neville (https://github.com/psnevio)",
     "Brice Stacey <brice@m2.xyz> (https://m2.xyz)",
     "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
@@ -20,7 +20,7 @@
   "dependencies": {
     "@verity/core": "*",
     "jsonwebtoken": "^8.5.1",
-    "next": "latest",
+    "next": "12.0.2",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
