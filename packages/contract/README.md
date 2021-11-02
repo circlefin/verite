@@ -1,6 +1,26 @@
-# Verity Smart Contract Example
+# Verity Smart Contract Examples
 
-This recipe illustrates how to register a web app's or dApp's verification with a remote smart contract. This approach shows a solidity token contract called "Token" that extends the VerifiedCallable contract to support verifications from trusted verifiers. Trusted verifiers sign their verification results with a noted eth key in order to enable the contract to verify the verification results.
+These recipes illustrate how smart contracts can validate and use results of Verifiable Credential verifications even when the contracts are not technically or economically capable of executing the verifications themselves.
+
+These contracts follow a verification pattern in which verifications are performed off-chain and then confirmed on-chain. An off-chain verifier handles verifiable credential exchange in the usual manner, and upon successful verification, the verifier creates a lightweight privacy-preserving verification result object (represented in JSON).
+
+The verifier then hashes and signs the verification result, which enables subsequent validation within smart contracts. The verifier either registers the result directly with a Verification Registry contract as part of the verification process (the "Verifier Submission" pattern), or else returns it to subjects for them to use in smart contract transactions (the "Subject Submission" pattern).
+
+Read more about Verifier and Subject Submission patterns in TODO LINK.
+
+## Contract Description
+
+**VerificationRegistry**: Demonstrates a persistent verification registry. This contract supports management of verifiers and verification results as follows:
+
+- The contract owner is able to manage (register/remove) verifiers
+- A registered verifier may add a verification result they've created and signed.
+- A subject may add a verification result they've received from a registered verifier.
+
+This contract converts a (valid, authentic) verification result to a data-minimized verification record before persisting.
+
+**PermissionedToken**: This token uses VerificationRegistry (by delegation) for KYC verifications. The `beforeTokenTransfer` hook, which executes as part of the ERC20 transfer implementation, ensures that the sender and recipient are verified counterparties.
+
+**ThresholdToken**: This token uses VerificationRegistry by inheritance. It demonstrated use of a (hard-coded) threshold, above which a verification result input is expected. Its `beforeTokenTransfer` hook checks the conditions are met, and if not, emits an error causing the demo Dapp to start verification and subsequently call `validateAndTransfer`, using the subject-submitted VerificationResult path.
 
 ## Getting Started
 
