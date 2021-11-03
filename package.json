@@ -9,7 +9,7 @@
     "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
   ],
   "engines": {
-    "node": ">=14.0.0",
+    "node": "14.x",
     "npm": ">=7.0.0"
   },
   "workspaces": [
@@ -24,19 +24,14 @@
     "db:reset": "npm run db:reset --workspace @verity/demos",
     "db:seed": "npm run db:seed --workspace @verity/demos",
     "db:studio": "npm run db:studio --workspace @verity/demos",
-    "dev": "run-p dev:verity dev:site",
-    "dev:site": "npm run dev --workspace @verity/demos",
-    "dev:verity": "npm run dev --workspace @verity/core",
+    "dev": "run-p \"dev -w @verity/core\" \"dev -w @verity/demos\"",
     "hardhat:node": "npm run hardhat:node --workspace @verity/contract",
     "hardhat:deploy": "npm run hardhat:deploy --workspace @verity/contract",
-    "hardhat:faucet": "npm run hardhat:faucet --workspace @verity/contract",
-    "hardhat:test": "npm run hardhat:test --workspace @verity/contract",
     "format": "npm run format --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "prepare": "npm run build:verity",
     "prisma": "npx -w @verity/demos prisma",
     "setup": "./bin/setup",
-    "setup:ci": "npm run setup:ci --workspace @verity/demos",
     "start": "npm run start --workspace @verity/demos",
     "test": "npm test --workspaces --if-present",
     "type-check": "npm run type-check --workspaces --if-present"

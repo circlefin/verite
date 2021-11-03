@@ -1,35 +1,44 @@
 # Verity
 
-This repository contains demos and a shared "verity" library to illustrate the
-issuance, verification, and revocation of [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/).
+Decentralized Identity for Crypto Finance.
 
-## Packages
+This repository is a monorepo containing the Core Verity Javascript SDK, as well
+as several demos to illustrate issuance, verification, revocation, and real-world
+use-cases of the Verity standard.
 
-The repository is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (requires npm v7 or greater),
-and as such, the dependencies for all included packages are installed from the root level using `npm install`.
+## Project Structure
+
+The repository is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (which requires npm v7 or greater). The dependencies for all packages are installed from the root level using `npm install`.
 
 The primary packages in this repository are:
 
-- [@verity/contract](./packages/contract) - A solidity contract requiring KYC proof for higher-value transactions
-- [@verity/demos](./packages/demos) - A demo walkthrough of the entire verity project, with additional demos for DeFi and custodial use cases.
-- [@verity/core](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
+- [@verity/core](./packages/verity) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
+- [@verity/contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verity into a smart contract.
+- [@verity/demos](./packages/demos) - A demo walkthrough of the entire verity project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
 from the `demos` package to help clarify each major function of verity credentials.
 
-- [@verity/demo-issuer](./packages/demo-issuer) - A simplified demo of creating an issuer
-- [@verity/demo-verifier](./packages/demo-verifier) - A simplified demo of creating a credential verifier
-- [@verity/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials
+- [@verity/demo-issuer](./packages/demo-issuer) - A simplified demo of issuing Verifiable Credentials using `@verity/core`.
+- [@verity/demo-verifier](./packages/demo-verifier) - A simplified demo of verifying Verifiable Credentials using `@verity/core`.
+- [@verity/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credenentials using `@verity/core`.
 
-## Mobile Wallet
+### Mobile Wallet
 
-There is also another repository, [centrehq/demo-wallet](https://github.com/centrehq/demo-wallet) which
-contains code for a sample mobile wallet client which can be used to interact with all of the demos in
-this repository.
+There is another repository, [centrehq/demo-wallet](https://github.com/centrehq/demo-wallet) which contains code for a sample mobile wallet client which can be used to interact with all of the demos in this repository.
+
+The mobile wallet only runs on iOS at this time.
 
 ## Getting Started
 
-Local environment setup is handled by running the following script:
+### Requirements
+
+- Node.js v14
+- npm v7 or greater (`npm i -g npm@7`)
+
+### Development Environment Setup
+
+Setting up a new development environment is accomplished by running the following script:
 
 ```sh
 npm run setup
@@ -46,14 +55,23 @@ This script will do the following:
 
 ## Running the Demos
 
-To run the entire suite of demos, you should first start a [HardHat](https://hardhat.org)
-ethereum node.
+When first starting, you will likely be most interested in the `./packages/demos` package. This package contains several demos and integrates deeply with `@verity/core`.
+
+This package contains several isolated demos. One of the demos showcases an Ethereum dApp integration, and requires running a local Ethereum node.
+
+### Running a local Ethereum node
+
+Running an Ethereum node is easily accomplished by using our built-in scripts for running a [HardHat](https://hardhat.org) node.
+
+1. To start a local Ethereum node, simply run:
 
 ```sh
 npm run hardhat:node
 ```
 
-then, in a new tab you can deploy our sample smart contract to that local node:
+Now you have a local Ethereum node running. This process is long-lived and should remain open in it's own terminal tab.
+
+2. Next, you will need to deploy the smart contracts to the local Ethereum network.
 
 ```sh
 npm run hardhat:deploy
@@ -69,121 +87,11 @@ This will start your server at [http://localhost:3000](http://localhost:3000)
 
 ### Manually running services
 
-It is recommended that you run `npm run clean` before manually running a service.
+Each packages in the `./packages` folder has instructions on how to get started
+independently of other packages. To run a service on it's own, follow the instructions
+in the package's `README.md` file.
 
-#### @verity/demos
-
-First, you should follow the above steps for deploying the contract to
-a local hardhat node.
-
-Instead of running `npm run dev`, you'll build Verity on it's own:
-
-```sh
-npm run build:verity
-```
-
-Now you can run the `demos`:
-
-```sh
-npm run dev:site
-```
-
-#### @verity/core
-
-To build the shared `@verity/core` package, run:
-
-```sh
-npm run build:verity
-```
-
-To watch for changes to `@verity/core`, run:
-
-```sh
-npm run dev:verity
-```
-
-#### @verity/contract
-
-Run a standalone ethereum network using hardhat in a separate terminal
-
-```
-npm run hardhat:node
-```
-
-Deploy the contract
-
-```
-npm run hardhat:deploy
-```
-
-Run the contract test suite
-
-```
-npm run hardhat:test
-```
-
-Add funds to the in-app faucet. In development, the faucet address is `0x695f7BC02730E0702bf9c8C102C254F595B24161`, so the following command will supply it with funds:
-
-```
-npm run hardhat:faucet 0x695f7BC02730E0702bf9c8C102C254F595B24161
-```
-
-You can find more [detailed information](./packages/contract) in the package.
-
-#### @verity/demo-issuer
-
-First, ensure `@verity/core` is built.
-
-```
-npm run build:verity
-```
-
-Then start the `demo-issuer` demo from the package directory:
-
-```
-cd packages/demo-issuer
-npm run dev
-```
-
-#### @verity/demo-verifier
-
-First, ensure `@verity/core` is built.
-
-```
-npm run build:verity
-```
-
-Then start the `demo-verifier` demo from the package directory:
-
-```
-cd packages/demo-verifier
-npm run dev
-```
-
-#### @verity/demo-revocation
-
-First, ensure `@verity/core` is built.
-
-```
-npm run build:verity
-```
-
-Then start the `demo-revocation` demo from the package directory:
-
-```
-cd packages/demo-revocation
-npm run dev
-```
-
-## Testing
-
-Run tests by running
-
-```
-npm run test
-```
-
-**NOTE** Be sure to have built the `@verity/core` package by running `npm run build:verity`.
+**NOTE** It is recommended that you run `npm run clean` before manually running a service.
 
 ## Developing
 
@@ -192,6 +100,16 @@ To run type-checking, linting, and tests, simply run:
 ```
 npm run check
 ```
+
+### Testing
+
+Run tests by running
+
+```
+npm run test
+```
+
+**NOTE** Be sure to have built the `@verity/core` package by running `npm run build:verity`.
 
 ### Linting the codebase
 
@@ -207,41 +125,10 @@ npm run lint --fix
 
 ### Fixing with Prettier
 
-This app uses [Prettier](https://prettier.io), and you can auto-format all files with
+This app uses [Prettier](https://prettier.io) to format the code, and you can auto-format all files with
 
 ```
 npm run format
-```
-
-### Database
-
-The `demos` uses a local sqlite database to maintain state, and uses
-[prisma](https://prisma.io) to access the database via code.
-
-There are several database scripts which can be helpful during development:
-
-#### Migrate the database
-
-```
-npm run db:migrate
-```
-
-#### Reset local database (rebuild and seed)
-
-```
-npm run db:reset
-```
-
-#### Seed local database
-
-```
-npm run db:seed
-```
-
-#### Inspect local database contents
-
-```
-npm run prisma studio
 ```
 
 ## Contributors

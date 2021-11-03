@@ -8,6 +8,37 @@ Additional examples showcase a DeFi use-case and smart contract integration, and
 
 This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (requires npm v7 or greater), and as such, the dependencies for all included packages are installed from the root level using `npm install`. Do not run `npm install` from this directory.
 
+### Database
+
+The `demos` uses a local sqlite database to maintain state, and uses
+[prisma](https://prisma.io) to access the database via code.
+
+There are several database scripts which can be helpful during development:
+
+#### Migrate the database
+
+```
+npm run db:migrate
+```
+
+#### Reset local database (rebuild and seed)
+
+```
+npm run db:reset
+```
+
+#### Seed local database
+
+```
+npm run db:seed
+```
+
+#### Inspect local database contents
+
+```
+npm run prisma studio
+```
+
 ## Contributors
 
 - [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
