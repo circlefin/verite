@@ -4,9 +4,18 @@ Decentralized Identity for Crypto Finance.
 
 This repository is a monorepo containing the Core Verity Javascript SDK, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verity standard.
 
-## Project Structure
+## Getting Started
 
-The repository is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (which requires npm v7 or greater). The dependencies for all packages are installed from the root level using `npm install`.
+### Requirements
+
+- Node.js v14
+- npm v7 or greater (`npm i -g npm@7`)
+
+### Project Structure
+
+This repository is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (which requires npm v7 or greater). The dependencies for all packages are installed from the root level using `npm install`.
+
+Each package in this repository lives in the `packages/` directory.
 
 The primary packages in this repository are:
 
@@ -19,20 +28,15 @@ from the `demos` package to help clarify each major function of verity credentia
 
 - [@verity/demo-issuer](./packages/demo-issuer) - A simplified demo of issuing Verifiable Credentials using `@verity/core`.
 - [@verity/demo-verifier](./packages/demo-verifier) - A simplified demo of verifying Verifiable Credentials using `@verity/core`.
-- [@verity/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credenentials using `@verity/core`.
+- [@verity/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials using `@verity/core`.
 
-### Mobile Wallet
+Each package contains a README file with specific details about how to use the package.
+
+#### Mobile Wallet
 
 There is another repository, [centrehq/demo-wallet](https://github.com/centrehq/demo-wallet) which contains code for a sample mobile wallet client which can be used to interact with all of the demos in this repository.
 
 The mobile wallet only runs on iOS at this time.
-
-## Getting Started
-
-### Requirements
-
-- Node.js v14
-- npm v7 or greater (`npm i -g npm@7`)
 
 ### Development Environment Setup
 
