@@ -2,9 +2,7 @@
 
 Decentralized Identity for Crypto Finance.
 
-This repository is a monorepo containing the Core Verity Javascript SDK, as well
-as several demos to illustrate issuance, verification, revocation, and real-world
-use-cases of the Verity standard.
+This repository is a monorepo containing the Core Verity Javascript SDK, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verity standard.
 
 ## Project Structure
 
