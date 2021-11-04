@@ -44,6 +44,8 @@ lib/         Contains code shared between React front end and the API backend
 prisma/    Contains the database schema and seeds
 ```
 
+The root `App` React component is located in `pages/_app.tsx`. The root page for this demo is located at `pages/index.tsx`.
+
 You can read more about the Next.js folder structure in [their documentation](https://nextjs.org/docs/basic-features/pages).
 
 ### Database

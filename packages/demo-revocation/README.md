@@ -37,8 +37,9 @@ The folder structure is as follows:
 
 ```
 pages/       Contains top-level React components which are treated as "pages" mapped to an HTTP route
-pages/api    Contains Server-Side API routes
 ```
+
+The root `App` React component is located in `pages/_app.tsx`. This demo contains only a single page, located at `pages/index.tsx`.
 
 You can read more about the Next.js folder structure in [their documentation](https://nextjs.org/docs/basic-features/pages).
 
