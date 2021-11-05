@@ -1,9 +1,9 @@
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
 import type { VerificationResultResponse } from "@verity/core"
 import { FC, useState } from "react"
-import { classNames } from "../../lib/react-fns"
-import type { VerificationRequestResponse } from "../../lib/verification-request"
-import { LoadingButton } from "../LoadingButton"
+import { classNames } from "../../../lib/react-fns"
+import type { VerificationRequestResponse } from "../../../lib/verification-request"
+import { LoadingButton } from "../../LoadingButton"
 import TransferStatus from "./TransferStatus"
 
 type TransferProps = {

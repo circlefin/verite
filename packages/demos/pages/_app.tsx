@@ -6,7 +6,7 @@ import App from "next/app"
 import "tailwindcss/tailwind.css"
 import NextNprogress from "nextjs-progressbar"
 import Cookies from "universal-cookie"
-import RequirePassword from "../components/RequirePassword"
+import RequirePassword from "../components/auth/RequirePassword"
 import { PASSWORD_PROTECTION_COOKIE } from "../lib/react-fns"
 
 /**

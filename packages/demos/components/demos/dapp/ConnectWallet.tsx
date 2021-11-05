@@ -2,7 +2,7 @@ import { Web3Provider } from "@ethersproject/providers"
 import { PlusIcon } from "@heroicons/react/solid"
 import { useWeb3React } from "@web3-react/core"
 import { FC } from "react"
-import { injectedConnector } from "../../lib/eth-fns"
+import { injectedConnector } from "../../../lib/eth-fns"
 
 const ConnectWallet: FC = () => {
   const { activate } = useWeb3React<Web3Provider>()

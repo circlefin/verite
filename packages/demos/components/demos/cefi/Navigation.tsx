@@ -1,7 +1,7 @@
 import { useSession, signout } from "next-auth/client"
 import Image from "next/image"
 import { FC } from "react"
-import { useBalance } from "../../hooks/useBalance"
+import { useBalance } from "../../../hooks/useBalance"
 
 const logoForSession = (session): JSX.Element => {
   const coinboss = ["bob@test.com", "kim@test.com", "brice@test.com"]

@@ -1,5 +1,5 @@
-import { PendingSend } from "../../lib/database"
-import { LoadingButton } from "../LoadingButton"
+import { PendingSend } from "../../../lib/database"
+import { LoadingButton } from "../../LoadingButton"
 
 type Props = {
   row: PendingSend

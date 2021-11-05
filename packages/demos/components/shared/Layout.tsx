@@ -2,7 +2,7 @@ import { compact } from "lodash"
 import Head from "next/head"
 import Link from "next/link"
 import { FC } from "react"
-import { classNames } from "../lib/react-fns"
+import { classNames } from "../../lib/react-fns"
 
 type Props = {
   title?: string

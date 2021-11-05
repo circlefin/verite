@@ -1,7 +1,7 @@
 import { LockClosedIcon } from "@heroicons/react/outline"
 import { FC, useState } from "react"
 import Cookies from "universal-cookie"
-import { PASSWORD_PROTECTION_COOKIE } from "../lib/react-fns"
+import { PASSWORD_PROTECTION_COOKIE } from "../../lib/react-fns"
 
 type Props = {
   passwordSuccessful: boolean

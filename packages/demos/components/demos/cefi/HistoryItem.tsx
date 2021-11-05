@@ -1,7 +1,7 @@
 import { CashIcon } from "@heroicons/react/solid"
 import { formatDistanceToNow } from "date-fns"
 import { useSession } from "next-auth/client"
-import { History } from "../../lib/database/prisma"
+import { History } from "../../../lib/database/prisma"
 
 type Props = {
   item: History

@@ -16,7 +16,7 @@ import { findUser, User } from "./database"
  */
 export function requireAuth<T>(
   getServerSideProps: GetServerSideProps<T>,
-  signInPath = "/signin"
+  signInPath = "/auth/signin"
 ): GetServerSideProps<T> {
   return async (context) => {
     const session = await getSession(context)

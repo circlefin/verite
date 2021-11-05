@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/client"
 import { FC } from "react"
-import Layout from "../Layout"
+import Layout from "../../shared/Layout"
 import Navigation from "./Navigation"
 
 type Props = {

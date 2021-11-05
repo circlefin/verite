@@ -1,4 +1,4 @@
-import { History } from "../../lib/database/prisma"
+import { History } from "../../../lib/database/prisma"
 import HistoryItem from "./HistoryItem"
 
 type Props = {

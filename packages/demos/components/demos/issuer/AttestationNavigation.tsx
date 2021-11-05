@@ -1,7 +1,7 @@
 import { signOut, useSession } from "next-auth/client"
 import Link from "next/link"
 import { FC } from "react"
-import { isActive, classNames } from "../../lib/react-fns"
+import { isActive, classNames } from "../../../lib/react-fns"
 
 type Props = {
   hideNavigation?: boolean

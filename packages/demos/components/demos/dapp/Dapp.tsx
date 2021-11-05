@@ -11,13 +11,13 @@ import useSWR from "swr"
 // import the contract's artifacts and address
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import TokenArtifact from "../../contracts/ThresholdToken.json"
+import TokenArtifact from "../../../contracts/ThresholdToken.json"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import contractAddressJSON from "../../contracts/threshold-token-address.json"
-import { contractFetcher } from "../../lib/eth-fns"
-import { fullURL } from "../../lib/utils"
-import type { VerificationRequestResponse } from "../../lib/verification-request"
+import contractAddressJSON from "../../../contracts/threshold-token-address.json"
+import { contractFetcher } from "../../../lib/eth-fns"
+import { fullURL } from "../../../lib/utils"
+import type { VerificationRequestResponse } from "../../../lib/verification-request"
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
