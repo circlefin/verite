@@ -1,4 +1,4 @@
-import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 
 type ResponseType = {
   status: string

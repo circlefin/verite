@@ -1,11 +1,11 @@
 import { BigNumber } from "ethers"
 import jwt from "jsonwebtoken"
-import { apiHandler, requireMethod } from "../../../../lib/api-fns"
-import { currentUser } from "../../../../lib/auth-fns"
-import { prisma } from "../../../../lib/database/prisma"
-import { send } from "../../../../lib/demo-fns"
-import { NotFoundError, BadRequestError } from "../../../../lib/errors"
-import { fullURL } from "../../../../lib/utils"
+import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
+import { currentUser } from "../../../../../lib/auth-fns"
+import { prisma } from "../../../../../lib/database/prisma"
+import { send } from "../../../../../lib/demo-fns"
+import { NotFoundError, BadRequestError } from "../../../../../lib/errors"
+import { fullURL } from "../../../../../lib/utils"
 
 type Response = {
   status: string
@@ -87,12 +87,12 @@ export default apiHandler<Response>(async (req, res) => {
 
   // Create API call payload
   const payload = {
-    callbackUrl: fullURL(`/api/cefi/callback/${token}`),
+    callbackUrl: fullURL(`/api/demos/cefi/callback/${token}`),
     transaction: pendingSend
   }
 
   // Call out to other service letting them know the results
-  await fetch(fullURL("/api/cefi/verify"), {
+  await fetch(fullURL("/api/demos/cefi/verify"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)

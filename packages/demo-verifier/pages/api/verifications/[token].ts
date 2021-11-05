@@ -63,7 +63,7 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
   const presentationRequest = buildKycVerificationOffer(
     uuidv4(),
     process.env.NEXT_PUBLIC_VERIFIER_DID, // verifier did
-    `/api/verifications/${token}`, // replyUrl
+    `api/demos/verifications/${token}`, // replyUrl
     "/api/callback", // statusUrl
     [process.env.NEXT_PUBLIC_ISSUER_DID] // trusted authorities
   )

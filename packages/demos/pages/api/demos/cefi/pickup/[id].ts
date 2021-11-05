@@ -1,7 +1,7 @@
-import { apiHandler, requireMethod } from "../../../../lib/api-fns"
-import { currentUser } from "../../../../lib/auth-fns"
-import { prisma } from "../../../../lib/database/prisma"
-import { NotFoundError, BadRequestError } from "../../../../lib/errors"
+import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
+import { currentUser } from "../../../../../lib/auth-fns"
+import { prisma } from "../../../../../lib/database/prisma"
+import { NotFoundError, BadRequestError } from "../../../../../lib/errors"
 
 type Response = {
   status: string

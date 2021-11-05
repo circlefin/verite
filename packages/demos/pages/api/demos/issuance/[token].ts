@@ -15,18 +15,18 @@ import {
   requiresRevocableCredentials,
   validateCredentialApplication
 } from "@verity/core"
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
-import { findUserFromTemporaryAuthToken, User } from "../../../lib/database"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {
   allRevocationLists,
   saveRevocationList,
   findCredentialsByUserIdAndType,
   generateRevocationListStatus,
   storeCredentials
-} from "../../../lib/database"
-import { NotFoundError } from "../../../lib/errors"
-import { buildAttestationForUser } from "../../../lib/issuance/fulfillment"
-import { findManifestById } from "../../../lib/manifest"
+} from "../../../../lib/database"
+import { NotFoundError } from "../../../../lib/errors"
+import { buildAttestationForUser } from "../../../../lib/issuance/fulfillment"
+import { findManifestById } from "../../../../lib/manifest"
 
 const oneMinute = 60 * 1000
 

@@ -1,8 +1,8 @@
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import {
   createVerificationOffer,
   VerificationRequestResponse
-} from "../../../lib/verification-request"
+} from "../../../../lib/verification-request"
 
 /**
  * POST request handler

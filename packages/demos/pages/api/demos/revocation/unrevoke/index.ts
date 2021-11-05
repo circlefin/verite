@@ -1,11 +1,11 @@
 import { RevocableCredential, JWT, buildIssuer } from "@verity/core"
 import { decodeVerifiableCredential, unrevokeCredential } from "@verity/core"
-import { apiHandler } from "../../../../lib/api-fns"
+import { apiHandler } from "../../../../../lib/api-fns"
 import {
   findRevocationListForCredential,
   saveRevocationList
-} from "../../../../lib/database"
-import { NotFoundError } from "../../../../lib/errors"
+} from "../../../../../lib/database"
+import { NotFoundError } from "../../../../../lib/errors"
 
 export default apiHandler<string>(async (req, res) => {
   const jwt = req.body as JWT

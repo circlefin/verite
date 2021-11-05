@@ -54,7 +54,7 @@ const Page: NextPage = () => {
     setLoading(true)
 
     // Perform send
-    const response = await fetch(`/api/cefi/send`, {
+    const response = await fetch(`/api/demos/cefi/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -90,7 +90,7 @@ const Page: NextPage = () => {
   const pendingSendCancel = async (id: string) => {
     setPendingSendLoading(true)
 
-    const response = await fetch(`/api/cefi/send/${id}`, {
+    const response = await fetch(`/api/demos/cefi/send/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"

@@ -23,7 +23,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const qrCodeData = challengeTokenUrlWrapper(
-    fullURL(`/api/issuance/manifests/kyc/${authToken}`)
+    fullURL(`/api/demos/issuance/manifests/kyc/${authToken}`)
   )
 
   const response = await fetch(qrCodeData.challengeTokenUrl)
@@ -48,7 +48,7 @@ const KycAmlPage: NextPage<Props> = ({
   // Setup polling to detect a newly issued credential.
   const { data } = useSWR(
     fullURL(
-      `/api/issuance/get-newest-credential-from?userId=${user.id}&createdAt=${createdAt}`
+      `/api/demos/issuance/get-newest-credential-from?userId=${user.id}&createdAt=${createdAt}`
     ),
     jsonFetch,
     {

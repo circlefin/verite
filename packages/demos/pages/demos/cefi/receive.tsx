@@ -29,7 +29,7 @@ const Page: NextPage = () => {
   const pickupFunction = async (id: string) => {
     setPickupLoading(true)
 
-    const response = await fetch(`/api/cefi/pickup/${id}`, {
+    const response = await fetch(`/api/demos/cefi/pickup/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -51,7 +51,7 @@ const Page: NextPage = () => {
   const pickupCancelFunction = async (id: string) => {
     setPickupLoading(true)
 
-    const response = await fetch(`/api/cefi/pickup/${id}`, {
+    const response = await fetch(`/api/demos/cefi/pickup/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"

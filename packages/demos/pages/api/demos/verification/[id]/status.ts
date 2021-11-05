@@ -1,7 +1,7 @@
 import type { VerificationResultResponse } from "@verity/core"
-import { apiHandler } from "../../../../lib/api-fns"
-import { fetchVerificationOfferStatus } from "../../../../lib/database/verificationRequests"
-import { NotFoundError } from "../../../../lib/errors"
+import { apiHandler } from "../../../../../lib/api-fns"
+import { fetchVerificationOfferStatus } from "../../../../../lib/database/verificationRequests"
+import { NotFoundError } from "../../../../../lib/errors"
 
 type Resp = {
   result: VerificationResultResponse

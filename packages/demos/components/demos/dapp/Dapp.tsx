@@ -152,7 +152,7 @@ const Dapp: FC = () => {
       // Create a Verification Request
       const resp = await fetch(
         fullURL(
-          `/api/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`
+          `api/demos/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`
         ),
         { method: "POST" }
       )
@@ -168,7 +168,7 @@ const Dapp: FC = () => {
 
   const fetchVerificationStatus = async (id: string) => {
     try {
-      const resp = await fetch(fullURL(`/api/verification/${id}/status`), {
+      const resp = await fetch(fullURL(`api/demos/verification/${id}/status`), {
         method: "POST"
       })
       const verification = await resp.json()

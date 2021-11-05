@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken"
-import { apiHandler, requireMethod } from "../../../../lib/api-fns"
-import { findUserByAddress } from "../../../../lib/database"
-import { prisma } from "../../../../lib/database/prisma"
-import { send } from "../../../../lib/demo-fns"
-import { BadRequestError, NotFoundError } from "../../../../lib/errors"
+import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
+import { findUserByAddress } from "../../../../../lib/database"
+import { prisma } from "../../../../../lib/database/prisma"
+import { send } from "../../../../../lib/demo-fns"
+import { BadRequestError, NotFoundError } from "../../../../../lib/errors"
 
 type Response = {
   status: string

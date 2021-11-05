@@ -39,7 +39,7 @@ const issueRevocationList = async () => {
    */
   return generateRevocationList(
     [],
-    "http://localhost:3000/api/revocation",
+    "http://localhost:3000/api/demos/revocation",
     issuer.did,
     issuer
   )

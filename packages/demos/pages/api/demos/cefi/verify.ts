@@ -1,7 +1,7 @@
 import { PendingSend } from "@prisma/client"
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
-import { prisma } from "../../../lib/database/prisma"
-import { BadRequestError } from "../../../lib/errors"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { prisma } from "../../../../lib/database/prisma"
+import { BadRequestError } from "../../../../lib/errors"
 
 type Response = {
   status: string

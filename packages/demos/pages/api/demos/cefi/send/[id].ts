@@ -1,5 +1,5 @@
-import { apiHandler, requireMethod } from "../../../../lib/api-fns"
-import { prisma } from "../../../../lib/database/prisma"
+import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
+import { prisma } from "../../../../../lib/database/prisma"
 
 type Response = {
   status: string

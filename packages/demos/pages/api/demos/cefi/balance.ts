@@ -1,13 +1,13 @@
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
-import { currentUser } from "../../../lib/auth-fns"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { currentUser } from "../../../../lib/auth-fns"
 import {
   History,
   PendingReceive,
   PendingSend,
   prisma
-} from "../../../lib/database/prisma"
-import { NotFoundError } from "../../../lib/errors"
-import { getBalance } from "../../../lib/eth-fns"
+} from "../../../../lib/database/prisma"
+import { NotFoundError } from "../../../../lib/errors"
+import { getBalance } from "../../../../lib/eth-fns"
 
 type Response = {
   address: string

@@ -38,14 +38,14 @@ export default function RevokeButton({
 
   const doRevoke = async (credential: RevocableCredential): Promise<JWT> => {
     setIsLoading(true)
-    const jwt = await perform("/api/revocation/revoke", credential)
+    const jwt = await perform("/api/demos/revocation/revoke", credential)
     setIsLoading(false)
     return jwt
   }
 
   const doUnrevoke = async (credential: RevocableCredential): Promise<JWT> => {
     setIsLoading(true)
-    const jwt = await perform("/api/revocation/unrevoke", credential)
+    const jwt = await perform("/api/demos/revocation/unrevoke", credential)
     setIsLoading(false)
     return jwt
   }

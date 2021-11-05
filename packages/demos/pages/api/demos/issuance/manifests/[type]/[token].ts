@@ -1,10 +1,10 @@
 import type { CredentialOffer } from "@verity/core"
 import { buildCredentialOffer } from "@verity/core"
 import { v4 as uuidv4 } from "uuid"
-import { apiHandler } from "../../../../../lib/api-fns"
-import { NotFoundError } from "../../../../../lib/errors"
-import { MANIFEST_MAP } from "../../../../../lib/manifest"
-import { fullURL } from "../../../../../lib/utils"
+import { apiHandler } from "../../../../../../lib/api-fns"
+import { NotFoundError } from "../../../../../../lib/errors"
+import { MANIFEST_MAP } from "../../../../../../lib/manifest"
+import { fullURL } from "../../../../../../lib/utils"
 
 export default apiHandler<CredentialOffer>(async (req, res) => {
   const manifestName = req.query.type as string
@@ -16,6 +16,10 @@ export default apiHandler<CredentialOffer>(async (req, res) => {
   }
 
   res.json(
-    buildCredentialOffer(uuidv4(), manifest, fullURL(`/api/issuance/${token}`))
+    buildCredentialOffer(
+      uuidv4(),
+      manifest,
+      fullURL(`/api/demos/issuance/${token}`)
+    )
   )
 })

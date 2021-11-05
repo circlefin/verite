@@ -4,12 +4,12 @@ import {
   verificationResult
 } from "@verity/core"
 import type { EncodedPresentationSubmission } from "@verity/core"
-import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import {
   findVerificationOffer,
   updateVerificationOfferStatus
-} from "../../../../lib/database/verificationRequests"
-import { NotFoundError } from "../../../../lib/errors"
+} from "../../../../../lib/database/verificationRequests"
+import { NotFoundError } from "../../../../../lib/errors"
 
 type PostResponse = { status: string; result?: VerificationResultResponse }
 
