@@ -1,12 +1,12 @@
 import { Wallet } from "@ethersproject/wallet"
 import { verificationResult } from "@verity/core"
 import { ethers, Contract } from "ethers"
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import {
   getProvider,
   verityTokenContractAddress,
   verityTokenContractArtifact
-} from "../../../lib/eth-fns"
+} from "../../../../lib/eth-fns"
 
 type Response = {
   status: string

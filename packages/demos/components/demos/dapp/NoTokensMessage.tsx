@@ -1,7 +1,7 @@
 import { PlusIcon } from "@heroicons/react/outline"
 import { FC, useState } from "react"
 import { classNames } from "../../../lib/react-fns"
-import { LoadingButton } from "../../LoadingButton"
+import { LoadingButton } from "../../shared/LoadingButton"
 
 export type NoTokensMessageProps = {
   faucetFunction: (address: string) => Promise<boolean>

@@ -3,7 +3,7 @@ import type { VerificationResultResponse } from "@verity/core"
 import { FC, useState } from "react"
 import { classNames } from "../../../lib/react-fns"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
-import { LoadingButton } from "../../LoadingButton"
+import { LoadingButton } from "../../shared/LoadingButton"
 import TransferStatus from "./TransferStatus"
 
 type TransferProps = {

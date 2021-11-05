@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { classNames } from "../lib/react-fns"
+import { classNames } from "../../lib/react-fns"
 
 type Props = {
   className?: string

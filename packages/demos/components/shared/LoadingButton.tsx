@@ -1,6 +1,6 @@
 import { FC } from "react"
 import DotLoader from "react-spinners/DotLoader"
-import { classNames } from "../lib/react-fns"
+import { classNames } from "../../lib/react-fns"
 import Spinner from "./Spinner"
 
 type Props = {

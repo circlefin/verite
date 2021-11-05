@@ -1,5 +1,5 @@
 import { VerificationResultResponse, verificationResult } from "@verity/core"
-import { apiHandler, requireMethod } from "../../../lib/api-fns"
+import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 
 export default apiHandler<VerificationResultResponse>(async (req, res) => {
   requireMethod(req, "POST")

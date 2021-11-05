@@ -1,12 +1,12 @@
 import { NextPage } from "next"
 import React, { useState } from "react"
-import Spinner from "../../../components/Spinner"
 import Alert from "../../../components/demos/cefi/Alert"
 import EmptyAccount from "../../../components/demos/cefi/Empty"
 import HistoryList from "../../../components/demos/cefi/HistoryList"
 import Layout from "../../../components/demos/cefi/Layout"
 import Tabs from "../../../components/demos/cefi/Tabs"
 import NoTokensMessage from "../../../components/demos/dapp/NoTokensMessage"
+import Spinner from "../../../components/shared/Spinner"
 import { useBalance } from "../../../hooks/useBalance"
 import { requireAuth } from "../../../lib/auth-fns"
 import { fullURL } from "../../../lib/utils"
@@ -25,7 +25,7 @@ const Page: NextPage = () => {
 
   const faucetFunction = async (address: string): Promise<boolean> => {
     try {
-      const resp = await fetch(fullURL("/api/demo/faucet"), {
+      const resp = await fetch(fullURL("api/demos/dapp/faucet"), {
         headers: {
           "Content-Type": "application/json"
         },

@@ -1,5 +1,5 @@
 import { FC } from "react"
-import Spinner from "../../Spinner"
+import Spinner from "../../shared/Spinner"
 
 const Loading: FC = () => {
   return (

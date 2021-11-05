@@ -1,11 +1,11 @@
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import React, { useState } from "react"
-import Spinner from "../../../components/Spinner"
 import Alert from "../../../components/demos/cefi/Alert"
 import Layout from "../../../components/demos/cefi/Layout"
 import PickupPanel from "../../../components/demos/cefi/PickupPanel"
 import Tabs from "../../../components/demos/cefi/Tabs"
+import Spinner from "../../../components/shared/Spinner"
 import { useBalance } from "../../../hooks/useBalance"
 import { requireAuth } from "../../../lib/auth-fns"
 
@@ -114,7 +114,7 @@ const Page: NextPage = () => {
               Receive VUSDC
             </h3>
 
-            <p className="max-w-4xltext-sm text-gray-500">
+            <p className="text-gray-500 max-w-4xltext-sm">
               You can receive VUSDC at this address:
             </p>
             <p>{data?.address}</p>

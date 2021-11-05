@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/client"
 import { PendingReceive } from "../../../lib/database"
-import { LoadingButton } from "../../LoadingButton"
+import { LoadingButton } from "../../shared/LoadingButton"
 
 type Props = {
   row: PendingReceive

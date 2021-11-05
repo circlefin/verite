@@ -1,6 +1,6 @@
 import { signIn } from "next-auth/client"
 import { FC, useState } from "react"
-import { LoadingButton } from "./LoadingButton"
+import { LoadingButton } from "../shared/LoadingButton"
 
 type Props = {
   redirectTo?: string

@@ -6,7 +6,7 @@ import {
   RevocationListCredential
 } from "@verity/core"
 import { useEffect, useState } from "react"
-import { LoadingButton } from "../LoadingButton"
+import { LoadingButton } from "../../shared/LoadingButton"
 
 type Props = {
   credential: RevocableCredential

@@ -215,7 +215,7 @@ const Dapp: FC = () => {
       subjectAddress: account,
       contractAddress: contractAddress
     }
-    const res = await fetch(fullURL("/api/demo/simulate-verification"), {
+    const res = await fetch(fullURL("api/demos/dapp/simulate-verification"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -368,7 +368,7 @@ const Dapp: FC = () => {
 
   const faucet = async (address: string): Promise<boolean> => {
     try {
-      const resp = await fetch(fullURL("/api/demo/faucet"), {
+      const resp = await fetch(fullURL("api/demos/dapp/faucet"), {
         headers: {
           "Content-Type": "application/json"
         },
