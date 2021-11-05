@@ -58,7 +58,7 @@ export const allRevocationLists = async (
   if (lists.length === 0) {
     const list = await generateRevocationList(
       [],
-      fullURL(`/api/revocation/${uuidv4()}`),
+      fullURL(`/api/demos/revocation/${uuidv4()}`),
       process.env.ISSUER_DID,
       buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
     )

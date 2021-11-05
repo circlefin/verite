@@ -1,13 +1,13 @@
 import { BigNumber } from "ethers"
 import { NextPage } from "next"
 import React, { createRef, useState } from "react"
-import { LoadingButton } from "../../../components/LoadingButton"
-import Spinner from "../../../components/Spinner"
-import Alert from "../../../components/cefi/Alert"
-import Layout from "../../../components/cefi/Layout"
-import Modal from "../../../components/cefi/Modal"
-import PendingSendPanel from "../../../components/cefi/PendingSendPanel"
-import Tabs from "../../../components/cefi/Tabs"
+import Alert from "../../../components/demos/cefi/Alert"
+import Layout from "../../../components/demos/cefi/Layout"
+import Modal from "../../../components/demos/cefi/Modal"
+import PendingSendPanel from "../../../components/demos/cefi/PendingSendPanel"
+import Tabs from "../../../components/demos/cefi/Tabs"
+import { LoadingButton } from "../../../components/shared/LoadingButton"
+import Spinner from "../../../components/shared/Spinner"
 import { useBalance } from "../../../hooks/useBalance"
 import { requireAuth } from "../../../lib/auth-fns"
 
@@ -54,7 +54,7 @@ const Page: NextPage = () => {
     setLoading(true)
 
     // Perform send
-    const response = await fetch(`/api/cefi/send`, {
+    const response = await fetch(`/api/demos/cefi/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -90,7 +90,7 @@ const Page: NextPage = () => {
   const pendingSendCancel = async (id: string) => {
     setPendingSendLoading(true)
 
-    const response = await fetch(`/api/cefi/send/${id}`, {
+    const response = await fetch(`/api/demos/cefi/send/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"

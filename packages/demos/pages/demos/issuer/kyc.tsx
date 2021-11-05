@@ -6,7 +6,7 @@ import { NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
-import IssuerLayout from "../../../components/issuer/Layout"
+import IssuerLayout from "../../../components/demos/issuer/Layout"
 import { currentUser, requireAuth } from "../../../lib/auth-fns"
 import { temporaryAuthToken } from "../../../lib/database"
 import type { User } from "../../../lib/database"
@@ -23,7 +23,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const qrCodeData = challengeTokenUrlWrapper(
-    fullURL(`/api/issuance/manifests/kyc/${authToken}`)
+    fullURL(`/api/demos/issuer/manifests/kyc/${authToken}`)
   )
 
   const response = await fetch(qrCodeData.challengeTokenUrl)
@@ -48,7 +48,7 @@ const KycAmlPage: NextPage<Props> = ({
   // Setup polling to detect a newly issued credential.
   const { data } = useSWR(
     fullURL(
-      `/api/issuance/get-newest-credential-from?userId=${user.id}&createdAt=${createdAt}`
+      `/api/demos/issuer/get-newest-credential-from?userId=${user.id}&createdAt=${createdAt}`
     ),
     jsonFetch,
     {

@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@heroicons/react/solid"
 import Link from "next/link"
 import { FC } from "react"
-import Layout from "../../components/Layout"
+import Layout from "../../components/shared/Layout"
 
 const DEMOS = [
   {

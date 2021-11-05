@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
-import SignInForm from "../../../components/SignInForm"
-import IssuerLayout from "../../../components/issuer/Layout"
+import SignInForm from "../../../components/auth/SignInForm"
+import IssuerLayout from "../../../components/demos/issuer/Layout"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)

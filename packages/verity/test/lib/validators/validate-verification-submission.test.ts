@@ -51,7 +51,7 @@ describe("Submission validator", () => {
     const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
-      "https://test.host/verify",
+      "https://localhost:3000/verify",
       "https://other.host/callback",
       [issuer.did]
     )
@@ -94,7 +94,7 @@ describe("Submission validator", () => {
     const verificationRequest = buildCreditScoreVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
-      "https://test.host/verify",
+      "https://localhost:3000/verify",
       "https://other.host/callback",
       [issuer.did],
       creditScoreAttestationFixture.score
@@ -139,7 +139,7 @@ describe("Submission validator", () => {
     const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
-      "https://test.host/verify",
+      "https://localhost:3000/verify",
       "https://other.host/callback",
       ["NOT TRUSTED"]
     )
@@ -182,7 +182,7 @@ describe("Submission validator", () => {
     const verificationRequest = buildCreditScoreVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
-      "https://test.host/verify",
+      "https://localhost:3000/verify",
       "https://other.host/callback",
       [issuer.did],
       minimumCreditScore
@@ -227,7 +227,7 @@ describe("Submission validator", () => {
     const verificationRequest = buildCreditScoreVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
-      "https://test.host/verify",
+      "https://localhost:3000/verify",
       "https://other.host/callback",
       [issuer.did]
     )
@@ -270,7 +270,7 @@ describe("Submission validator", () => {
     const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
-      "https://test.host/verify",
+      "https://localhost:3000/verify",
       "https://other.host/callback",
       [issuer.did]
     )

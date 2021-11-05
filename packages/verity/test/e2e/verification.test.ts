@@ -28,7 +28,7 @@ describe("verification", () => {
     const kycRequest = buildKycVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
-      "https://test.host/verify"
+      "https://localhost:3000/verify"
     )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)

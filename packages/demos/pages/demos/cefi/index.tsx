@@ -1,8 +1,8 @@
 import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
 import Image from "next/image"
-import Layout from "../../../components/cefi/Layout"
-import SignInFormCeFi from "../../../components/cefi/SignInFormCeFi"
+import Layout from "../../../components/demos/cefi/Layout"
+import SignInFormCeFi from "../../../components/demos/cefi/SignInFormCeFi"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)
