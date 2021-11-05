@@ -32,9 +32,10 @@ function DemoApp({ Component, pageProps }: AppProps): JSX.Element {
 }
 
 /**
- * Password protect the entire website.
+ * Optionally password protect the entire website.
  *
- * TODO: This should be removed post-announcement
+ * This can be achieved by setting the environment variable
+ * `PROTECTED_PASSWORD` which is only read server-side.
  */
 DemoApp.getInitialProps = async (appContext) => {
   const appProps = await App.getInitialProps(appContext)
