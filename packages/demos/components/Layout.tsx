@@ -9,6 +9,13 @@ type Props = {
   bgColor?: string
 }
 
+/**
+ * This Functional Component is a wrapper for every page in the app, providing
+ * the shared header, navigation, and footer.
+ *
+ * @param props.title The title of the page.
+ * @param props.bgColor The background color of the page. Used to distinguish between the two CeFi demos
+ */
 const Layout: FC<Props> = ({ children, title, bgColor }) => {
   return (
     <>

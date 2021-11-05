@@ -12,7 +12,18 @@ type Props = {
 }
 
 /**
- * An un-styled loading button
+ * An un-styled loading button, which displays a spinner when `loading` is set to true.
+ *
+ * @example
+ *  const [isLoading, setIsLoading] = useState(false)
+ *  ...
+ *  <LoadingButton loading={isLoading} onClick={() => setIsLoading(true)}>Tap me!</LoadingButton>
+ *
+ * @param props.className - Additional class names to apply to the button.
+ * @param props.loading - Whether the button is loading.
+ * @param props.onClick - The function to call when the button is clicked.
+ * @param props.style - The loader style, either `spinner` or `dot-loader` (default: `spinner`)
+ * @param props.type - The button type, either `button` or `submit` (default: `button`)
  */
 export const LoadingButton: FC<Props> = ({
   children,

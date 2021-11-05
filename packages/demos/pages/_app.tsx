@@ -9,6 +9,9 @@ import Cookies from "universal-cookie"
 import RequirePassword from "../components/RequirePassword"
 import { PASSWORD_PROTECTION_COOKIE } from "../lib/react-fns"
 
+/**
+ * Build an `ethers.js` Web3Provider for the given wallet
+ */
 function getLibrary(provider): Web3Provider {
   const library = new Web3Provider(provider)
   library.pollingInterval = 12000
@@ -28,6 +31,11 @@ function DemoApp({ Component, pageProps }: AppProps): JSX.Element {
   )
 }
 
+/**
+ * Password protect the entire website.
+ *
+ * TODO: This should be removed post-announcement
+ */
 DemoApp.getInitialProps = async (appContext) => {
   const appProps = await App.getInitialProps(appContext)
 

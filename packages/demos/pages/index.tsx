@@ -9,6 +9,11 @@ import Image from "next/image"
 import Link from "next/link"
 import Layout from "../components/Layout"
 
+/**
+ * The Home page, available at "/".
+ *
+ * This page is a `NextPage`, which is a React Functional Component.
+ */
 const Home: NextPage = () => {
   return (
     <Layout title="Decentralized Identity for Crypto Finance.">
