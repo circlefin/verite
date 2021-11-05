@@ -6,7 +6,7 @@ import {
 import { createMocks } from "node-mocks-http"
 import { temporaryAuthToken } from "../../../../lib/database"
 import { findManifestById } from "../../../../lib/manifest"
-import handler from "../../../../pages/api/demos/issuance/[token]"
+import handler from "../../../../pages/api/demos/issuer/[token]"
 import { userFactory } from "../../../factories"
 
 const expiredPresentation =

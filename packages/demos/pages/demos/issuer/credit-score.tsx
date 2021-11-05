@@ -23,7 +23,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   const user = await currentUser(context)
   const authToken = await temporaryAuthToken(user)
   const qrCodeData = challengeTokenUrlWrapper(
-    fullURL(`/api/demos/issuance/manifests/credit-score/${authToken}`)
+    fullURL(`/api/demos/issuer/manifests/credit-score/${authToken}`)
   )
 
   const response = await fetch(qrCodeData.challengeTokenUrl)
@@ -48,7 +48,7 @@ const CreditScorePage: NextPage<Props> = ({
   // Setup polling to detect a newly issued credential.
   const { data } = useSWR(
     fullURL(
-      `/api/demos/issuance/get-newest-credential-from?userId=${user.id}&createdAt=${createdAt}`
+      `/api/demos/issuer/get-newest-credential-from?userId=${user.id}&createdAt=${createdAt}`
     ),
     jsonFetch,
     {

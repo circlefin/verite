@@ -152,7 +152,7 @@ const Dapp: FC = () => {
       // Create a Verification Request
       const resp = await fetch(
         fullURL(
-          `api/demos/verification?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`
+          `/api/demos/verifier?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`
         ),
         { method: "POST" }
       )
@@ -168,7 +168,7 @@ const Dapp: FC = () => {
 
   const fetchVerificationStatus = async (id: string) => {
     try {
-      const resp = await fetch(fullURL(`api/demos/verification/${id}/status`), {
+      const resp = await fetch(fullURL(`/api/demos/verifier/${id}/status`), {
         method: "POST"
       })
       const verification = await resp.json()
@@ -191,7 +191,9 @@ const Dapp: FC = () => {
       setVerificationInfoSet(undefined)
       setIsVerifying(false)
 
-      setStatusMessage("API call to Verifier failed. Are you running demos?")
+      setStatusMessage(
+        "API call to Verifier failed. Are you running the demo server?"
+      )
     }
   }
   // End demos verifier
@@ -215,7 +217,7 @@ const Dapp: FC = () => {
       subjectAddress: account,
       contractAddress: contractAddress
     }
-    const res = await fetch(fullURL("api/demos/dapp/simulate-verification"), {
+    const res = await fetch(fullURL("/api/demos/dapp/simulate-verification"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -368,7 +370,7 @@ const Dapp: FC = () => {
 
   const faucet = async (address: string): Promise<boolean> => {
     try {
-      const resp = await fetch(fullURL("api/demos/dapp/faucet"), {
+      const resp = await fetch(fullURL("/api/demos/dapp/faucet"), {
         headers: {
           "Content-Type": "application/json"
         },

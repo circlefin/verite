@@ -19,7 +19,7 @@ export default apiHandler<CredentialOffer>(async (req, res) => {
     buildCredentialOffer(
       uuidv4(),
       manifest,
-      fullURL(`/api/demos/issuance/${token}`)
+      fullURL(`/api/demos/issuer/${token}`)
     )
   )
 })

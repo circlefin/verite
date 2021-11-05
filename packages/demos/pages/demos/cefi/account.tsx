@@ -25,7 +25,7 @@ const Page: NextPage = () => {
 
   const faucetFunction = async (address: string): Promise<boolean> => {
     try {
-      const resp = await fetch(fullURL("api/demos/dapp/faucet"), {
+      const resp = await fetch(fullURL("/api/demos/dapp/faucet"), {
         headers: {
           "Content-Type": "application/json"
         },

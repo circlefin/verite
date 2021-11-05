@@ -34,7 +34,7 @@ export async function createVerificationOffer(
       id,
       process.env.VERIFIER_DID,
       replyUrl,
-      fullURL(`api/demos/verification/${id}/callback`),
+      fullURL(`/api/demos/verifier/${id}/callback`),
       [process.env.ISSUER_DID]
     )
   } else if (type === "credit-score") {
@@ -44,7 +44,7 @@ export async function createVerificationOffer(
       id,
       process.env.VERIFIER_DID,
       replyUrl,
-      fullURL(`api/demos/verification/${id}/callback`),
+      fullURL(`/api/demos/verifier/${id}/callback`),
       [process.env.ISSUER_DID],
       /* minimumCreditScore: */ 600
     )
@@ -58,7 +58,7 @@ export async function createVerificationOffer(
     id,
     challenge: verificationRequest,
     qrCodeData: challengeTokenUrlWrapper(
-      fullURL(`api/demos/verification/${verificationRequest.id}`)
+      fullURL(`/api/demos/verifier/${verificationRequest.id}`)
     )
   }
 }
@@ -68,7 +68,7 @@ function toReplyUrl(
   subjectAddress?: string,
   contractAddress?: string
 ): string {
-  const url = new URL(fullURL(`api/demos/verification/${id}/submission`))
+  const url = new URL(fullURL(`/api/demos/verifier/${id}/submission`))
 
   if (subjectAddress) {
     url.searchParams.append("subjectAddress", subjectAddress)

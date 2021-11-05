@@ -34,7 +34,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
   const { qrCodeData, challenge } = verification
 
   const { data } = useSWR(
-    () => fullURL(`api/demos/verification/${verification.id}/status`),
+    () => fullURL(`/api/demos/verifier/${verification.id}/status`),
     jsonFetch,
     { refreshInterval: 1000 }
   )

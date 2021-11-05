@@ -3,15 +3,15 @@ import { createMocks } from "node-mocks-http"
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationOffer } from "../../../../../lib/database"
 import { fullURL } from "../../../../../lib/utils"
-import handler from "../../../../../pages/api/demos/verification/[id]/index"
+import handler from "../../../../../pages/api/demos/verifier/[id]/index"
 
 describe("GET /verification/[id]", () => {
   it("returns the presentation definition", async () => {
     const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
       process.env.VERIFIER_DID,
-      fullURL("api/demos/verification/submission"),
-      fullURL("api/demos/verification/callback")
+      fullURL("/api/demos/verifier/submission"),
+      fullURL("/api/demos/verifier/callback")
     )
     await saveVerificationOffer(verificationRequest)
 
