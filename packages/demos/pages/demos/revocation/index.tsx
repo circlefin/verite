@@ -2,8 +2,8 @@ import { NextPage } from "next"
 import { signIn, useSession } from "next-auth/client"
 import { useRouter } from "next/router"
 import { useState } from "react"
-import { LoadingButton } from "../../../components/LoadingButton"
-import RevocationLayout from "../../../components/revocation/Layout"
+import RevocationLayout from "../../../components/demos/revocation/Layout"
+import { LoadingButton } from "../../../components/shared/LoadingButton"
 import { fullURL } from "../../../lib/utils"
 
 const RevocationPage: NextPage = () => {

@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": true,
   "contributors": [
-    "Kim Hamilton Duffy (https://github.com/kimdhamilton",
+    "Kim Hamilton Duffy (https://github.com/kimdhamilton)",
     "Sean Neville (https://github.com/psnevio)",
     "Brice Stacey <brice@m2.xyz> (https://m2.xyz)",
     "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@verity/core": "*",
-    "next": "latest",
+    "next": "12.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

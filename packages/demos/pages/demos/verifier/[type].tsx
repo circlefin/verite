@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
-import VerifierLayout from "../../../components/verifier/Layout"
+import VerifierLayout from "../../../components/demos/verifier/Layout"
 import { fullURL, jsonFetch } from "../../../lib/utils"
 import {
   createVerificationOffer,
@@ -34,7 +34,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
   const { qrCodeData, challenge } = verification
 
   const { data } = useSWR(
-    () => fullURL(`/api/verification/${verification.id}/status`),
+    () => fullURL(`/api/demos/verifier/${verification.id}/status`),
     jsonFetch,
     { refreshInterval: 1000 }
   )

@@ -20,7 +20,7 @@ export function validateAttestationSchema(
     const error = validate.errors[0]
     throw new ValidationError(
       `${error.keyword} json schema validation failure`,
-      `${error.dataPath ? error.dataPath : "input"} ${error.message}`
+      `${error.instancePath ? error.instancePath : "input"} ${error.message}`
     )
   }
 }

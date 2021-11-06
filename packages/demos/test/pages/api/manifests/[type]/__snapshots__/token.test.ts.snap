@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET /api/issuance/manifests/[type]/[token] returns the CreditScore manifest 1`] = `
+exports[`GET /api/demos/issuer/manifests/[type]/[token] returns the CreditScore manifest 1`] = `
 Object {
   "format": Object {
     "jwt_vc": Object {
@@ -79,14 +79,14 @@ Object {
         },
         "hero": Object {
           "alt": "Credit Score Visual",
-          "uri": "http://test.host/img/credit-score-hero.png",
+          "uri": "http://localhost:3000/img/credit-score-hero.png",
         },
         "text": Object {
           "color": "#FFFFFF",
         },
         "thumbnail": Object {
           "alt": "Verity Logo",
-          "uri": "http://test.host/img/credit-score-thumbnail.png",
+          "uri": "http://localhost:3000/img/credit-score-thumbnail.png",
         },
       },
     },
@@ -117,7 +117,7 @@ Object {
 }
 `;
 
-exports[`GET /api/issuance/manifests/[type]/[token] returns the KYC/AML manifest 1`] = `
+exports[`GET /api/demos/issuer/manifests/[type]/[token] returns the KYC/AML manifest 1`] = `
 Object {
   "format": Object {
     "jwt_vc": Object {
@@ -202,14 +202,14 @@ Object {
         },
         "hero": Object {
           "alt": "KYC+AML Visual",
-          "uri": "http://test.host/img/kyc-aml-hero.png",
+          "uri": "http://localhost:3000/img/kyc-aml-hero.png",
         },
         "text": Object {
           "color": "#FFFFFF",
         },
         "thumbnail": Object {
           "alt": "Verity Logo",
-          "uri": "http://test.host/img/kyc-aml-thumbnail.png",
+          "uri": "http://localhost:3000/img/kyc-aml-thumbnail.png",
         },
       },
     },
