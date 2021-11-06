@@ -18,7 +18,7 @@ Read more about Verifier and Subject Submission patterns in TODO LINK.
 
 `VerificationRegistry` converts a valid, authentic verification result to a data-minimized verification record before persisting.
 
-**PermissionedToken**: This token uses `VerificationRegistry` by delegation to support KYC verifications. The `beforeTokenTransfer` hook, which executes as part of the ERC20 transfer implementation, ensures that the sender and recipient are verified counterparties. This contract demonstrates the verifier submission pattern; only registered verifiers may populate the registry.
+**PermissionedToken**: This token uses `VerificationRegistry` by delegation to support KYC verifications. The `beforeTokenTransfer` hook, which executes as part of the OpenZeppelin ERC20 transfer implementation, ensures that the sender and recipient are verified counterparties. This contract demonstrates the verifier submission pattern; only registered verifiers may populate the registry.
 
 **ThresholdToken**: Demonstrates a token requiring sender verification for transfers over a pre-defined threshold.
 This contract demonstrates the subject submission pattern: `ThresholdToken` extends `VerificationRegistry` to support subject submission of verification results via the custom function `validateAndTransfer` (which in turn calls an internal `VerificationRegistry` function). The `beforeTokenTransfer` hook emits an error if a valid verification record isn't present for the sending address in the `VerificationRegistry`. Note: in the Dapp demo, this is what cases the Dapp to initiate a credential request from the holder/subject.
