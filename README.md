@@ -10,7 +10,7 @@ and as such, the dependencies for all included packages are installed from the r
 
 The primary packages in this repository are:
 
-- [@verity/contract](./packages/contract) - A solidity contract requiring KYC proof for higher-value transactions
+- [@verity/contract](./packages/contract) - Demonstrates integration of verification results into smart contracts -- e.g., requiring KYC proof for higher-value transactions.
 - [@verity/demos](./packages/demos) - A demo walkthrough of the entire verity project, with additional demos for DeFi and custodial use cases.
 - [@verity/core](./packages/verity) - Shared logic for issuing, verifying, and revoking Verifiable Credentials
 
