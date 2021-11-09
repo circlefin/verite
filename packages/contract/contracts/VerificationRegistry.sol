@@ -148,7 +148,7 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
     }
 
     /**
-     * R@inheritdoc IVerificationRegistry
+     * @inheritdoc IVerificationRegistry
      */
     function getVerification(bytes32 uuid) external override view returns (VerificationRecord memory) {
         return _verifications[uuid];
