@@ -9,7 +9,7 @@
     "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
   ],
   "scripts": {
-    "hardhat:node": "npx hardhat node",
+    "hardhat:node": "npx hardhat node --hostname 127.0.0.1",
     "hardhat:deploy": "npx hardhat run scripts/deploy.ts --network localhost",
     "hardhat:faucet": "npx hardhat --network localhost faucet",
     "hardhat:test": "npx hardhat test --network localhost"
