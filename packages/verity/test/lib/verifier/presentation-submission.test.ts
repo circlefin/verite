@@ -1,12 +1,15 @@
+import jsonpath from "jsonpath"
 import { buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
 import {
   buildIssuer,
   decodeVerifiableCredential,
+  decodeVerifiablePresentation,
   randomDidKey
 } from "../../../lib/utils"
 import { kycPresentationDefinition } from "../../../lib/verifier/presentation-definitions"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
+
 describe("buildPresentationSubmission", () => {
   it("builds a Presentation Submission", async () => {
     // DID of the holder
@@ -31,33 +34,82 @@ describe("buildPresentationSubmission", () => {
     const presentationDefinition = kycPresentationDefinition()
 
     // Build Presentation Submission
-    const submission = await buildPresentationSubmission(
+    const encodedSubmission = await buildPresentationSubmission(
       didKey,
       presentationDefinition,
       credential
     )
+    const submission = await decodeVerifiablePresentation(encodedSubmission)
 
-    // In this example, the Presentation Request is for a KYC credential.
+    // In this example, the Presentation Submission is for a Presentation
+    // Request requiring a KYC credential.
     expect(submission).toMatchObject({
-      // presentation: "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVQcmVzZW50YXRpb24iXSwiaG9sZGVyIjoiZGlkOmtleTp6Nk1raUxRS0FaUHZqRkxrTnNmaUx5U3RoczZhQW9yeWIxY2hQckhHN3VtblI2cDUiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6WyJleUpoYkdjaU9pSkZaRVJUUVNJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMll5STZleUpBWTI5dWRHVjRkQ0k2V3lKb2RIUndjem92TDNkM2R5NTNNeTV2Y21jdk1qQXhPQzlqY21Wa1pXNTBhV0ZzY3k5Mk1TSXNJbWgwZEhCek9pOHZkbVZ5YVhSNUxtbGtMMmxrWlc1MGFYUjVJbDBzSW5SNWNHVWlPbHNpVm1WeWFXWnBZV0pzWlVOeVpXUmxiblJwWVd3aUxDSkxXVU5CVFV4QmRIUmxjM1JoZEdsdmJpSmRMQ0pqY21Wa1pXNTBhV0ZzVTNWaWFtVmpkQ0k2ZXlKTFdVTkJUVXhCZEhSbGMzUmhkR2x2YmlJNmV5SkFkSGx3WlNJNklrdFpRMEZOVEVGMGRHVnpkR0YwYVc5dUlpd2lZWFYwYUc5eWFYUjVTV1FpT2lKa2FXUTZkMlZpT25abGNtbDBlUzVwWkNJc0ltRndjSEp2ZG1Gc1JHRjBaU0k2SWpJd01qRXRNVEV0TVRCVU1UazZNRFk2TWpNdU1qUTFXaUlzSW1GMWRHaHZjbWwwZVU1aGJXVWlPaUpXWlhKcGRIa2lMQ0poZFhSb2IzSnBkSGxWY213aU9pSm9kSFJ3Y3pvdkwzWmxjbWwwZVM1cFpDSXNJbUYxZEdodmNtbDBlVU5oYkd4aVlXTnJWWEpzSWpvaWFIUjBjSE02THk5cFpHVnVkR2wwZVM1MlpYSnBkSGt1YVdRaWZYMTlMQ0p6ZFdJaU9pSmthV1E2YTJWNU9ubzJUV3RwVEZGTFFWcFFkbXBHVEd0T2MyWnBUSGxUZEdoek5tRkJiM0o1WWpGamFGQnlTRWMzZFcxdVVqWndOU0lzSW01aVppSTZNVFl6TmpVM01URTRNeXdpYVhOeklqb2laR2xrT210bGVUcDZOazFyYWtOR2NrTjJVRGQ1UkhORWJsRndkVWh1U0VGTmRWbzVWRGxXYzJkMWRsbGpNalpTWjFCWVpGUkZVSEFpZlEuc0xpXzJBOXkwT1M3X2lFMUJkX1VjcXFVa19mZnM5Nk1hR2xBUjh0YVRMa3VHU2NWc0dCa2tlWG1zdmJlMFNyYlhMV3ZZbmNTRGRHV0F5NTFiRWtvQnciXX0sInN1YiI6ImRpZDprZXk6ejZNa2lMUUtBWlB2akZMa05zZmlMeVN0aHM2YUFvcnliMWNoUHJIRzd1bW5SNnA1IiwiaXNzIjoiZGlkOmtleTp6Nk1raUxRS0FaUHZqRkxrTnNmaUx5U3RoczZhQW9yeWIxY2hQckhHN3VtblI2cDUifQ.-8C8D0zjoefRlet1uy-i3o-dRs4S9tmdQrc6n4cxxItwJwjEGhzLog-AI6rFBUyCwpfhplIhiLKO6mQoqakpAQ"
-      presentation_submission: {
+      "@context": ["https://www.w3.org/2018/credentials/v1"],
+      presentationSubmission: {
         definition_id: presentationDefinition.id,
         descriptor_map: [
           {
             format: "jwt_vc",
             id: "kycaml_input",
-            path: "$.presentation.verifiableCredential[0]"
+            path: "$.verifiableCredential[0]"
           }
         ]
         // "id": "40a2614b-bd9a-4301-b19b-543f8c5f3ba2"
-      }
+      },
+      verifiableCredential: [
+        {
+          type: ["VerifiableCredential", "KYCAMLAttestation"],
+          credentialSubject: {
+            id: didKey.subject,
+            KYCAMLAttestation: {
+              "@type": "KYCAMLAttestation",
+              authorityId: "did:web:verity.id",
+              // approvalDate: attestation.approvalDate,
+              authorityName: "Verity",
+              authorityUrl: "https://verity.id",
+              authorityCallbackUrl: "https://identity.verity.id"
+            }
+          },
+          issuer: { id: issuerDid.subject }
+        }
+      ]
     })
 
-    // Notice that the presentation definition has the id "kycaml_input"
-    // and, once decoded, the submission will satisfy it with the value at the
+    // Next, we demonstrate how the descriptor map is used to satisfy the
+    // presentation request requirements.
+
+    // Notice that the presentation definition has an input with the
+    // id "kycaml_input". The submission will satisfy it with the value at the
     // given path.
     expect(presentationDefinition.input_descriptors[0].id).toEqual(
       "kycaml_input"
     )
+
+    // The submission has a matching identifier
+    expect(submission.presentationSubmission.descriptor_map[0].id).toEqual(
+      "kycaml_input"
+    )
+    // The submission defines the path to find it
+    const path = submission.presentationSubmission.descriptor_map[0].path
+
+    // Query the submission with the path
+    const query = jsonpath.query(submission, path)
+
+    // It will match the KYC credential that is required
+    expect(query[0]).toMatchObject({
+      type: ["VerifiableCredential", "KYCAMLAttestation"],
+      credentialSubject: {
+        id: didKey.subject,
+        KYCAMLAttestation: {
+          "@type": "KYCAMLAttestation",
+          authorityId: "did:web:verity.id",
+          // approvalDate: attestation.approvalDate,
+          authorityName: "Verity",
+          authorityUrl: "https://verity.id",
+          authorityCallbackUrl: "https://identity.verity.id"
+        }
+      },
+      issuer: { id: issuerDid.subject }
+    })
   })
 })

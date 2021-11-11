@@ -1,5 +1,5 @@
 import Ajv from "ajv"
-import type { VerifyPresentationOptions } from "did-jwt-vc/src/types"
+import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import jsonpath from "jsonpath"
 import type {
   DecodedPresentationSubmission,
@@ -256,17 +256,14 @@ async function ensureHolderIsSubject(
  * Validate a verifiable presentation against a presentation definition
  */
 export async function validateVerificationSubmission(
-  submission: EncodedPresentationSubmission,
+  submission: JWT,
   definition: PresentationDefinition,
   options?: VerifyPresentationOptions
 ): Promise<void> {
-  const presentation = await decodeVerifiablePresentation(
-    submission.presentation,
-    options
-  )
+  const presentation = await decodeVerifiablePresentation(submission, options)
 
   const decoded: DecodedPresentationSubmission = {
-    presentation_submission: submission.presentation_submission,
+    presentation_submission: presentation.presentationSubmission,
     presentation
   }
 
