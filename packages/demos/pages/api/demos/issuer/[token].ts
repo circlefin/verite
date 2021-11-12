@@ -133,9 +133,7 @@ async function persistGeneratedCredentials(
   user: User,
   fulfillment: EncodedCredentialFulfillment
 ): Promise<void> {
-  const decodedPresentation = await decodeVerifiablePresentation(
-    fulfillment.presentation
-  )
+  const decodedPresentation = await decodeVerifiablePresentation(fulfillment)
 
   await storeCredentials(decodedPresentation.verifiableCredential, user.id)
 }

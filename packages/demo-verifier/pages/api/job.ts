@@ -17,7 +17,7 @@ export default async function credentials(
     expiresIn: "1h"
   })
 
-  const challenge = challengeTokenUrlWrapper(`/api/demos/verifications/${token}`)
+  const challenge = challengeTokenUrlWrapper(`/api/verifications/${token}`)
 
   res.status(200).json(challenge)
 }

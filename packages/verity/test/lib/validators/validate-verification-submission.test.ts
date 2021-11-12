@@ -1,9 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
 import { ValidationError } from "../../../lib/errors"
-import {
-  buildCredentialApplication,
-  decodeCredentialApplication
-} from "../../../lib/issuer/credential-application"
+import { buildCredentialApplication } from "../../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
@@ -15,6 +12,7 @@ import {
   buildKycVerificationOffer
 } from "../../../lib/verifier/verification-offer"
 import type {
+  DecodedCredentialApplication,
   EncodedPresentationSubmission,
   VerificationOffer
 } from "../../../types"
@@ -30,22 +28,24 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
 
     await validateCredentialApplication(application, manifest)
 
-    const decodedApplication = await decodeCredentialApplication(application)
-
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      application,
       kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildKycVerificationOffer(
@@ -74,21 +74,23 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
 
     await validateCredentialApplication(application, manifest)
 
-    const decodedApplication = await decodeCredentialApplication(application)
-
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      application,
       creditScoreAttestationFixture
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildCreditScoreVerificationOffer(
@@ -118,22 +120,24 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
 
     await validateCredentialApplication(application, manifest)
 
-    const decodedApplication = await decodeCredentialApplication(application)
-
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      application,
       kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildKycVerificationOffer(
@@ -161,22 +165,24 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
 
     await validateCredentialApplication(application, manifest)
 
-    const decodedApplication = await decodeCredentialApplication(application)
-
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      application,
       creditScoreAttestationFixture
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1
-    const fulfillmentVP = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildCreditScoreVerificationOffer(
@@ -205,22 +211,24 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
 
     await validateCredentialApplication(application, manifest)
 
-    const decodedApplication = await decodeCredentialApplication(application)
-
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      application,
       kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     // Generate Credit Score Request, even though we have a KYC credential
@@ -249,22 +257,24 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey()
     const verifierDidKey = randomDidKey()
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
 
     await validateCredentialApplication(application, manifest)
 
-    const decodedApplication = await decodeCredentialApplication(application)
-
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      application,
       kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildKycVerificationOffer(

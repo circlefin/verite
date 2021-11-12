@@ -14,13 +14,11 @@ export type CredentialApplicationHeader = {
   format: ClaimFormatDesignation
 }
 
-export type GenericCredentialApplication = NarrowCredentialApplication & {
-  presentation: JWT | Verifiable<W3CPresentation>
-}
+export type GenericCredentialApplication =
+  | EncodedCredentialApplication
+  | DecodedCredentialApplication
 
-export type EncodedCredentialApplication = NarrowCredentialApplication & {
-  presentation: JWT
-}
-export type DecodedCredentialApplication = NarrowCredentialApplication & {
-  presentation: Verifiable<W3CPresentation>
-}
+export type EncodedCredentialApplication = JWT
+
+export type DecodedCredentialApplication = NarrowCredentialApplication &
+  Verifiable<W3CPresentation>

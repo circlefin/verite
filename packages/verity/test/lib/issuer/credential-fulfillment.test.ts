@@ -122,55 +122,67 @@ describe("buildAndSignFulfillment", () => {
     const application = await decodeCredentialApplication(encodedApplication)
 
     const attestation = kycAmlAttestationFixture
-    const fulfillment = await buildAndSignFulfillment(
+    const encodedFulfillment = await buildAndSignFulfillment(
       issuer,
       application,
       attestation
     )
 
-    // The encoded fulfillment looks like this:
-    //
-    // const fulfillment = {
-    //   credential_fulfillment: {
-    //     id: "44d6f8a1-7e75-43c3-b3fc-2cbcbdc442bb",
-    //     manifest_id: "KYCAMLAttestation",
-    //     descriptor_map: [
-    //       {
-    //         id: "proofOfIdentifierControlVP",
-    //         format: "jwt_vc",
-    //         path: "$.presentation.credential[0]"
-    //       }
-    //     ]
-    //   },
-    //   presentation:
-    //     "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVQcmVzZW50YXRpb24iXSwiaG9sZGVyIjoiZGlkOmtleTp6Nk1rb01DczFEM0pWanp3S055S2I2UXJHejQ2Smk0TjFoNUhLeTNVa2ZWQ0hkZVAiLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6WyJleUpoYkdjaU9pSkZaRVJUUVNJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMll5STZleUpBWTI5dWRHVjRkQ0k2V3lKb2RIUndjem92TDNkM2R5NTNNeTV2Y21jdk1qQXhPQzlqY21Wa1pXNTBhV0ZzY3k5Mk1TSXNJbWgwZEhCek9pOHZkbVZ5YVhSNUxtbGtMMmxrWlc1MGFYUjVJbDBzSW5SNWNHVWlPbHNpVm1WeWFXWnBZV0pzWlVOeVpXUmxiblJwWVd3aUxDSkxXVU5CVFV4QmRIUmxjM1JoZEdsdmJpSmRMQ0pqY21Wa1pXNTBhV0ZzVTNWaWFtVmpkQ0k2ZXlKTFdVTkJUVXhCZEhSbGMzUmhkR2x2YmlJNmV5SkFkSGx3WlNJNklrdFpRMEZOVEVGMGRHVnpkR0YwYVc5dUlpd2lZWFYwYUc5eWFYUjVTV1FpT2lKa2FXUTZkMlZpT25abGNtbDBlUzVwWkNJc0ltRndjSEp2ZG1Gc1JHRjBaU0k2SWpJd01qRXRNVEF0TWpaVU1UWTZORFE2TXpZdU1UYzJXaUlzSW1GMWRHaHZjbWwwZVU1aGJXVWlPaUpXWlhKcGRIa2lMQ0poZFhSb2IzSnBkSGxWY213aU9pSm9kSFJ3Y3pvdkwzWmxjbWwwZVM1cFpDSXNJbUYxZEdodmNtbDBlVU5oYkd4aVlXTnJWWEpzSWpvaWFIUjBjSE02THk5cFpHVnVkR2wwZVM1MlpYSnBkSGt1YVdRaWZYMTlMQ0p6ZFdJaU9pSmthV1E2YTJWNU9ubzJUV3RwWlVNemQzbG5NMGQzT1VkaU4zWjBiV2x2VW10b1UyNW5kMUZhYnpFNVJEZE1ZWFI0WlV0T1FtcHhOU0lzSW01aVppSTZNVFl6TlRJMk5qWTNOaXdpYVhOeklqb2laR2xrT210bGVUcDZOazFyYjAxRGN6RkVNMHBXYW5wM1MwNTVTMkkyVVhKSGVqUTJTbWswVGpGb05VaExlVE5WYTJaV1EwaGtaVkFpZlEudkU4Y0tYS3pRNVhzYUhnNnZmUUlMbmNjUW9tYWdIY2hfZVN4S25IOXhRM0twb2dqZHU2b0k3azUyYmhXVF9wMW5JLUtZMjFtdzBFVnNMdjhjbU1zRHciXX0sInN1YiI6ImRpZDprZXk6ejZNa29NQ3MxRDNKVmp6d0tOeUtiNlFyR3o0NkppNE4xaDVIS3kzVWtmVkNIZGVQIiwiaXNzIjoiZGlkOmtleTp6Nk1rb01DczFEM0pWanp3S055S2I2UXJHejQ2Smk0TjFoNUhLeTNVa2ZWQ0hkZVAifQ.Ph8L2AzY9i2L9RFAK6gKsSMsfXgJOTfS1I-B0henl-h0d1e_eYljsRSBgXp-wVFZRB7DWX83Zfjp_rg5HST-Aw"
-    // }
-    expect(fulfillment.credential_fulfillment).toMatchObject({
-      manifest_id: "KYCAMLAttestation",
-      descriptor_map: [
-        {
-          id: "proofOfIdentifierControlVP",
-          format: "jwt_vc",
-          path: "$.presentation.credential[0]"
-        }
-      ]
-    })
-    expect(fulfillment.credential_fulfillment.id).toBeDefined()
-    expect(fulfillment.presentation).toBeDefined()
-
     // The client can then decode the presentation
-    const presentation = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
+    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
 
-    // Here we only verify the Presentation structure.
-    expect(presentation).toMatchObject({
-      "@context": ["https://www.w3.org/2018/credentials/v1"],
+    // The fulfillment looks like this:
+    expect(fulfillment).toMatchObject({
+      vp: {
+        holder: issuer.did
+      },
+      sub: issuer.did,
+      credential_fulfillment: {
+        // id: "5f22f1ea-0441-4041-916b-2504a2a4075c",
+        manifest_id: "KYCAMLAttestation",
+        descriptor_map: [
+          {
+            id: "proofOfIdentifierControlVP",
+            format: "jwt_vc",
+            path: "$.presentation.credential[0]"
+          }
+        ]
+      },
+      verifiableCredential: [
+        {
+          credentialSubject: {
+            KYCAMLAttestation: {
+              "@type": "KYCAMLAttestation",
+              authorityId: "did:web:verity.id",
+              // approvalDate: "2021-11-12T18:56:16.508Z",
+              authorityName: "Verity",
+              authorityUrl: "https://verity.id",
+              authorityCallbackUrl: "https://identity.verity.id"
+            },
+            id: subjectDid.subject
+          },
+          issuer: {
+            id: issuer.did
+          },
+          type: ["VerifiableCredential", "KYCAMLAttestation"],
+          "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://verity.id/identity"
+          ],
+          // issuanceDate: "2021-11-12T18:56:17.000Z",
+          proof: {
+            type: "JwtProof2020"
+            // jwt: "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIsImh0dHBzOi8vdmVyaXR5LmlkL2lkZW50aXR5Il0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJLWUNBTUxBdHRlc3RhdGlvbiJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJLWUNBTUxBdHRlc3RhdGlvbiI6eyJAdHlwZSI6IktZQ0FNTEF0dGVzdGF0aW9uIiwiYXV0aG9yaXR5SWQiOiJkaWQ6d2ViOnZlcml0eS5pZCIsImFwcHJvdmFsRGF0ZSI6IjIwMjEtMTEtMTJUMTg6NTY6MTYuNTA4WiIsImF1dGhvcml0eU5hbWUiOiJWZXJpdHkiLCJhdXRob3JpdHlVcmwiOiJodHRwczovL3Zlcml0eS5pZCIsImF1dGhvcml0eUNhbGxiYWNrVXJsIjoiaHR0cHM6Ly9pZGVudGl0eS52ZXJpdHkuaWQifX19LCJzdWIiOiJkaWQ6a2V5Ono2TWtyMTJyWkx6VXNONmJxRjhqR0JYQlZtOGtLMzdxTWphRGpYa1NtUFoxcE1jYyIsIm5iZiI6MTYzNjc0MzM3NywiaXNzIjoiZGlkOmtleTp6Nk1rbTFyWFNMWFRxazFUNzRhZmZUVFNTRGU5S1RzVUdDYnFqcmpVaUVydVZQN1cifQ.7wwiJMxFB_wmB6drZlTLLE90rE_OV5CE_o48LkDVIt7hHP7d8bRtrmkNUqwU-YRXF9tL3NgEep1SA_JygrLUDg"
+          }
+        }
+      ],
+      holder: issuer.did,
       type: ["VerifiablePresentation", "CredentialFulfillment"],
-      // This array includes the credential but to limit scope of the test we
-      // simply match on an empty object.
-      verifiableCredential: [{}],
-      holder: issuerDid.subject
+      "@context": ["https://www.w3.org/2018/credentials/v1"],
+      proof: {
+        type: "JwtProof2020"
+        // jwt: "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVQcmVzZW50YXRpb24iLCJDcmVkZW50aWFsRnVsZmlsbG1lbnQiXSwiaG9sZGVyIjoiZGlkOmtleTp6Nk1rbTFyWFNMWFRxazFUNzRhZmZUVFNTRGU5S1RzVUdDYnFqcmpVaUVydVZQN1ciLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6WyJleUpoYkdjaU9pSkZaRVJUUVNJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMll5STZleUpBWTI5dWRHVjRkQ0k2V3lKb2RIUndjem92TDNkM2R5NTNNeTV2Y21jdk1qQXhPQzlqY21Wa1pXNTBhV0ZzY3k5Mk1TSXNJbWgwZEhCek9pOHZkbVZ5YVhSNUxtbGtMMmxrWlc1MGFYUjVJbDBzSW5SNWNHVWlPbHNpVm1WeWFXWnBZV0pzWlVOeVpXUmxiblJwWVd3aUxDSkxXVU5CVFV4QmRIUmxjM1JoZEdsdmJpSmRMQ0pqY21Wa1pXNTBhV0ZzVTNWaWFtVmpkQ0k2ZXlKTFdVTkJUVXhCZEhSbGMzUmhkR2x2YmlJNmV5SkFkSGx3WlNJNklrdFpRMEZOVEVGMGRHVnpkR0YwYVc5dUlpd2lZWFYwYUc5eWFYUjVTV1FpT2lKa2FXUTZkMlZpT25abGNtbDBlUzVwWkNJc0ltRndjSEp2ZG1Gc1JHRjBaU0k2SWpJd01qRXRNVEV0TVRKVU1UZzZOVFk2TVRZdU5UQTRXaUlzSW1GMWRHaHZjbWwwZVU1aGJXVWlPaUpXWlhKcGRIa2lMQ0poZFhSb2IzSnBkSGxWY213aU9pSm9kSFJ3Y3pvdkwzWmxjbWwwZVM1cFpDSXNJbUYxZEdodmNtbDBlVU5oYkd4aVlXTnJWWEpzSWpvaWFIUjBjSE02THk5cFpHVnVkR2wwZVM1MlpYSnBkSGt1YVdRaWZYMTlMQ0p6ZFdJaU9pSmthV1E2YTJWNU9ubzJUV3R5TVRKeVdreDZWWE5PTm1KeFJqaHFSMEpZUWxadE9HdExNemR4VFdwaFJHcFlhMU50VUZveGNFMWpZeUlzSW01aVppSTZNVFl6TmpjME16TTNOeXdpYVhOeklqb2laR2xrT210bGVUcDZOazFyYlRGeVdGTk1XRlJ4YXpGVU56UmhabVpVVkZOVFJHVTVTMVJ6VlVkRFluRnFjbXBWYVVWeWRWWlFOMWNpZlEuN3d3aUpNeEZCX3dtQjZkclpsVExMRTkwckVfT1Y1Q0VfbzQ4TGtEVkl0N2hIUDdkOGJSdHJta05VcXdVLVlSWEY5dEwzTmdFZXAxU0FfSnlnckxVRGciXX0sInN1YiI6ImRpZDprZXk6ejZNa20xclhTTFhUcWsxVDc0YWZmVFRTU0RlOUtUc1VHQ2JxanJqVWlFcnVWUDdXIiwiY3JlZGVudGlhbF9mdWxmaWxsbWVudCI6eyJpZCI6IjVmMjJmMWVhLTA0NDEtNDA0MS05MTZiLTI1MDRhMmE0MDc1YyIsIm1hbmlmZXN0X2lkIjoiS1lDQU1MQXR0ZXN0YXRpb24iLCJkZXNjcmlwdG9yX21hcCI6W3siaWQiOiJwcm9vZk9mSWRlbnRpZmllckNvbnRyb2xWUCIsImZvcm1hdCI6Imp3dF92YyIsInBhdGgiOiIkLnByZXNlbnRhdGlvbi5jcmVkZW50aWFsWzBdIn1dfSwiaXNzIjoiZGlkOmtleTp6Nk1rbTFyWFNMWFRxazFUNzRhZmZUVFNTRGU5S1RzVUdDYnFqcmpVaUVydVZQN1cifQ.T299mBMhBxfWtqvKSuGQ3tll2vLTfTJSTbMtpBduqHQdTCgbr8tQ4Pe2iXlGnCaIfw9PzNYUu3Y-44KSlEjfCg"
+      }
     })
   })
 })
