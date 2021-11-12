@@ -2,7 +2,7 @@
 
 Decentralized Identity for Crypto Finance.
 
-This repository is a monorepo containing the Core Verity Javascript SDK, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verity standard.
+This repository is a monorepo containing the Core Verity Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verity standard.
 
 ## Getting Started
 
@@ -19,6 +19,7 @@ Each package in this repository lives in the `packages/` directory.
 
 The primary packages in this repository are:
 
+- [@verity/docs](./packages/docs) - Documentation for the Verity
 - [@verity/core](./packages/verity) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
 - [@verity/contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verity into a smart contract.
 - [@verity/demos](./packages/demos) - A demo walkthrough of the entire verity project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
