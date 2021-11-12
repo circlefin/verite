@@ -5,7 +5,6 @@ import type { PresentationSubmission } from "./PresentationSubmission"
 
 type NarrowCredentialApplication = {
   credential_application: CredentialApplicationHeader
-  presentationSubmission?: PresentationSubmission
   presentation_submission?: PresentationSubmission
 }
 

@@ -37,7 +37,7 @@ export async function buildPresentationSubmission(
     client,
     options,
     ["VerifiablePresentation", "PresentationSubmission"],
-    { presentationSubmission }
+    { presentation_submission: presentationSubmission }
   )
 
   return vp

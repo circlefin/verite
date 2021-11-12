@@ -45,7 +45,7 @@ describe("buildPresentationSubmission", () => {
     // Request requiring a KYC credential.
     expect(submission).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
-      presentationSubmission: {
+      presentation_submission: {
         definition_id: presentationDefinition.id,
         descriptor_map: [
           {
@@ -86,11 +86,11 @@ describe("buildPresentationSubmission", () => {
     )
 
     // The submission has a matching identifier
-    expect(submission.presentationSubmission.descriptor_map[0].id).toEqual(
+    expect(submission.presentation_submission.descriptor_map[0].id).toEqual(
       "kycaml_input"
     )
     // The submission defines the path to find it
-    const path = submission.presentationSubmission.descriptor_map[0].path
+    const path = submission.presentation_submission.descriptor_map[0].path
 
     // Query the submission with the path
     const query = jsonpath.query(submission, path)

@@ -64,8 +64,6 @@ function validateInputDescriptors(
   credentialMap: Map<string, Verifiable<W3CCredential>[]>,
   descriptors?: InputDescriptor[]
 ): void {
-  // console.log(credentialMap)
-  // console.log(descriptors)
   if (!descriptors) {
     // no input descriptors, so there is nothing to validate
     return
@@ -111,9 +109,7 @@ function mapInputsToDescriptors(
   submission: DecodedPresentationSubmission | DecodedCredentialApplication,
   definition?: PresentationDefinition
 ): Map<string, Verifiable<W3CCredential>[]> {
-  const descriptorMap = submission.presentationSubmission?.descriptor_map || []
-
-  // console.log(descriptorMap)
+  const descriptorMap = submission.presentation_submission?.descriptor_map || []
 
   return descriptorMap.reduce((map, d) => {
     const match = definition?.input_descriptors.find((id) => id.id === d.id)

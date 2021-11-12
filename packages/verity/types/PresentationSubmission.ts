@@ -3,7 +3,7 @@ import type { Verifiable, W3CPresentation } from "./DidJwt"
 import type { JWT } from "./Jwt"
 
 type NarrowPresentationSubmission = {
-  presentationSubmission?: PresentationSubmission
+  presentation_submission?: PresentationSubmission
 }
 
 export type PresentationSubmission = {

@@ -40,7 +40,7 @@ describe("verification", () => {
     )
     const submission = await decodeVerifiablePresentation(encodedSubmission)
 
-    expect(submission.presentationSubmission!.descriptor_map).toEqual([
+    expect(submission.presentation_submission!.descriptor_map).toEqual([
       {
         id: "kycaml_input",
         format: "jwt_vc",
