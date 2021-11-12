@@ -1,14 +1,15 @@
 import nock from "nock"
-import {
-  buildCredentialApplication,
-  decodeCredentialApplication
-} from "../../lib/issuer/credential-application"
+import { buildCredentialApplication } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
 import { buildKycAmlManifest } from "../../lib/issuer/credential-manifest"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
-import type { RevocableCredential, RevocablePresentation } from "../../types"
+import type {
+  DecodedCredentialApplication,
+  RevocableCredential,
+  RevocablePresentation
+} from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
 
@@ -30,7 +31,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const credentialApplication = await buildCredentialApplication(
+    const encodedApplication = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -38,23 +39,24 @@ describe("issuance", () => {
     /**
      * The issuer validates the credential application
      */
+    const credentialApplication = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
+
     await validateCredentialApplication(credentialApplication, manifest)
 
     /**
      * The issuer builds and signs a fulfillment
      */
-    const decodedApplication = await decodeCredentialApplication(
-      credentialApplication
-    )
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      credentialApplication,
       kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
-      fulfillment.presentation
+      fulfillment
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(
@@ -124,7 +126,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const credentialApplication = await buildCredentialApplication(
+    const encodedApplication = await buildCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -132,24 +134,23 @@ describe("issuance", () => {
     /**
      * The issuer validates the credential application
      */
+    const credentialApplication = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
     await validateCredentialApplication(credentialApplication, manifest)
 
     /**
      * The issuer builds and signs a fulfillment
      */
-    const decodedApplication = await decodeCredentialApplication(
-      credentialApplication
-    )
-
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      credentialApplication,
       kycAmlAttestationFixture,
       { credentialStatus: revocationListFixture }
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
-      fulfillment.presentation
+      fulfillment
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(

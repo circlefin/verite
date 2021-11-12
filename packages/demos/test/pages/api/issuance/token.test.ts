@@ -3,6 +3,7 @@ import {
   decodeVerifiablePresentation,
   randomDidKey
 } from "@verity/core"
+import type { DecodedCredentialFulfillment } from "@verity/core"
 import { createMocks } from "node-mocks-http"
 import { temporaryAuthToken } from "../../../../lib/database"
 import { findManifestById } from "../../../../lib/manifest"
@@ -26,7 +27,7 @@ describe("POST /issuance/[token]", () => {
     const { req, res } = createMocks({
       method: "POST",
       query: { token },
-      body: credentialApplication
+      body: credentialApplication as unknown as Body
     })
 
     await handler(req, res)
@@ -34,7 +35,12 @@ describe("POST /issuance/[token]", () => {
     expect(res.statusCode).toBe(200)
 
     const response = res._getJSONData()
-    expect(response.credential_fulfillment.manifest_id).toEqual(
+
+    const presentation = (await decodeVerifiablePresentation(
+      response
+    )) as DecodedCredentialFulfillment
+
+    expect(presentation.credential_fulfillment.manifest_id).toEqual(
       "KYCAMLAttestation"
     )
   })
@@ -52,7 +58,7 @@ describe("POST /issuance/[token]", () => {
     const { req, res } = createMocks({
       method: "POST",
       query: { token },
-      body: credentialApplication
+      body: credentialApplication as unknown as Body
     })
 
     await handler(req, res)
@@ -60,7 +66,12 @@ describe("POST /issuance/[token]", () => {
     expect(res.statusCode).toBe(200)
 
     const response = res._getJSONData()
-    expect(response.credential_fulfillment.manifest_id).toEqual(
+
+    const presentation = (await decodeVerifiablePresentation(
+      response
+    )) as DecodedCredentialFulfillment
+
+    expect(presentation.credential_fulfillment.manifest_id).toEqual(
       "CreditScoreAttestation"
     )
   })
@@ -111,18 +122,11 @@ describe("POST /issuance/[token]", () => {
   it("rejects an invalid application", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = await randomDidKey()
-    const kycManifest = await findManifestById("KYCAMLAttestation")
-    const credentialApplication = await buildCredentialApplication(
-      clientDid,
-      kycManifest
-    )
-    credentialApplication.presentation = expiredPresentation
 
     const { req, res } = createMocks({
       method: "POST",
       query: { token },
-      body: credentialApplication
+      body: expiredPresentation as unknown as Body
     })
 
     await handler(req, res)
@@ -158,7 +162,7 @@ describe("POST /issuance/[token]", () => {
     const { req, res } = createMocks({
       method: "POST",
       query: { token },
-      body: credentialApplication
+      body: credentialApplication as unknown as Body
     })
 
     await handler(req, res)
@@ -166,9 +170,7 @@ describe("POST /issuance/[token]", () => {
     expect(res.statusCode).toBe(200)
 
     const response = res._getJSONData()
-    const verifiablePresentation = await decodeVerifiablePresentation(
-      response.presentation
-    )
+    const verifiablePresentation = await decodeVerifiablePresentation(response)
     const vc = verifiablePresentation.verifiableCredential[0]
     expect(vc.credentialSubject.id).toBe(clientDid.subject)
     expect(vc.credentialSubject.KYCAMLAttestation["@type"]).toBe(

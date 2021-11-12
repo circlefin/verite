@@ -44,7 +44,7 @@ describe("POST /verification/[id]/submission", () => {
     const { req, res } = createMocks({
       method: "POST",
       query: { id: verificationRequest.id },
-      body: submission
+      body: submission as unknown as Body
     })
 
     await handler(req, res)
@@ -86,7 +86,7 @@ describe("POST /verification/[id]/submission", () => {
         subjectAddress: subject,
         contractAddress: contract
       },
-      body: submission
+      body: submission as unknown as Body
     })
 
     await handler(req, res)
@@ -127,7 +127,7 @@ describe("POST /verification/[id]/submission", () => {
     const { req, res } = createMocks({
       method: "POST",
       query: { id: verificationRequest.id },
-      body: submission
+      body: submission as unknown as Body
     })
 
     await handler(req, res)
@@ -165,9 +165,7 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
     buildAttestationForUser(user, manifest)
   )
 
-  const fulfillmentVP = await decodeVerifiablePresentation(
-    fulfillment.presentation
-  )
+  const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
 
   return fulfillmentVP.verifiableCredential[0]
 }

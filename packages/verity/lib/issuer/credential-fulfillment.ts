@@ -63,7 +63,7 @@ export async function buildAndSignFulfillment(
 ): Promise<EncodedCredentialFulfillment> {
   const encodedCredentials = await buildAndSignVerifiableCredential(
     signer,
-    application.presentation.holder,
+    application.holder,
     attestation,
     payload
   )
@@ -73,24 +73,24 @@ export async function buildAndSignFulfillment(
     encodedCredentials,
     signer,
     options,
-    ["VerifiablePresentation", "CredentialFulfillment"]
+    ["VerifiablePresentation", "CredentialFulfillment"],
+    {
+      credential_fulfillment: {
+        id: uuidv4(),
+        manifest_id: application.credential_application.manifest_id,
+        descriptor_map:
+          application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
+            (d, i) => {
+              return {
+                id: d.id,
+                format: "jwt_vc",
+                path: `$.presentation.credential[${i}]`
+              }
+            }
+          ) || []
+      }
+    }
   )
 
-  return {
-    credential_fulfillment: {
-      id: uuidv4(),
-      manifest_id: application.credential_application.manifest_id,
-      descriptor_map:
-        application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
-          (d, i) => {
-            return {
-              id: d.id,
-              format: "jwt_vc",
-              path: `$.presentation.credential[${i}]`
-            }
-          }
-        ) || []
-    },
-    presentation: encodedPresentation
-  }
+  return encodedPresentation as unknown as EncodedCredentialFulfillment
 }

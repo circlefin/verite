@@ -122,12 +122,16 @@ describe("buildAndSignFulfillment", () => {
     const application = await decodeCredentialApplication(encodedApplication)
 
     const attestation = kycAmlAttestationFixture
-    const fulfillment = await buildAndSignFulfillment(
+    const encodedFulfillment = await buildAndSignFulfillment(
       issuer,
       application,
       attestation
     )
 
+    // The client can then decode the presentation
+    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
+
+    // TODO: This is not correct
     // The encoded fulfillment looks like this:
     //
     // const fulfillment = {
@@ -151,20 +155,14 @@ describe("buildAndSignFulfillment", () => {
         {
           id: "proofOfIdentifierControlVP",
           format: "jwt_vc",
-          path: "$.presentation.credential[0]"
+          path: "$.presentation.credential[0]" // TODO THIS IS WRONG
         }
       ]
     })
     expect(fulfillment.credential_fulfillment.id).toBeDefined()
-    expect(fulfillment.presentation).toBeDefined()
-
-    // The client can then decode the presentation
-    const presentation = await decodeVerifiablePresentation(
-      fulfillment.presentation
-    )
 
     // Here we only verify the Presentation structure.
-    expect(presentation).toMatchObject({
+    expect(fulfillment).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation", "CredentialFulfillment"],
       // This array includes the credential but to limit scope of the test we

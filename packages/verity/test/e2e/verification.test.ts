@@ -1,8 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
-import {
-  buildCredentialApplication,
-  decodeCredentialApplication
-} from "../../lib/issuer/credential-application"
+import { buildCredentialApplication } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
@@ -10,7 +7,11 @@ import { validateCredentialApplication } from "../../lib/validators/validate-cre
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
 import { buildPresentationSubmission } from "../../lib/verifier/presentation-submission"
 import { buildKycVerificationOffer } from "../../lib/verifier/verification-offer"
-import { DidKey, RevocableCredential } from "../../types"
+import {
+  DecodedCredentialApplication,
+  DidKey,
+  RevocableCredential
+} from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
@@ -32,23 +33,24 @@ describe("verification", () => {
     )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
-    const submission = await buildPresentationSubmission(
+    const encodedSubmission = await buildPresentationSubmission(
       clientDidKey,
       kycRequest.body.presentation_definition,
       verifiableCredentials
     )
+    const submission = await decodeVerifiablePresentation(encodedSubmission)
 
-    expect(submission.presentation_submission!.descriptor_map).toEqual([
+    expect(submission.presentationSubmission!.descriptor_map).toEqual([
       {
         id: "kycaml_input",
         format: "jwt_vc",
-        path: "$.presentation.verifiableCredential[0]"
+        path: "$.verifiableCredential[0]"
       }
     ])
 
     // 4. VERIFIER: Verifies submission
     await validateVerificationSubmission(
-      submission,
+      encodedSubmission,
       kycRequest.body.presentation_definition
     )
   })
@@ -60,21 +62,23 @@ async function getClientVerifiableCredential(
   const { manifest, issuer } = await generateManifestAndIssuer()
 
   // 0. PREREQ: Ensure client has a valid KYC credential
-  const application = await buildCredentialApplication(clientDidKey, manifest)
+  const encodedApplication = await buildCredentialApplication(
+    clientDidKey,
+    manifest
+  )
+  const application = (await decodeVerifiablePresentation(
+    encodedApplication
+  )) as DecodedCredentialApplication
   await validateCredentialApplication(application, manifest)
-
-  const decodedApplication = await decodeCredentialApplication(application)
 
   const fulfillment = await buildAndSignFulfillment(
     issuer,
-    decodedApplication,
+    application,
     kycAmlAttestationFixture,
     { credentialStatus: revocationListFixture }
   )
 
-  const fulfillmentVP = await decodeVerifiablePresentation(
-    fulfillment.presentation
-  )
+  const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
 
   return fulfillmentVP.verifiableCredential as RevocableCredential[]
 }

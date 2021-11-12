@@ -5,7 +5,6 @@ import type {
   DecodedPresentationSubmission,
   InputDescriptor,
   PresentationDefinition,
-  EncodedPresentationSubmission,
   DecodedCredentialApplication,
   W3CCredential,
   W3CPresentation,
@@ -65,6 +64,8 @@ function validateInputDescriptors(
   credentialMap: Map<string, Verifiable<W3CCredential>[]>,
   descriptors?: InputDescriptor[]
 ): void {
+  // console.log(credentialMap)
+  // console.log(descriptors)
   if (!descriptors) {
     // no input descriptors, so there is nothing to validate
     return
@@ -110,7 +111,9 @@ function mapInputsToDescriptors(
   submission: DecodedPresentationSubmission | DecodedCredentialApplication,
   definition?: PresentationDefinition
 ): Map<string, Verifiable<W3CCredential>[]> {
-  const descriptorMap = submission.presentation_submission?.descriptor_map || []
+  const descriptorMap = submission.presentationSubmission?.descriptor_map || []
+
+  // console.log(descriptorMap)
 
   return descriptorMap.reduce((map, d) => {
     const match = definition?.input_descriptors.find((id) => id.id === d.id)
@@ -262,11 +265,6 @@ export async function validateVerificationSubmission(
 ): Promise<void> {
   const presentation = await decodeVerifiablePresentation(submission, options)
 
-  const decoded: DecodedPresentationSubmission = {
-    presentation_submission: presentation.presentationSubmission,
-    presentation
-  }
-
   /**
    * Check the verifiable credentials to ensure non are revoked. To check
    * revocation status, we must either have a local cached copy of the revocation
@@ -285,7 +283,7 @@ export async function validateVerificationSubmission(
    */
   ensureNotExpired(presentation)
 
-  const credentialMap = mapInputsToDescriptors(decoded, definition)
+  const credentialMap = mapInputsToDescriptors(presentation, definition)
   /**
    * Check that the Verified Presentation was signed by the subject of the
    * Verified Credential. This ensures that the person submitting the

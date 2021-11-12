@@ -8,16 +8,9 @@ type NarrowCredentialFulfillment = {
     manifest_id: string
     descriptor_map: DescriptorMap[]
   }
-  presentation: JWT
 }
 
-export type GenericCredentialFulfillment = NarrowCredentialFulfillment & {
-  presentation: JWT | Verifiable<W3CPresentation>
-}
+export type EncodedCredentialFulfillment = JWT
 
-export type EncodedCredentialFulfillment = NarrowCredentialFulfillment & {
-  presentation: JWT
-}
-export type DecodedCredentialFulfillment = NarrowCredentialFulfillment & {
-  presentation: Verifiable<W3CPresentation>
-}
+export type DecodedCredentialFulfillment = NarrowCredentialFulfillment &
+  Verifiable<W3CPresentation>
