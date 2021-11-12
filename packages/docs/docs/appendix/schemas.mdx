@@ -1,0 +1,71 @@
+---
+sidebar_position: 1
+---
+
+# Schemas
+
+import kycSchema from "@site/static/schemas/KycAmlAttestation.json";
+import kycVcExample from "@site/static/examples/KYCAMLVerifiableCredential.json";
+import CodeBlock from "@theme/CodeBlock";
+
+## KYC/AML Attestation
+
+```json
+{
+  "@type": "KYCAMLAttestation",
+  "authorityId": "did:web:verity.id",
+  "approvalDate": "2021-08-25T02:13:43.387Z",
+  "authorityName": "Verity",
+  "authorityUrl": "https://verity.id",
+  "authorityCallbackUrl": "https://identity.verity.id",
+  "serviceProviders": [
+    {
+      "@type": "KYCAMLProvider",
+      "name": "Some Service",
+      "score": 200
+    }
+  ]
+}
+```
+
+## Credit / Risk Rating Attestation
+
+```json
+{
+  "@type": "CreditScoreAttestation",
+  "score": 700,
+  "scoreType": "Credit Rating",
+  "provider": "Experian"
+}
+```
+
+## Blockchain Address Ownership
+
+TODO
+
+```json
+{
+  "@type": "ChainAddressOwner",
+  "chain": string
+  "address": string
+  "proof": string
+}
+```
+
+## Counterparty Compliance
+
+TODO
+
+```json
+{
+  "@type": "CounterpartyPerson",
+  "accountNumber": string,
+  "accountSource": string
+}
+```
+
+## Example in a Verifiable Credential
+
+<CodeBlock className="language-json">
+  {JSON.stringify(kycVcExample, null, 2)}
+</CodeBlock>

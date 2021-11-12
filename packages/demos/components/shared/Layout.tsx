@@ -39,16 +39,17 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
             </Link>
 
             <div className="flex items-center justify-between space-x-4">
-              <Link href="/demos">
+              <Link href="/demos/">
                 <a className="px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-blue-500 hover:text-white">
                   Demos
                 </a>
               </Link>
-              <Link href="/documentation">
-                <a className="px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-blue-500 hover:text-white">
-                  Documentation
-                </a>
-              </Link>
+              <a
+                href={process.env.NEXT_PUBLIC_DOCS_URL}
+                className="px-3 py-2 text-sm font-medium text-gray-900 rounded-md hover:bg-blue-500 hover:text-white"
+              >
+                Documentation
+              </a>
             </div>
           </header>
           <main className="max-w-4xl p-4 mx-auto bg-white sm:p-8 rounded-xl">
