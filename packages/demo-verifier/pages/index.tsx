@@ -120,10 +120,7 @@ export default function Home(): JSX.Element {
 
     const response = await fetch(verificationRequest.reply_url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(request)
+      body: request
     })
 
     if (response.ok) {

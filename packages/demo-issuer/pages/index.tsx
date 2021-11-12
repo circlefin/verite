@@ -4,7 +4,8 @@ import {
   decodeVerifiablePresentation,
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
-  CredentialOffer
+  CredentialOffer,
+  DecodedCredentialFulfillment
 } from "@verity/core"
 import type {
   CredentialManifest,
@@ -68,7 +69,8 @@ export default function Home({
   const [challengeResponse, setChallengeResponse] = useState()
 
   // Credential Response
-  const [credentialResponse, setCredentialResponse] = useState()
+  const [credentialResponse, setCredentialResponse] =
+    useState<DecodedCredentialFulfillment>()
   // Decoded Presentation from the credential response
   const [presentation, setPresentation] = useState<Presentation>()
 
@@ -99,16 +101,15 @@ export default function Home({
 
     const response = await fetch("/api/credentials", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(application)
+      body: application
     })
 
     if (response.ok) {
-      const json = await response.json()
-      const presentation = await decodeVerifiablePresentation(json.presentation)
-      setCredentialResponse(json)
+      const text = await response.text()
+      const presentation = (await decodeVerifiablePresentation(
+        text
+      )) as DecodedCredentialFulfillment
+      setCredentialResponse(presentation)
       setPresentation(presentation)
     }
   }
@@ -119,7 +120,7 @@ export default function Home({
       <>
         <div className="bg-white shadow sm:rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
               Scan this QR Code with your mobile wallet
             </h3>
             <div className="prose">
@@ -135,7 +136,7 @@ export default function Home({
                   e.preventDefault()
                   simulateScan(challenge)
                 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+                className="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
               >
                 Simulate Scanning
               </button>
@@ -157,10 +158,10 @@ export default function Home({
     return (
       <div className="bg-white shadow sm:rounded-lg">
         <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">
+          <h3 className="text-lg font-medium leading-6 text-gray-900">
             {title}
           </h3>
-          <div className="mt-2 max-w-xl text-sm text-gray-500">
+          <div className="max-w-xl mt-2 text-sm text-gray-500">
             <p>{description}</p>
           </div>
           <div className="mt-5">
@@ -170,7 +171,7 @@ export default function Home({
                 e.preventDefault()
                 applyForCredential(manifest)
               }}
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+              className="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
             >
               Request Credential
             </button>
