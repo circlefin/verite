@@ -36,18 +36,30 @@ describe("buildCredentialApplication", () => {
 
 describe("decodeCredentialApplication", () => {
   it("decodes the Credential Application", async () => {
-    const clientDidKey = await randomDidKey()
+    const clientDidKey = randomDidKey()
     const { manifest } = await generateManifestAndIssuer()
     const application = await buildCredentialApplication(clientDidKey, manifest)
 
     const decoded = await decodeCredentialApplication(application)
 
-    // TODO: Add object match for the presentationSubmission and the credentialApplication
-    // expect(decoded.presentationSubmission).toEqual(
-    //   application.presentation_submission
-    // )
     expect(decoded).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
+      credential_application: {
+        // id: 'f584577a-607f-43d9-a128-39b21f126f96', client-generated unique identifier
+        manifest_id: "KYCAMLAttestation",
+        format: { jwt_vp: { alg: ["EdDSA"] } }
+      },
+      presentation_submission: {
+        // id: '0a97ed30-a4a9-43fb-9564-4d65db62d4bc', client-generated unique identifier
+        definition_id: "ProofOfControlPresentationDefinition",
+        descriptor_map: [
+          {
+            id: "proofOfIdentifierControlVP",
+            format: "jwt_vp",
+            path: "$.presentation"
+          }
+        ]
+      },
       verifiableCredential: [],
       holder: clientDidKey.subject,
       type: ["VerifiablePresentation", "CredentialApplication"]
