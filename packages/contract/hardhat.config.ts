@@ -22,6 +22,15 @@ export default {
     hardhat: {
       chainId: 1337
     },
+    rinkeby: {
+      chainId: 4,
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+      accounts:
+        // quick hack to get around changeme being an invalid private key
+        process.env.ROPSTEN_PRIVATE_KEY !== "changeme"
+          ? [process.env.ROPSTEN_PRIVATE_KEY]
+          : []
+    },
     ropsten: {
       chainId: 3,
       url: `https://eth-ropsten.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
