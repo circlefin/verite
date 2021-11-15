@@ -23,7 +23,10 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.*local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # IDE files
 .vscode/

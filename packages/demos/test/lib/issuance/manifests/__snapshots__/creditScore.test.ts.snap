@@ -79,14 +79,14 @@ Object {
         },
         "hero": Object {
           "alt": "Credit Score Visual",
-          "uri": "http://localhost:3000/img/credit-score-hero.png",
+          "uri": "http://test.host/img/credit-score-hero.png",
         },
         "text": Object {
           "color": "#FFFFFF",
         },
         "thumbnail": Object {
           "alt": "Verity Logo",
-          "uri": "http://localhost:3000/img/credit-score-thumbnail.png",
+          "uri": "http://test.host/img/credit-score-thumbnail.png",
         },
       },
     },
