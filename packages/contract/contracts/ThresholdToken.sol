@@ -30,11 +30,15 @@ import "hardhat/console.sol";
 contract ThresholdToken is ERC20, VerificationRegistry {
 
     uint256 private _credentialThreshold = 10;
-    
+
     constructor(uint256 initialSupply) ERC20("Threshold Example Coin", "THUSD") {
         _mint(msg.sender, initialSupply);
     }
-    
+
+    function decimals() public view virtual override returns (uint8) {
+        return 0;
+    }
+
     /**
      * @dev This hook executes as part of the ERC20 transfer implementation. In this
      * example, it ensures that the amount transferred is either below a demo
