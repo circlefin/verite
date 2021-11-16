@@ -27,7 +27,7 @@ module.exports = {
           position: "left"
         },
         {
-          to: process.env.DEMOS_URL,
+          to: process.env.DEMOS_URL || "/",
           label: "Demos",
           position: "left",
           target: "_self"
