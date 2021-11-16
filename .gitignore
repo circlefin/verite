@@ -35,6 +35,7 @@ coverage
 # Docs
 .docusaurus
 .cache-loader
+build
 
 # Build artifacts
 *.tsbuildinfo
