@@ -1,6 +1,6 @@
 ---
 sidebar_label: Issuing Credentials
-sidebar_position: 1
+sidebar_position: 0
 ---
 
 # Issuing Verifiable Credentials
