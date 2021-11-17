@@ -1,6 +1,6 @@
 ---
 sidebar_label: Smart Contracts
-sidebar_position: 0
+sidebar_position: 5
 ---
 
 # Verity Smart Contract Patterns
