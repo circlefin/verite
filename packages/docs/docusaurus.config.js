@@ -80,5 +80,9 @@ module.exports = {
         }
       }
     ]
-  ]
+  ],
+  customFields: {
+    protectedPassword: process.env.PROTECTED_PASSWORD,
+    passwordCookie: process.env.PASSWORD_PROTECTION_COOKIE || "PPBqWA9"
+  }
 }
