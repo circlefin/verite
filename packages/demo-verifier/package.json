@@ -1,9 +1,9 @@
 {
-  "name": "@centre/demo-verifier",
+  "name": "@verity/demo-verifier",
   "license": "MIT",
   "private": true,
   "contributors": [
-    "Kim Hamilton Duffy (https://github.com/kimdhamilton",
+    "Kim Hamilton Duffy (https://github.com/kimdhamilton)",
     "Sean Neville (https://github.com/psnevio)",
     "Brice Stacey <brice@m2.xyz> (https://m2.xyz)",
     "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
@@ -18,10 +18,10 @@
     "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
-    "@centre/verity": "*",
+    "@verity/core": "*",
     "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
-    "next": "latest",
+    "next": "12.0.2",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

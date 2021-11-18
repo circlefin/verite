@@ -33,71 +33,125 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString())
 
-  const TokenFactory: ContractFactory = await hre.ethers.getContractFactory(
-    "Token"
-  )
-  const token: Contract = await TokenFactory.deploy()
-  await token.deployed()
-
-  console.log("Token address:", token.address)
-
-  // We also save the contract's artifacts and address in the frontend directory
-  saveFrontendFiles(token)
-
-  // We also set up a trusted verifier for demo purposes
-  await createTrustedVerifier(token)
-
-  // deploy of VerificationRegistry
-  const RegistryFactory: ContractFactory = await hre.ethers.getContractFactory(
+  // deploy VerificationRegistry
+  const registryFactory: ContractFactory = await hre.ethers.getContractFactory(
     "VerificationRegistry"
   )
-  const registryContract: Contract = await RegistryFactory.deploy()
+  const registryContract: Contract = await registryFactory.deploy()
   await registryContract.deployed()
   console.log("Registry address:", registryContract.address)
 
   // deploy PermissionedToken
-  const PTokenFactory: ContractFactory = await hre.ethers.getContractFactory(
+  const pTokenFactory: ContractFactory = await hre.ethers.getContractFactory(
     "PermissionedToken"
   )
-  const PToken: Contract = await PTokenFactory.deploy(
+  const permissionedToken: Contract = await pTokenFactory.deploy(
     "Permissioned Token",
     "PUSD",
     "100000000000"
   )
-  await PToken.deployed()
-  console.log("Permissioned Token Address:", PToken.address)
+  await permissionedToken.deployed()
+  console.log("Permissioned Token Address:", permissionedToken.address)
+
+  // set the registry on the permissioned token
+  const setRegistryTx = await permissionedToken.setVerificationRegistry(
+    registryContract.address
+  )
+  setRegistryTx.wait()
+
+  // deploy ThresholdToken
+  const tTokenFactory: ContractFactory = await hre.ethers.getContractFactory(
+    "ThresholdToken"
+  )
+  const thresholdToken: Contract = await tTokenFactory.deploy("100000000000")
+  await thresholdToken.deployed()
+  console.log("Threshold Token address:", thresholdToken.address)
+
+  // set up a trusted verifier for demo purposes
+  await createTrustedVerifier(registryContract, thresholdToken)
+
+  // save the contract's artifacts and address in the frontend directory
+  saveFrontendFiles(registryContract, permissionedToken, thresholdToken)
 }
 
-async function createTrustedVerifier(token: Contract) {
+async function createTrustedVerifier(
+  verificationRegistry: Contract,
+  thresholdToken: Contract
+) {
   const mnemonic =
     "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol"
   const signer: Wallet = hre.ethers.Wallet.fromMnemonic(mnemonic)
-  const setVerifierTx = await token.addTrustedVerifier(
+
+  const testVerifierInfo = {
+    name: hre.ethers.utils.formatBytes32String("Centre Consortium"),
+    did: "did:web:centre.io",
+    url: "https://centre.io/about",
+    signer: signer.address
+  }
+
+  const setThresholdVerifierTx = await thresholdToken.addVerifier(
     signer.address,
-    hre.ethers.utils.formatBytes32String("did:web:verity.id")
+    testVerifierInfo
   )
-  await setVerifierTx.wait()
+  await setThresholdVerifierTx.wait()
+
+  const setRegistryVerifierTx = await verificationRegistry.addVerifier(
+    signer.address,
+    testVerifierInfo
+  )
+  await setRegistryVerifierTx.wait()
+
   console.log("Added trusted verifier:", signer.address)
 }
 
-function saveFrontendFiles(token) {
+function saveFrontendFiles(
+  registryContract,
+  permissionedToken,
+  thresholdToken
+) {
   const fs = require("fs")
-  const contractsDir = __dirname + "/../../demo-site/contracts"
+  const contractsDir = __dirname + "/../../demos/contracts"
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir)
   }
 
   fs.writeFileSync(
-    contractsDir + "/contract-address.json",
-    JSON.stringify({ Token: token.address }, undefined, 2)
+    contractsDir + "/registry-contract-address.json",
+    JSON.stringify({ RegistryContract: registryContract.address }, undefined, 2)
+  )
+  const registryContractArtifact = hre.artifacts.readArtifactSync(
+    "VerificationRegistry"
+  )
+  fs.writeFileSync(
+    contractsDir + "/RegistVerificationRegistryContract.json",
+    JSON.stringify(registryContractArtifact, null, 2)
   )
 
-  const TokenArtifact = hre.artifacts.readArtifactSync("Token")
+  fs.writeFileSync(
+    contractsDir + "/permissioned-token-address.json",
+    JSON.stringify(
+      { PermissionedToken: permissionedToken.address },
+      undefined,
+      2
+    )
+  )
+  const permissionedTokenArtifact =
+    hre.artifacts.readArtifactSync("PermissionedToken")
+  fs.writeFileSync(
+    contractsDir + "/PermissionedToken.json",
+    JSON.stringify(permissionedTokenArtifact, null, 2)
+  )
 
   fs.writeFileSync(
-    contractsDir + "/Token.json",
-    JSON.stringify(TokenArtifact, null, 2)
+    contractsDir + "/threshold-token-address.json",
+    JSON.stringify({ ThresholdToken: thresholdToken.address }, undefined, 2)
+  )
+  const thresholdTokenArtifact =
+    hre.artifacts.readArtifactSync("ThresholdToken")
+  fs.writeFileSync(
+    contractsDir + "/ThresholdToken.json",
+    JSON.stringify(thresholdTokenArtifact, null, 2)
   )
 }
 

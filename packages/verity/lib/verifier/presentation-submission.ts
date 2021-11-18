@@ -1,10 +1,9 @@
-import type { VerifyPresentationOptions } from "did-jwt-vc/src/types"
+import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import { v4 as uuidv4 } from "uuid"
 import type {
   DescriptorMap,
   DidKey,
   PresentationDefinition,
-  EncodedPresentationSubmission,
   Verifiable,
   W3CCredential
 } from "../../types"
@@ -15,7 +14,7 @@ export async function buildPresentationSubmission(
   presentationDefinition: PresentationDefinition,
   verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
   options?: VerifyPresentationOptions
-): Promise<EncodedPresentationSubmission> {
+): Promise<JWT> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
 
   const presentationSubmission = {
@@ -26,7 +25,7 @@ export async function buildPresentationSubmission(
         return {
           id: d.id,
           format: "jwt_vc",
-          path: `$.presentation.verifiableCredential[0]`
+          path: `$.verifiableCredential[0]`
         }
       }
     )
@@ -36,11 +35,10 @@ export async function buildPresentationSubmission(
     client.did,
     verifiedCredential,
     client,
-    options
+    options,
+    ["VerifiablePresentation", "PresentationSubmission"],
+    { presentation_submission: presentationSubmission }
   )
 
-  return {
-    presentation_submission: presentationSubmission,
-    presentation: vp
-  }
+  return vp
 }

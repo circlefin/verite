@@ -8,8 +8,7 @@ import type {
   DecodedCredentialApplication,
   DescriptorMap,
   DidKey,
-  EncodedCredentialApplication,
-  GenericCredentialApplication
+  EncodedCredentialApplication
 } from "../../types"
 import {
   buildIssuer,
@@ -60,14 +59,14 @@ export async function buildCredentialApplication(
     undefined,
     client,
     options,
-    ["VerifiablePresentation", "CredentialApplication"]
+    ["VerifiablePresentation", "CredentialApplication"],
+    {
+      credential_application: credentialApplication,
+      presentation_submission: presentationSubmission
+    }
   )
 
-  return {
-    credential_application: credentialApplication,
-    presentation_submission: presentationSubmission,
-    presentation: vp
-  }
+  return vp
 }
 
 /**
@@ -82,21 +81,18 @@ export async function decodeCredentialApplication(
   options?: VerifyPresentationOptions
 ): Promise<DecodedCredentialApplication> {
   const decodedPresentation = await decodeVerifiablePresentation(
-    credentialApplication.presentation,
+    credentialApplication,
     options
   )
 
-  return {
-    ...credentialApplication,
-    presentation: decodedPresentation
-  }
+  return decodedPresentation as DecodedCredentialApplication
 }
 
 /**
  * Fetches the manifest id from a credential application
  */
 export function getManifestIdFromCredentialApplication(
-  application: GenericCredentialApplication
+  application: DecodedCredentialApplication
 ): string {
   return application.credential_application.manifest_id
 }

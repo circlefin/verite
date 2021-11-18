@@ -1,11 +1,10 @@
 import Ajv from "ajv"
-import type { VerifyPresentationOptions } from "did-jwt-vc/src/types"
+import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import jsonpath from "jsonpath"
 import type {
   DecodedPresentationSubmission,
   InputDescriptor,
   PresentationDefinition,
-  EncodedPresentationSubmission,
   DecodedCredentialApplication,
   W3CCredential,
   W3CPresentation,
@@ -256,19 +255,11 @@ async function ensureHolderIsSubject(
  * Validate a verifiable presentation against a presentation definition
  */
 export async function validateVerificationSubmission(
-  submission: EncodedPresentationSubmission,
+  submission: JWT,
   definition: PresentationDefinition,
   options?: VerifyPresentationOptions
 ): Promise<void> {
-  const presentation = await decodeVerifiablePresentation(
-    submission.presentation,
-    options
-  )
-
-  const decoded: DecodedPresentationSubmission = {
-    presentation_submission: submission.presentation_submission,
-    presentation
-  }
+  const presentation = await decodeVerifiablePresentation(submission, options)
 
   /**
    * Check the verifiable credentials to ensure non are revoked. To check
@@ -288,7 +279,7 @@ export async function validateVerificationSubmission(
    */
   ensureNotExpired(presentation)
 
-  const credentialMap = mapInputsToDescriptors(decoded, definition)
+  const credentialMap = mapInputsToDescriptors(presentation, definition)
   /**
    * Check that the Verified Presentation was signed by the subject of the
    * Verified Credential. This ensures that the person submitting the

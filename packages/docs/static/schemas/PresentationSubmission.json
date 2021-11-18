@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "default": {},
+  "examples": [
+    {
+      "presentation_submission": {
+        "id": "8ad740d3-3ad4-4673-86d4-33d50b1ce19c",
+        "definition_id": "KYCAMLPresentationDefinition",
+        "descriptor_map": [
+          {
+            "id": "kycaml_input",
+            "format": "jwt_vc",
+            "path": "$.presentation.verifiableCredential[0]"
+          }
+        ]
+      },
+      "presentation": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVQcmVzZW50YXRpb24iXSwiaG9sZGVyIjoiZGlkOmtleTp6Nk1ram85cEdZcHY4OFNDWVpXM1pUMWR4cktZSnJQZjZ1NmhCZUdleENoSkY0RU4iLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6WyJleUpoYkdjaU9pSkZaRVJUUVNJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMll5STZleUpBWTI5dWRHVjRkQ0k2V3lKb2RIUndjem92TDNkM2R5NTNNeTV2Y21jdk1qQXhPQzlqY21Wa1pXNTBhV0ZzY3k5Mk1TSXNJbWgwZEhCek9pOHZkbVZ5YVhSNUxtbGtMMmxrWlc1MGFYUjVJbDBzSW5SNWNHVWlPbHNpVm1WeWFXWnBZV0pzWlVOeVpXUmxiblJwWVd3aUxDSkxXVU5CVFV4QmRIUmxjM1JoZEdsdmJpSmRMQ0pqY21Wa1pXNTBhV0ZzVTNWaWFtVmpkQ0k2ZXlKTFdVTkJUVXhCZEhSbGMzUmhkR2x2YmlJNmV5SkFkSGx3WlNJNklrdFpRMEZOVEVGMGRHVnpkR0YwYVc5dUlpd2lZWFYwYUc5eWFYUjVTV1FpT2lKa2FXUTZkMlZpT25abGNtbDBlUzVwWkNJc0ltRndjSEp2ZG1Gc1JHRjBaU0k2SWpJd01qRXRNRGd0TWpSVU1UZzZNamc2TVRJdU56QTVXaUlzSW1GMWRHaHZjbWwwZVU1aGJXVWlPaUpXWlhKcGRIa2lMQ0poZFhSb2IzSnBkSGxWY213aU9pSm9kSFJ3Y3pvdkwzWmxjbWwwZVM1cFpDSXNJbUYxZEdodmNtbDBlVU5oYkd4aVlXTnJWWEpzSWpvaWFIUjBjSE02THk5cFpHVnVkR2wwZVM1MlpYSnBkSGt1YVdRaUxDSnpaWEoyYVdObFVISnZkbWxrWlhKeklqcGJleUpBZEhsd1pTSTZJa3RaUTBGTlRGQnliM1pwWkdWeUlpd2libUZ0WlNJNklrcDFiV2x2SWl3aWMyTnZjbVVpT2pneGZTeDdJa0IwZVhCbElqb2lTMWxEUVUxTVVISnZkbWxrWlhJaUxDSnVZVzFsSWpvaVQwWkJReTFUUkU0aUxDSnpZMjl5WlNJNk1IMWRmWDBzSW1OeVpXUmxiblJwWVd4VGRHRjBkWE1pT25zaWFXUWlPaUpvZEhSd09pOHZNVGt5TGpFMk9DNHhMams2TXpBd01DOWhjR2t2Y21WMmIyTmhkR2x2Ymk4NVkyWXhNVE0xWmkxbVptWm1MVFF4Tm1RdE9XSTFaUzB6T0RBMk5tWTJOMkZpTkRNak1USTJOamswSWl3aWRIbHdaU0k2SWxKbGRtOWpZWFJwYjI1TWFYTjBNakF5TVZOMFlYUjFjeUlzSW5OMFlYUjFjMHhwYzNSSmJtUmxlQ0k2SWpFeU5qWTVOQ0lzSW5OMFlYUjFjMHhwYzNSRGNtVmtaVzUwYVdGc0lqb2lhSFIwY0Rvdkx6RTVNaTR4TmpndU1TNDVPak13TURBdllYQnBMM0psZG05allYUnBiMjR2T1dObU1URXpOV1l0Wm1abVppMDBNVFprTFRsaU5XVXRNemd3TmpabU5qZGhZalF6SW4xOUxDSnpkV0lpT2lKa2FXUTZhMlY1T25vMlRXdHFiemx3UjFsd2RqZzRVME5aV2xjeldsUXhaSGh5UzFsS2NsQm1OblUyYUVKbFIyVjRRMmhLUmpSRlRpSXNJbTVpWmlJNk1UWXlPVGd5T1RZNU1pd2lhWE56SWpvaVpHbGtPbXRsZVRwNk5rMXJjbGh2ZFVSRVpHOTVTSEUwZUhkalMzQXlWV1JxT1RNeE9WQnRaMU53VVcxaVdUbGpNVlk0T1hOb1Nqa2lmUS5NSV9RVjdtODlkbmgxLWdFMjRVbW91T0dfbmlnNTFFQy00Tk9GQlY1REprVkc4V3M5bHE5cmdEcHdnR21EbnN1ZUxsT2lkcEJDWWZaUjk3RVhDeEJCdyJdfSwic3ViIjoiZGlkOmtleTp6Nk1ram85cEdZcHY4OFNDWVpXM1pUMWR4cktZSnJQZjZ1NmhCZUdleENoSkY0RU4iLCJpc3MiOiJkaWQ6a2V5Ono2TWtqbzlwR1lwdjg4U0NZWlczWlQxZHhyS1lKclBmNnU2aEJlR2V4Q2hKRjRFTiJ9.eP411lJ63Us-cLtQ5v6YLX69lX0Avot0tgD7SxbXjvAqwQtbMol6TdjZLOZ4agWmZmX2Bka7GKbP7sVqUnQxBg"
+    }
+  ],
+  "required": ["presentation_submission", "presentation"],
+  "properties": {
+    "presentation_submission": {
+      "$id": "#/properties/presentation_submission",
+      "type": "object",
+      "title": "The presentation_submission schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "examples": [
+        {
+          "id": "8ad740d3-3ad4-4673-86d4-33d50b1ce19c",
+          "definition_id": "KYCAMLPresentationDefinition",
+          "descriptor_map": [
+            {
+              "id": "kycaml_input",
+              "format": "jwt_vc",
+              "path": "$.presentation.verifiableCredential[0]"
+            }
+          ]
+        }
+      ],
+      "required": ["id", "definition_id", "descriptor_map"],
+      "properties": {
+        "id": {
+          "$id": "#/properties/presentation_submission/properties/id",
+          "type": "string",
+          "title": "The id schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": ["8ad740d3-3ad4-4673-86d4-33d50b1ce19c"]
+        },
+        "definition_id": {
+          "$id": "#/properties/presentation_submission/properties/definition_id",
+          "type": "string",
+          "title": "The definition_id schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": ["KYCAMLPresentationDefinition"]
+        },
+        "descriptor_map": {
+          "$id": "#/properties/presentation_submission/properties/descriptor_map",
+          "type": "array",
+          "title": "The descriptor_map schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": [],
+          "examples": [
+            [
+              {
+                "id": "kycaml_input",
+                "format": "jwt_vc",
+                "path": "$.presentation.verifiableCredential[0]"
+              }
+            ]
+          ],
+          "additionalItems": true,
+          "items": {
+            "$id": "#/properties/presentation_submission/properties/descriptor_map/items",
+            "anyOf": [
+              {
+                "$id": "#/properties/presentation_submission/properties/descriptor_map/items/anyOf/0",
+                "type": "object",
+                "title": "The first anyOf schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "examples": [
+                  {
+                    "id": "kycaml_input",
+                    "format": "jwt_vc",
+                    "path": "$.presentation.verifiableCredential[0]"
+                  }
+                ],
+                "required": ["id", "format", "path"],
+                "properties": {
+                  "id": {
+                    "$id": "#/properties/presentation_submission/properties/descriptor_map/items/anyOf/0/properties/id",
+                    "type": "string",
+                    "title": "The id schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": ["kycaml_input"]
+                  },
+                  "format": {
+                    "$id": "#/properties/presentation_submission/properties/descriptor_map/items/anyOf/0/properties/format",
+                    "type": "string",
+                    "title": "The format schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": ["jwt_vc"]
+                  },
+                  "path": {
+                    "$id": "#/properties/presentation_submission/properties/descriptor_map/items/anyOf/0/properties/path",
+                    "type": "string",
+                    "title": "The path schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": ["$.presentation.verifiableCredential[0]"]
+                  }
+                },
+                "additionalProperties": true
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "presentation": {
+      "$id": "#/properties/presentation",
+      "type": "string",
+      "title": "The presentation schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVQcmVzZW50YXRpb24iXSwiaG9sZGVyIjoiZGlkOmtleTp6Nk1ram85cEdZcHY4OFNDWVpXM1pUMWR4cktZSnJQZjZ1NmhCZUdleENoSkY0RU4iLCJ2ZXJpZmlhYmxlQ3JlZGVudGlhbCI6WyJleUpoYkdjaU9pSkZaRVJUUVNJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMll5STZleUpBWTI5dWRHVjRkQ0k2V3lKb2RIUndjem92TDNkM2R5NTNNeTV2Y21jdk1qQXhPQzlqY21Wa1pXNTBhV0ZzY3k5Mk1TSXNJbWgwZEhCek9pOHZkbVZ5YVhSNUxtbGtMMmxrWlc1MGFYUjVJbDBzSW5SNWNHVWlPbHNpVm1WeWFXWnBZV0pzWlVOeVpXUmxiblJwWVd3aUxDSkxXVU5CVFV4QmRIUmxjM1JoZEdsdmJpSmRMQ0pqY21Wa1pXNTBhV0ZzVTNWaWFtVmpkQ0k2ZXlKTFdVTkJUVXhCZEhSbGMzUmhkR2x2YmlJNmV5SkFkSGx3WlNJNklrdFpRMEZOVEVGMGRHVnpkR0YwYVc5dUlpd2lZWFYwYUc5eWFYUjVTV1FpT2lKa2FXUTZkMlZpT25abGNtbDBlUzVwWkNJc0ltRndjSEp2ZG1Gc1JHRjBaU0k2SWpJd01qRXRNRGd0TWpSVU1UZzZNamc2TVRJdU56QTVXaUlzSW1GMWRHaHZjbWwwZVU1aGJXVWlPaUpXWlhKcGRIa2lMQ0poZFhSb2IzSnBkSGxWY213aU9pSm9kSFJ3Y3pvdkwzWmxjbWwwZVM1cFpDSXNJbUYxZEdodmNtbDBlVU5oYkd4aVlXTnJWWEpzSWpvaWFIUjBjSE02THk5cFpHVnVkR2wwZVM1MlpYSnBkSGt1YVdRaUxDSnpaWEoyYVdObFVISnZkbWxrWlhKeklqcGJleUpBZEhsd1pTSTZJa3RaUTBGTlRGQnliM1pwWkdWeUlpd2libUZ0WlNJNklrcDFiV2x2SWl3aWMyTnZjbVVpT2pneGZTeDdJa0IwZVhCbElqb2lTMWxEUVUxTVVISnZkbWxrWlhJaUxDSnVZVzFsSWpvaVQwWkJReTFUUkU0aUxDSnpZMjl5WlNJNk1IMWRmWDBzSW1OeVpXUmxiblJwWVd4VGRHRjBkWE1pT25zaWFXUWlPaUpvZEhSd09pOHZNVGt5TGpFMk9DNHhMams2TXpBd01DOWhjR2t2Y21WMmIyTmhkR2x2Ymk4NVkyWXhNVE0xWmkxbVptWm1MVFF4Tm1RdE9XSTFaUzB6T0RBMk5tWTJOMkZpTkRNak1USTJOamswSWl3aWRIbHdaU0k2SWxKbGRtOWpZWFJwYjI1TWFYTjBNakF5TVZOMFlYUjFjeUlzSW5OMFlYUjFjMHhwYzNSSmJtUmxlQ0k2SWpFeU5qWTVOQ0lzSW5OMFlYUjFjMHhwYzNSRGNtVmtaVzUwYVdGc0lqb2lhSFIwY0Rvdkx6RTVNaTR4TmpndU1TNDVPak13TURBdllYQnBMM0psZG05allYUnBiMjR2T1dObU1URXpOV1l0Wm1abVppMDBNVFprTFRsaU5XVXRNemd3TmpabU5qZGhZalF6SW4xOUxDSnpkV0lpT2lKa2FXUTZhMlY1T25vMlRXdHFiemx3UjFsd2RqZzRVME5aV2xjeldsUXhaSGh5UzFsS2NsQm1OblUyYUVKbFIyVjRRMmhLUmpSRlRpSXNJbTVpWmlJNk1UWXlPVGd5T1RZNU1pd2lhWE56SWpvaVpHbGtPbXRsZVRwNk5rMXJjbGh2ZFVSRVpHOTVTSEUwZUhkalMzQXlWV1JxT1RNeE9WQnRaMU53VVcxaVdUbGpNVlk0T1hOb1Nqa2lmUS5NSV9RVjdtODlkbmgxLWdFMjRVbW91T0dfbmlnNTFFQy00Tk9GQlY1REprVkc4V3M5bHE5cmdEcHdnR21EbnN1ZUxsT2lkcEJDWWZaUjk3RVhDeEJCdyJdfSwic3ViIjoiZGlkOmtleTp6Nk1ram85cEdZcHY4OFNDWVpXM1pUMWR4cktZSnJQZjZ1NmhCZUdleENoSkY0RU4iLCJpc3MiOiJkaWQ6a2V5Ono2TWtqbzlwR1lwdjg4U0NZWlczWlQxZHhyS1lKclBmNnU2aEJlR2V4Q2hKRjRFTiJ9.eP411lJ63Us-cLtQ5v6YLX69lX0Avot0tgD7SxbXjvAqwQtbMol6TdjZLOZ4agWmZmX2Bka7GKbP7sVqUnQxBg"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

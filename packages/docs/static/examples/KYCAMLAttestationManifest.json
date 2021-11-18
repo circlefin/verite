@@ -1,0 +1,87 @@
+{
+  "id": "KYCAMLAttestation",
+  "version": "0.1.0",
+  "issuer": {
+    "id": "did:key:z6MkskLicHPfC3EPKsFhDebKo5dF48vkhwuLPisT6ekoW9FT",
+    "name": "Verity"
+  },
+  "format": {
+    "jwt_vc": {
+      "alg": ["EdDSA", "ES256K"]
+    },
+    "jwt_vp": {
+      "alg": ["EdDSA", "ES256K"]
+    }
+  },
+  "output_descriptors": [
+    {
+      "id": "kycAttestationOutput",
+      "schema": [
+        {
+          "uri": "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+        }
+      ],
+      "name": "Proof of KYC from Verity",
+      "description": "Attestation that Verity has completed KYC/AML verification for this subject",
+      "display": {
+        "title": {
+          "path": ["$.KYCAMLAttestation.authorityName"],
+          "fallback": "Verity KYC Attestation"
+        },
+        "subtitle": {
+          "path": ["$.approvalDate", "$.vc.approvalDate"],
+          "fallback": "Includes date of approval"
+        },
+        "description": {
+          "text": "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
+        },
+        "properties": [
+          {
+            "label": "Authority",
+            "path": ["$.KYCAMLAttestation.authorityName"],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "label": "Authority URL",
+            "path": ["$.KYCAMLAttestation.authorityUrl"],
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "label": "Approved At",
+            "path": ["$.KYCAMLAttestation.approvalDate"],
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ]
+      },
+      "styles": {}
+    }
+  ],
+  "presentation_definition": {
+    "id": "ProofOfControlPresentationDefinition",
+    "format": {
+      "jwt_vp": {
+        "alg": ["EdDSA", "ES256K"]
+      }
+    },
+    "input_descriptors": [
+      {
+        "id": "proofOfIdentifierControlVP",
+        "name": "Proof of Control Verifiable Presentation",
+        "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
+        "schema": [
+          {
+            "uri": "/.well-known/verifiablePresentationSchema.json"
+          }
+        ]
+      }
+    ]
+  }
+}

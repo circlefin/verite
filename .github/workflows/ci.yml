@@ -19,7 +19,7 @@ jobs:
           node-version: "16"
           cache: "npm"
       - run: npm run setup
-      - run: npm run setup:ci
+      - run: npm run setup:ci -w @verity/demos
       - run: npm run build:verity
       - run: npm run lint
       - run: npm run type-check

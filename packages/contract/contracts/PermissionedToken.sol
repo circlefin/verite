@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: MIT
  *
- * Copyright (c) 2018-2020 CENTRE SECZ
+ * Copyright (c) 2018-2021 CENTRE SECZ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,46 +25,54 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./VerificationRegistry.sol";
-
-// We import this library to be able to use console.log
-import "hardhat/console.sol";
+import "./IVerificationRegistry.sol";
 
 contract PermissionedToken is Ownable, ERC20 {
 
-    address private verificationRegistryAddress;
-    VerificationRegistry private verificationRegistry;
+    /** 
+     * @dev This token uses a VerificationRegistry for KYC verifications.
+     * Additional registries for other types of credentials could also be used.
+     */ 
+    address private kycRegistryAddress;
+    IVerificationRegistry private kycRegistry;
 
     constructor(string memory name, string memory symbol, uint256 initialSupply) ERC20(name, symbol) {
         _mint(msg.sender, initialSupply);
     }
 
-    function setRegistry(address account) external onlyOwner {
-        verificationRegistryAddress = account;
-        if (verificationRegistryAddress != address(0)) {
-            verificationRegistry = VerificationRegistry(verificationRegistryAddress);
+    /**
+     * @dev In this example, the contract owner can add, remove, and replace the registry
+     * implementation that is used to manage verifications.
+     */
+    function setVerificationRegistry(address registryAddress) external onlyOwner {
+        kycRegistryAddress = registryAddress;
+        if (kycRegistryAddress != address(0)) {
+            kycRegistry = IVerificationRegistry(kycRegistryAddress);
         }
     }
 
+    /**
+     * @dev This hook executes as part of the ERC20 transfer implementation. In this
+     * example, it ensures that the sender and recipient are verified counterparties.
+     */
     function _beforeTokenTransfer(address from, address to, uint256 amount)
         internal virtual override
     {
         super._beforeTokenTransfer(from, to, amount);
-        if (verificationRegistryAddress != address(0)) {
-            // if the registry was always present, then the sender will always have been permissioned
-            // because otherwise the account never could have received, but since the registry
-            // may be removed by the Owner, we check the sender as well as receiver in this example
-            require(_validCounterparty(from), "PermissionedToken: Invalid Sender");
-            require(_validCounterparty(to), "PermissionedToken: Invalid Recipient");
+        if (kycRegistryAddress != address(0)) {
+            require(_validCounterparty(from), "PermissionedToken: Sender is not verified");
+            require(_validCounterparty(to), "PermissionedToken: Recipient is not verified");
         }
     }
 
-    function _validCounterparty(address account) private view returns (bool) {
-        // the Token could retrieve the verifications and filter based on
-        // rules it applies regarding which records are acceptable, but in
-        // this example, the Token merely tests for the presence of any valid
-        // non-revoked non-expired verification record
-        return verificationRegistry.isVerified(account);
+    /**
+     * @dev The Token could retrieve the verifications and filter based on
+     * rules it applies regarding which records are acceptable, but in
+     * this example, the Token merely tests for the presence of any valid
+     * non-revoked non-expired verification record.
+     */
+    function _validCounterparty(address registryAddress) private view returns (bool) {
+        return kycRegistry.isVerified(registryAddress);
     }
 
 }

@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# This script sets up the local environment to be used for development.
+echo "Setting up environment variables..."
+npm run ts-node ./bin/env.ts --silent > .env.development.local
+npm run ts-node ./bin/local-ip.ts --silent >> .env.development.local
+npm run ts-node ./bin/env.ts --silent > .env.test.local
+
+echo "Setting up the database ..."
+npm run db:reset:force

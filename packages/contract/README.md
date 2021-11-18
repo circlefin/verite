@@ -1,6 +1,27 @@
-# Verity Smart Contract Example
+# Verity Smart Contract Examples
 
-This recipe illustrates how to register a web app's or dApp's verification with a remote smart contract. This approach shows a solidity token contract called "Token" that extends the VerifiedCallable contract to support verifications from trusted verifiers. Trusted verifiers sign their verification results with a noted eth key in order to enable the contract to verify the verification results.
+These recipes illustrate how smart contracts use results of Verifiable Credential verifications even when the contracts are not technically or economically capable of executing the verifications themselves.
+
+These contracts follow a pattern in which verifications are performed off-chain and then confirmed on-chain. An off-chain verifier handles verifiable credential exchange in the usual manner, and upon successful verification, creates a minimal verification result object.
+
+The verifier then hashes and signs the verification result, enabling subsequent validation within smart contracts. The verifier either registers the result directly with a Verification Registry contract as part of the verification process (the "verifier submission" pattern), or returns it to subjects for use in smart contract transactions (the "subject submission" pattern).
+
+Read more about Verifier and Subject Submission patterns in TODO LINK.
+
+## Contract Description
+
+**VerificationRegistry**: Demonstrates a persistent verification registry, supporting management of verifiers and verification results as follows:
+
+- The contract owner is able to manage (register/remove) verifiers
+- Rgistered verifiers may manage verification results they've created and signed.
+- Subject may manage verification result they've received from a registered verifier (through an internal function; this is demonstrated in `ThresholdToken`)
+
+`VerificationRegistry` converts a valid, authentic verification result to a data-minimized verification record before persisting.
+
+**PermissionedToken**: This token uses `VerificationRegistry` by delegation to support KYC verifications. The `beforeTokenTransfer` hook, which executes as part of the OpenZeppelin ERC20 transfer implementation, ensures that the sender and recipient are verified counterparties. This contract demonstrates the verifier submission pattern; only registered verifiers may populate the registry.
+
+**ThresholdToken**: Demonstrates a token requiring sender verification for transfers over a pre-defined threshold.
+This contract demonstrates the subject submission pattern: `ThresholdToken` extends `VerificationRegistry` to support subject submission of verification results via the custom function `validateAndTransfer` (which in turn calls an internal `VerificationRegistry` function). The `beforeTokenTransfer` hook emits an error if a valid verification record isn't present for the sending address in the `VerificationRegistry`. Note: in the Dapp demo, this is what cases the Dapp to initiate a credential request from the holder/subject.
 
 ## Getting Started
 
@@ -61,7 +82,7 @@ A few ETH is generally enough.
 
 The hardhat faucet task, e.g. running `npx hardhat faucet <address>` sends 1 ETH and 100 VUSDC.
 
-The demo-site faucet (both the dapp and the CeFi demos) sends 0.1 ETH and 100 VUSDC.
+The demos faucet (both the dapp and the CeFi demos) sends 0.1 ETH and 100 VUSDC.
 
 Since the full, fixed supply is issued to the contract creator, we used that same account as our faucet. The address is `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
 

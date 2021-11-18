@@ -1,7 +1,4 @@
-import {
-  challengeTokenUrlWrapper,
-  PresentationDefinition
-} from "@centre/verity"
+import { challengeTokenUrlWrapper, PresentationDefinition } from "@verity/core"
 import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 

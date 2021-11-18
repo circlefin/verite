@@ -1,8 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules
+.pnp
 .pnp.js
 
 # misc
@@ -14,8 +14,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # next.js
-/.next/
-/out/
+.next
+out
 
 # production
 /build
@@ -31,3 +31,11 @@ yarn-error.log*
 
 # coverage
 coverage
+
+# Docs
+.docusaurus
+.cache-loader
+build
+
+# Build artifacts
+*.tsbuildinfo
