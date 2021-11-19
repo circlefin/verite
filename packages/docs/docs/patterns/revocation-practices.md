@@ -5,7 +5,7 @@ sidebar_position: 3
 
 # Status Registry Practices
 
-The [`credentialStatus` field](https://www.w3.org/TR/vc-data-model/#status) of a VC provides a flexible means of updating a credential's current state, such as to enable revoking or suspending it. An implementor must decide what credential status method(s) to support; there is no default method.
+The [`credentialStatus`](https://www.w3.org/TR/vc-data-model/#status) of a VC provides a flexible means of updating a credential's current state, such as to enable revoking or suspending it. An implementor must decide what credential status method(s) to support; there is no default method.
 
 ## Privacy Considerations
 
