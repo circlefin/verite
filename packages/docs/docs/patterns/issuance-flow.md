@@ -21,7 +21,7 @@ In this example, an individual's financial institution offers the ability to req
 
 ![Issuing a Credential](/img/docs/sequence_issuance.png "Issuing a Credential")
 
-1. A User signs into the Issuer site
+1. A User navigates to the Issuer site
 1. The Issuer presents a QR code.
 1. User scans the QR code with their wallet.
 1. Wallet parses the QR code, which encodes a JSON object with a `challengeTokenUrl` property.
