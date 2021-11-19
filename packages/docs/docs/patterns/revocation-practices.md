@@ -1,22 +1,30 @@
 ---
-sidebar_label: Revocation
+sidebar_label: Status Registry Practices
 sidebar_position: 3
 ---
 
-# Revocation Practices
+# Status Registry Practices
 
-Verifiable Credentials allow a `credentialStatus` to define a [method for determining the credential's status](https://www.w3.org/TR/vc-data-model/#status), such as whether the credential has been revoked or suspended. The precise contents of a credential's status are determined by the specific type definition.
+The [`credentialStatus` field](https://www.w3.org/TR/vc-data-model/#status) of a VC provides a flexible means of updating a credential's current state, such as to enable revoking or suspending it. An implementor must decide what credential status method(s) to support; there is no default method.
 
-The choice of `credentialStatus` implementation allows for multiple credential states; i.e., a credential issuer might want to indicate a credential is "active", "suspended", or "revoked". However, most existing implementations are intended to support two states -- "active" and "revoked".
+## Privacy Considerations
 
-## Privacy considerations
+The following considerations should be taken into account when choosing a status method:
 
-Verifiable credentials are generally recommended to be off-chain, but on-chain registries for credential status, are often an appealing implementation choice from a privacy perspective because they allow the issuer to update the status of a credential without a "phone home". When data is stored on-chain, it becomes especially important to consider privacy implications of the revocation implementation. It's discouraged to store personal data, which can even include correlatable identifiers. The VC Data Model's [privacy considerations](https://www.w3.org/TR/vc-data-model/#privacy-considerations) section contains pointers that are especially relevant to credential status implementations.
+1. Updating the status (e.g., revoking it) should not result in additional data being disclosed about the subject or holder
+2. Issuers should avoid the need to "phone home" during verification
+   - Note that phoning home also introduces an availability requirement on issuer services for verification to occur.
+3. If "phone home" is used, Issuers should prefer methods that minimize behavioral data about the credential holder
+4. Specifically, Issuers should avoid the need for Verifiers to perform a request correlatable to a specific individual
+
+The VC Data Model's [privacy considerations](https://www.w3.org/TR/vc-data-model/#privacy-considerations) section contains additional considerations relevant to credential status implementations.
 
 ## Status List 2021
 
-Verity demonstrates revocation using [Status List 2021](https://w3c-ccg.github.io/vc-status-list-2021/). The status list is a base 64 encoded, zlib compressed bitstring. That is, each bit corresponds to the revoked or active status of a credential. When issuing a credential, the `credentialStatus` object includes two critical properties: a url to fetch the revocation list and the index in the list that corresponds to the given credential. Notice that credentials are themselves immutable, so these properties must be determined in advance, at issuance. The revocation list is itself a verifiable credential, however, but since webservers can always change what is returned at a given URL, the returned revocation list is essential mutable.
+A common approach that's simple to implement, size-efficient, and enables "herd privacy" for individuals is the [Status List 2021](https://w3c-ccg.github.io/vc-status-list-2021/) method, which Verity uses.
 
-A more simple approach might be a single URL that returns the status of a credential. However, each time a verifier checked the URL, it would leak activity back to the issuer. To counter this, the revocation list contains the status of 16KB worth, or 131,072 credentials. For the average case, this ensures "herd privacy" for users.
+The status list is a base 64 encoded, zlib compressed bitstring. That is, each bit corresponds to the revoked or active status of a credential. When issuing a credential, the `credentialStatus` object includes two critical properties: a url to fetch the revocation list and the index in the list that corresponds to the given credential. Notice that credentials are themselves immutable, so these properties must be determined in advance, at issuance. The revocation list is itself a verifiable credential, however, but since webservers can always change what is returned at a given URL, the returned revocation list is essential mutable.
+
+For comparison, note that a simpler approach might be a single URL that returns the status of a single credential. However, each time a verifier checked the URL, it would leak activity back about the individual credential holder to the issuer. In contrast, the approach described here can contain the status for about 16KB worth, or 131,072 credentials. The verifier performs a request that compactly encodes the status for the batch, and the verifier selects the specific index they want to check. This means the issuer doesn't learn which specific credential the verifier was checking, allowing herd privacy for users.
 
 You can read more about Verity's implementation in the [Revoking a Credential](/docs/tutorials/revoke-a-credential) tutorial.
