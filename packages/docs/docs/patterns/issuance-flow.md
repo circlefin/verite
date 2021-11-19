@@ -13,11 +13,15 @@ Collecting that identifier in a secure and convenient way for the user requires 
 
 ## Issuance Flow
 
-In this specific example, a logged-in account holder requests a KYC or credit score credential to be held in their mobile wallet. The flow consists of the exchange of three distinct JSON objects 1) a Credential Offer published by the Issuer that describes the credential and how to apply for it, 2) A Credential Application submitted by the wallet, and 3) a Credential Fulfillment returned by the Issuer that encodes the final credential.
+In this example, an individual's financial institution offers the ability to request a KYC or credit score credential to be held in the individual's mobile wallet. The flow consists of the exchange of three distinct JSON objects:
+
+1. A Credential Offer published by the Issuer that describes the credential and how to apply for it
+2. A Credential Application submitted by the wallet, and
+3. A Credential Fulfillment returned by the Issuer that contains the final credential.
 
 ![Issuing a Credential](/img/docs/sequence_issuance.png "Issuing a Credential")
 
-1. A User signs into the Issuer site
+1. A User navigates to the Issuer site
 1. The Issuer presents a QR code.
 1. User scans the QR code with their wallet.
 1. Wallet parses the QR code, which encodes a JSON object with a `challengeTokenUrl` property.
