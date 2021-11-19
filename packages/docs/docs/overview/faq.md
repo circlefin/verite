@@ -42,34 +42,28 @@ For completeness, this spells out complete issuance and exchange flows. The Issu
 
 #### Proof Formats
 
-##### Should our VCs/VPs use JWT or JSON-LD proofs?
+##### Which VC proof formats are supported?
 
-Initially, the software will support the JWTs, but not the JSON-LD proof format. Note that some implementations support both, which Centre may also do in the future.
+Initially, VC JWT signatures are supported, but JSON-LD support may be added in the future.
 
-JWTs are preferred because of their simplicity, broad adoption, and strong library support. In contrast, JSON-LD proofs are pre-standard status[^1] and lack cross-vendor open-source implementations[^2]. Nonetheless, JSON-LD proofs are receiving interest in the VC community because of their suitability for selective disclosure techniques, as described by the [LDS BBS+ Signature Suite](https://w3c-ccg.github.io/ldp-bbs2020/).
+##### Why did you start with JWTs (vs JSON-LD)?
+
+JWTs already have broad adoption and cross-language open-source library support. JSON-LD proofs are pre-standard status and have fewer options for mature, open-source implementations. Nonetheless, JSON-LD proofs are receiving interest in the VC community because of their suitability for selective disclosure techniques, as described by the [LDS BBS+ Signature Suite](https://w3c-ccg.github.io/ldp-bbs2020/).
 
 For additional context, see the [VC Implementation Guide ](https://www.w3.org/TR/vc-imp-guide)sections:
 
 - [https://w3c.github.io/vc-imp-guide/#benefits-of-jwts](https://w3c.github.io/vc-imp-guide/#benefits-of-jwts)
 - [https://www.w3.org/TR/vc-imp-guide/#benefits-of-json-ld-and-ld-proofs](https://www.w3.org/TR/vc-imp-guide/#benefits-of-json-ld-and-ld-proofs)
 
-##### Is there a preferred library or module for generating VCs and signing them with DID keys, and verifying them?
+##### Which VC signing/verifying libraries are you using?
 
-We will use the Decentralized Identity Foundation’s did-jwt-vc ([https://github.com/decentralized-identity/did-jwt-vc](https://github.com/decentralized-identity/did-jwt-vc)) implementation.
-
-##### Is there a preferred library or module for JWT encoding and decoding of VCs according to the JWT guidelines in the VC spec or will this need to be written?
-
-The Decentralized Identity Foundation’s did-jwt-vc ([https://github.com/decentralized-identity/did-jwt-vc](https://github.com/decentralized-identity/did-jwt-vc)) implementation, mentioned above, supports JWT encoding/decoding of VCs according to the VC data model jwt encoding ([https://www.w3.org/TR/vc-data-model/#jwt-encoding](https://www.w3.org/TR/vc-data-model/#jwt-encoding)).
+See the [list of specifications and spec-conforming libraries](/docs/appendix/specifications-and-libraries) used by Verity.
 
 ##### There are several JWT variations referenced in the VC-DATA-MODEL; which one are we using?
 
 The encoding generated and interpreted by [DIF’s did-jwt-vc library](https://github.com/decentralized-identity/did-jwt-vc/) appears to be the most broadly used (currently) version. We are tracking upcoming work in DIF to further improve standardization.
 
-##### Which did:key library should we use?
-
-At the time we investigated, we didn’t find any open-source, vendor-neutral implementations of did:key that worked easily with react-native, so we implemented a minimal version of our own. It’s not yet been tested against did:key test vectors, so we may want to revisit this longer term.
-
-##### Will we demo BBS+ signatures and ZKP VCs?
+##### Does Verity use / support ZKPs?
 
 Selective disclosure or zero-knowledge proof techniques may be useful for the counterparty credential, allowing users to selectively disclose claims in it rather than all claims. For the Travel Rule, the Beneficiary counterparty does not need to disclose as much as the Originator counterparty does.
 
@@ -77,7 +71,9 @@ We won’t demo these in the initial release because of the decision to support 
 
 Details: Currently, BBS+ signatures only work with JSON-LD proofs[^3] (they rely on RDF framing). There is interest in an approach under the JOSE umbrella but none have been proposed yet. The only other alternative I’m aware of is CL signatures, which are very complex.
 
-##### When an issuer issues a credential, some docs suggest the issuer wrap the credential in a Verifiable Presentation. Is this necessary?
+##### Why are VCs wrapped in VPs?
+
+TODO
 
 _When a holder transmits a credential to a verifier, Verifiable Presentations make sense to prevent replay attacks and prove the holder is the same as the subject, but why would a VP be needed upon issuance?_
 
