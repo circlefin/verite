@@ -1,19 +1,19 @@
 ---
 sidebar_label: Principles & Goals
-sidebar_position: 1
+sidebar_position: 0
 ---
 
 # Principles and Goals
 
 ## First Principles
 
-Verity's decentralized identity standards promise to satisfy the following design principles:
+Verity's decentralized identity standards aim to satisfy the following design principles:
 
 - **Decentralized:** Requires no central issuing agency and functions effectively in DeFi.
 
 - **Persistent and portable:** Inherently persistent and long-lived, not requiring the continued operation of any underlying organization.
 
-- **Cryptographically verifiable:** Based on cryptographic proofs and “code is law” rather than out-of-band trust.
+- **Cryptographically verifiable:** Based on cryptographic proofs rather than out-of-band trust.
 
 - **Resolvable and interoperable:** Open to any solution that recognizes the common protocols and data model and requires no one specific software vendor implementation, including any that Centre or its members may create.
 
@@ -23,7 +23,7 @@ Verity's decentralized identity standards promise to satisfy the following desig
 
 ## Goals
 
-Interoperability across the ecosystem is an over-arching goal. There has been no previous industry-wide agreement on how products and services might interoperate in key crypto finance use cases, such as how they represent proof of KYC or accredited investor status. Verity aims to provide clarity by defining these standard connections and providing recipes to illustrate their usage.
+Interoperability across the ecosystem is an over-arching Verity goal. There has been no previous industry-wide agreement on how products and services might interoperate in key crypto finance use cases, such as how they represent proof of KYC or accredited investor status. Verity aims to provide clarity by defining these standard connections and providing recipes to illustrate their usage.
 
 Verity's specific tactical goals are to: (a) define data models (schemas) that should be shared and exist as common building blocks for all parties as a public good; and (b) define the protocols for requesting and delivering identity claims in a manner that supports crypto finance use cases.
 

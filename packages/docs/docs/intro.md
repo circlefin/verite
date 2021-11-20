@@ -31,6 +31,6 @@ Unlike centralized identity architectures, Verity’s decentralized approach ena
 
 Verity empowers developers, financial institutions, regulators, and individuals with an open, free, interoperable identity model for decentralized finance. Interoperability ensures that applications, services, wallets, and smart contracts can interact with one another following a shared set of standard rules without requiring bespoke negotation or any specific vendor implementation.
 
-## Learning More
+## How to Use this Site
 
 The following articles, tutorials, and accompanying source code illustrate how Verity's decentralized identity protocols and data models function and how developers can integrate them in their own services, wallets, and applications.
