@@ -35,3 +35,27 @@ sidebar_position: 9
 | did-jwt-vc                 | https://github.com/decentralized-identity/did-jwt-vc                                  |
 | did-resolver               | https://github.com/decentralized-identity/did-resolver                                |
 | @transmute/did-key-ed25519 | https://github.com/transmute-industries/did-key.js/tree/main/packages/did-key-ed25519 |
+
+Spec Name,Reference
+W3C Verifiable Credentials Data Model,https://www.w3.org/TR/vc-data-model/
+W3C Decentralized Identifiers (DIDs) v1.0,https://www.w3.org/TR/did-core/
+DIF Presentation Exchange,https://identity.foundation/presentation-exchange
+DIF Credential Manifest,https://identity.foundation/credential-manifest/
+DIF Wallet and Credential Interactions (unstable),https://identity.foundation/wallet-and-credential-interactions/
+W3C did:key Method,https://w3c-ccg.github.io/did-method-key/
+IETF Multiformats Multibase,https://datatracker.ietf.org/doc/html/draft-multiformats-multibase-03
+IETF Multiformats Multicodec,https://datatracker.ietf.org/doc/html/draft-snell-multicodec-00
+Status List 2021,https://w3c-ccg.github.io/vc-status-list-2021/
+,
+Contract Development,
+Ethers,https://docs.ethers.io/v5/
+Hardhat,https://hardhat.org/
+@openzeppelin/contracts,https://github.com/OpenZeppelin/openzeppelin-contracts
+,
+Verifiable Data Models,
+did-jwt-vc,https://github.com/decentralized-identity/did-jwt-vc
+did-resolver,https://github.com/decentralized-identity/did-resolver
+@transmute/did-key-ed25519,https://github.com/transmute-industries/did-key.js/tree/main/packages/did-key-ed25519
+,
+Bit Manipulation for StatusList2021,
+@fry/bits,https://github.com/fredricrylander/bits

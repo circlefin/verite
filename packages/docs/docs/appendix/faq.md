@@ -5,19 +5,11 @@ sidebar_position: 4
 
 # Frequently Asked Questions
 
-**Note: I am just copy pasting the old "design decisions" page, which was the original Google Drive doc capturing Q&As titled [Assumptions and Decision](https://docs.google.com/document/d/1aGXXUtTnlwajch-HmCu203ZlnFjfJA-DD61-hxAuxQs/edit?usp=sharing). We should update this doc with up-to-date relevant questions, drawing on common questions from Sean's roadshow and technical decisions made w.r.t identity standards, patterns, etc.**
-
 Decentralized identity standards are new and evolving, with a range of alternatives to choose from at each layer of the technical stack. The design decisions used for Verity were not meant to be exclusive; rather to provide a simple, layered approach to maximize reusability (integratability)
 
 ## Signature Suite
 
 Verity's issuing libraries sign Verifiable Credentials with the did-vc-jwt signing approach
-
-### VC Signatures
-
-Consistent with the design goal of avoiding pre-standard specifications, Verity uses JWTs instead of signature suites relying
-on JSON-LD canonicalization. This enabled straightforward use of widely-adopted JSON and JWT, which are mature IETF standards
-and have broad library support, and have wide adoption in other existing standards.
 
 ### Minimal Claims
 
@@ -46,9 +38,7 @@ For completeness, this spells out complete issuance and exchange flows. The Issu
 
 Initially, VC JWT signatures are supported, but JSON-LD support may be added in the future.
 
-##### Why did you start with JWTs (vs JSON-LD)?
-
-JWTs already have broad adoption and cross-language open-source library support. JSON-LD proofs are pre-standard status and have fewer options for mature, open-source implementations. Nonetheless, JSON-LD proofs are receiving interest in the VC community because of their suitability for selective disclosure techniques, as described by the [LDS BBS+ Signature Suite](https://w3c-ccg.github.io/ldp-bbs2020/).
+The reason: JWTs already have broad adoption and cross-language open-source library support. JSON-LD proofs are pre-standard status and have fewer options for mature, open-source implementations. Nonetheless, JSON-LD proofs are receiving interest in the VC community because of their suitability for selective disclosure techniques, as described by the [LDS BBS+ Signature Suite](https://w3c-ccg.github.io/ldp-bbs2020/).
 
 For additional context, see the [VC Implementation Guide ](https://www.w3.org/TR/vc-imp-guide)sections:
 
@@ -93,25 +83,9 @@ In our use cases, we are assuming issuance and receipt of the credential over a 
 
 #### VC Issuance/Exchange Protocols
 
-##### Should we use CHAPI or skip this for now?
-
-This would illustrate how to store and request VC’s from a browser, simulating a browser extension or future browser support for storing credentials. It would not be relevant in the mobile wallet case. It requires a Polyfill approach and seems fairly complex for what it is, overlaps a bit with the Presentation Exchange spec which seems to have a cleaner way of mapping presentation request requirements and hints to matching credentials.
-
-We are considering other browser-based approaches.
-
 ##### For issuance sequences, should we use the credential manifest and submission formats defined in DIF’s Credential Manifest Spec or not?
 
-We’ve decided to use the credential manifest and submission formats defined in DIF’s Credential Manifest ([https://identity.foundation/credential-manifest](https://identity.foundation/credential-manifest)) spec because it’s flexible and reusable across protocols and transports.
-
-All relevant issuance sequence specs are pre-standard, with indeterminate degrees of adoption and maturity, but Credential Manifest is currently receiving the most focused attention at a pre-standards body (the Decentralized Identity Foundation).
-
 A related draft specification of ongoing interest is OIDC Credential Provider ([https://mattrglobal.github.io/oidc-client-bound-assertions-spec/](https://mattrglobal.github.io/oidc-client-bound-assertions-spec/)). In the current form, it proposes data formats that are alternatives to the manifest and submission formats proposed in credential manifest spec. However, the credential manifest spec defines a way to reconcile both approaches, allowing credential manifest payloads to be used within the OIDC Credential Provider flow.
-
-##### For exchange and verification sequences, should we use the presentation definition and submission formats defined at [https://identity.foundation/presentation-exchange/spec/v1.0.0/](https://identity.foundation/presentation-exchange/spec/v1.0.0/) or not?
-
-Similar to above, we’ve decided to use the presentation definition and submission formats defined in DIF’s Presentation Exchange ([https://identity.foundation/presentation-exchange/spec/v1.0.0/](https://identity.foundation/presentation-exchange/spec/v1.0.0/)) spec because it’s flexible, reusable across protocols and transports, and (at this time) the largest degree of implementation among other deployments using JWTs.
-
-An alternative approach is the VP Request Spec ([https://w3c-ccg.github.io/vp-request-spec/](https://w3c-ccg.github.io/vp-request-spec/)), which may be supported in the future.
 
 #### DID Methods
 
@@ -124,8 +98,6 @@ For these reasons, Centre expects to demonstrate did:key, did:web, and (optional
 In general, DID method options will be influenced by a broader set of criteria relevant to all roles in the VC ecosystem, a comprehensive consideration of which is available in the DID Method Rubric (https://w3c.github.io/did-rubric).
 
 ##### Should the RI/demos include did:ion and anchoring to a chain at all?
-
-An early design goal was to avoid creating or promoting any new token, new chain, new consensus algorithm, etc, for DID resolution and for requesting and verifying credentials.
 
 Anchoring to public chains is useful, though, for making DIDs truly portable. Anchoring approaches that reduced fees/gas were also preferred, mostly resulting in batched change state anchoring, avoiding one op == one chain tx. This ruled out a number of crypto-specific identity solutions providers, but supported operation anchoring in Bitcoin and Ethereum, among others. It also eliminated a concern from regulators about promoting or requiring token usage.
 
@@ -259,27 +231,3 @@ We are using libp2p
 [^2]: While there are open source implementations, all are tied to specific vendors
 [^3]: JSON-LD (LD = Linked Data) proof techniques enable isolation of individual statements in a claim, as opposed to an opaque blob, which is essential to how the [BBS+ LD Signature Suite](https://w3c-ccg.github.io/ldp-bbs2020/#the-bbs-signature-suite-2020) functions.
 [^4]: Depending on the implementation choices of the DID method
-
-Spec Name,Reference
-W3C Verifiable Credentials Data Model,https://www.w3.org/TR/vc-data-model/
-W3C Decentralized Identifiers (DIDs) v1.0,https://www.w3.org/TR/did-core/
-DIF Presentation Exchange,https://identity.foundation/presentation-exchange
-DIF Credential Manifest,https://identity.foundation/credential-manifest/
-DIF Wallet and Credential Interactions (unstable),https://identity.foundation/wallet-and-credential-interactions/
-W3C did:key Method,https://w3c-ccg.github.io/did-method-key/
-IETF Multiformats Multibase,https://datatracker.ietf.org/doc/html/draft-multiformats-multibase-03
-IETF Multiformats Multicodec,https://datatracker.ietf.org/doc/html/draft-snell-multicodec-00
-Status List 2021,https://w3c-ccg.github.io/vc-status-list-2021/
-,
-Contract Development,
-Ethers,https://docs.ethers.io/v5/
-Hardhat,https://hardhat.org/
-@openzeppelin/contracts,https://github.com/OpenZeppelin/openzeppelin-contracts
-,
-Verifiable Data Models,
-did-jwt-vc,https://github.com/decentralized-identity/did-jwt-vc
-did-resolver,https://github.com/decentralized-identity/did-resolver
-@transmute/did-key-ed25519,https://github.com/transmute-industries/did-key.js/tree/main/packages/did-key-ed25519
-,
-Bit Manipulation for StatusList2021,
-@fry/bits,https://github.com/fredricrylander/bits
