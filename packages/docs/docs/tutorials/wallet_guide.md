@@ -11,9 +11,6 @@ This guide is written for developers seeking to integrate Verity into custodial 
 
 ## Minimal Wallet Requirements - Summary
 
-- Self-hosted (but hosted wallets are supported by the Verity protocols)
-- Stores/manages credentials
-
 - Generate (or supply) and manage decentralized identifiers for credential subject
   - did:key recommended for initial versions
 - Generate VC/VP-JWT signatures
