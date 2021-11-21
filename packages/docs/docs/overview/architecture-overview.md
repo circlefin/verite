@@ -21,13 +21,13 @@ Verity focuses on the identity claims and how to prove them to others without sh
 
 Decentralized identity protocols define the way attestations are issued, stored, requested, verified, and revoked.
 
-The protocols enable individuals and institutions to request and receive cryptographic attestations about identity claims from an "issuer." A financial institution issuing attestations about KYC or accredited investor status to its customers is an an example of an issuer.
+The protocols enable individuals and institutions to request and receive cryptographic attestations about identity claims from an "issuer". A financial institution issuing attestations about KYC or accredited investor status to its customers is an an example of an issuer.
 
-Individuals and institutions can custody and manage these attestations in their crypto/identity wallets. The attestations take the form of "Verifiable Credentials."
+Individuals and institutions can custody and manage these attestations in their crypto/identity wallets. The attestations take the form of "Verifiable Credentials".
 
 The individuals and institutions who receive Verifiable Credentials about their identities are often referred to as "subjects" and the identity responsible for custodying the Verifiable Credentials is referred to as a "holder." The subject and holder are the same when self-custodying, but they are not the same if the subject uses a hosted wallet service. One example of a subject is a customer who receives a KYC Verifiable Credential from her financial institution. If she custodies this Verifiable Credential in her own wallet, she is also the holder; if she chooses to custody the credential in a hosted wallet service, then the wallet service is the holder.
 
-Individuals and institutions decide when and with whom they want to share their Verifiable Credentials. Those who request and receive Verifiable Credentials are referred to as "verifiers" or more generally as "relying parties." A smart contract requiring proof of KYC is one example of a relying party.
+Individuals and institutions decide when and with whom they want to share their Verifiable Credentials. Those who request and receive Verifiable Credentials are referred to as "verifiers" or more generally as "relying parties". A smart contract requiring proof of KYC is one example of a relying party.
 
 ![Identity relationship between issuer, subject, verifier, and registry](/img/design-overview/roles-overview.png)
 
@@ -49,7 +49,7 @@ Foundational standards that Verity draws upon include:
 
 - **Presentation Exchange:** This DIF standard enables a verifier to describe what types of credentials they require from a subject/holder, and how the subject/holder can send a submission.
 
-- **Wallet and Credential Interactions:** Wallet interaction protocols use a lightweight flow loosely based on the work-in-progress DIF Wallet and Credential Interactions specification.
+- **Wallet and Credential Interactions:** Verity's Wallet interaction protocols use a lightweight flow loosely based on the work-in-progress DIF Wallet and Credential Interactions specification.
 
 ### More About Standards
 
@@ -57,9 +57,4 @@ A Verity primer on VCs, VPs, and DIDs is available for [reference here](/appendi
 
 ### Specification References
 
-- [W3C Verifiable Credentials Data Model](https://www.w3.org/TR/vc-data-model/)
-- [W3C Decentralized Identifiers (DIDs) v1.0](https://www.w3.org/TR/did-core/)
-- [DIF Presentation Exchange](https://identity.foundation/presentation-exchange/)
-- [DIF Credential Manifest](https://identity.foundation/credential-manifest/)
-- [W3C Credential Status 2021](https://w3c-ccg.github.io/vc-status-list-2021/)
-- [DIF Wallet and Credential Interactions](https://identity.foundation/wallet-and-credential-interactions/)
+The complete list of specifications used in Verity's implementation is available for [reference here](/appendix/specifications_and_libraries).
