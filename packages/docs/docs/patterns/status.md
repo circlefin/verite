@@ -46,7 +46,7 @@ While expiration and revocation are semantically different, the VC design goals 
 - For an VC with a long lifespan that the issuer may need to revoke, devising and deploying a privacy-preserving, yet decentralized revocation mechanism may seem prohibiitve from an implementation perspective. For this reason, some issuers choose to set more aggressive expiration dates to avoid or reduce the need to revoke credentials.
 - At the same time, an overly aggressive expiration date requires the credential subject to frequently re-request the credential, again increasing the dependency on the issuer.
 
-To that end, [Revocation Practices](/revocation-practices) expands on approaches to achieve privacy-preserving revocation (or more generally, status) methods.
+To that end, [Status Registry Practices](/docs/patterns/revocation-practices) expands on approaches to achieve privacy-preserving revocation (or more generally, status) methods.
 
 ### Interpretation of a Revoked Status
 

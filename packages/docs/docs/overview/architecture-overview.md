@@ -53,8 +53,8 @@ Foundational standards that Verity draws upon include:
 
 ### More About Standards
 
-A Verity primer on VCs, VPs, and DIDs is available for [reference here](/appendix/primer).
+A Verity primer on VCs, VPs, and DIDs is available for [reference here](/docs/appendix/primer).
 
 ### Specification References
 
-The complete list of specifications used in Verity's implementation is available for [reference here](/appendix/specifications_and_libraries).
+The complete list of specifications used in Verity's implementation is available for [reference here](/docs/appendix/specifications-and-libraries).
