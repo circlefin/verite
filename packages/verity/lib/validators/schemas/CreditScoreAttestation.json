@@ -29,7 +29,7 @@
           "const": "CreditScoreAttestation",
           "type": "string"
         },
-        "AddressOwner": {
+        "addressOwner": {
           "items": {
             "$ref": "#/definitions/AddressOwner"
           },

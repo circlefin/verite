@@ -18,7 +18,7 @@ export type CreditScoreAttestation = {
   paymentHistoryPercentage?: string
   openAccounts?: number
   utilization?: number
-  AddressOwner?: AddressOwner[]
+  addressOwner?: AddressOwner[]
 }
 
 export type AddressOwner = {
