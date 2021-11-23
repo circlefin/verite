@@ -18,11 +18,11 @@ export type CreditScoreAttestation = {
   paymentHistoryPercentage?: string
   openAccounts?: number
   utilization?: number
-  chainAddressOwner?: ChainAddressOwner[]
+  AddressOwner?: AddressOwner[]
 }
 
-export type ChainAddressOwner = {
-  "@type": "ChainAddressOwner"
+export type AddressOwner = {
+  "@type": "AddressOwner"
   chain: string
   address: string
   proof: string
