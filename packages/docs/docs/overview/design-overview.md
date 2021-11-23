@@ -33,10 +33,10 @@ A process goal is to maintain transparency and openness in the iteration of the 
 
 ## Non-Goals
 
-- Verity does not have a goal of creating a new chain, token, consensus algorithm, wallet, storage system, p2p library, or other fundamental infrastructure.
+- Verity standards do not require use of a specific chain, token, consensus algorithm, wallet, storage system, p2p library, or other fundamental infrastructure.
 
-- Verity does not have a goal of creating a new identity product or vendor implementation. Verity aims to specify definitions for claims that can be supported by any identity solution, and to specify protocols that can be implemented by any service, wallet, or application.
+- Verity aims to specify definitions for claims that can be supported by any identity solution, and to specify protocols that can be implemented by any service, wallet, or application.
 
-- Verity does not have a goal of creating a new Decentralized Identifer (DID) method or new attestation format. Verity aims to use and contribute to existing decentralized identity standards such as Verifiable Credentials and Presentation Exchange.
+- Verity does not require use of a specific Decentralized Identifier (DID) method or new attestation format.
 
-- Verity does not have a goal of directly monetizing any reference implementation or specification it provides related to its goals and key use cases. There is no license fee for use of the protocols.
+- Verity is not intended as a competing decentralized identity standard; it aims to leverage and contribute to existing (and emerging) decentralized identity standards.
