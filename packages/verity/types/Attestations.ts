@@ -28,7 +28,7 @@ export type AddressOwner = {
   proof: string
 }
 
-export type CounterpartyPerson = Person & {
+export type CounterpartyAccountHolder = Person & {
   accountNumber: string
   accountSource: string
 }
