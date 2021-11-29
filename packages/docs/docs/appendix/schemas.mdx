@@ -36,7 +36,7 @@ https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
 
 #### "@type" Attribute
 
-The "@type" attribute MUST be "KYCAMLAttestationUSA". Use of this attribute is REQUIRED.
+The "@type" attribute is "KYCAMLAttestationUSA". Use of this attribute is REQUIRED.
 
 #### "authorityId" Attribute
 
@@ -57,27 +57,6 @@ The "authorityUrl" attribute is used to define a url of the authority that execu
 #### "authorityCallbackUrl" Attribute
 
 The "authorityCallbackUrl" attribute is used to define the url at which VCs can be requested of this authority, such as VCs it may have about itself (e.g., a Centre-issued KYCAMLAttestation about this authority proving that it is a valid issuer in the Centre network). The "authorityCallbackUrl" attribute value is a stringOrURI. If present, it indicates a url that expects Presentation Requests messaged to the KYC authority. Use of this attribute is OPTIONAL.
-
-### Recommendations
-
-## Credit / Risk Rating Attestation
-
-ISSUE: finish this
-
-### Purpose
-
-### Example
-
-```json
-{
-  "@type": "CreditScoreAttestation",
-  "score": 700,
-  "scoreType": "Credit Rating",
-  "provider": "Experian"
-}
-```
-
-### Attributes
 
 ### Recommendations
 
@@ -104,7 +83,7 @@ This schema avoids arbitrary signatures and promotes an interoperable approach t
 
 #### "@type" Attribute
 
-The "@type" attribute for an Address Ownership attestation MUST be "AddressOwner". Use of this attribute is REQUIRED.
+The "@type" attribute for an Address Ownership is "AddressOwner". Use of this attribute is REQUIRED.
 
 #### "chain" Attribute
 
@@ -152,7 +131,7 @@ Describes an attestation of Counterparty PII used for originators and beneficiar
 
 #### "@type" Attribute
 
-The "@type" attribute for an Address Ownership attestation MUST be "CounterpartyAccountHolder". Use of this attribute is REQUIRED.
+The "@type" attribute for an Address Ownership attestation is "CounterpartyAccountHolder". Use of this attribute is REQUIRED.
 
 #### "legalName" Attribute
 
@@ -177,3 +156,70 @@ The "legalID" attribute is used to define the identifier of the subject. The "le
 ### Recommendations
 
 A credential containing an`CounterpartyAccountHolder` attestation contains sensitive personal information. In current uses, it SHOULD be generated dynamically in the context of transactions and shared only between valid counterparties.
+
+#############
+
+## Credit / Risk Rating Attestation
+
+### Purpose
+
+Represents a credit score.
+
+### Example
+
+```json
+{
+  "@type": "CreditScoreAttestation",
+  "score": 700,
+  "scoreType": "Credit Rating",
+  "provider": "Experian"
+}
+```
+
+### Attributes
+
+The additional data in the schema are as follows:
+
+#### "@type" Attribute
+
+The "@type" attribute for a Credit Score attestation is "CreditScore". Use of this attribute is REQUIRED.
+
+#### "score" Attribute
+
+The "score" attribute is used to define the score of the subject entity. The "score" attribute value is a number. Use of this attribute is REQUIRED.
+
+#### "scoreType" Attribute
+
+The "scoreType" attribute is used to define the type of score. The "scoreType" attribute value is a string. Use of this attribute is REQUIRED.
+
+#### "provider" Attribute
+
+The "provider" attribute is used to define the score provider. The "provider" attribute value is a string. Use of this attribute is REQUIRED.
+
+#### "historyStartDate" Attribute
+
+The "historyStartDate" attribute is used to define the start date of history. The "historyStartDate" attribute value is a string. Use of this attribute is OPTIONAL. TODO
+
+#### "paymentHistoryPercentage" Attribute
+
+The "paymentHistoryPercentage" attribute is used to define TODO. The "paymentHistoryPercentage" attribute value is a string. Use of this attribute is OPTIONAL.
+
+#### "openAccounts" Attribute
+
+The "openAccounts" attribute is used to define the number of open accounts the subject holds with the provider. The "openAccounts" attribute value is a number. Use of this attribute is OPTIONAL.
+
+#### "utilitization" Attribute
+
+The "utilitization" attribute is used to define typical utilization of the available credit with this provider at the time of issuance. The "utilitization" attribute value is a number. Use of this attribute is OPTIONAL.
+
+#### "chainAddressesOwned" Attribute
+
+The "chainAddressesOwned" attribute is used to define proofs of on-chain addresses owned at the time of issuance, relevant to providers who host crypto accounts for customers. The "chainAddressesOwned" attribute value is a list of type ChainAddressOwner. Use of this attribute is OPTIONAL.
+
+### Recommendations
+
+- CreditScore credentials SHOULD expire quickly
+- CreditScore credentials SHOULD NOT be revocable
+- Expiration time is at the discretion of issuers; however, ongoing engagement with regulators may lead to recommendations on timespans
+
+Credit Reporting is highly regulated and as such, this may need to change as regulators are engaged on this subject.
