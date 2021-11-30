@@ -21,6 +21,7 @@ export default apiHandler<Response>(async (req, res) => {
 
   if (isAuthenticated) {
     cookies.set("verity-auth", "1", {
+      domain: process.env.COOKIE_DOMAIN,
       httpOnly: false
     })
     res.status(200).json({ status: "ok" })
