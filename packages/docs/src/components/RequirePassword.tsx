@@ -1,44 +1,43 @@
-import React, { FC, useEffect, useState } from "react"
+import React, { FC, useState } from "react"
 import Cookies from "universal-cookie"
 import styles from "./RequirePassword.module.css"
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 
-const cookies = new Cookies()
-
 /**
- * This layout should be used on all pages and provides a minimal
- * password protection system.
+ * A simple component to block access to the site unless the user
+ * is authenticated.  This is not intended to be considered secure
+ * or production-ready.  It is merely a simple gatekeeper while
+ * the demos and documentation are not public.
  */
 const RequirePassword: FC = ({ children }) => {
+  const cookies = new Cookies()
   const { siteConfig } = useDocusaurusContext()
-  const protectedPassword = siteConfig.customFields?.protectedPassword
-  const passwordCookie: string =
-    (siteConfig.customFields?.passwordCookie as string) || "password"
-  const [passwordSuccessful, setPasswordSuccessful] = useState(false)
-  const [password, setPassword] = useState(cookies.get(passwordCookie))
+  const [password, setPassword] = useState("")
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !siteConfig.customFields.passwordProtected ||
+      cookies.get("verity-auth") === "1"
+  )
 
-  const checkPassword = () => {
-    if (password === protectedPassword) {
-      cookies.set(passwordCookie, password)
-      setPasswordSuccessful(true)
-    } else {
-      setPasswordSuccessful(false)
-    }
+  const checkPassword = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault()
 
-    setPassword("")
+    const response = await fetch(
+      `${siteConfig.customFields.demosUrl}/api/auth/site`,
+      {
+        method: "POST",
+        body: JSON.stringify({ password }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    )
+
+    setIsAuthenticated(response.status === 200)
   }
-
-  useEffect(() => {
-    if (!protectedPassword) {
-      setPasswordSuccessful(true)
-    } else {
-      checkPassword()
-    }
-  }, [])
 
   return (
     <>
-      {passwordSuccessful ? (
+      {isAuthenticated ? (
         children
       ) : (
         <form className={styles.form}>
@@ -60,10 +59,7 @@ const RequirePassword: FC = ({ children }) => {
               <button
                 type="submit"
                 className={styles.button}
-                onClick={(e) => {
-                  e.preventDefault()
-                  checkPassword()
-                }}
+                onClick={checkPassword}
               >
                 Login
               </button>
