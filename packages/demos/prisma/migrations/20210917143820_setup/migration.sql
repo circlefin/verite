@@ -34,6 +34,15 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "DemoAccount" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "password" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "loginCount" INTEGER NOT NULL DEFAULT 0,
+    "lastLoginAt" TIMESTAMP
+);
+
+-- CreateTable
 CREATE TABLE "VerificationRequest" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "payload" TEXT NOT NULL,

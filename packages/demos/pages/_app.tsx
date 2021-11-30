@@ -7,7 +7,6 @@ import "tailwindcss/tailwind.css"
 import NextNprogress from "nextjs-progressbar"
 import Cookies from "universal-cookie"
 import RequirePassword from "../components/auth/RequirePassword"
-import { PASSWORD_PROTECTION_COOKIE } from "../lib/react-fns"
 
 /**
  * Build an `ethers.js` Web3Provider for the given wallet
@@ -32,30 +31,23 @@ function DemoApp({ Component, pageProps }: AppProps): JSX.Element {
 }
 
 /**
- * Optionally password protect the entire website.
- *
- * This can be achieved by setting the environment variable
- * `PROTECTED_PASSWORD` which is only read server-side.
+ * This intercepts the Server-Side-Rendered (SSR) requests to check
+ * if the end-user is authenticated & able to see the demos. This ensures
+ * the app is properly hydrated upon page load.
  */
 DemoApp.getInitialProps = async (appContext) => {
   const appProps = await App.getInitialProps(appContext)
 
-  if (appContext.ctx.req) {
-    /**
-     * Add basic authentication to the site
-     */
+  if (process.env.PASSWORD_PROTECTED !== "true") {
+    // Password protection is disabled, allow access to all pages
+    appProps.pageProps.passwordSuccessful = true
+  } else if (appContext.ctx.req) {
+    // Rendering on the server, checkif the user is authenticated
     const cookies = new Cookies(appContext.ctx.req.headers.cookie)
-    const password = cookies.get(PASSWORD_PROTECTION_COOKIE) ?? ""
 
-    if (
-      !process.env.PROTECTED_PASSWORD ||
-      password === process.env.PROTECTED_PASSWORD
-    ) {
+    if (cookies.get("verity-auth") === "1") {
       appProps.pageProps.passwordSuccessful = true
     }
-  } else {
-    // client-side rendering, meaning we've already authenticated. continue.
-    appProps.pageProps.passwordSuccessful = true
   }
 
   return { ...appProps }
