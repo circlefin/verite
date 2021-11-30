@@ -18,6 +18,15 @@ const USERS: UserInput[] = [
 ]
 
 async function main() {
+  if (process.env.DEFAULT_PASSWORD) {
+    await prisma.demoAccount.create({
+      data: {
+        name: "Default Account",
+        password: process.env.DEFAULT_PASSWORD
+      }
+    })
+  }
+
   await asyncMap(USERS, async (user) => {
     console.info(`Creating user ${user.email}...`)
 

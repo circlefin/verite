@@ -5,7 +5,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 module.exports = {
   title: "Verity Documentation",
   tagline: "Verity decentralized identity for DeFi",
-  url: "https://docs.verity.io",
+  url: "https://docs.verity.id",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -80,5 +80,9 @@ module.exports = {
         }
       }
     ]
-  ]
+  ],
+  customFields: {
+    passwordProtected: process.env.PASSWORD_PROTECTED === "true",
+    demosUrl: process.env.DEMOS_URL || "/"
+  }
 }

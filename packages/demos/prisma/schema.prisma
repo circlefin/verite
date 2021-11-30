@@ -33,6 +33,14 @@ model User {
   privateKey  String @default("")
 }
 
+model DemoAccount {
+  id          String    @id @default(uuid())
+  password    String
+  name        String
+  loginCount  Int       @default(0)
+  lastLoginAt DateTime?
+}
+
 model VerificationRequest {
   id      String  @id @default(uuid())
   payload String

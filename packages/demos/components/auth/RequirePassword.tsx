@@ -1,22 +1,41 @@
 import { LockClosedIcon } from "@heroicons/react/outline"
 import { FC, useState } from "react"
 import Cookies from "universal-cookie"
-import { PASSWORD_PROTECTION_COOKIE } from "../../lib/react-fns"
 
 type Props = {
   passwordSuccessful: boolean
 }
 
 /**
- * This layout should be used on all pages and provides a minimal
- * password protection system.
+ * A simple component to block access to the site unless the user
+ * is authenticated.  This is not intended to be considered secure
+ * or production-ready.  It is merely a simple gatekeeper while
+ * the demos and documentation are not public.
  */
 const RequirePassword: FC<Props> = ({ children, passwordSuccessful }) => {
+  const cookies = new Cookies()
   const [password, setPassword] = useState("")
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    passwordSuccessful || cookies.get("verity-auth") === "1"
+  )
+
+  const onSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+
+    const response = await fetch("/api/auth/site", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    setIsAuthenticated(response.status === 200)
+  }
 
   return (
     <>
-      {passwordSuccessful ? (
+      {isAuthenticated ? (
         children
       ) : (
         <form className="flex items-center justify-center h-screen mx-auto">
@@ -47,12 +66,7 @@ const RequirePassword: FC<Props> = ({ children, passwordSuccessful }) => {
               <button
                 type="submit"
                 className="inline-flex items-center justify-center w-full px-4 py-2 my-2 text-sm font-medium text-center text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                onClick={(e) => {
-                  e.preventDefault()
-                  const cookies = new Cookies()
-                  cookies.set(PASSWORD_PROTECTION_COOKIE, password)
-                  window.location.reload()
-                }}
+                onClick={onSubmit}
               >
                 Login
               </button>
