@@ -9,6 +9,10 @@ _This tutorial will walk you through issuing verifiable credentials using the ve
 
 For the sake of this demo, we will be using Decentralized Identifiers (DIDs) to identify the issuer (you) and subject (the person or entity the credential is about), as well as JSON Web Tokens (JWTs) as the means of signing and verifying the credentials. In practice, you are not limited to using DIDs to prove ownership; anything with a public/private key pair is a valid owner. Likewise, you do not need to use JWTs.
 
+## Prerequisites: Issuer Setup
+
+[See issuer setup instructions](/docs/tutorials/issuer-setup).
+
 ## Step 1: Create a DID for your issuer
 
 In order to issue a credential, you must have some way of identifying yourself as an Issuer. This allows the credential to be "verifiable" by a 3rd party.
@@ -16,9 +20,9 @@ In order to issue a credential, you must have some way of identifying yourself a
 To start, you should create a DID keypair.
 
 ```ts
-import { randomDidKey } from "@centre/verity";
+import { randomDidKey } from "@centre/verity"
 
-const issuerDidKey = randomDidKey();
+const issuerDidKey = randomDidKey()
 ```
 
 That keypair should look like the following:
@@ -53,9 +57,9 @@ Generally, you would follow the [Presentation Exchange (PEx)](https://identity.f
 To do so, you need to create a [Credential Manifest](https://identity.foundation/credential-manifest/) showcasing what attestations you offer as Verifiable Credentials. In this example, we will offer a "Know Your Customer, Anti-Money Laundering" attestation (KYC/AML Attestation), meaning we are compliant with US regulations and have checked your account to determined you are not a bad actor. The benefit of this type of VC is that another service can be compliant with regulations without any personal information exposed in the VC.
 
 ```ts
-import { buildKycAmlManifest } from "@centre/verity";
+import { buildKycAmlManifest } from "@centre/verity"
 
-const manifest = buildKycAmlManifest({ id: issuerDidKey.controller });
+const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
 ```
 
 This manifest contains instructions for the subject to use to request a VC.
@@ -63,12 +67,12 @@ This manifest contains instructions for the subject to use to request a VC.
 The subject uses that manifest to build a “Credential Application”, which serves as a request for a VC. For example, a subject could create the application as such:
 
 ```ts
-import { randomDidKey, buildCredentialApplication } from "@centre/verity";
+import { randomDidKey, buildCredentialApplication } from "@centre/verity"
 
 // The subject needs a did:key, generate a random one:
-const subjectDidKey = randomDidKey();
+const subjectDidKey = randomDidKey()
 
-const application = await buildCredentialApplication(subject, manifest);
+const application = await buildCredentialApplication(subject, manifest)
 ```
 
 ## Step 3: Issue the Verifiable Credential
@@ -86,26 +90,26 @@ import {
   buildAndSignFulfillment,
   decodeCredentialApplication,
   buildIssuer,
-  KYCAMLAttestation,
-} from "@centre/verity";
+  KYCAMLAttestation
+} from "@centre/verity"
 
-const decodedApplication = await decodeCredentialApplication(application);
+const decodedApplication = await decodeCredentialApplication(application)
 
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
   authorityId: "did:web:verity.id",
   approvalDate: new Date().toISOString(),
   authorityName: "verity.id",
-  authorityUrl: "https://verity.id",
-};
+  authorityUrl: "https://verity.id"
+}
 
-const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey);
+const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 
 const presentation = await buildAndSignFulfillment(
   issuer,
   decodedApplication,
   attestation
-);
+)
 ```
 
 The subject can then decode the presentation and store their Verifiable Credential for future use.
