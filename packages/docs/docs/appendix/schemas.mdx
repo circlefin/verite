@@ -8,21 +8,24 @@ import kycSchema from "@site/static/schemas/KycAmlAttestation.json"
 import kycVcExample from "@site/static/examples/KYCAMLVerifiableCredential.json"
 import CodeBlock from "@theme/CodeBlock"
 
-ISSUE: Discuss "@type" vs "type"
+ISSUE: Discuss "@type" vs "type" and array vs single-valued
 
 ## KYC/AML Attestation
 
 ### Purpose
 
-Represents an attestation of successful KYC screening.
+Represents an attestation a KYC/AML process has been performed according to a specified defined process. A KYC/AML process is defined at the country-level, referenced as linked data.
+
+The KYC/AML attestation structure is intended to address regulatory compliance only, and not filtering on additional personal data attributes. An example of the latter is filtering out users based on state residence ("jurisdiction shopping"). This distinction helps reduce required attributes about the credential subject (and finer-grained personal data) within the credential.
 
 ### Example
 
 ```json
 {
-  "@type": "KYCAMLAttestationUSA",
-  "authorityId": "did:web:trapezoid.id",
+  "@type": "KYCAMLAttestation",
+  "process": "https://centre.io/schemas/kycaml/usa",
   "approvalDate": "2021-08-25T02:13:43.387Z",
+  "authorityId": "did:web:trapezoid.id",
   "authorityName": "Trapezoid LLC",
   "authorityUrl": "https://trapezoid.id",
   "authorityCallbackUrl": "https://identity.trapezoid.id"
@@ -31,34 +34,43 @@ Represents an attestation of successful KYC screening.
 
 ### Attributes
 
-ISSUE: provide more details. ISO 3166-1 country code (Alpha-3).
-https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
-
 #### "@type" Attribute
 
-The "@type" attribute is "KYCAMLAttestationUSA". Use of this attribute is REQUIRED.
+The "@type" attribute MUST be "KYCAMLAttestation". Use of this attribute is REQUIRED.
 
-#### "authorityId" Attribute
+#### "process" Attribute
 
-The "authorityId" attribute is used to define the company that executed the KYC screening. The "authorityId" attribute value is a stringOrURI identifier that MAY be a DID. The attribute value MAY be the same as the VC issuer (recorded in the outer VC wrapper), but should not be assumed to be the same (issuers may employ KYC-as-a-Service authorities). Use of this attribute is REQUIRED.
+The "process" attribute is used to define which KYC/AML process was performed. The "process" attribute value is a stringOrURI referencing the KYC process performed. Use of this attribute is REQUIRED.
 
 #### "approvalDate" Attribute
 
-The "approvalDate" attribute is used to define the date of KYC execution completion, which may be on or before the issuanceDate of the credential (in the outer VC wrapper). The "approvalDate" attribute value is an ISO 8601-formatted string. If not present, then the attribute value is assumed to be the same as the Verifiable Credential issuance date. Use of this attribute is OPTIONAL.
+The "approvalDate" attribute is used to define the date of KYC/AML process completion, which may be on or before the issuanceDate of the credential (in the outer VC wrapper). The "approvalDate" attribute value is an ISO 8601-formatted string. If not present, then the attribute value is assumed to be the same as the Verifiable Credential issuance date. Use of this attribute is OPTIONAL.
+
+#### "authorityId" Attribute
+
+The "authorityId" attribute is used to define the company that executed the KYC process. The "authorityId" attribute value is a stringOrURI identifier that MAY be a DID. The attribute value MAY be the same as the VC issuer (recorded in the outer VC wrapper), but should not be assumed to be the same (issuers may employ KYC-as-a-Service authorities). Use of this attribute is REQUIRED.
 
 #### "authorityName" Attribute
 
-The "authorityName" attribute is used to name of the authority that executed the KYC process. The "authorityName" attribute value is a string. If provided, the value MUST be the legal name of the entity that executed the screening. This value SHOULD be provided if the authority name is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
+The "authorityName" attribute is used to name of the authority that executed the KYC process. The "authorityName" attribute value is a string. If provided, the value MUST be the legal name of the entity that executed the KYC process. This value SHOULD be provided if the authority name is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
 
 #### "authorityUrl" Attribute
 
-The "authorityUrl" attribute is used to define a url of the authority that executed the KYC process. The "authorityUrl" attribute value is a stringOrURI. If provided, the value MUST be the url of the entity that executed the screening. This value SHOULD be provided if the URL is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
+The "authorityUrl" attribute is used to define a url of the authority that executed the KYC process. The "authorityUrl" attribute value is a stringOrURI. If provided, the value MUST be the url of the entity that executed the KYC process. This value SHOULD be provided if the URL is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
 
 #### "authorityCallbackUrl" Attribute
 
 The "authorityCallbackUrl" attribute is used to define the url at which VCs can be requested of this authority, such as VCs it may have about itself (e.g., a Centre-issued KYCAMLAttestation about this authority proving that it is a valid issuer in the Centre network). The "authorityCallbackUrl" attribute value is a stringOrURI. If present, it indicates a url that expects Presentation Requests messaged to the KYC authority. Use of this attribute is OPTIONAL.
 
 ### Recommendations
+
+- Issuers take responsibility for revoking issued credentials due to updates to sanctions lists
+- Verifiers must ensure they update verification results per updated issuer actions
+- Verifiers are expected to determine fitness-for-purpose based on awareness of process definitions
+- Additional details obtained during the KYC/AML process should not be included in the attestation. For example, service provider scores are not needed and will leak personal information.
+- Support for additional use cases (such as jurisdiction shopping) that require additional data should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplised with ZKPs or by issuing separate credentials containing the additional attributes (such as residence), enabling wallet aggregation of minimal required data.
+
+Verity's intial release contains only the USA KYC/AML process definition (https://centre.io/schemas/kycaml/usa). Additional process defnitions will be developed based on existing practices/requirements per country.
 
 ## Address Ownership
 
@@ -83,7 +95,7 @@ This schema avoids arbitrary signatures and promotes an interoperable approach t
 
 #### "@type" Attribute
 
-The "@type" attribute for an Address Ownership is "AddressOwner". Use of this attribute is REQUIRED.
+The "@type" attribute MUST be "AddressOwner". Use of this attribute is REQUIRED.
 
 #### "chain" Attribute
 
@@ -131,7 +143,7 @@ Describes an attestation of Counterparty PII used for originators and beneficiar
 
 #### "@type" Attribute
 
-The "@type" attribute for an Address Ownership attestation is "CounterpartyAccountHolder". Use of this attribute is REQUIRED.
+The "@type" attribute MUST be "CounterpartyAccountHolder". Use of this attribute is REQUIRED.
 
 #### "legalName" Attribute
 
@@ -156,70 +168,3 @@ The "legalID" attribute is used to define the identifier of the subject. The "le
 ### Recommendations
 
 A credential containing an`CounterpartyAccountHolder` attestation contains sensitive personal information. In current uses, it SHOULD be generated dynamically in the context of transactions and shared only between valid counterparties.
-
-#############
-
-## Credit / Risk Rating Attestation
-
-### Purpose
-
-Represents a credit score.
-
-### Example
-
-```json
-{
-  "@type": "CreditScoreAttestation",
-  "score": 700,
-  "scoreType": "Credit Rating",
-  "provider": "Experian"
-}
-```
-
-### Attributes
-
-The additional data in the schema are as follows:
-
-#### "@type" Attribute
-
-The "@type" attribute for a Credit Score attestation is "CreditScore". Use of this attribute is REQUIRED.
-
-#### "score" Attribute
-
-The "score" attribute is used to define the score of the subject entity. The "score" attribute value is a number. Use of this attribute is REQUIRED.
-
-#### "scoreType" Attribute
-
-The "scoreType" attribute is used to define the type of score. The "scoreType" attribute value is a string. Use of this attribute is REQUIRED.
-
-#### "provider" Attribute
-
-The "provider" attribute is used to define the score provider. The "provider" attribute value is a string. Use of this attribute is REQUIRED.
-
-#### "historyStartDate" Attribute
-
-The "historyStartDate" attribute is used to define the start date of history. The "historyStartDate" attribute value is a string. Use of this attribute is OPTIONAL. TODO
-
-#### "paymentHistoryPercentage" Attribute
-
-The "paymentHistoryPercentage" attribute is used to define TODO. The "paymentHistoryPercentage" attribute value is a string. Use of this attribute is OPTIONAL.
-
-#### "openAccounts" Attribute
-
-The "openAccounts" attribute is used to define the number of open accounts the subject holds with the provider. The "openAccounts" attribute value is a number. Use of this attribute is OPTIONAL.
-
-#### "utilitization" Attribute
-
-The "utilitization" attribute is used to define typical utilization of the available credit with this provider at the time of issuance. The "utilitization" attribute value is a number. Use of this attribute is OPTIONAL.
-
-#### "chainAddressesOwned" Attribute
-
-The "chainAddressesOwned" attribute is used to define proofs of on-chain addresses owned at the time of issuance, relevant to providers who host crypto accounts for customers. The "chainAddressesOwned" attribute value is a list of type ChainAddressOwner. Use of this attribute is OPTIONAL.
-
-### Recommendations
-
-- CreditScore credentials SHOULD expire quickly
-- CreditScore credentials SHOULD NOT be revocable
-- Expiration time is at the discretion of issuers; however, ongoing engagement with regulators may lead to recommendations on timespans
-
-Credit Reporting is highly regulated and as such, this may need to change as regulators are engaged on this subject.
