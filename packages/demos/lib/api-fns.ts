@@ -6,7 +6,7 @@ import { MethodNotAllowedError } from "./errors"
 
 const cors = promisify(
   Cors({
-    methods: ["GET", "HEAD"]
+    methods: ["GET", "POST", "HEAD"]
   })
 )
 

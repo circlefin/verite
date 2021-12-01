@@ -32,6 +32,11 @@ const RequirePassword: FC = ({ children }) => {
       }
     )
 
+    cookies.set("verity-auth", "1", {
+      httpOnly: false,
+      domain: siteConfig.customFields.cookieDomain as string
+    })
+
     setIsAuthenticated(response.status === 200)
   }
 
