@@ -82,6 +82,7 @@ module.exports = {
     ]
   ],
   customFields: {
+    cookieDomain: process.env.COOKIE_DOMAIN,
     passwordProtected: process.env.PASSWORD_PROTECTED === "true",
     demosUrl: process.env.DEMOS_URL || "/"
   }
