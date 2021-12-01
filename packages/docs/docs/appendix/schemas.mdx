@@ -4,68 +4,167 @@ sidebar_position: 1
 
 # Schemas
 
-import kycSchema from "@site/static/schemas/KycAmlAttestation.json";
-import kycVcExample from "@site/static/examples/KYCAMLVerifiableCredential.json";
-import CodeBlock from "@theme/CodeBlock";
+import kycSchema from "@site/static/schemas/KycAmlAttestation.json"
+import kycVcExample from "@site/static/examples/KYCAMLVerifiableCredential.json"
+import CodeBlock from "@theme/CodeBlock"
+
+ISSUE: Discuss "@type" vs "type" and array vs single-valued
 
 ## KYC/AML Attestation
+
+### Purpose
+
+Represents an attestation a KYC/AML process has been performed according to a specified defined process. A KYC/AML process is defined at the country-level, referenced as linked data.
+
+The KYC/AML attestation structure is intended to address regulatory compliance only, and not filtering on additional personal data attributes. An example of the latter is filtering out users based on state residence ("jurisdiction shopping"). This distinction helps reduce required attributes about the credential subject (and finer-grained personal data) within the credential.
+
+### Example
 
 ```json
 {
   "@type": "KYCAMLAttestation",
-  "authorityId": "did:web:verity.id",
+  "process": "https://centre.io/schemas/kycaml/usa",
   "approvalDate": "2021-08-25T02:13:43.387Z",
-  "authorityName": "Verity",
-  "authorityUrl": "https://verity.id",
-  "authorityCallbackUrl": "https://identity.verity.id",
-  "serviceProviders": [
-    {
-      "@type": "KYCAMLProvider",
-      "name": "Some Service",
-      "score": 200
-    }
-  ]
+  "authorityId": "did:web:trapezoid.id",
+  "authorityName": "Trapezoid LLC",
+  "authorityUrl": "https://trapezoid.id",
+  "authorityCallbackUrl": "https://identity.trapezoid.id"
 }
 ```
 
-## Credit / Risk Rating Attestation
+### Attributes
+
+#### "@type" Attribute
+
+The "@type" attribute MUST be "KYCAMLAttestation". Use of this attribute is REQUIRED.
+
+#### "process" Attribute
+
+The "process" attribute is used to define which KYC/AML process was performed. The "process" attribute value is a stringOrURI referencing the KYC process performed. Use of this attribute is REQUIRED.
+
+#### "approvalDate" Attribute
+
+The "approvalDate" attribute is used to define the date of KYC/AML process completion, which may be on or before the issuanceDate of the credential (in the outer VC wrapper). The "approvalDate" attribute value is an ISO 8601-formatted string. If not present, then the attribute value is assumed to be the same as the Verifiable Credential issuance date. Use of this attribute is OPTIONAL.
+
+#### "authorityId" Attribute
+
+The "authorityId" attribute is used to define the company that executed the KYC process. The "authorityId" attribute value is a stringOrURI identifier that MAY be a DID. The attribute value MAY be the same as the VC issuer (recorded in the outer VC wrapper), but should not be assumed to be the same (issuers may employ KYC-as-a-Service authorities). Use of this attribute is REQUIRED.
+
+#### "authorityName" Attribute
+
+The "authorityName" attribute is used to name of the authority that executed the KYC process. The "authorityName" attribute value is a string. If provided, the value MUST be the legal name of the entity that executed the KYC process. This value SHOULD be provided if the authority name is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
+
+#### "authorityUrl" Attribute
+
+The "authorityUrl" attribute is used to define a url of the authority that executed the KYC process. The "authorityUrl" attribute value is a stringOrURI. If provided, the value MUST be the url of the entity that executed the KYC process. This value SHOULD be provided if the URL is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
+
+#### "authorityCallbackUrl" Attribute
+
+The "authorityCallbackUrl" attribute is used to define the url at which VCs can be requested of this authority, such as VCs it may have about itself (e.g., a Centre-issued KYCAMLAttestation about this authority proving that it is a valid issuer in the Centre network). The "authorityCallbackUrl" attribute value is a stringOrURI. If present, it indicates a url that expects Presentation Requests messaged to the KYC authority. Use of this attribute is OPTIONAL.
+
+### Recommendations
+
+- Issuers take responsibility for revoking issued credentials due to updates to sanctions lists
+- Verifiers must ensure they update verification results per updated issuer actions
+- Verifiers are expected to determine fitness-for-purpose based on awareness of process definitions
+- Additional details obtained during the KYC/AML process should not be included in the attestation. For example, service provider scores are not needed and will leak personal information.
+- Support for additional use cases (such as jurisdiction shopping) that require additional data should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplised with ZKPs or by issuing separate credentials containing the additional attributes (such as residence), enabling wallet aggregation of minimal required data.
+
+Verity's intial release contains only the USA KYC/AML process definition (https://centre.io/schemas/kycaml/usa). Additional process defnitions will be developed based on existing practices/requirements per country.
+
+## Address Ownership
+
+### Purpose
+
+Expresses ownership of a cryptographic private key for any chain that uses public-private key cryptography in address ownership.
+
+This schema avoids arbitrary signatures and promotes an interoperable approach to proving key ownership. It is useful when embedded in other schemas and protocols (such as the counterparty exchange protocol and the credit score schema).
+
+### Example
 
 ```json
 {
-  "@type": "CreditScoreAttestation",
-  "score": 700,
-  "scoreType": "Credit Rating",
-  "provider": "Experian"
+  "@type": "AddressOwner",
+  "chain": "ethereum-ropsten",
+  "address": "0x967af20D190EE4558Fd218A8B0be4065beEfCAce",
+  "proof": "xyz"
 }
 ```
 
-## Blockchain Address Ownership
+### Attributes
 
-TODO
+#### "@type" Attribute
 
-```json
-{
-  "@type": "ChainAddressOwner",
-  "chain": string
-  "address": string
-  "proof": string
-}
-```
+The "@type" attribute MUST be "AddressOwner". Use of this attribute is REQUIRED.
+
+#### "chain" Attribute
+
+The "chain" attribute is used to define which blockchain the attestation is applicable to. The "chain" attribute value is a case-insensitive string containing the full name of the chain. The full name of the chain MUST be formed by concatenating the primary name (e.g., "ethereum"), hyphen ("-"), and the testname name (e.g., "ropsten"); e.g., "ethereum-ropsten"). Use of this attribute is REQUIRED.
+
+#### "address" Attribute
+
+The "address" attribute is used to define the address on the indicated chain. The "address" attribute value is a string containing the chain address, formatted according to the requirements of the corresponding chain. Use of this attribute is REQUIRED.
+
+#### "proof" Attribute
+
+The "proof" attribute is used to define the proof of address ownership. The "proof" attribute value is generated by first concatenating the chain, the address, and the claim issuanceDate, then signing the result with the private key that owns the public chain address. Use of this attribute is REQUIRED.
+
+### Recommendations
+
+- A credential containing an `AddressOwner` attestation SHOULD be considered a snapshot of key ownership at a point in time.
+- Issuers SHOULD prefer setting a quick expiration on an `AddressOwner` attestation credential (rather than rely on crerdential revocation)
 
 ## Counterparty Compliance
 
-TODO
+### Purpose
+
+Describes an attestation of Counterparty PII used for originators and beneficiaries of transactions that trigger counterparty exchange requirements, such as the US Travel Rule and the FATF InterVASP message requirements.
+
+### Example
 
 ```json
 {
-  "@type": "CounterpartyPerson",
-  "accountNumber": string,
-  "accountSource": string
+  "@type": "CounterpartyAccountHolder",
+  "legalName": "Some Account Holder",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "United States",
+    "addressLocality": "Mountain View",
+    "addressRegion": "CA",
+    "name": "Some Account Holder",
+    "postOfficeBoxNumber": "321",
+    "postalCode": "12345"
+  },
+  "accountNumber": "12345678"
 }
 ```
 
-## Example in a Verifiable Credential
+### Attributes
 
-<CodeBlock className="language-json">
-  {JSON.stringify(kycVcExample, null, 2)}
-</CodeBlock>
+#### "@type" Attribute
+
+The "@type" attribute MUST be "CounterpartyAccountHolder". Use of this attribute is REQUIRED.
+
+#### "legalName" Attribute
+
+The "legalName" attribute is used to define the legal name of the subject entity, referred to as 'name of transmittor | recipient' in Travel Rule terminology. The "legalName" attribute value is a string containing the subject's full legal name. Use of this attribute is REQUIRED.
+
+#### "address" Attribute
+
+The "address" attribute is used to define the postal address of the subject entity. The "address" attribute value is of type schema.org/PostalAddress. Use of this attribute is REQUIRED.
+
+#### "accountNumber" Attribute
+
+The "accountNumber" attribute is used to define the subject's account number with the issuer/provider or on-chain. If on-chain, this MUST be a public address (e.g., an eth account) and duplicated from the data in the accompanying transaction. The "accountNumber" attribute value is a string. Use of this attribute is REQUIRED.
+
+#### "accountSource" Attribute
+
+The "accountSource" attribute is used to define the context for the account, with the name of issuer, provider, or chain. This corresponds to 'identity of the financial institution' in Travel Rule terminology. If omitted, it is the issuer DID in the VC. This property provides context for the accountNumber property. The "accountSource" attribute value is a string. Use of this attribute is OPTIONAL.
+
+#### "legalID" Attribute
+
+The "legalID" attribute is used to define the identifier of the subject. The "legalID" attribute value is a string containing either a DID or a provider-specific customer ID. If omitted, it is assumed to be the subject DID in the encompassing VC. Use of this attribute is OPTIONAL.
+
+### Recommendations
+
+A credential containing an`CounterpartyAccountHolder` attestation contains sensitive personal information. In current uses, it SHOULD be generated dynamically in the context of transactions and shared only between valid counterparties.
