@@ -149,6 +149,13 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
         },
         "properties": [
           {
+            "label": "Process",
+            "path": ["$.KYCAMLAttestation.process"],
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "label": "Authority",
             "path": ["$.KYCAMLAttestation.authorityName"],
             "schema": {

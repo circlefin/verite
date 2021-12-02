@@ -36,6 +36,19 @@ describe("verification offer", () => {
                       type: "string"
                     },
                     path: [
+                      "$.credentialSubject.KYCAMLAttestation.process",
+                      "$.vc.credentialSubject.KYCAMLAttestation.process",
+                      "$.KYCAMLAttestation.process"
+                    ],
+                    predicate: "required",
+                    purpose:
+                      "The KYC/AML Attestation requires the field: 'process'."
+                  },
+                  {
+                    filter: {
+                      type: "string"
+                    },
+                    path: [
                       "$.credentialSubject.KYCAMLAttestation.authorityId",
                       "$.vc.credentialSubject.KYCAMLAttestation.authorityId",
                       "$.KYCAMLAttestation.authorityId"
