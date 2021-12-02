@@ -86,24 +86,25 @@ const encoded = await buildAndSignVerifiableCredential(
   subject.id,
   attestation,
   { credentialStatus }
-);
+)
 ```
 
 A complete example follows:
 
 ```ts
 // We will create a random did to represent our own identity wallet
-const subject = randomDidKey();
+const subject = randomDidKey()
 
 // Stubbed out credential data
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
+  process: "https://centre.io/schemas/kycaml/usa",
   authorityId: "verity.id",
   approvalDate: new Date().toISOString(),
   authorityName: "verity.id",
   authorityUrl: "https://verity.id",
-  authorityCallbackUrl: "https://verity.id",
-};
+  authorityCallbackUrl: "https://verity.id"
+}
 
 /**
  * Assume the credential's index within the bitstring will be 0
@@ -112,8 +113,8 @@ const credentialStatus = {
   id: `${revocationListUrl}#0`,
   type: "RevocationList2021Status",
   statusListIndex: "0",
-  statusListCredential: `${revocationListUrl}`,
-};
+  statusListCredential: `${revocationListUrl}`
+}
 
 // Generate the signed, encoded credential
 const encoded = await buildAndSignVerifiableCredential(
@@ -121,7 +122,7 @@ const encoded = await buildAndSignVerifiableCredential(
   subject.id,
   attestation,
   { credentialStatus }
-);
+)
 ```
 
 In a real implementation, an issuer may want to maintain multiple revocation status lists. See [revocation best practices](/patterns/revocation-practices.md) for details.
@@ -131,7 +132,7 @@ In a real implementation, an issuer may want to maintain multiple revocation sta
 When an issuer needs to revoke a credential, the bitstring approach requires the credential's index within the bitstring to be flipped to 1. Verity libraries expose a convenience method for issuers, as follows:
 
 ```ts
-statusList = await revokeCredential(credential, statusList, signer);
+statusList = await revokeCredential(credential, statusList, signer)
 ```
 
 Verity similarly exposes `unrevokeCredential` to undo the revocation. Unrevoking doesn't have to be supported by issuers; some issuers choose to issue a new credential instead.
@@ -171,5 +172,5 @@ The verifier then inspects the credential's index in the bitstring to determine 
 Verity exposes a helper function `isRevoked`:
 
 ```ts
-await isRevoked(credential, statusList);
+await isRevoked(credential, statusList)
 ```

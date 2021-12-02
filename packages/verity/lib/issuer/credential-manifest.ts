@@ -97,6 +97,11 @@ export function buildKycAmlManifest(
         },
         properties: [
           {
+            label: "Process",
+            path: ["$.KYCAMLAttestation.process"],
+            schema: { type: "string" }
+          },
+          {
             label: "Authority",
             path: ["$.KYCAMLAttestation.authorityName"],
             schema: {

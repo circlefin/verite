@@ -9,6 +9,9 @@
           "const": "KYCAMLAttestation",
           "type": "string"
         },
+        "process": {
+          "type": "string"
+        },
         "approvalDate": {
           "type": "string"
         },
@@ -25,7 +28,7 @@
           "type": "string"
         }
       },
-      "required": ["@type", "authorityId", "approvalDate"],
+      "required": ["@type", "process", "authorityId", "approvalDate"],
       "type": "object"
     }
   }

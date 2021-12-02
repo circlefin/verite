@@ -13,6 +13,7 @@ export function buildAttestationForUser(
   if (manifest.id === KYCAML_ATTESTATION_MANIFEST_ID) {
     return {
       "@type": "KYCAMLAttestation",
+      process: "https://centre.io/schemas/kycaml/usa",
       approvalDate: new Date().toJSON(),
       authorityId: "did:web:verity.id",
       authorityName: "Verity",

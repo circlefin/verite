@@ -45,6 +45,7 @@ describe("buildAndSignVerifiableCredential", () => {
       credentialSubject: {
         KYCAMLAttestation: {
           "@type": "KYCAMLAttestation",
+          process: "https://centre.io/schemas/kycaml/usa",
           authorityId: "did:web:verity.id",
           approvalDate: attestation.approvalDate,
           authorityName: "Verity",
@@ -153,6 +154,7 @@ describe("buildAndSignFulfillment", () => {
           credentialSubject: {
             KYCAMLAttestation: {
               "@type": "KYCAMLAttestation",
+              process: "https://centre.io/schemas/kycaml/usa",
               authorityId: "did:web:verity.id",
               // approvalDate: "2021-11-12T18:56:16.508Z",
               authorityName: "Verity",

@@ -5,6 +5,7 @@ import {
 
 export const kycAmlAttestationFixture: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
+  process: "https://centre.io/schemas/kycaml/usa",
   authorityId: "did:web:verity.id",
   approvalDate: new Date().toJSON(),
   authorityName: "Verity",
