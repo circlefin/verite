@@ -13,7 +13,7 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://centre.io/schemas/kycaml/usa",
+      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z",
       "authorityId": "did:web:verity.id",
       "authorityName": "Verity",
@@ -45,7 +45,7 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://centre.io/schemas/kycaml/usa",
+      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z",
       "authorityId": "did:web:verity.id",
       "authorityName": "Verity",
@@ -336,7 +336,7 @@ Details:
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
           "@type": "KYCAMLAttestation",
-          "process": "https://centre.io/schemas/kycaml/usa",
+          "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
           "authorityId": "did:web:verity.id",
           "approvalDate": "2021-09-14T02:00:07.540Z",
           "authorityName": "Verity",

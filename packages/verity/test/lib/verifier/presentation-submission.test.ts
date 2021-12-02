@@ -63,7 +63,7 @@ describe("buildPresentationSubmission", () => {
             id: didKey.subject,
             KYCAMLAttestation: {
               "@type": "KYCAMLAttestation",
-              process: "https://centre.io/schemas/kycaml/usa",
+              process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
               authorityId: "did:web:verity.id",
               // approvalDate: attestation.approvalDate,
               authorityName: "Verity",
@@ -103,7 +103,7 @@ describe("buildPresentationSubmission", () => {
         id: didKey.subject,
         KYCAMLAttestation: {
           "@type": "KYCAMLAttestation",
-          process: "https://centre.io/schemas/kycaml/usa",
+          process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
           authorityId: "did:web:verity.id",
           // approvalDate: attestation.approvalDate,
           authorityName: "Verity",

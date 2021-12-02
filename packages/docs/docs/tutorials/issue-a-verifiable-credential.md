@@ -97,7 +97,7 @@ const decodedApplication = await decodeCredentialApplication(application)
 
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
-  process: "https://centre.io/schemas/kycaml/usa",
+  process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
   authorityId: "did:web:verity.id",
   approvalDate: new Date().toISOString(),
   authorityName: "verity.id",
