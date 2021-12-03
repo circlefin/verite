@@ -29,6 +29,15 @@ Object {
         },
         "properties": Array [
           Object {
+            "label": "Process",
+            "path": Array [
+              "$.KYCAMLAttestation.process",
+            ],
+            "schema": Object {
+              "type": "string",
+            },
+          },
+          Object {
             "label": "Authority",
             "path": Array [
               "$.KYCAMLAttestation.authorityName",
