@@ -38,6 +38,7 @@ export type Asset = {
   deposit: string
   borrow: string
   image: string
+  contract?: string
 }
 
 const contractAddress: string =
@@ -55,6 +56,7 @@ const assets = [
     borrowed: "$1.71B",
     deposit: "2.82%",
     borrow: "3.98%",
+    contract: contractAddress,
     image:
       "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4MT0iLjUiIHgyPSIuNSIgeTE9IjEuMTQyIiB5Mj0iLS4xMDUiIGdyYWRpZW50VW5pdHM9Im9iamVjdEJvdW5kaW5nQm94Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmOWE2MDYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYmNjNWYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0idXJsKCNhKSIgZGF0YS1uYW1lPSJFbGxpcHNlIDEyNzEiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMzkuODI1IDIwLjg3NWgtMi45NjdjLTEuNjMzLTQuNTMzLTYuMDI1LTcuNjQyLTExLjgxNy03LjY0MmgtOS41MjV2Ny42NDJoLTMuMzA4djIuNzQyaDMuMzA4djIuODc1aC0zLjMwOHYyLjc0MWgzLjMwOHY3LjU1aDkuNTI1YzUuNzI1IDAgMTAuMDgzLTMuMDgzIDExLjc1OC03LjU1aDMuMDI1di0yLjc0MmgtMi4zNThhMTIuNDMzIDEyLjQzMyAwIDAwLjA5Mi0xLjQ4M3YtLjA2N2MwLS40NS0uMDI1LS44OTItLjA2Ny0xLjMyNWgyLjM0MnYtMi43NDJ6bS0yMS42NDItNS4yaDYuODU4YzQuMjUgMCA3LjQwOCAyLjA5MiA4Ljg2NyA1LjE5MkgxOC4xODN6bTYuODU4IDE4LjY0MmgtNi44NTh2LTUuMDkyaDE1LjcwOGMtMS40NjYgMy4wNS00LjYxNiA1LjA5MS04Ljg1IDUuMDkxem05Ljc1OC05LjI1YTkuODU5IDkuODU5IDAgMDEtLjEgMS40MTdIMTguMTgzdi0yLjg3NWgxNi41MjVhMTAuODQgMTAuODQgMCAwMS4wOTIgMS4zOTJ6IiBkYXRhLW5hbWU9IlBhdGggNzUzNiIvPjwvc3ZnPg=="
   },
@@ -64,6 +66,7 @@ const assets = [
     borrowed: "$3.02B",
     deposit: "3.17%",
     borrow: "3.90%",
+    contract: contractAddress,
     image:
       "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMyNzc1QzkiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMTUuNzUgMjcuNUExMS43NSAxMS43NSAwIDExMjcuNSAxNS43NSAxMS43NSAxMS43NSAwIDAxMTUuNzUgMjcuNXptLS43LTE2LjExYTIuNTggMi41OCAwIDAwLTIuNDUgMi40N2MwIDEuMjEuNzQgMiAyLjMxIDIuMzNsMS4xLjI2YzEuMDcuMjUgMS41MS42MSAxLjUxIDEuMjJzLS43NyAxLjIxLTEuNzcgMS4yMWExLjkgMS45IDAgMDEtMS44LS45MS42OC42OCAwIDAwLS42MS0uMzloLS41OWEuMzUuMzUgMCAwMC0uMjguNDEgMi43MyAyLjczIDAgMDAyLjYxIDIuMDh2Ljg0YS43LjcgMCAwMDEuNDEgMHYtLjg1YTIuNjIgMi42MiAwIDAwMi41OS0yLjU4YzAtMS4yNy0uNzMtMi0yLjQ2LTIuMzdsLTEtLjIyYy0xLS4yNS0xLjQ3LS41OC0xLjQ3LTEuMTQgMC0uNTYuNi0xLjE4IDEuNi0xLjE4YTEuNjQgMS42NCAwIDAxMS41OS44MS44LjggMCAwMC43Mi40NmguNDdhLjQyLjQyIDAgMDAuMzEtLjUgMi42NSAyLjY1IDAgMDAtMi4zOC0ydi0uNjlhLjcuNyAwIDAwLTEuNDEgMHYuNzR6bS04LjExIDQuMzZhOC43OSA4Ljc5IDAgMDA2IDguMzNoLjE0YS40NS40NSAwIDAwLjQ1LS40NXYtLjIxYS45NC45NCAwIDAwLS41OC0uODcgNy4zNiA3LjM2IDAgMDEwLTEzLjY1LjkzLjkzIDAgMDAuNTgtLjg2di0uMjNhLjQyLjQyIDAgMDAtLjU2LS40IDguNzkgOC43OSAwIDAwLTYuMDMgOC4zNHptMTcuNjIgMGE4Ljc5IDguNzkgMCAwMC02LTguMzJoLS4xNWEuNDcuNDcgMCAwMC0uNDcuNDd2LjE1YTEgMSAwIDAwLjYxLjkgNy4zNiA3LjM2IDAgMDEwIDEzLjY0IDEgMSAwIDAwLS42Ljg5di4xN2EuNDcuNDcgMCAwMC42Mi40NCA4Ljc5IDguNzkgMCAwMDUuOTktOC4zNHoiLz48L2c+PC9zdmc+"
   },
@@ -78,6 +81,23 @@ const assets = [
       "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iIzI2QTE3QiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0xNy45MjIgMTcuMzgzdi0uMDAyYy0uMTEuMDA4LS42NzcuMDQyLTEuOTQyLjA0Mi0xLjAxIDAtMS43MjEtLjAzLTEuOTcxLS4wNDJ2LjAwM2MtMy44ODgtLjE3MS02Ljc5LS44NDgtNi43OS0xLjY1OCAwLS44MDkgMi45MDItMS40ODYgNi43OS0xLjY2djIuNjQ0Yy4yNTQuMDE4Ljk4Mi4wNjEgMS45ODguMDYxIDEuMjA3IDAgMS44MTItLjA1IDEuOTI1LS4wNnYtMi42NDNjMy44OC4xNzMgNi43NzUuODUgNi43NzUgMS42NTggMCAuODEtMi44OTUgMS40ODUtNi43NzUgMS42NTdtMC0zLjU5di0yLjM2Nmg1LjQxNFY3LjgxOUg4LjU5NXYzLjYwOGg1LjQxNHYyLjM2NWMtNC40LjIwMi03LjcwOSAxLjA3NC03LjcwOSAyLjExOCAwIDEuMDQ0IDMuMzA5IDEuOTE1IDcuNzA5IDIuMTE4djcuNTgyaDMuOTEzdi03LjU4NGM0LjM5My0uMjAyIDcuNjk0LTEuMDczIDcuNjk0LTIuMTE2IDAtMS4wNDMtMy4zMDEtMS45MTQtNy42OTQtMi4xMTciLz48L2c+PC9zdmc+"
   }
 ]
+
+// Refresh the user's contract balance every 1 second
+export const useBalance = (contractAddress: string) => {
+  const { account, library } = useWeb3React<Web3Provider>()
+  // Refresh the user's contract balance every 1 second
+  const { data: balance, mutate } = useSWR(
+    [contractAddress, "balanceOf", account],
+    {
+      // TODO: This relies on the ThresholdToken ABI. Ideally we could just use
+      // an ERC-20 ABI
+      fetcher: contractFetcher(library, TokenArtifact.abi),
+      refreshInterval: 1000
+    }
+  )
+
+  return { data: balance, mutate }
+}
 
 /**
  * This component is based on the ethers boilerplate project.
@@ -94,14 +114,7 @@ const assets = [
  */
 const Demo6: FC = () => {
   const { account, library } = useWeb3React<Web3Provider>()
-  // Refresh the user's contract balance every 1 second
-  const { data: balance, mutate } = useSWR(
-    [contractAddress, "balanceOf", account],
-    {
-      fetcher: contractFetcher(library, TokenArtifact.abi),
-      refreshInterval: 1000
-    }
-  )
+  const { data: balance, mutate } = useBalance(contractAddress)
 
   // token name and symbol
   const [tokenData, setTokenData] = useState<{ name: string; symbol: string }>()
