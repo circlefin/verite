@@ -13,7 +13,7 @@ However, smart contracts on most chains (such as ethereum) are not technically c
 
 Therefore, smart contracts follow a pattern in which verification -- including credential exchanges between verifiers and subjects, revocation and validation checks, and verifiable credential signature verifications -- are executed off-chain and then cryptographically validated by on-chain smart contracts that associate verification records with on-chain addresses. A Verification Registry can annotate public chain addresses with a series of relevant verification results in a lightweight, privacy-preserving manner.
 
-This document describes the architecture of this design, illustrates two primary options for implementation and two options for storage, and references example source and tests. The reference implementations are scoped to Solidity, but are intended to illustrate patterns applicable to other chains with similar smart contract programming capability.
+This document describes the architecture of this design, illustrates two primary options for implementation and two options for storage, and references example source and tests. The reference implementations are scoped to [Solidity](https://docs.soliditylang.org/en/v0.8.10/), but are intended to illustrate patterns applicable to other chains with similar smart contract programming capability.
 
 ## Architecture
 
@@ -76,10 +76,10 @@ A subject may also remove any persistent Verification Records that have been ass
 
 VerificationRegistry contracts manage trusted verifiers. Specifically, registries map public verifier chain addresses to **VerifierInfo** objects that contain the following on-chain information:
 
-A Decentralized Identifier (DID) for the verifier
-A human-readable name for the verifier
-A URL pointing to more information about a verifier
-A public on-chain signer address which corresponds to a private key that the verifier uses to sign its VerificationResults
+- A Decentralized Identifier (DID) for the verifier
+- A human-readable name for the verifier
+- A URL pointing to more information about a verifier
+- A public on-chain signer address which corresponds to a private key that the verifier uses to sign its VerificationResults
 
 This information about a verifier is persisted on-chain. The registry contract's owner (by default its deployer) has the ability to add, update, and remove verifiers by supplying new VerifierInfo objects.
 
