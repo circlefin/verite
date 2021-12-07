@@ -198,7 +198,7 @@ const Demo6: FC = () => {
       // Create a Verification Request
       const resp = await fetch(
         fullURL(
-          `/api/demos/verifier?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}`
+          `/api/demos/verifier?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}&verifierSubmit=true`
         ),
         { method: "POST" }
       )
@@ -329,7 +329,6 @@ const Demo6: FC = () => {
       mutate(undefined, true)
       setStatusMessage("Transaction Succeeded")
       setIsVerifying(false)
-      // TODO: setShowDepositModal(false)
     } catch (error) {
       console.error(error)
 
@@ -351,9 +350,6 @@ const Demo6: FC = () => {
         setIsVerifying(true)
         setVerification(undefined)
         setVerificationInfoSet(undefined)
-
-        // Generate a QR code for scanning
-        createVerification()
       }
 
       // This is the error message to kick off the Verification workflow. We
@@ -364,11 +360,9 @@ const Demo6: FC = () => {
         // Other errors are logged and stored in the Dapp's state. This is used to
         // show them to the user, and for debugging.
         setTransactionError(getRpcErrorMessage(error))
+      } else {
+        setPage(0)
       }
-
-      console.log("we get here for sure")
-      // TODO setShowDepositModal(false)
-      setPage(0)
     } finally {
       // If we leave the try/catch, we aren't sending a tx anymore, so we clear
       // this part of the state.

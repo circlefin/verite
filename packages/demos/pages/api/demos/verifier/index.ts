@@ -15,11 +15,13 @@ export default apiHandler<VerificationRequestResponse>(async (req, res) => {
   const type = req.query.type as string
   const subjectAddress = req.query.subjectAddress as string
   const contractAddress = req.query.contractAddress as string
+  const verifierSubmit = req.query.verifierSubmit as string
 
   const result = await createVerificationOffer(
     type,
     subjectAddress,
-    contractAddress
+    contractAddress,
+    verifierSubmit === "true"
   )
 
   res.json(result)
