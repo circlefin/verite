@@ -22,6 +22,7 @@ import type { VerificationRequestResponse } from "../../../lib/verification-requ
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
 // logic. They just render HTML.
+import DepositModal from "./DepositModal"
 import DappLayout from "./Layout"
 import Loading from "./Loading"
 import MarketList from "./MarketList"
@@ -118,6 +119,10 @@ const Demo6: FC = () => {
 
   // token name and symbol
   const [tokenData, setTokenData] = useState<{ name: string; symbol: string }>()
+
+  // Clicking Deposit on the Market List will set the market
+  // The Deposit Modal will be shown when there is a selected market.
+  const [selected, setSelected] = useState<Asset>()
 
   // transactions being sent and any error with them
   const [txBeingSent, setTxBeingSent] = useState("")
@@ -455,7 +460,7 @@ const Demo6: FC = () => {
     )
   } else if (page === -1 || page === 2) {
     children = (
-      <MarketList assets={assets} transferTokens={transferTokens}></MarketList>
+      <MarketList assets={assets} setSelected={setSelected}></MarketList>
     )
   } else if (page === 0) {
     children = (
@@ -530,6 +535,13 @@ const Demo6: FC = () => {
       </div>
 
       <div>{children}</div>
+
+      <DepositModal
+        asset={selected}
+        open={!!selected}
+        onClose={() => setSelected(undefined)}
+        transferTokens={transferTokens}
+      ></DepositModal>
     </DappLayout>
   )
 }

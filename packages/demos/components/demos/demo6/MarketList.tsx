@@ -1,16 +1,14 @@
 import Image from "next/image"
-import React, { FC, useState } from "react"
+import React, { Dispatch, FC, SetStateAction, useState } from "react"
 import { Asset } from "./Demo6"
 import DepositModal from "./DepositModal"
 
 type Props = {
   assets: Asset[]
-  transferTokens: (to: string, amount: string) => Promise<void>
+  setSelected: Dispatch<SetStateAction<Asset>>
 }
 
-const MarketList: FC<Props> = ({ transferTokens, assets }) => {
-  const [selected, setSelected] = useState<Asset>()
-
+const MarketList: FC<Props> = ({ assets, setSelected }) => {
   return (
     <>
       <div className="flex flex-col">
@@ -116,13 +114,6 @@ const MarketList: FC<Props> = ({ transferTokens, assets }) => {
           </div>
         </div>
       </div>
-
-      <DepositModal
-        asset={selected}
-        open={!!selected}
-        onClose={() => setSelected(undefined)}
-        transferTokens={transferTokens}
-      ></DepositModal>
     </>
   )
 }
