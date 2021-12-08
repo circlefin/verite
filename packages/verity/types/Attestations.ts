@@ -2,6 +2,7 @@ import type { Person } from "schema-dts"
 
 export type KYCAMLAttestation = {
   "@type": "KYCAMLAttestation"
+  process: string
   authorityId: string
   approvalDate: string
   authorityName?: string
@@ -14,21 +15,16 @@ export type CreditScoreAttestation = {
   score: number
   scoreType: string
   provider: string
-  historyStartDate?: string
-  paymentHistoryPercentage?: string
-  openAccounts?: number
-  utilization?: number
-  chainAddressOwner?: ChainAddressOwner[]
 }
 
-export type ChainAddressOwner = {
-  "@type": "ChainAddressOwner"
+export type AddressOwner = {
+  "@type": "AddressOwner"
   chain: string
   address: string
   proof: string
 }
 
-export type CounterpartyPerson = Person & {
+export type CounterpartyAccountHolder = Person & {
   accountNumber: string
   accountSource: string
 }

@@ -28,7 +28,7 @@ The benefits and use cases include the following possibilities:
 - Marketplaces, exchanges, and smart contracts can validate customer identity without storing personal identity data
 - Lending protocols can use decentralized credit and risk scoring to reduce collateralization requirements
 - FX markets can become more efficient atop compliant open global networks
-- Crypto wallets can become identity wallets and help meet regulatory obligations (including the Travel Rule and its international permutations) when transacting without leaking sensitive personal information
+- Crypto wallets can become identity wallets and help meet regulatory obligations (including the [Travel Rule](../patterns/travel-rule.md) and its international permutations) when transacting without leaking sensitive personal information
 
 ## Regulators
 

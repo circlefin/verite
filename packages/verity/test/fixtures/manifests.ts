@@ -39,6 +39,11 @@ export const manifestFixture = (value = 0): CredentialManifest => {
           },
           properties: [
             {
+              label: "Process",
+              path: ["$.KYCAMLAttestation.process"],
+              schema: { type: "string" }
+            },
+            {
               label: "Authority",
               path: ["$.KYCAMLAttestation.authorityName"],
               schema: { type: "string" }

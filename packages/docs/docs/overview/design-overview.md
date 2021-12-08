@@ -27,7 +27,7 @@ Interoperability across the ecosystem is an over-arching Verity goal. There has 
 
 Verity's specific tactical goals are to: (a) define data models (schemas) that should be shared and exist as common building blocks for all parties as a public good; and (b) define the protocols for requesting and delivering identity claims in a manner that supports crypto finance use cases.
 
-The intent is to enable any member of the broader crypto ecosystem to develop products and solutions that are inherently compliant and interoperable with each other, and to do so in a manner that is open, transparent, and usable by anyone, whether connected to the Centre Consrtium and the USDC ecosystem or not.
+The intent is to enable any member of the broader crypto ecosystem to develop products and solutions that are inherently compliant and interoperable with each other, and to do so in a manner that is open, transparent, and usable by anyone, whether connected to the Centre Consortium and the USDC ecosystem or not.
 
 A process goal is to maintain transparency and openness in the iteration of the protocols and data models. Anyone is free to use the source code, modify it, and submit improvements to it.
 

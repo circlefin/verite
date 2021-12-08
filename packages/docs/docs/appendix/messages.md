@@ -13,6 +13,7 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
+      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z",
       "authorityId": "did:web:verity.id",
       "authorityName": "Verity",
@@ -44,6 +45,7 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
+      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z",
       "authorityId": "did:web:verity.id",
       "authorityName": "Verity",
@@ -146,6 +148,13 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
           "text": "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
         },
         "properties": [
+          {
+            "label": "Process",
+            "path": ["$.KYCAMLAttestation.process"],
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "label": "Authority",
             "path": ["$.KYCAMLAttestation.authorityName"],
@@ -327,6 +336,7 @@ Details:
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
           "@type": "KYCAMLAttestation",
+          "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
           "authorityId": "did:web:verity.id",
           "approvalDate": "2021-09-14T02:00:07.540Z",
           "authorityName": "Verity",

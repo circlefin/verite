@@ -1,35 +1,29 @@
 ---
-sidebar_label: Smart Contracts
+sidebar_label: Smart Contract Patterns
 sidebar_position: 5
 ---
 
-# Verity Smart Contract Patterns
-
-_This document assumes basic familiarity with Verifiable Credentials, Presentation Exchange, and the roles of issuer, subject and verifier. [A primer is here](/docs/appendix/primer)._
+# Smart Contract Patterns
 
 ## Overview
 
-Smart contracts can require successful verification of Verifiable Credentials in order to safely and securely assess proofs of identity, credit and risk scoring, insurance, investor status and other identity-related claims. However, smart contracts are not technically and economically capable of executing the verifications themselves, and they cannot call upon external verification or other network services beyond the constraints of their own chains.
+Smart contracts can require successful verification of Verifiable Credentials in order to safely and securely assess proofs of identity, credit and risk scoring, insurance, accredited investor status and other identity-related claims.
 
-Verification in contract would be technically difficult (impossible on most chains), economically expensive, and require sending on-chain credentials which may leak sensitive personal information and violate the first principle of 'Privacy by Design.'
+However, smart contracts on most chains (such as ethereum) are not technically capable and/or economically practical at executing the verification operations themselves, and they cannot call upon external verification or other network services beyond the constraints of their own chains. Verification in contract would also require transmitting credentials on-chain which may leak sensitive personal information and violate the first principle of 'Privacy by Design.'
 
 Therefore, smart contracts follow a pattern in which verification -- including credential exchanges between verifiers and subjects, revocation and validation checks, and verifiable credential signature verifications -- are executed off-chain and then cryptographically validated by on-chain smart contracts that associate verification records with on-chain addresses. A Verification Registry can annotate public chain addresses with a series of relevant verification results in a lightweight, privacy-preserving manner.
 
-This document describes the architecture of this design, illustrates two primary options for implementation and two options for storage, and references example source and tests. The reference implementations are scoped to Solidity, but intended to illustrate patterns applicable to other chains with similar smart contract programming capability.
-
-## Source
-
-Examples and tests may be reviewed here: https://github.com/centrehq/demo-site/tree/main/packages/contract
+This document describes the architecture of this design, illustrates two primary options for implementation and two options for storage, and references example source and tests. The reference implementations are scoped to [Solidity](https://docs.soliditylang.org/en/v0.8.10/), but are intended to illustrate patterns applicable to other chains with similar smart contract programming capability.
 
 ## Architecture
 
-Smart contracts follow a verification pattern in which verifications are performed off-chain and then confirmed on-chain. An off-chain verifier handles Verifiable Credential exchange in the usual manner and, upon successful verification, the verifier creates a lightweight privacy-preserving Verification Result object (represented in JSON).
+Smart contracts follow a verification pattern in which verifications are performed off-chain and then confirmed on-chain. An off-chain verifier handles Verifiable Credential exchange in the usual manner and, upon successful verification, the verifier creates a lightweight privacy-preserving **Verification Result** object (represented in JSON).
 
-The verifier then hashes and signs the Verification Result. The signature, along with the result itself, enables subsequent validation by smart contracts known as Verification Registries.
+The verifier then hashes and signs the Verification Result. The signature, along with the result itself, enables subsequent validation by smart contracts known as **Verification Registries**.
 
-The verifier either registers the result directly with a Verification Registry contract as part of the verification process (the “Verifier Submission” pattern), or else returns it to subjects for them to use in smart contract transactions (the “Subject Submission” pattern). Both sequences are discussed below.
+The verifier either registers the result directly with a Verification Registry contract as part of the verification process (the “**_Verifier Submission_**” pattern), or else returns it to subjects for them to use in smart contract transactions (the “**_Subject Submission_**” pattern). Both sequences are discussed below.
 
-The registry smart contract validates the Verification Result and the verifier’s signature, and creates a privacy-preserving Verification Record that enables subsequent apps, contracts, and tokens to query whether a particular verification is associated with a particular address.
+The registry smart contract validates the Verification Result and the verifier’s signature, and creates a privacy-preserving **Verification Record** that enables subsequent apps, contracts, and tokens to query whether a particular verification is associated with a particular address.
 
 ### Verification Results
 
@@ -48,7 +42,7 @@ A Verification Result and the verifier’s signature are passed as parameters to
 
 A Verification Registry executes this confirmation by accepting the Verification Result and signature as input parameters, checking any relevant contract logic against data in the Verification Result, and then re-hashing the Verification Result and using the hash and the submitted signature to confirm that the signature was generated by the private signing key of a corresponding public address of a known verifier configured in the contract. To prevent replay attacks, the Verification Registry also ensures that the calling address is the verifier (for verifier submissions), or that the calling address is the same as the subject of the VerificationResult (for subject submissions).
 
-In order to safeguard against potential issues with hashing, signatures, and key recovery in Ethereum, the reference implementations utilize EIP-712 (https://eips.ethereum.org/EIPS/eip-712) as the preferred hashing and signing approach when evaluating Verification Results. Specifically, they employ the OpenZeppelin implementation: https://docs.openzeppelin.com/contracts/3.x/api/drafts#EIP712. The reference implementations also leverage OpenZeppelin’s Ownable and ERC20 implementations.
+In order to safeguard against potential issues with hashing, signatures, and key recovery in Ethereum, the reference implementations utilize [EIP-712](https://eips.ethereum.org/EIPS/eip-712) as the preferred hashing and signing approach when evaluating Verification Results. Specifically, the examples employ the [OpenZeppelin EIP-712 implementation](https://docs.openzeppelin.com/contracts/3.x/api/drafts#EIP712). The reference implementations also leverage OpenZeppelin’s [Ownable](https://docs.openzeppelin.com/contracts/2.x/api/ownership#Ownable) and [ERC20](https://docs.openzeppelin.com/contracts/2.x/api/token/erc20) implementations.
 
 ### Verification Records
 
@@ -74,32 +68,30 @@ Verification Records allow counterparties, DeFi pools, Dapps, and tokens to quer
 
 Verification Records have expiration times which may occur sooner than the expiration of the original Verifiable Credential. In other words, verifiers may enforce their own expiration logic in order to force re-verification, or to create more conservative time windows for automatic credential expiration. However, the Verification Record must never have an expiration time that exceeds that of the original Verifiable Credential.
 
-Verification Records may also be revoked by the verifier address that submitted the original Verification Result that led to a Verification Record’s creation.
+Verification Records may also be revoked by the verifier address that submitted the original Verification Result that led to a Verification Record’s creation. This is appropriate for verifier-submitted results, but may not be effective for subject-submitted results, as subjects may submit to registries unknown to verifiers.
 
-A subject may also remove any persistent Verification Records that have been associated with its own subject address. That is, an individual credential holder who has been verified has the ability to execute the removal of any Verification Record about his/her own verifications. Note that data is never truly removed from on-chain storage, but the act of executing a removal transaction will invalidate and zero-out the record from subsequent blocks in the chain.
+A subject may also remove any persistent Verification Records that have been associated with its own subject address. That is, an individual credential holder who has been verified has the ability to execute the removal of a Verification Record about his/her own verifications. Note that data is never truly removed from on-chain storage, but the act of executing a removal transaction will invalidate and zero-out the record from subsequent blocks in the chain. A specific registry implementation may remove this capability based on the contract logic; for example, a specific KYC registry may prevent removal of verifier-revoked credentials, or resubmission of any existing equivalent credential. These decisions are implementation-specific.
 
 ### Verifier Management
 
-VerificationRegistry contracts manage trusted verifiers. Specifically, registries map public verifier chain addresses to VerifierInfo objects that contain the following on-chain information:
+VerificationRegistry contracts manage trusted verifiers. Specifically, registries map public verifier chain addresses to **VerifierInfo** objects that contain the following on-chain information:
 
-A Decentralized Identifier (DID) for the verifier
-A human-readable name for the verifier
-A URL pointing to more information about a verifier
-A public on-chain signer address which corresponds to a private key that the verifier uses to sign its VerificationResults
+- A Decentralized Identifier (DID) for the verifier
+- A human-readable name for the verifier
+- A URL pointing to more information about a verifier
+- A public on-chain signer address which corresponds to a private key that the verifier uses to sign its VerificationResults
 
 This information about a verifier is persisted on-chain. The registry contract's owner (by default its deployer) has the ability to add, update, and remove verifiers by supplying new VerifierInfo objects.
 
 The registry contract’s owner is therefore critically important -- the owner must vet and trust verifiers to execute proper verifications, and update or remove them if necessary. The owner is also capable of replacing itself with a new owner address.
 
-The registry provides external-scoped accessor methods to obtain VerifierInfo for any configured verifier given a verifier's public chain address. The issuer associated with a particular credential and verification is not persisted or included in either the result or the record, but the verifier associated with a verification is persisted and is publicly visible. Verifiers can be contacted in order to provide further data associated with a particular verification which they may persist privately.
+The registry provides external-scoped accessor methods to obtain VerifierInfo for any configured verifier given a verifier's public chain address. The issuer associated with a particular credential and verification is not persisted or included in either the result or the record, but the verifier associated with a verification is persisted and is publicly visible. Verifiers may be contacted out of band by authorities in order to provide further data associated with a particular verification which they may persist privately.
 
-## Patterns
-
-### Verifier Submission Pattern
+## Verifier Submission Pattern
 
 Either a verifier or a subject may submit a Verification Result for validation. Which pattern is appropriate depends upon the use case in question.
 
-In the verifier-submission pattern, a verifier executes the off-chain verification of a credential and then registers verification success with a smart contract. A relying decentralized application or other client never accesses the credential or the Verification Result.
+In the verifier submission pattern, a verifier executes the off-chain verification of a credential and then registers verification success with a registry smart contract. A relying decentralized application or other client never accesses the credential or the Verification Result.
 
 After verification and registration, wallets, dapps, apps, and smart contracts can determine whether a given address has an active verification by executing a view (no cost) function on the registry contract containing the registration.
 
@@ -107,13 +99,13 @@ This pattern supports granular "whitelisted account" and “addresses with attes
 
 ![image2](/img/docs/smart-contract-patterns/image2.png)
 
-#### Example Permissioned Pool or Token
+### Example Permissioned Pool or Token
 
 The following sequence illustrates an example of the Verifier Submission Pattern in a hypothetical permissioned pool example:
 
 ![image6](/img/docs/smart-contract-patterns/image6.png)
 
-#### Example Verification within an IDV and KYC Process
+### Example Verification within an IDV and KYC Process
 
 The permissioned example could also be embedded within an IDV/KYC sequence. In this example, an identity verifier might not only generate a Verifiable Credential attesting proof of KYC, but also register verification of the attestation with a registry contract.
 
@@ -121,53 +113,51 @@ For example:
 
 ![image8](/img/docs/smart-contract-patterns/image8.png)
 
-### Subject Submission Pattern
+## Subject Submission Pattern
 
-In the subject submission pattern, a Dapp still utilizes an off-chain verifier for verification, but the verifier does not directly register the result with a smart contract. Instead, the verifier returns the Verification Result and its signature to the subject, and the subject passes the Verification Result and verifier’s signature to a smart contract's custom function, which can validate the result in addition to other logic in the same transaction.
+In the subject submission pattern, a dapp still utilizes an off-chain verifier for verification, but the verifier does not directly register the result with a smart contract. Instead, the verifier returns the Verification Result and its signature to the subject, and the subject passes the Verification Result and verifier’s signature to a smart contract's custom function, which can validate the result in addition to other logic in the same transaction.
 
-This approach enables a Dapp to execute verification and other contract logic in a single transaction and requires no fees from a verifier. However, trade-offs exist: It requires custom function usage so does not integrate seamlessly with existing transfer standards (such as ERC20), requires contract inheritance in order to ensure that the subject is the caller of the result validation function rather than the contract being the caller (to prevent replay attacks), and exposes Verification Result info to subject Dapps.
+This approach enables a dapp to execute verification and other contract logic in a single transaction and requires no fees from a verifier. However, trade-offs exist: In ethereum, it requires custom function usage so does not integrate seamlessly with existing transfer standards (such as ERC20), requires contract inheritance in order to ensure that the subject is the caller of the result validation function rather than the contract being the caller (to prevent replay attacks).
 
 ![image7](/img/docs/smart-contract-patterns/image7.png)
 
-### Example Credit Score Subject Submission
+### Example Risk Score Subject Submission
 
-The following example illustrates subject-submitted verification results for the sake of providing credit scoring to a lending pool smart contract:
+The following example illustrates subject-submitted verification results for the sake of providing hypothetical credit/risk scoring to a lending pool smart contract:
 
 ![image4](/img/docs/smart-contract-patterns/image4.png)
 
-In this hypothetical example, a contract in the lending pool would inherit the registry contract (or implement the registry interface) to invoke internal verification registration methods in the same transaction as the borrow logic. This ensures that the caller is the subject (represented by the Dapp) as opposed to the inheriting contract. There is no persistence of credit verifications in this example.
+In this hypothetical example, a contract in the lending pool could inherit the registry contract (or implement the registry interface) to invoke internal verification registration methods in the same transaction as the borrow logic. This ensures that the caller is the subject (represented by the dapp) as opposed to the inheriting contract becoming the caller. There is no persistence of credit verifications in this example.
 
-### Storage Patterns
+## Storage Patterns
 
 Upon generating a Verification Record, a contract may follow one of two storage patterns: (a) in-contract storage, and (b) off-chain storage with optional oracle integration.
 
-In-contract storage involves persisting Verification Records in a manner that associates verifier addresses with all of the Verification Records that a verifier's address has approved.
+In-contract storage involves persisting Verification Records in a manner that associates verifier addresses with all of the Verification Records that a verifier's address has approved, and maps subject addresses to all Verification Records associated with that subject -- exposing no PII or verification result payloads, but providing proof of verification types, timestamps, and expirations that the subject has successfully passed.
 
-Similarly, subject addresses are mapped to all Verification Records associated with that subject -- exposing no PII or verification result payloads, but providing proof of verification types, timestamps, and expirations that the subject has successfully passed.
-
-An example that executes this pattern is the VerificationRegistry.sol contract.
+An example that executes this pattern is the [VerificationRegistry.sol](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol) contract.
 
 The off-chain storage pattern involves no such on-chain storage. External oracles and chain scanners can observe the Verification Record events emitted by a contract, but there is no persistence of records on-chain.
 
-This storage option may be appropriate for transient verifications with short-lived credentials (such as the credit score example above). For off-chain storage to support the Verifier Submission sequence, an oracle would be needed to access accurate off-chain verification information.
+This storage option may be appropriate for transient verifications with short-lived credentials (such as the risk score example above). For off-chain storage to support the Verifier Submission sequence, an oracle could be implemented to access accurate off-chain verification information.
 
-### Auditing and forensics sequences
+## Auditing and Forensics Sequences
 
 No personal data or credentials are stored on-chain. Instead, Verification Records are used as references to a verifier where additional information about a verification may be found. The verifier’s private off-chain information includes, among other data, a record of the issuer of a subject's credential.
 
-So while basic Verification Record information associated with addresses is public and can be correlated to transaction activity, and callers can verify that an address has a particular claim, an enforcement path interested in obtaining PII about a subject would need to take the additional steps of gaining the issuer identifier from the verifier and then contacting that issuer directly.
+So while basic Verification Record information associated with addresses is public and can be correlated to transaction activity, and callers can verify that an address has a particular claim, an enforcement authority interested in obtaining PII about a subject would need to take the additional steps of gaining the issuer identifier from the verifier and then contacting that issuer directly.
 
-A provable yet privacy-preserving audit path is simple. However, a deeper forensics path that exposes personal data is intended to be possible only for law enforcement with appropriate authority, and not possible for any other actors to execute.
+A provable yet privacy-preserving audit path is simple. However, a deeper forensics path that accesses personal data is intended to be possible only for law enforcement with appropriate authority, and not possible for others to execute.
 
-### Alternative Patterns and Future Work
+## Alternative Patterns and Future Work
 
-These patterns are not definitive, they serve only as initial examples to illustrate integrating decentralized identity standards -- Verifiable Credentials and Presentation Exchange usage -- into DeFi and smart contracts.
+These patterns are not definitive, they serve only as initial examples to illustrate integrating decentralized identity standards -- Verifiable Credentials and Presentation Exchange usage -- into smart contracts and DeFi programs.
 
 Future directions to explore include verification in-contract on chains that are capable of executing verifications efficiently and economically, deeper filtering of credentials rules in-contract instead of solely in verifier logic, alternative patterns and registry designs for specific schemas and credential types, and usage of technologies such as zero-knowledge proofs to encapsulate credential data on-chain for selective disclosure scenarios.
 
-The examples here are also not intended for production use. The implementations exist to illustrate the design patterns, not to support commercial production deployment.
+The source code examples referenced here are also not intended for production use. The implementations exist to illustrate the design patterns, not to support commercial production deployment.
 
-## Reference Implementation and Test Suite
+## Reference Implementations and Test Suite
 
 A reference implementation smart contract that executes Verifier Management, Verification Result validation, and Verification Record persistence is the IVerificationRegistry interface and its VerificationRegistry.sol implementation:
 

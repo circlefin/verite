@@ -1,18 +1,20 @@
 ---
+sidebar_label: Issuer Setup
 sidebar_position: 4
 ---
 
 # Issuer Setup
 
-This will describe various setup steps an issuer must do before issuing, including
+Before issuing credentials, you will need to following at minimum.
 
-1. Deciding what types of credentials to issue, including schemas
-   - In the Verity reference, we've included a few representative schemas, such as proof of KYC and credit score.
-   - Include information about supplying your own?
-2. How to expose #1 info to credential recipients (and wallets)
-   - Credential Manifests:
-     - Verity's reference implementation uses DIF Credential Manifests to allow an issuer to describe what sort of credentials they issue
-     - Issuer defines a credential manifest, which includes the prerequisites and output schemas
-   - Issuer supplies a way for recipients to discover the credential manifest, such as adding a QR code or deep link into a mobile app on their web site: Verity encodes as a QR code in the demo-site
-3. Decide what type of DID method to use (TODO: link to identifier best practices)
-4. etc
+1. Deciding what types of credentials to issue, and their schemas
+   - Verity includes a few representative schemas, such as proof of KYC and chain address ownership.
+   - See [Recommendations for Credential Schema Design](/docs/patterns/schema).
+2. Decide what type of issuing identifier method (e.g., DID method) you want to use.
+   - In order for verifiers to verify credentials, they must be able to determine your authorized signing keys.
+   - If you are using a DID method, you will need to ensure you are signing credentials with keys resolvable from the DID.
+   - See [Identifier Methods](/docs/patterns/identifier) for factors in this decision.
+3. Allow users and credential wallets to discover how to interact with you as an issuer
+   - In the flows described here, this starts with a QR code or deep link that the user opens from their credential wallet
+   - The flow should enable the wallet to discover metadata about how to request and receive the credential
+   - Verity uses [DIF Credential Manifest](https://identity.foundation/credential-manifest/) for this purpose. It allowa an issuer to describe what sort of credentials they issue, prerequisites for issuance, and output schemas
