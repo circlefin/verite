@@ -1,5 +1,5 @@
 ---
-sidebar_label: Sceham Design
+sidebar_label: Schema Design
 sidebar_position: 8
 ---
 
