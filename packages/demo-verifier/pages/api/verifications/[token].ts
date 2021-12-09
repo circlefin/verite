@@ -8,7 +8,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import jwt from "jsonwebtoken"
 import { v4 as uuidv4 } from "uuid"
 
-export default async function credentials(
+export default async function verifications(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {

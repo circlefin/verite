@@ -2,7 +2,7 @@ import { challengeTokenUrlWrapper, PresentationDefinition } from "@verity/core"
 import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 
-export default async function credentials(
+export default async function job(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
