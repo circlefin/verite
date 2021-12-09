@@ -9,8 +9,8 @@
 export type SubmissionOffer = {
   id: string
   type: string
-  created_time: number
-  expires_time: number
+  created_time: string
+  expires_time: string
   reply_url: string
   from?: string
   reply_to?: [string]
