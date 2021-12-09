@@ -56,8 +56,8 @@ export function buildRequestCommon(
     id,
     type,
     from,
-    created_time: now,
-    expires_time: expires,
+    created_time: new Date(now).toISOString(),
+    expires_time: new Date(expires).toISOString(),
     reply_url: replyUrl,
     body: {
       status_url: statusUrl,

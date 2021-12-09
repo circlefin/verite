@@ -17,8 +17,8 @@ describe("verification offer", () => {
     )
 
     expect(offer).toMatchObject({
-      // "created_time": 1636569308367,
-      // "expires_time": 1639161308367,
+      // "created_time": "2021-11-10T18:35:08.367Z",
+      // "expires_time": "2021-12-10T18:35:08.367Z",
       from: from,
       id: id,
       reply_url: replyUrl,

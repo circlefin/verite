@@ -68,9 +68,9 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
 
    1. QR code returns the URL from which to receive information at the` challengeTokenUrl`:
 
-      ```
+      ```json
       {
-          "challengeTokenUrl": "https://verity.id/..."
+        "challengeTokenUrl": "https://verity.id/..."
       }
       ```
 
@@ -82,17 +82,17 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
 
    3. The return type is a JWM containing a [credential manifest](https://identity.foundation/credential-manifest/#credential-application), credential request endpoint, and a challenge to sign.
 
-      ```
+      ```json
       {
         "id": "4487e7d1-7d10-4075-a923-bae9332266c1",
         "type": "https://verity.id/types/CredentialOffer",
         "from": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
-        "created_time": 1631582525816,
-        "expires_time": 1634174525816,
+        "created_time": "2021-09-14T01:22:05.816Z",
+        "expires_time": "2021-10-14T01:22:05.816Z",
         "reply_url": "https://...",
         "body": {
           "challenge": "d273da29-74dd-46de-a53c-1677c51cc700",
-          "manifest": { }
+          "manifest": {}
         }
       }
       ```
@@ -166,8 +166,8 @@ Sample:
   "id": "4487e7d1-7d10-4075-a923-bae9332266c1",
   "type": "https://verity.id/types/CredentialOffer",
   "from": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
-  "created_time": 1631582525816,
-  "expires_time": 1634174525816,
+  "created_time": "2021-09-14T01:22:05.816Z",
+  "expires_time": "2021-10-14T01:22:05.816Z",
   "reply_url": "https://...",
   "body": {
     "challenge": "d273da29-74dd-46de-a53c-1677c51cc700",
@@ -305,8 +305,8 @@ Sample:
     "id": "1308e77f-9ab0-4de7-97a8-ad2111b585bf",
     "type": "https://verity.id/types/VerificationRequest",
     "from": "did:key:z6MkizuwMHiYpZrBAn64ZnbS2cz5og7iGqAa3nV3EuTj4aaZ",
-    "created_time": 1631650772655,
-    "expires_time": 1634242772655,
+    "created_time": "2021-09-14T20:19:32.655Z",
+    "expires_time": "2021-10-14T20:19:32.655Z",
     "reply_url": "http://192.168.1.16:3000/api/verification/1308e77f-9ab0-4de7-97a8-ad2111b585bf/submission",
     "body": {
         "status_url": "http://192.168.1.16:3000/api/verification/1308e77f-9ab0-4de7-97a8-ad2111b585bf/callback",
