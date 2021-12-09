@@ -6,6 +6,7 @@ import {
   buildIssuer
 } from "@verity/core"
 import { NextApiRequest, NextApiResponse } from "next"
+import jwt from "jsonwebtoken"
 
 export default async function credentials(
   req: NextApiRequest,
@@ -32,8 +33,15 @@ export default async function credentials(
   const application = await decodeCredentialApplication(req.body)
 
   /**
-   * Generate the attestation. In a production environment, the server would
-   * first check that the user meets the requirements.
+   * The user id has been passed along with the JWT as the subject. In a
+   * production environment, the server would first check that the user meets
+   * the requirements. The demo extracts the user id, but for demo purposes
+   * we assume the user meets the requirements.
+   */
+  const user = jwt.decode(req.query.token as string).sub
+
+  /**
+   * Generate the attestation.
    */
   const manifestId = application.credential_application.manifest_id
   let attestation: KYCAMLAttestation | CreditScoreAttestation
