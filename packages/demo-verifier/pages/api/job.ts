@@ -17,7 +17,9 @@ export default async function job(
     expiresIn: "1h"
   })
 
-  const challenge = challengeTokenUrlWrapper(`/api/verifications/${token}`)
+  const challenge = challengeTokenUrlWrapper(
+    `${process.env.NEXT_PUBLIC_BASEURL}/api/verifications/${token}`
+  )
 
   res.status(200).json(challenge)
 }
