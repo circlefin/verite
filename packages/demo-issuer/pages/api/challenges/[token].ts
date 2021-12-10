@@ -20,7 +20,7 @@ export default async function challenges(
   const wrapper = buildCredentialOffer(
     uuidv4(),
     manifest,
-    `/api/credentials/${req.query.token}`
+    `${process.env.NEXT_PUBLIC_BASEURL}/api/credentials/${req.query.token}`
   )
 
   // Response

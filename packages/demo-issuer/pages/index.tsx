@@ -47,10 +47,12 @@ export const getServerSideProps = (): ServerProps => {
   })
 
   // Create the challengeTokenUrl response
-  // In a production environment, the URL would need to be absolute, but for
-  // sake of simplicity we will just use a path since the demo is entirely
-  // within the browser.
-  const url = `/api/challenges/${token}`
+  // In a production environment, you need to use an absolute URL. For
+  // simplicity of the demo, we hardcode it to localhost:3000. This means you
+  // likely cannot issue to a mobile wallet (e.g. as the wallet would not
+  // resolve localhost to the demo API). If you bind the server to any other
+  // host or port, you will need to change this value.
+  const url = `${process.env.NEXT_PUBLIC_BASEURL}/api/challenges/${token}`
   const challenge = challengeTokenUrlWrapper(url)
   return {
     props: {
