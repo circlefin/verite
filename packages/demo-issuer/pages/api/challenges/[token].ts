@@ -2,7 +2,7 @@ import { buildKycAmlManifest, buildCredentialOffer } from "@verity/core"
 import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
 
-export default async function helloAPI(
+export default async function challenges(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
