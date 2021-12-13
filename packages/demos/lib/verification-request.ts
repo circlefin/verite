@@ -19,12 +19,18 @@ export type VerificationRequestResponse = {
 export async function createVerificationOffer(
   type: string,
   subjectAddress?: string,
-  contractAddress?: string
+  contractAddress?: string,
+  verifierSubmit?: boolean
 ): Promise<VerificationRequestResponse> {
   // If the request includes a subjectAddress and contractAddress query
   // parameter, we will use it to generate an ETH verification result.
   const id = uuidv4()
-  const replyUrl = toReplyUrl(id, subjectAddress, contractAddress)
+  const replyUrl = toReplyUrl(
+    id,
+    subjectAddress,
+    contractAddress,
+    verifierSubmit
+  )
 
   // Build the verification request for display
   let verificationRequest: VerificationOffer
@@ -66,7 +72,8 @@ export async function createVerificationOffer(
 function toReplyUrl(
   id: string,
   subjectAddress?: string,
-  contractAddress?: string
+  contractAddress?: string,
+  verifierSubmit?: boolean
 ): string {
   const url = new URL(fullURL(`/api/demos/verifier/${id}/submission`))
 
@@ -76,6 +83,10 @@ function toReplyUrl(
 
   if (contractAddress) {
     url.searchParams.append("contractAddress", contractAddress)
+  }
+
+  if (verifierSubmit) {
+    url.searchParams.append("verifierSubmit", "true")
   }
 
   return url.href
