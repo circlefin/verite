@@ -1,8 +1,10 @@
 import { Contract } from "@ethersproject/contracts"
 import { Wallet } from "@ethersproject/wallet"
 import { VerificationResultResponse, verificationResult } from "@verity/core"
-import { getProvider } from "@verity/demos/lib/eth-fns"
-import TokenArtifact from "../../../../contracts/ThresholdToken.json"
+import {
+  getProvider,
+  verityTokenContractArtifact
+} from "@verity/demos/lib/eth-fns"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 
 export default apiHandler<VerificationResultResponse>(async (req, res) => {
@@ -46,7 +48,8 @@ export default apiHandler<VerificationResultResponse>(async (req, res) => {
   const signer = new Wallet(privateKey, provider)
 
   // Load the Contract
-  const token = new Contract(contractAddress, TokenArtifact.abi, signer)
+  const tokenArtifact = verityTokenContractArtifact()
+  const token = new Contract(contractAddress, tokenArtifact.abi, signer)
 
   // Register the Verification with the registry. This transaction requires
   // gas, so the verifier should maintain an adequate ETH balance to perform

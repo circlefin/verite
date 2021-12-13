@@ -1,7 +1,6 @@
 import Image from "next/image"
-import React, { Dispatch, FC, SetStateAction, useState } from "react"
+import React, { Dispatch, FC, SetStateAction } from "react"
 import { Asset } from "./Demo6"
-import DepositModal from "./DepositModal"
 
 type Props = {
   assets: Asset[]

@@ -4,9 +4,9 @@ import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
 import type { VerificationResultResponse } from "@verity/core"
 import { useWeb3React } from "@web3-react/core"
-import { Contract, Wallet } from "ethers"
+import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
-import useSWR from "swr"
+import useSWR, { SWRResponse } from "swr"
 
 // import the contract's artifacts and address
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -85,19 +85,18 @@ const assets = [
 ]
 
 // Refresh the user's contract balance every 1 second
-export const useBalance = (contractAddress: string) => {
+export const useBalance = (
+  contractAddress: string
+): SWRResponse<BigNumber, unknown> => {
   const { account, library } = useWeb3React<Web3Provider>()
   // Refresh the user's contract balance every 1 second
-  const { data: balance, mutate } = useSWR(
-    [contractAddress, "balanceOf", account],
-    {
-      // TODO: This relies on the ThresholdToken ABI. Ideally we could just use
-      // an ERC-20 ABI
-      fetcher: contractFetcher(library, TokenArtifact.abi)
-    }
-  )
+  const result = useSWR([contractAddress, "balanceOf", account], {
+    // TODO: This relies on the ThresholdToken ABI. Ideally we could just use
+    // an ERC-20 ABI
+    fetcher: contractFetcher(library, TokenArtifact.abi)
+  })
 
-  return { data: balance, mutate }
+  return result
 }
 
 // Generic SWR fetcher for calling arbitrary methods.
@@ -109,7 +108,10 @@ const fetcher =
   }
 
 // Hook to observe an address' ETH balance.
-const useEthBalance = (library, address: string) => {
+const useEthBalance = (
+  library,
+  address: string
+): SWRResponse<BigNumber, unknown> => {
   const result = useSWR(["getBalance", address], {
     fetcher: fetcher(library),
     refreshInterval: 5000
@@ -146,7 +148,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   // non-error status message for rendering
   const [statusMessage, setStatusMessage] = useState("")
   // verification-related state
-  const [isVerifying, setIsVerifying] = useState(false)
   const [verificationInfoSet, setVerificationInfoSet] =
     useState<VerificationResultResponse>(null)
   const [verification, setVerification] =
@@ -237,10 +238,8 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       )
       const verification = await resp.json()
       setVerification(verification)
-      setIsVerifying(true)
     } catch (e) {
       setVerification(undefined)
-      setIsVerifying(false)
       setStatusMessage("API call to Verifier failed. Are you running demos?")
     }
   }
@@ -255,19 +254,16 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       if (verification.status === "approved") {
         setVerification(undefined)
         setVerificationInfoSet(verification.result)
-        setIsVerifying(false)
         setStatusMessage("Verification complete. You can now deposit funds.")
         setPage(2)
       } else if (verification.status === "rejected") {
         setVerification(undefined)
         setVerificationInfoSet(undefined)
-        setIsVerifying(false)
         setStatusMessage("Verification failed.")
       }
     } catch (e) {
       setVerification(undefined)
       setVerificationInfoSet(undefined)
-      setIsVerifying(false)
 
       setStatusMessage(
         "API call to Verifier failed. Are you running the demo server?"
@@ -309,7 +305,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
     // has succeeded (or failed).
 
     setVerificationInfoSet(verificationInfoSet)
-    setIsVerifying(false)
     setStatusMessage("Verification complete. You can now deposit funds.")
     setPage(2)
   }
@@ -361,7 +356,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       // Force the balance refresher to update state
       mutate(undefined, true)
       setStatusMessage("Transaction Succeeded")
-      setIsVerifying(false)
     } catch (error) {
       console.error(error)
 
@@ -380,7 +374,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         message.indexOf("ThresholdToken:") !== -1 ||
         message.indexOf("VerificationRegistry:") != -1
       ) {
-        setIsVerifying(true)
         setVerification(undefined)
         setVerificationInfoSet(undefined)
       }
