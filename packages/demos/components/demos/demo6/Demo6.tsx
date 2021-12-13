@@ -4,7 +4,7 @@ import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
 import type { VerificationResultResponse } from "@verity/core"
 import { useWeb3React } from "@web3-react/core"
-import { Contract } from "ethers"
+import { Contract, Wallet } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR from "swr"
 
@@ -30,6 +30,7 @@ import NoTokensMessage from "./NoTokensMessage"
 import TransactionErrorMessage from "./TransactionErrorMessage"
 import TransferStatus from "./TransferStatus"
 import VerificationPrompt from "./VerificationPrompt"
+import VerifierFaucet from "./VerifierFaucet"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
 
 export type Asset = {
@@ -92,30 +93,44 @@ export const useBalance = (contractAddress: string) => {
     {
       // TODO: This relies on the ThresholdToken ABI. Ideally we could just use
       // an ERC-20 ABI
-      fetcher: contractFetcher(library, TokenArtifact.abi),
-      refreshInterval: 1000
+      fetcher: contractFetcher(library, TokenArtifact.abi)
     }
   )
 
   return { data: balance, mutate }
 }
 
-/**
- * This component is based on the ethers boilerplate project.
- * It does these things:
- *  1. Connects to the user's wallet
- *  2. Initializes ethers and the Token contract
- *  3. Polls the user balance and verification status to keep them updated
- *  4. Transfers tokens by sending transactions
- *  5. Renders the whole application
- *
- * Note that (3) and (4) are specific of this sample application, but they show
- * you how to keep your Dapp and contract's state in sync, and how to send a
- * transaction.
- */
-const Demo6: FC = () => {
+// Generic SWR fetcher for calling arbitrary methods.
+const fetcher =
+  (library) =>
+  async (...args) => {
+    const [method, ...params] = args
+    return library[method](...params)
+  }
+
+// Hook to observe an address' ETH balance.
+const useEthBalance = (library, address: string) => {
+  const result = useSWR(["getBalance", address], {
+    fetcher: fetcher(library),
+    refreshInterval: 5000
+  })
+
+  // Refresh on each new block
+  library.on("blockNumber", () => {
+    result.mutate()
+  })
+
+  return result
+}
+
+type Props = {
+  verifierAddress: string
+}
+
+const Demo6: FC<Props> = ({ verifierAddress }) => {
   const { account, library } = useWeb3React<Web3Provider>()
   const { data: balance, mutate } = useBalance(contractAddress)
+  const { data: verifierEthBalance } = useEthBalance(library, verifierAddress)
 
   // token name and symbol
   const [tokenData, setTokenData] = useState<{ name: string; symbol: string }>()
@@ -454,7 +469,14 @@ const Demo6: FC = () => {
 
   // If the user is just beginning the demo and has no tokens, we show them a
   // faucet button.
-  if (page === -1 && balance.eq(0)) {
+  if (verifierEthBalance.eq(0)) {
+    children = (
+      <VerifierFaucet
+        faucetFunction={faucet}
+        selectedAddress={verifierAddress}
+      />
+    )
+  } else if (page === -1 && balance.eq(0)) {
     children = (
       <NoTokensMessage faucetFunction={faucet} selectedAddress={account} />
     )
