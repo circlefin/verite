@@ -50,8 +50,8 @@ export async function getBalance(address: string): Promise<BigNumber> {
   const provider = getProvider()
 
   const contract = new Contract(
-    verityTokenContractAddress(),
-    verityTokenContractArtifact().abi,
+    thresholdTokenContractAddress(),
+    thresholdTokenContractArtifact().abi,
     provider
   )
   return await contract["balanceOf"](address)
@@ -81,11 +81,11 @@ export function contractFetcher(
   }
 }
 
-export function verityTokenContractArtifact(): { abi: ContractInterface } {
+export function thresholdTokenContractArtifact(): { abi: ContractInterface } {
   return require("../contracts/ThresholdToken.json")
 }
 
-export function verityTokenContractAddress(): string | undefined {
+export function thresholdTokenContractAddress(): string | undefined {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const json = require("../contracts/threshold-token-address.json")
   return json.ThresholdToken

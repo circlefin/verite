@@ -3,7 +3,7 @@ import { Wallet } from "@ethersproject/wallet"
 import { VerificationResultResponse, verificationResult } from "@verity/core"
 import {
   getProvider,
-  verityTokenContractArtifact
+  thresholdTokenContractArtifact
 } from "@verity/demos/lib/eth-fns"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 
@@ -48,7 +48,7 @@ export default apiHandler<VerificationResultResponse>(async (req, res) => {
   const signer = new Wallet(privateKey, provider)
 
   // Load the Contract
-  const tokenArtifact = verityTokenContractArtifact()
+  const tokenArtifact = thresholdTokenContractArtifact()
   const token = new Contract(contractAddress, tokenArtifact.abi, signer)
 
   // Register the Verification with the registry. This transaction requires
