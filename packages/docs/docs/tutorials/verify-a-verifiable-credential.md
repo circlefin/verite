@@ -14,13 +14,13 @@ The verifier first needs to inform credential holders of their input requirement
 Verity exposes library helpers that create a few predefined types of presentation definitions, for example a KYC verification offer:
 
 ```ts
-import { buildKycVerificationOffer } from "@centre/verity";
+import { buildKycVerificationOffer } from "@centre/verity"
 
 const offer = buildKycVerificationOffer(
   uuidv4(),
   verifierDidKey.subject,
   "https://test.host/verify"
-);
+)
 ```
 
 ## Step 2: Receive Presentation Submission
@@ -29,16 +29,31 @@ The verification offer wraps a presentation definition, which contains instructi
 
 The verification offer also informs the credential holder where to submit the response.
 
-The credential holder uses the presentation definition to gather the required inputs, form a Presentation Submission, submit proof, and send it back to the verifier. Verity exposes libraries to help with this:
+The credential holder uses the presentation definition to gather the required inputs, form a Presentation Submission, submit proof, and send it back to the verifier. The credential holder can take their verifiable presentation, extract the credential they'd like verified, and submit it to the verifier.
+
+Verity exposes libraries to help with this. First, an example of extracting the verifiable credential from a verifiable presentation and decoding it:
 
 ```ts
-import { buildPresentationSubmission } from "@centre/verity";
+import {
+  decodeVerifiablePresentation,
+  decodeVerifiableCredential
+} from "@centre/verity"
+
+const decoded = await decodeVerifiablePresentation(presentation)
+const vc = decoded.verifiableCredential[0]
+const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+```
+
+Then, an example of building the presentation submission using the decoded verifiable credential:
+
+```ts
+import { buildPresentationSubmission } from "@centre/verity"
 
 const submission = await buildPresentationSubmission(
   clientDidKey,
   offer.body.presentation_definition,
-  verifiableCredentials
-);
+  decodedVc
+)
 ```
 
 ## Step 3: Verify Submission
@@ -49,7 +64,7 @@ The verifier verifies the submission and proceeds with the corresponding workflo
 await validateVerificationSubmission(
   submission,
   offer.body.presentation_definition
-);
+)
 ```
 
 ## Summary
@@ -62,20 +77,24 @@ const offer = buildKycVerificationOffer(
   uuidv4(),
   verifierDidKey.controller,
   "https://test.host/verify"
-);
+)
 
-// 2. CLIENT: Create verification submission (wraps a presentation submission)
+// 2. CLIENT: Decode the verifiable credential from the presentation and create verification submission (wraps a presentation submission)
+const decoded = await decodeVerifiablePresentation(presentation)
+const vc = decoded.verifiableCredential[0]
+const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+
 const submission = await buildPresentationSubmission(
   clientDidKey,
   offer.body.presentation_definition,
-  verifiableCredentials
-);
+  decodedVc
+)
 
 // 3. VERIFIER: Verifies submission
 await validateVerificationSubmission(
   submission,
   offer.body.presentation_definition
-);
+)
 ```
 
 You can view this demo as a full working example in our [demo-issuer](https://github.com/centrehq/demo-site/tree/main/packages/demo-verifier) demo.
