@@ -59,8 +59,8 @@ const issueCredential = async (
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
-    process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
-    authorityId: "did:web:verity.id",
+    process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+    authorityId: "did:web:demos.verity.id",
     approvalDate: new Date().toISOString(),
     authorityName: "verity.id",
     authorityUrl: "https://verity.id",

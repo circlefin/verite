@@ -35,7 +35,7 @@ describe("buildCredentialOffer", () => {
               id: "kycAttestationOutput",
               schema: [
                 {
-                  uri: "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+                  uri: "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
                 }
               ],
               name: "Proof of KYC from Issuer Inc.",
@@ -90,7 +90,7 @@ describe("buildCredentialOffer", () => {
                   "A Verifiable Presentation establishing proof of identifier control over the DID.",
                 schema: [
                   {
-                    uri: "https://verity.id/schemas/identity/1.0.0/ProofOfControl"
+                    uri: "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl"
                   }
                 ]
               }

@@ -78,7 +78,7 @@ describe("kycPresentationDefinition", () => {
           schema: [
             {
               required: true,
-              uri: "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+              uri: "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
             }
           ]
         }
@@ -177,7 +177,7 @@ describe("kycPresentationDefinition", () => {
           schema: [
             {
               required: true,
-              uri: "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+              uri: "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
             }
           ]
         }
