@@ -2,7 +2,7 @@ import { challengeTokenUrlWrapper, PresentationDefinition } from "@verity/core"
 import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 
-export default async function credentials(
+export default async function job(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
@@ -17,7 +17,9 @@ export default async function credentials(
     expiresIn: "1h"
   })
 
-  const challenge = challengeTokenUrlWrapper(`/api/verifications/${token}`)
+  const challenge = challengeTokenUrlWrapper(
+    `${process.env.NEXT_PUBLIC_BASEURL}/api/verifications/${token}`
+  )
 
   res.status(200).json(challenge)
 }

@@ -27,7 +27,7 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
       <div
         className={classNames(
           bgColor || "bg-gray-100",
-          "min-h-screen px-4 text-base antialiased text-black font-inter font-feature-default"
+          "min-h-screen px-4 antialiased text-black font-inter font-feature-default"
         )}
       >
         <div className="max-w-3xl mx-auto">

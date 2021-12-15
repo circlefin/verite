@@ -1,9 +1,15 @@
+import { Contract } from "@ethersproject/contracts"
+import { Wallet } from "@ethersproject/wallet"
 import {
   validateVerificationSubmission,
   VerificationResultResponse,
   verificationResult
 } from "@verity/core"
 import type { EncodedPresentationSubmission } from "@verity/core"
+import {
+  getProvider,
+  verityTokenContractArtifact
+} from "@verity/demos/lib/eth-fns"
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import {
   findVerificationOffer,
@@ -65,6 +71,34 @@ export default apiHandler<PostResponse>(async (req, res) => {
     "approved",
     result
   )
+
+  if (req.query.verifierSubmit) {
+    // When broadcasting a transaction to the network, it must be done using a
+    // Provider.
+    const provider = getProvider()
+
+    // A signer is necessary to register the verification with the registry.
+    const signer = new Wallet(process.env.VERIFIER_PRIVATE_KEY, provider)
+
+    // Load the Contract
+    const tokenArtifact = verityTokenContractArtifact()
+    const token = new Contract(contractAddress, tokenArtifact.abi, signer)
+
+    // Register the Verification with the registry. This transaction requires
+    // gas, so the verifier should maintain an adequate ETH balance to perform
+    // its duties.
+    const tx = await token.registerVerification(
+      result.verificationResult,
+      result.signature
+    )
+
+    // The transaction will need to be mined before the subject will be found in
+    // the registry. In this example, we wait until it is mined, however, locally
+    // HardHat will auto-mine a block for each transaction, so it will be
+    // performed near instantaneously. Ethereum has an average block time of
+    // around 13 seconds.
+    await tx.wait()
+  }
 
   if (result) {
     res.json({ status: "approved", result })

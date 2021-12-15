@@ -8,7 +8,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import jwt from "jsonwebtoken"
 import { v4 as uuidv4 } from "uuid"
 
-export default async function credentials(
+export default async function verifications(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
@@ -63,8 +63,8 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
   const presentationRequest = buildKycVerificationOffer(
     uuidv4(),
     process.env.NEXT_PUBLIC_VERIFIER_DID, // verifier did
-    `/api/verifications/${token}`, // replyUrl
-    "/api/callback", // statusUrl
+    `${process.env.NEXT_PUBLIC_BASEURL}/api/verifications/${token}`, // replyUrl
+    `${process.env.NEXT_PUBLIC_BASEURL}/api/callback`, // statusUrl
     [process.env.NEXT_PUBLIC_ISSUER_DID] // trusted authorities
   )
 

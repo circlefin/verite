@@ -38,7 +38,7 @@ const issueCredential = async () => {
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
-    process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+    process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
     authorityId: "verity.id",
     approvalDate: new Date().toISOString(),
     authorityName: "verity.id",
@@ -65,7 +65,7 @@ const issueCredential = async () => {
 const somethingThatRequiresVerification = async () => {
   // Assuming 0x18Fc8eA6c36f76b4B7DB6367657512a491BFe111 is our eth address
   const response = await fetch(
-    "/api/job?subjectAddress=0x18Fc8eA6c36f76b4B7DB6367657512a491BFe111",
+    `${process.env.NEXT_PUBLIC_BASEURL}/api/job?subjectAddress=0x18Fc8eA6c36f76b4B7DB6367657512a491BFe111`,
     { method: "POST" }
   )
   if (response.ok) {

@@ -28,6 +28,7 @@
     "hardhat:node": "npm run hardhat:node --workspace @verity/contract",
     "hardhat:deploy": "npm run hardhat:deploy --workspace @verity/contract",
     "hardhat:test": "npm run hardhat:test --workspace @verity/contract",
+    "hardhat:faucet": "npm run hardhat:faucet --workspace @verity/contract",
     "format": "npm run format --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "prepare": "npm run build:verity",

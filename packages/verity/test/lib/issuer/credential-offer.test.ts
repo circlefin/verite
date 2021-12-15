@@ -17,8 +17,8 @@ describe("buildCredentialOffer", () => {
       id,
       type: "https://verity.id/types/CredentialOffer",
       from: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
-      // created_time: 1635281863373,
-      // expires_time: 1637873863373,
+      // created_time: "2021-10-26T20:57:43.373Z",
+      // expires_time: "2021-11-25T20:57:43.373Z",
       reply_url: "http://example.com/replyUrl",
       body: {
         // challenge: "b68f2c74-8965-4281-8623-4836567b8258",
@@ -35,7 +35,7 @@ describe("buildCredentialOffer", () => {
               id: "kycAttestationOutput",
               schema: [
                 {
-                  uri: "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+                  uri: "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
                 }
               ],
               name: "Proof of KYC from Issuer Inc.",
@@ -90,7 +90,7 @@ describe("buildCredentialOffer", () => {
                   "A Verifiable Presentation establishing proof of identifier control over the DID.",
                 schema: [
                   {
-                    uri: "https://verity.id/schemas/identity/1.0.0/ProofOfControl"
+                    uri: "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl"
                   }
                 ]
               }

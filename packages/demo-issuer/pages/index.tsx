@@ -5,7 +5,9 @@ import {
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
   CredentialOffer,
-  DecodedCredentialFulfillment
+  DecodedCredentialFulfillment,
+  decodeCredentialApplication,
+  DecodedCredentialApplication
 } from "@verity/core"
 import type {
   CredentialManifest,
@@ -45,10 +47,12 @@ export const getServerSideProps = (): ServerProps => {
   })
 
   // Create the challengeTokenUrl response
-  // In a production environment, the URL would need to be absolute, but for
-  // sake of simplicity we will just use a path since the demo is entirely
-  // within the browser.
-  const url = `/api/challenges/${token}`
+  // In a production environment, you need to use an absolute URL. For
+  // simplicity of the demo, we hardcode it to localhost:3000. This means you
+  // likely cannot issue to a mobile wallet (e.g. as the wallet would not
+  // resolve localhost to the demo API). If you bind the server to any other
+  // host or port, you will need to change this value.
+  const url = `${process.env.NEXT_PUBLIC_BASEURL}/api/challenges/${token}`
   const challenge = challengeTokenUrlWrapper(url)
   return {
     props: {
@@ -67,6 +71,10 @@ export default function Home({
 
   // Challenge Response
   const [challengeResponse, setChallengeResponse] = useState()
+
+  // Credential Application
+  const [credentialApplication, setCredentialApplication] =
+    useState<DecodedCredentialApplication>()
 
   // Credential Response
   const [credentialResponse, setCredentialResponse] =
@@ -96,10 +104,11 @@ export default function Home({
   }
 
   // API call to apply for a credential
-  const applyForCredential = async (manifest: CredentialManifest) => {
+  const applyForCredential = async (offer: CredentialOffer) => {
+    const manifest = offer.body.manifest
     const application = await buildCredentialApplication(subject, manifest)
 
-    const response = await fetch("/api/credentials", {
+    const response = await fetch(offer.reply_url, {
       method: "POST",
       body: application
     })
@@ -109,6 +118,8 @@ export default function Home({
       const presentation = (await decodeVerifiablePresentation(
         text
       )) as DecodedCredentialFulfillment
+      const decodedApplication = await decodeCredentialApplication(application)
+      setCredentialApplication(decodedApplication)
       setCredentialResponse(presentation)
       setPresentation(presentation)
     }
@@ -156,58 +167,83 @@ export default function Home({
     const description = output.description
 
     return (
-      <div className="bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            {title}
-          </h3>
-          <div className="max-w-xl mt-2 text-sm text-gray-500">
-            <p>{description}</p>
-          </div>
-          <div className="mt-5">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault()
-                applyForCredential(manifest)
-              }}
-              className="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-            >
-              Request Credential
-            </button>
+      <>
+        <div className="bg-white shadow sm:rounded-lg">
+          <div className="px-4 py-5 sm:p-6">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              {title}
+            </h3>
+            <div className="max-w-xl mt-2 text-sm text-gray-500">
+              <p>{description}</p>
+            </div>
+            <div className="mt-5">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  applyForCredential(response)
+                }}
+                className="inline-flex items-center px-4 py-2 font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+              >
+                Request Credential
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div className="prose" style={{ maxWidth: "100%" }}>
+          <h2>Credential Offer</h2>
+          <p className="max-w-prose">
+            After fetching the `challengeTokenUrl`, we are returned a Credential
+            Offer. It is a wrapper around a Credential Manifest, with
+            supplementary properties, most important of which is the `reply_url`
+            where one can submit a Credential Application.
+          </p>
+          <pre>{JSON.stringify(response, null, 4)}</pre>
+        </div>
+      </>
     )
   }
 
   // Component to render the issued credentail
   const Credential = ({
-    response,
+    credentialApplication,
     presentation
   }: {
-    response: unknown
+    credentialApplication: DecodedCredentialApplication
     presentation: Presentation
   }) => {
     return (
       <>
         <div className="prose" style={{ maxWidth: "100%" }}>
+          <h1>Request</h1>
+          <p className="max-w-prose">
+            To request a credential, a client must submit a Credential
+            Application. We use did-jwt-vc to encode our data as JWTs so the
+            request is an opaque string. This is the decoded version.
+          </p>
+          <p className="max-w-prose">
+            A Credential Application may require submitting additional
+            credentials, however they are not required for the KYCAMLAttestion.
+            However, the signed Verifiable Presentation does demonstrate
+            proof-of-control of the holder&apos;s did. This is later used to
+            verify that future presentation exchanges with this did, if properly
+            signed, are being made by the same entity.
+          </p>
+          <pre>{JSON.stringify(credentialApplication, null, 4)}</pre>
           <h1>Response</h1>
-          <p>
+          <p className="max-w-prose">
             According to the Presentation Exchange spec, the server will respond
             with a Verifiable Presentation. We use did-jwt-vc to encode our data
-            as JWTs so the response is mostly opaque.
-          </p>
-          <h2>Response</h2>
-          <pre>{JSON.stringify(response, null, 4)}</pre>
-          <h2>Decoded Verifiable Presentation</h2>
-          <p>
-            After decoding it, we can see there is a list of Verifiable
-            Credentials
+            as JWTs so the response is mostly opaque. After decoding it, we can
+            see there is a list of Verifiable Credentials
           </p>
           <pre>{JSON.stringify(presentation, null, 4)}</pre>
           <h2>Verifiable Credential</h2>
-          <p>This is the verifiable credential.</p>
+          <p>
+            This is the verifiable credential, which can be stored in the
+            user&apos;s identity wallet.
+          </p>
           <pre>
             {JSON.stringify(presentation.verifiableCredential[0], null, 4)}
           </pre>
@@ -259,7 +295,7 @@ export default function Home({
 
         {page === "credential" ? (
           <Credential
-            response={credentialResponse}
+            credentialApplication={credentialApplication}
             presentation={presentation}
           ></Credential>
         ) : null}
