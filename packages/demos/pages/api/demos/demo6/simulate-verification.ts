@@ -3,7 +3,8 @@ import { Wallet } from "@ethersproject/wallet"
 import { VerificationResultResponse, verificationResult } from "@verity/core"
 import {
   getProvider,
-  thresholdTokenContractArtifact
+  registryContractAddress,
+  registryContractArtifact
 } from "@verity/demos/lib/eth-fns"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 
@@ -22,7 +23,7 @@ export default apiHandler<VerificationResultResponse>(async (req, res) => {
   // verifyingContract. Since the demos support contracts across multiple
   // chains and addresses, we'll need to specify them when generating the
   // verification result.
-  const contractAddress = req.body.contractAddress
+  const contractAddress = registryContractAddress()
   const chainId = parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
 
   // A production verifier would integrate with its own persistent wallet, but
@@ -48,7 +49,7 @@ export default apiHandler<VerificationResultResponse>(async (req, res) => {
   const signer = new Wallet(privateKey, provider)
 
   // Load the Contract
-  const tokenArtifact = thresholdTokenContractArtifact()
+  const tokenArtifact = registryContractArtifact()
   const token = new Contract(contractAddress, tokenArtifact.abi, signer)
 
   // Register the Verification with the registry. This transaction requires

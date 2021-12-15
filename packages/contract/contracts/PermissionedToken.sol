@@ -29,10 +29,10 @@ import "./IVerificationRegistry.sol";
 
 contract PermissionedToken is Ownable, ERC20 {
 
-    /** 
+    /**
      * @dev This token uses a VerificationRegistry for KYC verifications.
      * Additional registries for other types of credentials could also be used.
-     */ 
+     */
     address private kycRegistryAddress;
     IVerificationRegistry private kycRegistry;
 
