@@ -36,7 +36,7 @@ import {
   validateVerificationSubmission,
   decodeVerifiableCredential,
   decodeVerifiablePresentation
-} from "@verity/core"
+} from "@centre/verity"
 import { v4 as uuidv4 } from "uuid"
 
 //  Simulation of key generation and storage
