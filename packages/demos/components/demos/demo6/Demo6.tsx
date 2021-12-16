@@ -327,9 +327,8 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       // clear it.
       dismissTransactionError()
 
-      // send the transfer, either with verification or without
-      let tx: TransactionResponse
-      tx = await token.transfer(to, amount)
+      // send the transfer
+      const tx: TransactionResponse = await token.transfer(to, amount)
 
       // save the transaction's hash in the Dapp's state. This
       // way we can indicate that we are waiting for it to be mined.

@@ -1,6 +1,6 @@
-import { apiHandler, requireMethod } from "@verity/demos/lib/api-fns"
-import { authenticate } from "@verity/demos/lib/database/demoAccounts"
 import Cookies from "cookies"
+import { apiHandler, requireMethod } from "../../../lib/api-fns"
+import { authenticate } from "../../../lib/database/demoAccounts"
 
 type Response = {
   status: string
