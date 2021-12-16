@@ -14,7 +14,7 @@ import {
 import { NotFoundError } from "../../../../../lib/errors"
 import {
   getProvider,
-  verityTokenContractArtifact
+  thresholdTokenContractArtifact
 } from "../../../../../lib/eth-fns"
 
 type PostResponse = { status: string; result?: VerificationResultResponse }
@@ -81,7 +81,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
     const signer = new Wallet(process.env.VERIFIER_PRIVATE_KEY, provider)
 
     // Load the Contract
-    const tokenArtifact = verityTokenContractArtifact()
+    const tokenArtifact = thresholdTokenContractArtifact()
     const token = new Contract(contractAddress, tokenArtifact.abi, signer)
 
     // Register the Verification with the registry. This transaction requires

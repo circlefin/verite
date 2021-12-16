@@ -4,8 +4,8 @@ import { ethers, Contract } from "ethers"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import {
   getProvider,
-  verityTokenContractAddress,
-  verityTokenContractArtifact
+  thresholdTokenContractAddress,
+  thresholdTokenContractArtifact
 } from "../../../../lib/eth-fns"
 
 type Response = {
@@ -23,15 +23,15 @@ export default apiHandler<Response>(async (req, res) => {
   // In a production environment, one would need to call out to a verifier to get a result
   const verification = await verificationResult(
     signer.address,
-    verityTokenContractAddress(),
+    thresholdTokenContractAddress(),
     process.env.VERIFIER_PRIVATE_KEY,
     parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   )
 
   // Load the contract
   const contract = new Contract(
-    verityTokenContractAddress(),
-    verityTokenContractArtifact().abi,
+    thresholdTokenContractAddress(),
+    thresholdTokenContractArtifact().abi,
     signer
   )
 

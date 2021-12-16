@@ -8,14 +8,13 @@ import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR, { SWRResponse } from "swr"
 
-// import the contract's artifacts and address
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import TokenArtifact from "../../../contracts/ThresholdToken.json"
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import contractAddressJSON from "../../../contracts/threshold-token-address.json"
-import { contractFetcher } from "../../../lib/eth-fns"
+import {
+  contractFetcher,
+  permissionedTokenContractAddress,
+  permissionedTokenContractArtifact
+} from "../../../lib/eth-fns"
 import { fullURL } from "../../../lib/utils"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
 
@@ -40,12 +39,15 @@ export type Asset = {
   deposit: string
   borrow: string
   image: string
-  contract?: string
+  // Address of the ERC-20 token used for deposits
+  tokenAddress: string
+  // Address where to transfer tokens
+  depositAddress: string
 }
 
 const contractAddress: string =
   process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS ||
-  contractAddressJSON.ThresholdToken
+  permissionedTokenContractAddress()
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -58,7 +60,8 @@ const assets = [
     borrowed: "$1.71B",
     deposit: "2.82%",
     borrow: "3.98%",
-    contract: contractAddress,
+    tokenAddress: permissionedTokenContractAddress(),
+    depositAddress: "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
     image:
       "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4MT0iLjUiIHgyPSIuNSIgeTE9IjEuMTQyIiB5Mj0iLS4xMDUiIGdyYWRpZW50VW5pdHM9Im9iamVjdEJvdW5kaW5nQm94Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmOWE2MDYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmYmNjNWYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIgZmlsbD0idXJsKCNhKSIgZGF0YS1uYW1lPSJFbGxpcHNlIDEyNzEiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMzkuODI1IDIwLjg3NWgtMi45NjdjLTEuNjMzLTQuNTMzLTYuMDI1LTcuNjQyLTExLjgxNy03LjY0MmgtOS41MjV2Ny42NDJoLTMuMzA4djIuNzQyaDMuMzA4djIuODc1aC0zLjMwOHYyLjc0MWgzLjMwOHY3LjU1aDkuNTI1YzUuNzI1IDAgMTAuMDgzLTMuMDgzIDExLjc1OC03LjU1aDMuMDI1di0yLjc0MmgtMi4zNThhMTIuNDMzIDEyLjQzMyAwIDAwLjA5Mi0xLjQ4M3YtLjA2N2MwLS40NS0uMDI1LS44OTItLjA2Ny0xLjMyNWgyLjM0MnYtMi43NDJ6bS0yMS42NDItNS4yaDYuODU4YzQuMjUgMCA3LjQwOCAyLjA5MiA4Ljg2NyA1LjE5MkgxOC4xODN6bTYuODU4IDE4LjY0MmgtNi44NTh2LTUuMDkyaDE1LjcwOGMtMS40NjYgMy4wNS00LjYxNiA1LjA5MS04Ljg1IDUuMDkxem05Ljc1OC05LjI1YTkuODU5IDkuODU5IDAgMDEtLjEgMS40MTdIMTguMTgzdi0yLjg3NWgxNi41MjVhMTAuODQgMTAuODQgMCAwMS4wOTIgMS4zOTJ6IiBkYXRhLW5hbWU9IlBhdGggNzUzNiIvPjwvc3ZnPg=="
   },
@@ -68,7 +71,8 @@ const assets = [
     borrowed: "$3.02B",
     deposit: "3.17%",
     borrow: "3.90%",
-    contract: contractAddress,
+    tokenAddress: permissionedTokenContractAddress(),
+    depositAddress: "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
     image:
       "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMyNzc1QzkiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMTUuNzUgMjcuNUExMS43NSAxMS43NSAwIDExMjcuNSAxNS43NSAxMS43NSAxMS43NSAwIDAxMTUuNzUgMjcuNXptLS43LTE2LjExYTIuNTggMi41OCAwIDAwLTIuNDUgMi40N2MwIDEuMjEuNzQgMiAyLjMxIDIuMzNsMS4xLjI2YzEuMDcuMjUgMS41MS42MSAxLjUxIDEuMjJzLS43NyAxLjIxLTEuNzcgMS4yMWExLjkgMS45IDAgMDEtMS44LS45MS42OC42OCAwIDAwLS42MS0uMzloLS41OWEuMzUuMzUgMCAwMC0uMjguNDEgMi43MyAyLjczIDAgMDAyLjYxIDIuMDh2Ljg0YS43LjcgMCAwMDEuNDEgMHYtLjg1YTIuNjIgMi42MiAwIDAwMi41OS0yLjU4YzAtMS4yNy0uNzMtMi0yLjQ2LTIuMzdsLTEtLjIyYy0xLS4yNS0xLjQ3LS41OC0xLjQ3LTEuMTQgMC0uNTYuNi0xLjE4IDEuNi0xLjE4YTEuNjQgMS42NCAwIDAxMS41OS44MS44LjggMCAwMC43Mi40NmguNDdhLjQyLjQyIDAgMDAuMzEtLjUgMi42NSAyLjY1IDAgMDAtMi4zOC0ydi0uNjlhLjcuNyAwIDAwLTEuNDEgMHYuNzR6bS04LjExIDQuMzZhOC43OSA4Ljc5IDAgMDA2IDguMzNoLjE0YS40NS40NSAwIDAwLjQ1LS40NXYtLjIxYS45NC45NCAwIDAwLS41OC0uODcgNy4zNiA3LjM2IDAgMDEwLTEzLjY1LjkzLjkzIDAgMDAuNTgtLjg2di0uMjNhLjQyLjQyIDAgMDAtLjU2LS40IDguNzkgOC43OSAwIDAwLTYuMDMgOC4zNHptMTcuNjIgMGE4Ljc5IDguNzkgMCAwMC02LTguMzJoLS4xNWEuNDcuNDcgMCAwMC0uNDcuNDd2LjE1YTEgMSAwIDAwLjYxLjkgNy4zNiA3LjM2IDAgMDEwIDEzLjY0IDEgMSAwIDAwLS42Ljg5di4xN2EuNDcuNDcgMCAwMC42Mi40NCA4Ljc5IDguNzkgMCAwMDUuOTktOC4zNHoiLz48L2c+PC9zdmc+"
   },
@@ -78,22 +82,19 @@ const assets = [
     borrowed: "$944.95M",
     deposit: "3.22%",
     borrow: "3.97%",
-    contract: contractAddress,
+    tokenAddress: permissionedTokenContractAddress(),
+    depositAddress: "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
     image:
       "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iIzI2QTE3QiIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0xNy45MjIgMTcuMzgzdi0uMDAyYy0uMTEuMDA4LS42NzcuMDQyLTEuOTQyLjA0Mi0xLjAxIDAtMS43MjEtLjAzLTEuOTcxLS4wNDJ2LjAwM2MtMy44ODgtLjE3MS02Ljc5LS44NDgtNi43OS0xLjY1OCAwLS44MDkgMi45MDItMS40ODYgNi43OS0xLjY2djIuNjQ0Yy4yNTQuMDE4Ljk4Mi4wNjEgMS45ODguMDYxIDEuMjA3IDAgMS44MTItLjA1IDEuOTI1LS4wNnYtMi42NDNjMy44OC4xNzMgNi43NzUuODUgNi43NzUgMS42NTggMCAuODEtMi44OTUgMS40ODUtNi43NzUgMS42NTdtMC0zLjU5di0yLjM2Nmg1LjQxNFY3LjgxOUg4LjU5NXYzLjYwOGg1LjQxNHYyLjM2NWMtNC40LjIwMi03LjcwOSAxLjA3NC03LjcwOSAyLjExOCAwIDEuMDQ0IDMuMzA5IDEuOTE1IDcuNzA5IDIuMTE4djcuNTgyaDMuOTEzdi03LjU4NGM0LjM5My0uMjAyIDcuNjk0LTEuMDczIDcuNjk0LTIuMTE2IDAtMS4wNDMtMy4zMDEtMS45MTQtNy42OTQtMi4xMTciLz48L2c+PC9zdmc+"
   }
 ]
 
-// Refresh the user's contract balance every 1 second
 export const useBalance = (
   contractAddress: string
 ): SWRResponse<BigNumber, unknown> => {
   const { account, library } = useWeb3React<Web3Provider>()
-  // Refresh the user's contract balance every 1 second
   const result = useSWR([contractAddress, "balanceOf", account], {
-    // TODO: This relies on the ThresholdToken ABI. Ideally we could just use
-    // an ERC-20 ABI
-    fetcher: contractFetcher(library, TokenArtifact.abi)
+    fetcher: contractFetcher(library, permissionedTokenContractArtifact().abi)
   })
 
   return result
@@ -158,7 +159,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
   const token = new Contract(
     contractAddress,
-    TokenArtifact.abi,
+    permissionedTokenContractArtifact().abi,
     library.getSigner(0)
   )
 
@@ -326,16 +327,8 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       // clear it.
       dismissTransactionError()
 
-      // send the transfer, either with verification or without
-      let tx: TransactionResponse
-      const t = await token.getThreshold()
-      if (t <= amount && verificationInfoSet) {
-        tx = await token.transfer(to, amount)
-        // uncomment the following line to force verification to expire with each transfer instead of timing out:
-        //setVerificationInfoSet( undefined );
-      } else {
-        tx = await token.transfer(to, amount)
-      }
+      // send the transfer
+      const tx: TransactionResponse = await token.transfer(to, amount)
 
       // save the transaction's hash in the Dapp's state. This
       // way we can indicate that we are waiting for it to be mined.
@@ -371,7 +364,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       // up front before the transfer, but for the sake of example, we show that
       // the contract is not relying solely on the web frontend to fire the error
       if (
-        message.indexOf("ThresholdToken:") !== -1 ||
+        message.indexOf("PermissionedToken:") !== -1 ||
         message.indexOf("VerificationRegistry:") != -1
       ) {
         setVerification(undefined)
@@ -380,8 +373,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
       // This is the error message to kick off the Verification workflow. We
       // special case it so it is not shown to the user.
-      const sentinel =
-        "ThresholdToken: Transfers of this amount require sender verification"
+      const sentinel = "PermissionedToken: Sender is not verified"
       if (message.indexOf(sentinel) === -1) {
         // Other errors are logged and stored in the Dapp's state. This is used to
         // show them to the user, and for debugging.
@@ -432,9 +424,35 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
     )
   }
 
-  const faucet = async (address: string): Promise<boolean> => {
+  const ethFaucet = async (address: string): Promise<boolean> => {
     try {
-      const resp = await fetch(fullURL("/api/demos/dapp/faucet"), {
+      const resp = await fetch(fullURL("/api/demos/demo6/eth-faucet"), {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({ address })
+      })
+      const json = await resp.json()
+      if (json.status !== "ok") {
+        console.error(json)
+        setTransactionError(
+          `API call to faucet failed: ${JSON.stringify(json)}`
+        )
+        return false
+      }
+    } catch (e) {
+      console.error(e)
+      setTransactionError(`API call to faucet failed: ${e.message}`)
+      return false
+    }
+
+    return true
+  }
+
+  const tokenFaucet = async (address: string): Promise<boolean> => {
+    try {
+      const resp = await fetch(fullURL("/api/demos/demo6/token-faucet"), {
         headers: {
           "Content-Type": "application/json"
         },
@@ -465,13 +483,13 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   if (verifierEthBalance.eq(0)) {
     children = (
       <VerifierFaucet
-        faucetFunction={faucet}
+        faucetFunction={ethFaucet}
         selectedAddress={verifierAddress}
       />
     )
   } else if (page === -1 && balance.eq(0)) {
     children = (
-      <NoTokensMessage faucetFunction={faucet} selectedAddress={account} />
+      <NoTokensMessage faucetFunction={tokenFaucet} selectedAddress={account} />
     )
   } else if (page === -1 || page === 2) {
     children = (

@@ -13,10 +13,11 @@ type TransferProps = {
 }
 
 const Transfer: FC<TransferProps> = ({ onTransfer, transferTokens, asset }) => {
-  const to = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  // We'll hard-code this market
+  const to = asset.depositAddress
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [amount, setAmount] = useState("")
-  const { data: balance } = useBalance(asset.contract)
+  const { data: balance } = useBalance(asset.tokenAddress)
 
   return (
     <form
