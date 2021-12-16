@@ -6,16 +6,16 @@ import {
   verificationResult
 } from "@verity/core"
 import type { EncodedPresentationSubmission } from "@verity/core"
-import {
-  getProvider,
-  verityTokenContractArtifact
-} from "@verity/demos/lib/eth-fns"
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import {
   findVerificationOffer,
   updateVerificationOfferStatus
 } from "../../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../../lib/errors"
+import {
+  getProvider,
+  verityTokenContractArtifact
+} from "../../../../../lib/eth-fns"
 
 type PostResponse = { status: string; result?: VerificationResultResponse }
 
