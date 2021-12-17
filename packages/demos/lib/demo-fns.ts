@@ -6,8 +6,8 @@ import { Contract, Wallet } from "ethers"
 import { User } from "./database"
 import {
   getProvider,
-  verityTokenContractAddress,
-  verityTokenContractArtifact
+  thresholdTokenContractAddress,
+  thresholdTokenContractArtifact
 } from "./eth-fns"
 
 export type Transaction = {
@@ -27,8 +27,8 @@ export async function send(
   const provider = getProvider()
   const wallet = new Wallet(user.privateKey, provider)
   const contract = new Contract(
-    verityTokenContractAddress(),
-    verityTokenContractArtifact().abi,
+    thresholdTokenContractAddress(),
+    thresholdTokenContractArtifact().abi,
     wallet
   )
 
@@ -36,7 +36,7 @@ export async function send(
   if (!verification) {
     verification = await verificationResult(
       wallet.address,
-      verityTokenContractAddress(),
+      thresholdTokenContractAddress(),
       process.env.VERIFIER_PRIVATE_KEY,
       parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
     )

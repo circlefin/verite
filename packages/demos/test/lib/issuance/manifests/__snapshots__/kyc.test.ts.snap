@@ -16,7 +16,7 @@ Object {
   },
   "id": "KYCAMLAttestation",
   "issuer": Object {
-    "id": "did:web:verity.id",
+    "id": "did:web:demos.verity.id",
     "name": "Verity",
     "styles": Object {},
   },
@@ -85,7 +85,7 @@ Object {
       "name": "Proof of KYC from Verity",
       "schema": Array [
         Object {
-          "uri": "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation",
+          "uri": "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation",
         },
       ],
       "styles": Object {
@@ -122,7 +122,7 @@ Object {
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
         "schema": Array [
           Object {
-            "uri": "https://verity.id/schemas/identity/1.0.0/ProofOfControl",
+            "uri": "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl",
           },
         ],
       },

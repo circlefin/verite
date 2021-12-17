@@ -6,16 +6,16 @@ import {
   verificationResult
 } from "@verity/core"
 import type { EncodedPresentationSubmission } from "@verity/core"
-import {
-  getProvider,
-  verityTokenContractArtifact
-} from "@verity/demos/lib/eth-fns"
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import {
   findVerificationOffer,
   updateVerificationOfferStatus
 } from "../../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../../lib/errors"
+import {
+  getProvider,
+  thresholdTokenContractArtifact
+} from "../../../../../lib/eth-fns"
 
 type PostResponse = { status: string; result?: VerificationResultResponse }
 
@@ -81,7 +81,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
     const signer = new Wallet(process.env.VERIFIER_PRIVATE_KEY, provider)
 
     // Load the Contract
-    const tokenArtifact = verityTokenContractArtifact()
+    const tokenArtifact = thresholdTokenContractArtifact()
     const token = new Contract(contractAddress, tokenArtifact.abi, signer)
 
     // Register the Verification with the registry. This transaction requires
