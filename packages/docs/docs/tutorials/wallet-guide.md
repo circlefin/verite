@@ -66,7 +66,7 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
 1. Recipient initiates the credential request process by scanning QR code with their mobile wallet
 2. The wallet decodes the QR code, which provides an issuer endpoint with more details to continue the interaction:
 
-   1. QR code returns the URL from which to receive information at the` challengeTokenUrl`:
+   1. QR code returns the URL from which to receive information at the `challengeTokenUrl`:
 
       ```json
       {
@@ -258,9 +258,9 @@ A credential application is sent from the wallet to the issuer before issuance. 
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z",
-      "authorityId": "did:web:demos.verity.id",
+      "authorityId": "did:web:verity.id",
       "authorityName": "Verity",
       "authorityUrl": "https://verity.id",
       "authorityCallbackUrl": "https://identity.verity.id"
@@ -268,7 +268,7 @@ A credential application is sent from the wallet to the issuer before issuance. 
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
   },
   "issuer": {
-    "id": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb"
+    "id": "did:web:verity.id"
   },
   "credentialStatus": {
     "id": "http://192.168.1.16:3000/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91#94372",
@@ -350,8 +350,8 @@ Details:
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
           "@type": "KYCAMLAttestation",
-          "process": "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
-          "authorityId": "did:web:demos.verity.id",
+          "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+          "authorityId": "did:web:verity.id",
           "approvalDate": "2021-09-14T02:00:07.540Z",
           "authorityName": "Verity",
           "authorityUrl": "https://verity.id",
@@ -359,7 +359,7 @@ Details:
         }
       },
       "issuer": {
-        "id": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb"
+        "id": "did:web:verity.id"
       }
     }
   ]

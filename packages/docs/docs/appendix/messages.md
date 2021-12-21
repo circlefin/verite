@@ -13,9 +13,9 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z",
-      "authorityId": "did:web:demos.verity.id",
+      "authorityId": "did:web:verity.id",
       "authorityName": "Verity",
       "authorityUrl": "https://verity.id",
       "authorityCallbackUrl": "https://identity.verity.id"
@@ -23,7 +23,7 @@ sidebar_position: 2
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
   },
   "issuer": {
-    "id": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb"
+    "id": "did:web:verity.id"
   },
   "type": ["VerifiableCredential", "KYCAMLAttestation"],
   "@context": [
@@ -45,9 +45,9 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z",
-      "authorityId": "did:web:demos.verity.id",
+      "authorityId": "did:web:verity.id",
       "authorityName": "Verity",
       "authorityUrl": "https://verity.id",
       "authorityCallbackUrl": "https://identity.verity.id"
@@ -55,7 +55,7 @@ sidebar_position: 2
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
   },
   "issuer": {
-    "id": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb"
+    "id": "did:web:verity.id"
   },
   "type": ["VerifiableCredential", "KYCAMLAttestation"],
   "credentialStatus": {
@@ -130,7 +130,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       "id": "kycAttestationOutput",
       "schema": [
         {
-          "uri": "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+          "uri": "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
         }
       ],
       "name": "Proof of KYC from Verity",
@@ -212,7 +212,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
         "schema": [
           {
-            "uri": "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl"
+            "uri": "https://verity.id/schemas/identity/1.0.0/ProofOfControl"
           }
         ]
       }
@@ -336,8 +336,8 @@ Details:
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
           "@type": "KYCAMLAttestation",
-          "process": "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
-          "authorityId": "did:web:demos.verity.id",
+          "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+          "authorityId": "did:web:verity.id",
           "approvalDate": "2021-09-14T02:00:07.540Z",
           "authorityName": "Verity",
           "authorityUrl": "https://verity.id",
@@ -345,7 +345,7 @@ Details:
         }
       },
       "issuer": {
-        "id": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb"
+        "id": "did:web:verity.id"
       }
     }
   ]

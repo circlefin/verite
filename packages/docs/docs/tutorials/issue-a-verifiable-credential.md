@@ -79,7 +79,7 @@ const application = await buildCredentialApplication(subject, manifest)
 
 Once the subject has requested a VC and submitted their DID (as part of their credential application), the Issuer can create a VC.
 
-For our example, we're building a VC containing a KYC/AML Attestation. This attestation is quite simple in Verity. It defines an authority which has performed proper KYC/AML checks on the subject (in this example the authority is Verity, with the DID of `did:web:demos.verity.id`).
+For our example, we're building a VC containing a KYC/AML Attestation. This attestation is quite simple in Verity. It defines an authority which has performed proper KYC/AML checks on the subject (in this example the authority is Verity, with the DID of `did:web:verity.id`).
 
 We transport Verifiable Credentials using a Verifiable Presentation. The presentation is just a way of transferring credentials, with the benefit that the presentation creator does not need to be the credential issuer or subject.
 
@@ -97,8 +97,8 @@ const decodedApplication = await decodeCredentialApplication(application)
 
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
-  process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
-  authorityId: "did:web:demos.verity.id",
+  process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+  authorityId: "did:web:verity.id",
   approvalDate: new Date().toISOString(),
   authorityName: "verity.id",
   authorityUrl: "https://verity.id"
