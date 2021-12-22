@@ -1,3 +1,4 @@
+import Link from "next/link"
 import React, { FC } from "react"
 
 type Props = {
@@ -15,10 +16,14 @@ const Verification: FC<Props> = ({ onDone }) => {
       <div className="prose">
         <ul>
           <li>
-            <a href="#">Circle</a>
+            <Link href="/demos/issuer/kyc">
+              <a>Circle</a>
+            </Link>
           </li>
           <li>
-            <a href="#">Coinbase</a>
+            <Link href="/demos/issuer/kyc">
+              <a>Coinbase</a>
+            </Link>
           </li>
         </ul>
         Already have a credential?{" "}

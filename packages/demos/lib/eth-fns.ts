@@ -50,8 +50,8 @@ export async function getBalance(address: string): Promise<BigNumber> {
   const provider = getProvider()
 
   const contract = new Contract(
-    verityTokenContractAddress(),
-    verityTokenContractArtifact().abi,
+    thresholdTokenContractAddress(),
+    thresholdTokenContractArtifact().abi,
     provider
   )
   return await contract["balanceOf"](address)
@@ -70,10 +70,7 @@ export function formatEthAddress(address: string): string {
 /**
  * Perform a method on a given contract
  */
-export function contractFetcher(
-  library: Web3Provider,
-  abi: Record<string, unknown>[]
-) {
+export function contractFetcher(library: Web3Provider, abi: ContractInterface) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (address: string, method: string, ...args: any[]): any => {
     const contract = new Contract(address, abi, library.getSigner())
@@ -81,14 +78,38 @@ export function contractFetcher(
   }
 }
 
-export function verityTokenContractArtifact(): { abi: ContractInterface } {
+export function thresholdTokenContractArtifact(): { abi: ContractInterface } {
   return require("../contracts/ThresholdToken.json")
 }
 
-export function verityTokenContractAddress(): string | undefined {
+export function thresholdTokenContractAddress(): string | undefined {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const json = require("../contracts/threshold-token-address.json")
   return json.ThresholdToken
+}
+
+export function permissionedTokenContractArtifact(): {
+  abi: ContractInterface
+} {
+  return require("../contracts/PermissionedToken.json")
+}
+
+export function permissionedTokenContractAddress(): string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const json = require("../contracts/permissioned-token-address.json")
+  return json.PermissionedToken
+}
+
+export function registryContractAddress(): string | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const json = require("../contracts/registry-contract-address.json")
+  return json.RegistryContract
+}
+
+export function registryContractArtifact(): {
+  abi: ContractInterface
+} {
+  return require("../contracts/RegistVerificationRegistryContract.json")
 }
 
 export function getProvider(): Provider {

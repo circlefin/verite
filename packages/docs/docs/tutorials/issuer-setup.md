@@ -1,6 +1,6 @@
 ---
 sidebar_label: Issuer Setup
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Issuer Setup
