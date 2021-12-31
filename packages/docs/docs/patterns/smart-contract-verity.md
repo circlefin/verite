@@ -129,6 +129,22 @@ The following example illustrates subject-submitted verification results for the
 
 In this hypothetical example, a contract in the lending pool could inherit the registry contract (or implement the registry interface) to invoke internal verification registration methods in the same transaction as the borrow logic. This ensures that the caller is the subject (represented by the dapp) as opposed to the inheriting contract becoming the caller. There is no persistence of credit verifications in this example.
 
+### Subject Submission Pattern Risks and Mitigations
+
+Verification registries that support both subject-managed verification results and verifier revocation must ensure they don't inadvertently allow subjects to override a verifier revocation through resubmission, as demonstrated in the following flow:
+
+1. Subject registers verification result
+2. Verifier revokes
+3. Subject deletes, then resubmits original verification result (causing the record to appear unrevoked)
+
+This risk can be avoided through policies enforced in the implementation of a registry that supports verifier revocation:
+
+- Disallow subject submission
+- Allow subject submission, but disallow subject deletion
+- Disallow deletion of a revoked record
+
+This can also be mitigated by the verifier applying an aggressive expiration for subject-held verification results, narrowing the window of effectiveness of such a threat.
+
 ## Storage Patterns
 
 Upon generating a Verification Record, a contract may follow one of two storage patterns: (a) in-contract storage, and (b) off-chain storage with optional oracle integration.
@@ -148,6 +164,12 @@ No personal data or credentials are stored on-chain. Instead, Verification Recor
 So while basic Verification Record information associated with addresses is public and can be correlated to transaction activity, and callers can verify that an address has a particular claim, an enforcement authority interested in obtaining PII about a subject would need to take the additional steps of gaining the issuer identifier from the verifier and then contacting that issuer directly.
 
 A provable yet privacy-preserving audit path is simple. However, a deeper forensics path that accesses personal data is intended to be possible only for law enforcement with appropriate authority, and not possible for others to execute.
+
+## Privacy Considerations
+
+While verification records may be extended to store additional properties, implementors should ensure data stored on-chain does not contribute to the re-identification of the individual to which it applies.
+
+In general, this requires registry design to target clear use cases dertermined by stakeholders, without reliance of on-chain data for additional optionality (relying instead on offchain protocols when this is needed).
 
 ## Alternative Patterns and Future Work
 

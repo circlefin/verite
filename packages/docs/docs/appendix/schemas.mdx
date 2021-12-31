@@ -4,6 +4,8 @@ sidebar_position: 1
 
 # Schemas
 
+The following schemas are used in Verity's implementation.
+
 ISSUE: Discuss "@type" vs "type" and array vs single-valued
 
 ## KYC/AML Attestation
@@ -20,11 +22,7 @@ The KYC/AML attestation structure is intended to address regulatory compliance o
 {
   "@type": "KYCAMLAttestation",
   "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
-  "approvalDate": "2021-08-25T02:13:43.387Z",
-  "authorityId": "did:web:trapezoid.id",
-  "authorityName": "Trapezoid LLC",
-  "authorityUrl": "https://trapezoid.id",
-  "authorityCallbackUrl": "https://identity.trapezoid.id"
+  "approvalDate": "2021-08-25T02:13:43.387Z"
 }
 ```
 
@@ -42,22 +40,6 @@ The "process" attribute is used to define which KYC/AML process was performed. T
 
 The "approvalDate" attribute is used to define the date of KYC/AML process completion, which may be on or before the issuanceDate of the credential (in the outer VC wrapper). The "approvalDate" attribute value is an ISO 8601-formatted string. If not present, then the attribute value is assumed to be the same as the Verifiable Credential issuance date. Use of this attribute is OPTIONAL.
 
-#### "authorityId" Attribute
-
-The "authorityId" attribute is used to define the company that executed the KYC process. The "authorityId" attribute value is a stringOrURI identifier that MAY be a DID. The attribute value MAY be the same as the VC issuer (recorded in the outer VC wrapper), but should not be assumed to be the same (issuers may employ KYC-as-a-Service authorities). Use of this attribute is REQUIRED.
-
-#### "authorityName" Attribute
-
-The "authorityName" attribute is used to name of the authority that executed the KYC process. The "authorityName" attribute value is a string. If provided, the value MUST be the legal name of the entity that executed the KYC process. This value SHOULD be provided if the authority name is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
-
-#### "authorityUrl" Attribute
-
-The "authorityUrl" attribute is used to define a url of the authority that executed the KYC process. The "authorityUrl" attribute value is a stringOrURI. If provided, the value MUST be the url of the entity that executed the KYC process. This value SHOULD be provided if the URL is not dereferencable through the "authorityId" attribute (such as a registry). Use of this attribute is OPTIONAL.
-
-#### "authorityCallbackUrl" Attribute
-
-The "authorityCallbackUrl" attribute is used to define the url at which VCs can be requested of this authority, such as VCs it may have about itself (e.g., a Centre-issued KYCAMLAttestation about this authority proving that it is a valid issuer in the Centre network). The "authorityCallbackUrl" attribute value is a stringOrURI. If present, it indicates a url that expects Presentation Requests messaged to the KYC authority. Use of this attribute is OPTIONAL.
-
 ### Recommendations
 
 - Issuers take responsibility for revoking issued credentials due to updates to sanctions lists
@@ -67,6 +49,24 @@ The "authorityCallbackUrl" attribute is used to define the url at which VCs can 
 - Support for additional use cases (such as jurisdiction shopping) that require additional data should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplised with ZKPs or by issuing separate credentials containing the additional attributes (such as residence), enabling wallet aggregation of minimal required data.
 
 Verity's intial release contains only the USA KYC/AML process definition ("https://verity.id/schemas/definitions/1.0.0/kycaml/usa",). Additional process defnitions will be developed based on existing practices/requirements per country.
+
+### Additional Considerations
+
+This schema does not include attributes about the authority that executed the KYC process, which may be separate from the issuer of the claim. This design enables minimal disclosure of data while satisfying use cases in which a relying party considers the issuer authoritative for KYC credentials it issues. It allows relying parties to differentiate among which country-specific KYC process the credential applies to, but not learn anything else about the executing authority.
+
+This pattern is well-suited for approaches in which allow-lists of trusted issuing authorities is available, but is available as a general, non-centralized, pattern that allows implementors to decide whom to trust.
+
+When used as inputs by verifiers into verification registries, the auditing/forensics flow would look like this:
+
+- Auditor flags record or set of records in the registry by uid(s)
+- Verifier looks up (offline) the original VCs corresponding to the uids
+- Each VC contains its id and information about its issuer. Information needed to contact the issuer must be resolvable in one of the following ways:
+  - DID method
+  - Issuer properties in the VC (i.e., in the "issuer" object of the VC)
+  - Other "registry" information stored by verifiers when deciding which issuer VCs to accept
+- Lastly, auditor contacts the issuer(s) for subject data corresponding to the VC id.
+
+[See further discussion of registry forensics flows](/docs/pattern/smart-contract-verity#auditing-and-forensics-sequences)
 
 ## Address Ownership
 
