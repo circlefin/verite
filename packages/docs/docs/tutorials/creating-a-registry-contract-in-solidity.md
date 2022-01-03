@@ -235,3 +235,54 @@ modifier onlyVerifier() {
     _;
 }
 ```
+
+Now, we want to allow people to call the smart contract to get the number of verification records created. We can do that with this function:
+
+```
+function getVerificationCount() external override view returns(uint256) {
+    return _verificationRecordCount;
+}
+```
+
+Next up, we get to a very important function. This function checks if a particular address has a verification record.
+
+```
+function isVerified(address subject) external override view returns (bool) {
+    require(subject != address(0), "VerificationRegistry: Invalid address");
+    bytes32[] memory subjectRecords = _verificationsForSubject[subject];
+    for (uint i=0; i<subjectRecords.length; i++) {
+        VerificationRecord memory record = _verifications[subjectRecords[i]];
+        if (!record.revoked && record.expirationTime > block.timestamp) {
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+This is where the Verification Registry contract really shines. The verification is added to the registry, but that only has to happen once. Future checks can simply rely on this function or similar functions customized to your needs.
+
+When a single verification is needed, this next function will support that. It takes the UUID for the verification as an argument and then returns the full verification record:
+
+```
+function getVerification(bytes32 uuid) external override view returns (VerificationRecord memory) {
+    return _verifications[uuid];
+}
+```
+
+But what about when you need all the verifications for a particular subject? Let's build a function that will return an array of verifications for a particular wallet address.
+
+```
+function getVerificationsForSubject(address subject) external override view returns (VerificationRecord[] memory) {
+    require(subject != address(0), "VerificationRegistry: Invalid address");
+    bytes32[] memory subjectRecords = _verificationsForSubject[subject];
+    VerificationRecord[] memory records = new VerificationRecord[](subjectRecords.length);
+    for (uint i=0; i<subjectRecords.length; i++) {
+        VerificationRecord memory record = _verifications[subjectRecords[i]];
+        records[i] = record;
+    }
+    return records;
+}
+```
+
+This function takes the wallet address for the subject, filters on the existing verifications for just that address, and returns the reocrds.
