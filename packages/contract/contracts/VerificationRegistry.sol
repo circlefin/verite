@@ -129,7 +129,7 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
      * @inheritdoc IVerificationRegistry
      */
     function getVerificationCount() external override view returns(uint256) {
-        return _verifierCount;
+        return _verificationRecordCount;
     }
 
     /**
