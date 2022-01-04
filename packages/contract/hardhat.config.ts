@@ -19,6 +19,59 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 
 // Verifier Management Logic
+task("registryAddVerifier", "Add a Verifier to the contract")
+  .addParam("address", "Address of the verifier")
+  .addParam("name", "Name of the Verifier")
+  .addParam("did", "did of the verifier")
+  .addParam("url", "URL of the verifier")
+  .addParam("registry", "Address of the registry")
+  .setAction(async (taskArgs, hre) => {
+    const registryFactory: ContractFactory =
+      await hre.ethers.getContractFactory("VerificationRegistry")
+    const registry = registryFactory.attach(taskArgs.registry)
+
+    const info = {
+      name: hre.ethers.utils.formatBytes32String(taskArgs.name),
+      did: taskArgs.did,
+      url: taskArgs.url,
+      signer: taskArgs.address
+    }
+    await registry.addVerifier(taskArgs.address, info)
+    console.log(`Added ${taskArgs.address} as a verifier`)
+  })
+
+task("registryUpdateVerifier", "Update information about a Verifier")
+  .addParam("address", "Address of the verifier")
+  .addParam("name", "Name of the Verifier")
+  .addParam("did", "did of the verifier")
+  .addParam("url", "URL of the verifier")
+  .addParam("registry", "Address of the registry")
+  .setAction(async (taskArgs, hre) => {
+    const registryFactory: ContractFactory =
+      await hre.ethers.getContractFactory("VerificationRegistry")
+    const registry = registryFactory.attach(taskArgs.registry)
+
+    const info = {
+      name: hre.ethers.utils.formatBytes32String(taskArgs.name),
+      did: taskArgs.did,
+      url: taskArgs.url,
+      signer: taskArgs.address
+    }
+    await registry.updateVerifier(taskArgs.address, info)
+    console.log(`Updated Verifier information for ${taskArgs.address}`)
+  })
+
+task("registryRemoveVerifier", "Remove a Verifier from the registry")
+  .addParam("address", "Address of the verifier")
+  .addParam("registry", "Address of the registry")
+  .setAction(async (taskArgs, hre) => {
+    const registryFactory: ContractFactory =
+      await hre.ethers.getContractFactory("VerificationRegistry")
+    const registry = registryFactory.attach(taskArgs.registry)
+    await registry.removeVerifier(taskArgs.address)
+    console.log(`Removed verifier: ${taskArgs.address}`)
+  })
+
 task("registryIsVerifier", "Shows whether the address is a verifier")
   .addParam("address", "Address of the verifier")
   .addParam("registry", "Address of the registry")
@@ -116,6 +169,85 @@ task(
     const registry = registryFactory.attach(taskArgs.registry)
     const value = await registry.getVerificationsForVerifier(taskArgs.verifier)
     console.log(`Verifications from ${taskArgs.verifier}:\n${value.join("\n")}`)
+  })
+
+task(
+  "registryRevokeVerification",
+  "Revoke a Verification Record that was previously created"
+)
+  .addParam("uuid", "UUID of the verification record")
+  .addParam("registry", "Address of the registry")
+  .setAction(async (taskArgs, hre) => {
+    const registryFactory: ContractFactory =
+      await hre.ethers.getContractFactory("VerificationRegistry")
+    const registry = registryFactory.attach(taskArgs.registry)
+    await registry.revokeVerification(taskArgs.uuid)
+    console.log(`Revoked verification with UUID: ${taskArgs.uuid}`)
+  })
+
+task(
+  "registryRemoveVerification",
+  "Remove a Verification Record from future blocks"
+)
+  .addParam("uuid", "UUID of the verification record")
+  .addParam("registry", "Address of the registry")
+  .setAction(async (taskArgs, hre) => {
+    const registryFactory: ContractFactory =
+      await hre.ethers.getContractFactory("VerificationRegistry")
+    const registry = registryFactory.attach(taskArgs.registry)
+    await registry.removeVerification(taskArgs.uuid)
+    console.log(`Revoked verification with UUID: ${taskArgs.uuid}`)
+  })
+
+task(
+  "registryRegisterVerification",
+  "Register a Verification Record for the given address"
+)
+  .addParam("address", "Subject address to be verified")
+  .addParam("registry", "Address of the registry")
+  .setAction(async (taskArgs, hre) => {
+    const registryFactory: ContractFactory =
+      await hre.ethers.getContractFactory("VerificationRegistry")
+    const registry = registryFactory.attach(taskArgs.registry)
+
+    const domain = {
+      name: "VerificationRegistry",
+      version: "1.0",
+      chainId: 1337,
+      verifyingContract: registry.address
+    }
+
+    const types = {
+      VerificationResult: [
+        { name: "schema", type: "string" },
+        { name: "subject", type: "address" },
+        { name: "expiration", type: "uint256" },
+        { name: "payload", type: "bytes32" }
+      ]
+    }
+
+    const verificationResult = {
+      schema: "centre.io/credentials/kyc",
+      subject: taskArgs.address,
+      expiration: Math.floor(Date.now() / 1000) + 60, // 1 minute
+      payload: hre.ethers.utils.formatBytes32String("example")
+    }
+
+    // We'll use Account #0 since it is used for deployment
+    const [deployer] = await hre.ethers.getSigners()
+
+    const signature = await deployer._signTypedData(
+      domain,
+      types,
+      verificationResult
+    )
+
+    await registry.registerVerification(verificationResult, signature)
+    console.log(
+      `Registered Verification for address: ${
+        taskArgs.address
+      }, by verifier ${await deployer.getAddress()}`
+    )
   })
 
 task("faucet", "Sends 1 ETH to an address")
