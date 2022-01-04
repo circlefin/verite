@@ -90,9 +90,13 @@ const MarketList: FC<Props> = ({ assets, setSelected }) => {
                       <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                         <a
                           href="#"
-                          className="text-indigo-600 hover:text-indigo-900"
+                          className={`text-indigo-600 hover:text-indigo-900 ${
+                            asset.tokenAddress ? "" : "opacity-25"
+                          }`}
                           onClick={() => {
-                            setSelected(asset)
+                            if (asset.tokenAddress) {
+                              setSelected(asset)
+                            }
                           }}
                         >
                           Deposit
@@ -100,7 +104,7 @@ const MarketList: FC<Props> = ({ assets, setSelected }) => {
                         &nbsp;
                         <a
                           href="#"
-                          className="text-indigo-600 hover:text-indigo-900"
+                          className="text-indigo-600 opacity-25 hover:text-indigo-900"
                         >
                           Borrow
                         </a>
