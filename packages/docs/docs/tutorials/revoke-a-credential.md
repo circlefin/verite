@@ -99,11 +99,7 @@ const subject = randomDidKey()
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
   process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
-  authorityId: "verity.id",
-  approvalDate: new Date().toISOString(),
-  authorityName: "verity.id",
-  authorityUrl: "https://verity.id",
-  authorityCallbackUrl: "https://verity.id"
+  approvalDate: new Date().toISOString()
 }
 
 /**
