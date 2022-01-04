@@ -12,6 +12,29 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   }
 })
 
+task("faucet", "Sends 1 ETH to an address")
+  .addPositionalParam("receiver", "The address that will receive them")
+  .setAction(async (taskArgs, hre) => {
+    if (hre.network.name === "hardhat") {
+      console.warn(
+        "You are running the faucet task with Hardhat network, which " +
+          "is automatically created and destroyed every time. Use the Hardhat" +
+          " option '--network localhost'"
+      )
+    }
+
+    const [sender] = await hre.ethers.getSigners()
+    const receiver = taskArgs.receiver
+
+    const tx = await sender.sendTransaction({
+      to: receiver,
+      value: hre.ethers.constants.WeiPerEther
+    })
+    await tx.wait()
+
+    console.log(`Transferred 1 ETH to ${receiver}`)
+  })
+
 /**
  * Registry Tasks
  *
@@ -251,29 +274,6 @@ task(
         taskArgs.address
       }, by verifier ${await deployer.getAddress()}`
     )
-  })
-
-task("faucet", "Sends 1 ETH to an address")
-  .addPositionalParam("receiver", "The address that will receive them")
-  .setAction(async (taskArgs, hre) => {
-    if (hre.network.name === "hardhat") {
-      console.warn(
-        "You are running the faucet task with Hardhat network, which " +
-          "is automatically created and destroyed every time. Use the Hardhat" +
-          " option '--network localhost'"
-      )
-    }
-
-    const [sender] = await hre.ethers.getSigners()
-    const receiver = taskArgs.receiver
-
-    const tx = await sender.sendTransaction({
-      to: receiver,
-      value: hre.ethers.constants.WeiPerEther
-    })
-    await tx.wait()
-
-    console.log(`Transferred 1 ETH to ${receiver}`)
   })
 
 /**
