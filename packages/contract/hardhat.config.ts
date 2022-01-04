@@ -15,7 +15,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 /**
  * Registry Tasks
  *
- * These tasks can be used to read the contract state
+ * These tasks can be used to interact with the contract state.
+ * Each task maps with the methods found on the IVerificationRegistry.sol
+ * interface. Please see that file for up-to-date comments and implementation
+ * notes.
  */
 
 // Verifier Management Logic
