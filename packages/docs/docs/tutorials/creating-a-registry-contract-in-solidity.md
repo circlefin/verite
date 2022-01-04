@@ -28,7 +28,7 @@ Once the dependencies are installed, we can import the appropriate libraries int
 
 The first library we will import into our contract is the `Ownable` library. This one is designed to make it easier to lock function calls down to the owner of the contract.
 
-The next library we will import is `ECDSA` library. This library is used to help us decode signed and hashed data.
+The next library we will import is the `ECDSA` library. This library is used to help us decode signed and hashed data.
 
 Finally, we will import the `EIP712` library. This is the most important library in our contract since it is foundational to how we will verify credentials. For more on this, be sure to reference the [Smart Contract Patterns section](../patterns/smart-contract-verity.md).
 
@@ -44,7 +44,7 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 
 There's one additional library we want to import. This one is an interface library that allows us to more easily map the types necessary in our contract variables and functions. For brevity, we're not going to write the interface itself. We'll just copy it from the existing example from Centre. You can [grab a copy of the interface library contract here](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/IVerificationRegistry.sol).
 
-Create a new contract file in your `contracts` folder and called it `IVerificationRegistry.sol`. Paste the contents of the example file linked above into that contract, then return to your `VerificationRegistry.sol` file.
+Create a new contract file in your `contracts` folder and call it `IVerificationRegistry.sol`. Paste the contents of the example file linked above into that contract, then return to your `VerificationRegistry.sol` file.
 
 Add one more import to the Verification Registry contract:
 
@@ -162,7 +162,7 @@ function addVerifier(address verifierAddress, VerifierInfo memory verifierInfo) 
 }
 ```
 
-Many of the functions on this contract can only be called by the owner of the contract (the address that deployed it). This function is no exception. The `onlyOwner` modifer uses the OpenZeppelin Ownable library to add a check that ensures the function is being called by the contract owner.
+Many of the functions on this contract can only be called by the owner of the contract (the address that deployed it). This function is no exception. The `onlyOwner` modifier uses the OpenZeppelin Ownable library to add a check that ensures the function is being called by the contract owner.
 
 The function takes a verifier's address and the verifier information structured as defined by the `VerifierInfo` type.
 
@@ -206,7 +206,7 @@ function updateVerifier(address verifierAddress, VerifierInfo memory verifierInf
 }
 ```
 
-This function is a complete overwrite, so even if only part of the `VerifierInfo` record is being updated, a whole new record has to be passed into the function.
+This function is a complete replacement, so even if only part of the `VerifierInfo` record is being updated, a whole new record has to be passed into the function.
 
 This function also emits an event called `VerifierUpdated` that anyone can listen for.
 
@@ -285,4 +285,219 @@ function getVerificationsForSubject(address subject) external override view retu
 }
 ```
 
-This function takes the wallet address for the subject, filters on the existing verifications for just that address, and returns the reocrds.
+This function takes the wallet address for the subject, filters on the existing verifications for just that address, and returns the records.
+
+Similarly, we can get an array of verifications from a single verifier with this function:
+
+```
+function getVerificationsForVerifier(address verifier) external override view returns (VerificationRecord[] memory) {
+    require(verifier != address(0), "VerificationRegistry: Invalid address");
+    bytes32[] memory verifierRecords = _verificationsForVerifier[verifier];
+    VerificationRecord[] memory records = new VerificationRecord[](verifierRecords.length);
+    for (uint i=0; i<verifierRecords.length; i++) {
+        VerificationRecord memory record = _verifications[verifierRecords[i]];
+        records[i] = record;
+    }
+    return records;
+}
+```
+
+The function takes an argument of `verifier` and will return all of the verifications for that verifier.
+
+As you would imagine, verifications may be issued in mistake or become invalid for some other reason. So we need a way to revoke those in the registry. We can use a function with the `onlyVerifier` modifier to do so:
+
+```
+function revokeVerification(bytes32 uuid) external override onlyVerifier {
+    require(_verifications[uuid].verifier == msg.sender, "VerificationRegistry: Caller is not the original verifier");
+    _verifications[uuid].revoked = true;
+    emit VerificationRevoked(uuid);
+}
+```
+
+This function takes the UUID of the record as an argument, checks to make sure the record was created by the address making the call, and then updates the `revoked` status to true.
+
+Notice, the record is not removed. It is updated. This is helpful when performing audits and tracking record history.
+
+This function also emits an event so those interested in listening for revocations can be notified.
+
+Of course, there are times where a verification will need to be completely removed. For that, we can create a function to remove them:
+
+```
+function removeVerification(bytes32 uuid) external override onlyVerifier {
+    require(_verifications[uuid].verifier == msg.sender,
+        "VerificationRegistry: Caller is not the verifier of the referenced record");
+    delete _verifications[uuid];
+    emit VerificationRemoved(uuid);
+}
+```
+
+Like the previous function, this one takes the UUID of the record as an argument. It verifies the record was created by the address making the call, and then it removes the record from the registry entirely.
+
+This function emits a separate event indicating removal of a record.
+
+The next function we will cover is a big one. All of these go hand-in-hand, but without this function, nothing else is possible. This is the function to add verifications to the registry. Let's look at the function and then walk through what's going on.
+
+```
+function registerVerification(
+    VerificationResult memory verificationResult, 
+    bytes memory signature
+) external override onlyVerifier returns (VerificationRecord memory) {
+    VerificationRecord memory verificationRecord = _validateVerificationResult(verificationResult, signature);
+    require(
+        verificationRecord.verifier == msg.sender, 
+        "VerificationRegistry: Caller is not the verifier of the verification"
+    );
+    _persistVerificationRecord(verificationRecord);
+    emit VerificationResultConfirmed(verificationRecord);
+    return verificationRecord;
+}
+```
+
+First, let's take a look at the arguments. The function takes a `verificationResult` argument. This is defined in the `VerificationResult` type. Second, the function takes a `signature`. Both of these arguments are hard to conceptualize unless you see them in action, so it is recommended that you take a look at the [Verification Registry in Solidity](./solidity-verifications.md) tutorial.
+
+The tutorial referenced above will walk you through how to create a signed message that can be sent through as an argument.
+
+As you can see, this function uses the `onlyVerifier` modifer, which makes sense. A verifier has to be the one to add a verification record.
+
+The function then takes the verification result and passes it through another function for validation called `_validateVerificationResult`. This is a pretty massive function and we'll cover it in a few minutes. But the basics of the function are that it uses the EIP712 standard and verifies both the signature and the format of the record before inserting the record into the registry.
+
+Next, the function persists the record by calling the `_persistVerificationRecord` function. That's a pretty straightforward function, so we'll document it here. You can add this in your contract anywhere you'd like as it's a helper function more than anything else.
+
+```
+function _persistVerificationRecord(VerificationRecord memory verificationRecord) internal {
+        // persist the record count and the record itself, and map the record to verifier and subject
+        _verificationRecordCount++;
+        _verifications[verificationRecord.uuid] = verificationRecord;
+        _verificationsForSubject[verificationRecord.subject].push(verificationRecord.uuid);
+        _verificationsForVerifier[verificationRecord.verifier].push(verificationRecord.uuid);
+    }
+```
+
+As you can see, this function has an `internal` modifier, meaning it can only be called by another function on the contract. It takes the `verificationRecord` and it updates the `_verificationRecordCount`, sets the record to the `_verifications` mapping, adds the record as associated to the subject, and adds the record as associated to the verifier.
+
+Finally, our original `registerVerification` function emits a message indicating that a new verification record was created.
+
+One important note on this function is that it must be called by the verifier. We mentioned this earlier, but you'll see in a second that a subject can also add their own record to the registry.
+
+This next function allows a subject to handle adding their signed verification record to the registry:
+
+```
+function _registerVerificationBySubject(
+    VerificationResult memory verificationResult, 
+    bytes memory signature
+) external returns (VerificationRecord memory) {
+    require(
+        verificationResult.subject == msg.sender, 
+        "VerificationRegistry: Caller is not the verified subject"
+    );
+    VerificationRecord memory verificationRecord = _validateVerificationResult(verificationResult, signature);
+    _persistVerificationRecord(verificationRecord);
+    emit VerificationResultConfirmed(verificationRecord);
+    return verificationRecord;
+}
+```
+
+This function operates similarly to the previous one, but it expects the caller to be the subject of the verification record. Outside of that, the actions are the same.
+
+The final note on both of the above two functions is that you may want to implement additional logic based on your specific use cases. Always remember, this contract serves as a guide, but you can extend and modify it however you'd like.
+
+Moving on, let's create a function that allows a subject to remove a verification record about themself. We previously created a function that allowed a verifier to remove a record, so this will be similar but from the subject's perspective.
+
+```
+function _removeVerificationBySubject(bytes32 uuid) external {
+    require(_verifications[uuid].subject == msg.sender,
+        "VerificationRegistry: Caller is not the subject of the referenced record");
+    delete _verifications[uuid];
+    emit VerificationRemoved(uuid);
+}
+```
+
+The function takes the record's UUID as an argument, it checks if the caller is the record's subject, and then it deletes the record from the registry, emitting the `VerificationRemoved` event at the end.
+
+Ok, we covered the `_validateVerificationResult` function briefly earlier, but we didn't write out the function. Let's do that now. But remember, it's a doozy and it makes use of a lot of the internal workings we imported from the EIP712 library.
+
+```
+function _validateVerificationResult(
+    VerificationResult memory verificationResult, 
+    bytes memory signature
+) internal view returns(VerificationRecord memory) {
+
+    bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
+        keccak256("VerificationResult(string schema,address subject,uint256 expiration,bytes32 payload)"),
+        keccak256(bytes(verificationResult.schema)),
+        verificationResult.subject,
+        verificationResult.expiration,
+        verificationResult.payload
+    )));
+    
+    // recover the public address corresponding to the signature and regenerated hash
+    address signerAddress = ECDSA.recover(digest, signature);
+    
+    // retrieve a verifier address for the recovered address
+    address verifierAddress = _signers[signerAddress];
+
+    // ensure the verifier is registered and its signer is the recovered address
+    require(
+        _verifiers[verifierAddress].signer == signerAddress,
+        "VerificationRegistry: Signed digest cannot be verified"
+    );
+
+    // ensure that the result has not expired
+    require(
+        verificationResult.expiration > block.timestamp,
+        "VerificationRegistry: Verification confirmation expired"
+    );
+
+    // create a VerificationRecord
+    VerificationRecord memory verificationRecord = VerificationRecord({
+        uuid: 0,
+        verifier: verifierAddress,
+        subject: verificationResult.subject,
+        entryTime: block.timestamp,
+        expirationTime: verificationResult.expiration,
+        revoked: false
+    });
+
+    // generate a UUID for the record
+    bytes32 uuid = _createVerificationRecordUUID(verificationRecord);
+    verificationRecord.uuid = uuid;
+
+    return verificationRecord;
+}
+```
+
+The function has some comments to help you understand what's happening, but at the end of the day, think of this function as simply verifying a signature is actually valid before adding a record to the registry. The function updates the verification record passed to it with four new pieces of information:
+
+1.  Verifier Address
+    
+2.  Entry Time
+    
+3.  Revoked
+    
+4.  UUID
+    
+
+The UUID is created by calling a helper function called `_createVerificationRecordUUID`. You may implement a different method for identifying records, but if you choose to use UUIDs generated on the contract, this function should help:
+
+```
+function _createVerificationRecordUUID(VerificationRecord memory verificationRecord) private view returns (bytes32) {
+    return
+        keccak256(
+            abi.encodePacked(
+                verificationRecord.verifier,
+                verificationRecord.subject,
+                verificationRecord.entryTime,
+                verificationRecord.expirationTime,
+                _verificationRecordCount
+            )
+        );
+}
+```
+
+And that's it. That's the last function. Of course, there are many more you can add when building your own contract, but this is more than enough to get you started. In fact, this is based on the demo contract Verity uses.
+
+# Wrapping Up
+
+A verification registry contract is designed to create an easily searchable, easily verifiable central repository for verifications. This makes things reusable and faster.
+
+This implementation is in Solidity and designed for EVM-compatible blockchains, but a verification registry contract can be implemented on any blockchain.
