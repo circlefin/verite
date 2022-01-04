@@ -13,7 +13,8 @@ import useSWR, { SWRResponse } from "swr"
 import {
   contractFetcher,
   permissionedTokenContractAddress,
-  permissionedTokenContractArtifact
+  permissionedTokenContractArtifact,
+  registryContractAddress
 } from "../../../lib/eth-fns"
 import { fullURL } from "../../../lib/utils"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
@@ -48,6 +49,9 @@ export type Asset = {
 const contractAddress: string =
   process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS ||
   permissionedTokenContractAddress()
+
+const registryAddress: string =
+  process.env.NEXT_PUBLIC_ETH_REGISTRY_ADDRESS || registryContractAddress()
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -235,7 +239,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       // Create a Verification Request
       const resp = await fetch(
         fullURL(
-          `/api/demos/verifier?type=kyc&subjectAddress=${account}&contractAddress=${contractAddress}&verifierSubmit=true`
+          `/api/demos/verifier?type=kyc&subjectAddress=${account}&registryAddress=${registryAddress}&verifierSubmit=true`
         ),
         { method: "POST" }
       )
@@ -294,13 +298,18 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       subjectAddress: account,
       contractAddress: contractAddress
     }
-    const res = await fetch(fullURL("/api/demos/demo6/simulate-verification"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(postData)
-    })
+    const res = await fetch(
+      fullURL(
+        `/api/demos/demo6/simulate-verification?registryAddress=${registryAddress}`
+      ),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(postData)
+      }
+    )
     const verificationInfoSet: VerificationResultResponse = await res.json()
 
     // For now the verifier is merely returning a signed result as if verification succeeded.
