@@ -2,6 +2,7 @@
 sidebar_label: "Creating a Registry Contract in Solidity"
 sidebar_position: 4
 ---
+
 # Creating a Registry Contract in Solidity
 
 When using the [smart contract pattern](../patterns/smart-contract-verity.md) for verifications, you can use any blockchain you would like. For the sake of this guide, we will focus on [Solidity](https://docs.soliditylang.org/en/v0.8.11/), which is the programming language for the Ethereum Virtual Machine.
@@ -469,13 +470,9 @@ function _validateVerificationResult(
 The function has some comments to help you understand what's happening, but at the end of the day, think of this function as simply verifying a signature is actually valid before adding a record to the registry. The function updates the verification record passed to it with four new pieces of information:
 
 1.  Verifier Address
-    
 2.  Entry Time
-    
 3.  Revoked
-    
 4.  UUID
-    
 
 The UUID is created by calling a helper function called `_createVerificationRecordUUID`. You may implement a different method for identifying records, but if you choose to use UUIDs generated on the contract, this function should help:
 
