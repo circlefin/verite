@@ -339,12 +339,12 @@ The next function we will cover is a big one. All of these go hand-in-hand, but 
 
 ```
 function registerVerification(
-    VerificationResult memory verificationResult, 
+    VerificationResult memory verificationResult,
     bytes memory signature
 ) external override onlyVerifier returns (VerificationRecord memory) {
     VerificationRecord memory verificationRecord = _validateVerificationResult(verificationResult, signature);
     require(
-        verificationRecord.verifier == msg.sender, 
+        verificationRecord.verifier == msg.sender,
         "VerificationRegistry: Caller is not the verifier of the verification"
     );
     _persistVerificationRecord(verificationRecord);
@@ -383,11 +383,11 @@ This next function allows a subject to handle adding their signed verification r
 
 ```
 function _registerVerificationBySubject(
-    VerificationResult memory verificationResult, 
+    VerificationResult memory verificationResult,
     bytes memory signature
-) external returns (VerificationRecord memory) {
+) internal returns (VerificationRecord memory) {
     require(
-        verificationResult.subject == msg.sender, 
+        verificationResult.subject == msg.sender,
         "VerificationRegistry: Caller is not the verified subject"
     );
     VerificationRecord memory verificationRecord = _validateVerificationResult(verificationResult, signature);
@@ -404,7 +404,7 @@ The final note on both of the above two functions is that you may want to implem
 Moving on, let's create a function that allows a subject to remove a verification record about themself. We previously created a function that allowed a verifier to remove a record, so this will be similar but from the subject's perspective.
 
 ```
-function _removeVerificationBySubject(bytes32 uuid) external {
+function _removeVerificationBySubject(bytes32 uuid) internal {
     require(_verifications[uuid].subject == msg.sender,
         "VerificationRegistry: Caller is not the subject of the referenced record");
     delete _verifications[uuid];
@@ -418,7 +418,7 @@ Ok, we covered the `_validateVerificationResult` function briefly earlier, but w
 
 ```
 function _validateVerificationResult(
-    VerificationResult memory verificationResult, 
+    VerificationResult memory verificationResult,
     bytes memory signature
 ) internal view returns(VerificationRecord memory) {
 
@@ -429,10 +429,10 @@ function _validateVerificationResult(
         verificationResult.expiration,
         verificationResult.payload
     )));
-    
+
     // recover the public address corresponding to the signature and regenerated hash
     address signerAddress = ECDSA.recover(digest, signature);
-    
+
     // retrieve a verifier address for the recovered address
     address verifierAddress = _signers[signerAddress];
 
