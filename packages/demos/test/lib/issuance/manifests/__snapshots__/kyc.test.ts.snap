@@ -38,25 +38,6 @@ Object {
             },
           },
           Object {
-            "label": "Authority",
-            "path": Array [
-              "$.KYCAMLAttestation.authorityName",
-            ],
-            "schema": Object {
-              "type": "string",
-            },
-          },
-          Object {
-            "label": "Authority URL",
-            "path": Array [
-              "$.KYCAMLAttestation.authorityUrl",
-            ],
-            "schema": Object {
-              "format": "uri",
-              "type": "string",
-            },
-          },
-          Object {
             "label": "Approved At",
             "path": Array [
               "$.KYCAMLAttestation.approvalDate",
@@ -75,10 +56,7 @@ Object {
           ],
         },
         "title": Object {
-          "fallback": "Verity KYC Attestation",
-          "path": Array [
-            "$.KYCAMLAttestation.authorityName",
-          ],
+          "text": "Verity KYC Attestation",
         },
       },
       "id": "kycAttestationOutput",

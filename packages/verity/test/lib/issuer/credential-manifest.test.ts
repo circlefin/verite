@@ -61,8 +61,7 @@ describe("buildKycAmlManifest", () => {
             "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",
           display: {
             title: {
-              path: ["$.KYCAMLAttestation.authorityName"],
-              fallback: "Issuer Inc. KYC Attestation"
+              text: "Issuer Inc. KYC Attestation"
             },
             subtitle: {
               path: ["$.approvalDate", "$.vc.approvalDate"],
@@ -76,16 +75,6 @@ describe("buildKycAmlManifest", () => {
                 label: "Process",
                 path: ["$.KYCAMLAttestation.process"],
                 schema: { type: "string" }
-              },
-              {
-                label: "Authority",
-                path: ["$.KYCAMLAttestation.authorityName"],
-                schema: { type: "string" }
-              },
-              {
-                label: "Authority URL",
-                path: ["$.KYCAMLAttestation.authorityUrl"],
-                schema: { type: "string", format: "uri" }
               },
               {
                 label: "Approved At",

@@ -47,11 +47,7 @@ describe("buildAndSignVerifiableCredential", () => {
           "@type": "KYCAMLAttestation",
           process:
             "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
-          authorityId: "did:web:demos.verity.id",
-          approvalDate: attestation.approvalDate,
-          authorityName: "Verity",
-          authorityUrl: "https://verity.id",
-          authorityCallbackUrl: "https://identity.verity.id"
+          approvalDate: attestation.approvalDate
         },
         id: subjectDid.subject
       },
@@ -156,12 +152,8 @@ describe("buildAndSignFulfillment", () => {
             KYCAMLAttestation: {
               "@type": "KYCAMLAttestation",
               process:
-                "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
-              authorityId: "did:web:demos.verity.id",
+                "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa"
               // approvalDate: "2021-11-12T18:56:16.508Z",
-              authorityName: "Verity",
-              authorityUrl: "https://verity.id",
-              authorityCallbackUrl: "https://identity.verity.id"
             },
             id: subjectDid.subject
           },

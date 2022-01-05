@@ -29,7 +29,6 @@ export function kycPresentationDefinition(
 ): PresentationDefinition {
   const requiredFields: Record<string, string> = {
     process: "string",
-    authorityId: "string",
     approvalDate: "string"
   }
 
