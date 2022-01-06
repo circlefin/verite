@@ -1,6 +1,6 @@
 ---
 sidebar_label: "Wallet Implementation Guide"
-sidebar_position: 9
+sidebar_position: 8
 ---
 
 # Verity Wallet Integration Guide
