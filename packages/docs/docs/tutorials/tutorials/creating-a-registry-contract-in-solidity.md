@@ -1,6 +1,6 @@
 ---
 sidebar_label: "Creating a Registry Contract in Solidity"
-sidebar_position: 4
+sidebar_position: 41
 ---
 
 # Creating a Registry Contract in Solidity
