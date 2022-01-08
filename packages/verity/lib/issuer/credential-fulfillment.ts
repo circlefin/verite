@@ -35,7 +35,7 @@ export function buildAndSignVerifiableCredential(
     {
       "@context": [
         "https://www.w3.org/2018/credentials/v1",
-        "https://verity.id/identity"
+        "https://verite.id/identity"
       ],
       type: ["VerifiableCredential", type],
       credentialSubject: {

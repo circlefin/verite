@@ -22,7 +22,7 @@ describe("verification offer", () => {
       from: from,
       id: id,
       reply_url: replyUrl,
-      type: "https://verity.id/types/VerificationRequest",
+      type: "https://verite.id/types/VerificationRequest",
       body: {
         // challenge: "cf282c9c-ae5f-4b7e-866d-960e95764afe",
         presentation_definition: {

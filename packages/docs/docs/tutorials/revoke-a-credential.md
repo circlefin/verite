@@ -98,7 +98,7 @@ const subject = randomDidKey()
 // Stubbed out credential data
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
-  process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+  process: "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
   approvalDate: new Date().toISOString()
 }
 
