@@ -64,7 +64,7 @@ describe("buildPresentationSubmission", () => {
             KYCAMLAttestation: {
               "@type": "KYCAMLAttestation",
               process:
-                "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa"
+                "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa"
               // approvalDate: attestation.approvalDate,
             }
           },
@@ -101,7 +101,7 @@ describe("buildPresentationSubmission", () => {
         KYCAMLAttestation: {
           "@type": "KYCAMLAttestation",
           process:
-            "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa"
+            "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa"
           // approvalDate: attestation.approvalDate,
         }
       },
