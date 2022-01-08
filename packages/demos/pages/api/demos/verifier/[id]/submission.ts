@@ -14,7 +14,7 @@ import {
 import { NotFoundError } from "../../../../../lib/errors"
 import {
   getProvider,
-  thresholdTokenContractArtifact
+  registryContractArtifact
 } from "../../../../../lib/eth-fns"
 
 type PostResponse = { status: string; result?: VerificationResultResponse }
@@ -52,15 +52,25 @@ export default apiHandler<PostResponse>(async (req, res) => {
     throw err
   }
 
-  // If a subjectAddress and contractAddress are given, we will return a
-  // verification result suitable for the ETH network
+  // If a subjectAddress and registryAddress are given, we will return a
+  // verification result suitable for the ETH network.
+  //
+  // Note that the VerificationRegistry contract will use its own address as
+  // part of the EIP-712 domain separator. If a contract uses a separate
+  // deployed contract for its registry, the address will be different from
+  // the contract. If a contract inherits the VerificationRegistry, they will
+  // be one and the same.
+  //
+  // For this demo, we allow the client to pass in the registry address, but
+  // that may be unsuitable for a production environment.
   const subjectAddress = req.query.subjectAddress as string
-  const contractAddress = req.query.contractAddress as string
+  const registryAddress = req.query.registryAddress as string
+
   let result: VerificationResultResponse
-  if (subjectAddress && contractAddress) {
+  if (subjectAddress && registryAddress) {
     result = await verificationResult(
       subjectAddress,
-      contractAddress,
+      registryAddress,
       process.env.VERIFIER_PRIVATE_KEY,
       parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
     )
@@ -72,7 +82,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
     result
   )
 
-  if (req.query.verifierSubmit) {
+  if (req.query.verifierSubmit && registryAddress) {
     // When broadcasting a transaction to the network, it must be done using a
     // Provider.
     const provider = getProvider()
@@ -80,14 +90,14 @@ export default apiHandler<PostResponse>(async (req, res) => {
     // A signer is necessary to register the verification with the registry.
     const signer = new Wallet(process.env.VERIFIER_PRIVATE_KEY, provider)
 
-    // Load the Contract
-    const tokenArtifact = thresholdTokenContractArtifact()
-    const token = new Contract(contractAddress, tokenArtifact.abi, signer)
+    // Load the Registry Contract
+    const registryArtifact = registryContractArtifact()
+    const registry = new Contract(registryAddress, registryArtifact.abi, signer)
 
     // Register the Verification with the registry. This transaction requires
     // gas, so the verifier should maintain an adequate ETH balance to perform
     // its duties.
-    const tx = await token.registerVerification(
+    const tx = await registry.registerVerification(
       result.verificationResult,
       result.signature
     )

@@ -55,10 +55,7 @@ const decodedApplication = await decodeCredentialApplication(application)
 const attestation = {
   "@type": "KYCAMLAttestation",
   process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
-  authorityId: "did:web:verity.id",
-  approvalDate: new Date().toISOString(),
-  authorityName: "verity.id",
-  authorityUrl: "https://verity.id"
+  approvalDate: new Date().toISOString()
 }
 
 //  The issuer is created from the issuer key, and the credential is issued

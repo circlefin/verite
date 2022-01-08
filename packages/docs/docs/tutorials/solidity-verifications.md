@@ -1,6 +1,6 @@
 ---
 sidebar_label: Verification Registry in Solidity
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Interacting With a Verification Registry Written in Solidity

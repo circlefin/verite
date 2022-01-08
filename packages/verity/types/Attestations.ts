@@ -3,11 +3,7 @@ import type { Person } from "schema-dts"
 export type KYCAMLAttestation = {
   "@type": "KYCAMLAttestation"
   process: string
-  authorityId: string
   approvalDate: string
-  authorityName?: string
-  authorityUrl?: string
-  authorityCallbackUrl?: string
 }
 
 export type CreditScoreAttestation = {

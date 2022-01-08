@@ -1,6 +1,6 @@
 ---
 sidebar_label: Revocation
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Revoking a Credential
@@ -98,12 +98,8 @@ const subject = randomDidKey()
 // Stubbed out credential data
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
-  process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
-  authorityId: "verity.id",
-  approvalDate: new Date().toISOString(),
-  authorityName: "verity.id",
-  authorityUrl: "https://verity.id",
-  authorityCallbackUrl: "https://verity.id"
+  process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+  approvalDate: new Date().toISOString()
 }
 
 /**

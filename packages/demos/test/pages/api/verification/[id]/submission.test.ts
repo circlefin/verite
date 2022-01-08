@@ -64,7 +64,7 @@ describe("POST /verification/[id]/submission", () => {
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL(
-        `/api/demos/verifier/submission?subjectAddress=${subject}&contractAddress=${contract}`
+        `/api/demos/verifier/submission?subjectAddress=${subject}&registryAddress=${contract}`
       ),
       fullURL("/api/demos/verifier/callback")
     )
@@ -84,7 +84,7 @@ describe("POST /verification/[id]/submission", () => {
       query: {
         id: verificationRequest.id,
         subjectAddress: subject,
-        contractAddress: contract
+        registryAddress: contract
       },
       body: submission as unknown as Body
     })

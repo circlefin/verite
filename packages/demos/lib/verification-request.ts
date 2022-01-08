@@ -20,7 +20,8 @@ export async function createVerificationOffer(
   type: string,
   subjectAddress?: string,
   contractAddress?: string,
-  verifierSubmit?: boolean
+  verifierSubmit?: boolean,
+  registryAddress?: string
 ): Promise<VerificationRequestResponse> {
   // If the request includes a subjectAddress and contractAddress query
   // parameter, we will use it to generate an ETH verification result.
@@ -29,7 +30,8 @@ export async function createVerificationOffer(
     id,
     subjectAddress,
     contractAddress,
-    verifierSubmit
+    verifierSubmit,
+    registryAddress
   )
 
   // Build the verification request for display
@@ -73,7 +75,8 @@ function toReplyUrl(
   id: string,
   subjectAddress?: string,
   contractAddress?: string,
-  verifierSubmit?: boolean
+  verifierSubmit?: boolean,
+  registryAddress?: string
 ): string {
   const url = new URL(fullURL(`/api/demos/verifier/${id}/submission`))
 
@@ -87,6 +90,10 @@ function toReplyUrl(
 
   if (verifierSubmit) {
     url.searchParams.append("verifierSubmit", "true")
+  }
+
+  if (registryAddress) {
+    url.searchParams.append("registryAddress", registryAddress)
   }
 
   return url.href

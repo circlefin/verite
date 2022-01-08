@@ -15,20 +15,8 @@
         "approvalDate": {
           "type": "string"
         },
-        "authorityCallbackUrl": {
-          "type": "string"
-        },
-        "authorityId": {
-          "type": "string"
-        },
-        "authorityName": {
-          "type": "string"
-        },
-        "authorityUrl": {
-          "type": "string"
-        }
       },
-      "required": ["@type", "process", "authorityId", "approvalDate"],
+      "required": ["@type", "process", "approvalDate"],
       "type": "object"
     }
   }

@@ -28,6 +28,12 @@ const DEMOS = [
       "An example of how a Dapp can prevent usage until it is provided with a valid KYC credential."
   },
   {
+    title: "Lending Market Dapp Requiring KYC",
+    href: "demos/demo6",
+    description:
+      "An example of how a lending market Dapp can require KYC verification before depositing assets."
+  },
+  {
     title: "Centralized app with travel rule",
     href: "/demos/cefi",
     description:

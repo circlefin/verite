@@ -34,7 +34,7 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
    * on what credentials qualify.
    *
    * For example, a credential must fit the KYCAMLAttestation schema,
-   * will require an authorityId, an approvate date, and issued by
+   * will require an approvate date, and issued by
    * did:key:z6MktD288XZYEwedyKzWPpHZzoJ4k7iz5R39PtcVR4F7Lkpg
    */
   const definition = kycPresentationDefinition([

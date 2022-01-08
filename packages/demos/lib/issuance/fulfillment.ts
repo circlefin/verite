@@ -14,11 +14,7 @@ export function buildAttestationForUser(
     return {
       "@type": "KYCAMLAttestation",
       process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
-      approvalDate: new Date().toJSON(),
-      authorityId: "did:web:demos.verity.id",
-      authorityName: "Verity",
-      authorityUrl: "https://verity.id",
-      authorityCallbackUrl: "https://identity.verity.id"
+      approvalDate: new Date().toJSON()
     } as KYCAMLAttestation
   } else if (manifest.id === CREDIT_SCORE_ATTESTATION_MANIFEST_ID) {
     return {
