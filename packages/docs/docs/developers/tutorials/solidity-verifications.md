@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Interacting With a Verification Registry Written in Solidity
 
-As discussed in the [Smart Contract Patterns](../patterns/smart-contract-verity.md) section of the documentation, using smart contracts to manage verification registries provides a trustless and decentralized mechanism for individuals and organizations to look up verification statuses, verification credentials, revoke credentials, and more. Any smart contract and blockchain can be used, but we will focus on Solidity in this example.
+As discussed in the [Smart Contract Patterns](../../patterns/smart-contract-verity.md) section of the documentation, using smart contracts to manage verification registries provides a trustless and decentralized mechanism for individuals and organizations to look up verification statuses, verification credentials, revoke credentials, and more. Any smart contract and blockchain can be used, but we will focus on Solidity in this example.
 
 Solidity is the language for the Ethereum Virtual Machine. Solidity is the most widely used blockchain programming language.
 
@@ -320,7 +320,7 @@ Next, we are defining three global variables: `domain`, `types`, and `verificati
 
 The `domain` variable is assigned to an object containing information about the registry. The `types` variable is defining the `VerificationResult` type. The `verificationResult` is defining the shape of the verification result itself using test data.
 
-It's important to note that the `verificationResult` comes from the actual verifier completing their verification process. See [Verifying Credentials](../patterns/verification-flow.md) and [Verification](./verify-a-verifiable-credential.md) for more.
+It's important to note that the `verificationResult` comes from the actual verifier completing their verification process. See [Verifying Credentials](../../patterns/verification-flow.md) and [Verification](../verify-a-verifiable-credential.md) for more.
 
 Next, we need to create a digest and sign it:
 
