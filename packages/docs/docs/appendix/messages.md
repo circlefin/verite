@@ -13,7 +13,7 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+      "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z"
     },
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
@@ -24,7 +24,7 @@ sidebar_position: 2
   "type": ["VerifiableCredential", "KYCAMLAttestation"],
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    "https://verity.id/identity"
+    "https://verite.id/identity"
   ],
   "issuanceDate": "2021-09-14T02:00:07.000Z",
   "proof": {
@@ -41,7 +41,7 @@ sidebar_position: 2
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+      "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z"
     },
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
@@ -58,7 +58,7 @@ sidebar_position: 2
   },
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    "https://verity.id/identity"
+    "https://verite.id/identity"
   ],
   "issuanceDate": "2021-09-14T02:00:07.000Z",
   "proof": {
@@ -77,7 +77,7 @@ Verity's Credential Offer structure is a simple JWM wrapper around a DIF Credent
 ```json
 {
   "id": "4487e7d1-7d10-4075-a923-bae9332266c1",
-  "type": "https://verity.id/types/CredentialOffer",
+  "type": "https://verite.id/types/CredentialOffer",
   "from": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
   "created_time": "2021-09-14T01:22:05.816Z",
   "expires_time": "2021-10-14T01:22:05.816Z",
@@ -122,7 +122,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       "id": "kycAttestationOutput",
       "schema": [
         {
-          "uri": "https://verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+          "uri": "https://verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
         }
       ],
       "name": "Proof of KYC from Verity",
@@ -185,7 +185,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
         "schema": [
           {
-            "uri": "https://verity.id/schemas/identity/1.0.0/ProofOfControl"
+            "uri": "https://verite.id/schemas/identity/1.0.0/ProofOfControl"
           }
         ]
       }
@@ -262,7 +262,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
 ```json
 {
     "id": "1308e77f-9ab0-4de7-97a8-ad2111b585bf",
-    "type": "https://verity.id/types/VerificationRequest",
+    "type": "https://verite.id/types/VerificationRequest",
     "from": "did:key:z6MkizuwMHiYpZrBAn64ZnbS2cz5og7iGqAa3nV3EuTj4aaZ",
     "created_time": "2021-09-14T20:19:32.655Z",
     "expires_time": "2021-10-14T20:19:32.655Z",
@@ -309,7 +309,7 @@ Details:
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
           "@type": "KYCAMLAttestation",
-          "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+          "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
           "approvalDate": "2021-09-14T02:00:07.540Z"
         }
       },

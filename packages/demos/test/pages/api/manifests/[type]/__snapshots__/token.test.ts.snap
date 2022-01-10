@@ -16,7 +16,7 @@ Object {
   },
   "id": "CreditScoreAttestation",
   "issuer": Object {
-    "id": "did:web:demos.verity.id",
+    "id": "did:web:demos.verite.id",
     "name": "Verity",
     "styles": Object {},
   },
@@ -70,7 +70,7 @@ Object {
       "name": "Proof of Credit Score from Verity",
       "schema": Array [
         Object {
-          "uri": "https://demos.verity.id/schemas/identity/1.0.0/CreditScoreAttestation",
+          "uri": "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation",
         },
       ],
       "styles": Object {
@@ -107,7 +107,7 @@ Object {
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
         "schema": Array [
           Object {
-            "uri": "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl",
+            "uri": "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl",
           },
         ],
       },
@@ -133,7 +133,7 @@ Object {
   },
   "id": "KYCAMLAttestation",
   "issuer": Object {
-    "id": "did:web:demos.verity.id",
+    "id": "did:web:demos.verite.id",
     "name": "Verity",
     "styles": Object {},
   },
@@ -180,7 +180,7 @@ Object {
       "name": "Proof of KYC from Verity",
       "schema": Array [
         Object {
-          "uri": "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation",
+          "uri": "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation",
         },
       ],
       "styles": Object {
@@ -217,7 +217,7 @@ Object {
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
         "schema": Array [
           Object {
-            "uri": "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl",
+            "uri": "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl",
           },
         ],
       },
