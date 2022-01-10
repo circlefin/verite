@@ -27,4 +27,4 @@ The status list is a base 64 encoded, zlib compressed bitstring. That is, each b
 
 For comparison, note that a simpler approach might be a single URL that returns the status of a single credential. However, each time a verifier checked the URL, it would leak activity back about the individual credential holder to the issuer. In contrast, the approach described here can contain the status for about 16KB worth, or 131,072 credentials. The verifier performs a request that compactly encodes the status for the batch, and the verifier selects the specific index they want to check. This means the issuer doesn't learn which specific credential the verifier was checking, allowing herd privacy for users.
 
-You can read more about Verity's implementation in the [Revoking a Credential](/docs/tutorials/revoke-a-credential) tutorial.
+You can read more about Verity's implementation in the [Revoking a Credential](/docs/developers/revoke-a-credential) tutorial.

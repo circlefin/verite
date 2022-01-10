@@ -9,7 +9,7 @@ If you'd like to jump right into writing code, we have a quick start guide below
 
 This quick start is representative of the end-to-end flow of a person (subject) requesting a credential, an issuer issuing that credential, and a verifier verifying that credential. It is all encapsulated in a single function for readability and for quickly testing the referenced functions from the Verity library. However, it's important to understand that each step in the process will happen on different computers and in different environments.
 
-For more detailed guides, please see the [For Developers](./tutorials/getting-started.md) section.
+For more detailed guides, please see the [For Developers](./developers/getting-started.md) section.
 
 ## Installing Verity
 
