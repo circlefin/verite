@@ -61,8 +61,13 @@ When restarting the app locally with a new freshly-run hardhat node, MetaMask ca
 
 The file `hardhat.config.ts` defines a list of supported networks. For demo purposes, we deployed the contract to the Ropsten network. The current configuration uses Alchemy as a network provider. When the contract is deployed, the full, fixed supply of VUSDC are credited to the account that deployed the contract. You can set your Alchemy API key and your Ropsten account's private key in `.env`.
 
-The Ropsten contract creator is `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
-The Ropsten contract address is `0x9f876eadf17dc89e09bab0836a4046070ec0d20e`.
+Each contract is deployed from the address `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
+
+- PermissionedToken contract address: `0xD5EeF0d9489f8a2FcAF325893FB04cA460566865`.
+- VerificationRegistry contract address: `0xF15791f60782cFD5c4677642463920B3501F10Bf`
+- ThresholdToken contract address is `0x9f876eadf17dc89e09bab0836a4046070ec0d20e`.
+
+Each
 
 ## Adding ETH to the faucet
 
