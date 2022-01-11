@@ -5,7 +5,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 module.exports = {
   title: "Verity Documentation",
   tagline: "Verity decentralized identity for DeFi",
-  url: "https://docs.verity.id",
+  url: "https://verite.id",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",

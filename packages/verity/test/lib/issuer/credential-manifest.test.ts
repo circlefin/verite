@@ -53,7 +53,7 @@ describe("buildKycAmlManifest", () => {
           id: "kycAttestationOutput",
           schema: [
             {
-              uri: "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+              uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
             }
           ],
           name: "Proof of KYC from Issuer Inc.",
@@ -97,7 +97,7 @@ describe("buildKycAmlManifest", () => {
               "A Verifiable Presentation establishing proof of identifier control over the DID.",
             schema: [
               {
-                uri: "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl"
+                uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
               }
             ]
           }
@@ -138,7 +138,7 @@ describe("buildCreditScoreManifest", () => {
           id: "creditScoreAttestationOutput",
           schema: [
             {
-              uri: "https://demos.verity.id/schemas/identity/1.0.0/CreditScoreAttestation"
+              uri: "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation"
             }
           ],
           name: "Proof of Credit Score from Issuer Inc.",
@@ -185,7 +185,7 @@ describe("buildCreditScoreManifest", () => {
               "A Verifiable Presentation establishing proof of identifier control over the DID.",
             schema: [
               {
-                uri: "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl"
+                uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
               }
             ]
           }

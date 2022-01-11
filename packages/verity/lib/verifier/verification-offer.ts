@@ -15,7 +15,7 @@ export function buildKycVerificationOffer(
   const definition = kycPresentationDefinition(trustedAuthorities)
   const request = buildRequestCommon(
     id,
-    "https://verity.id/types/VerificationRequest",
+    "https://verite.id/types/VerificationRequest",
     from,
     replyUrl,
     statusUrl
@@ -45,7 +45,7 @@ export function buildCreditScoreVerificationOffer(
 
   const request = buildRequestCommon(
     id,
-    "https://verity.id/types/VerificationRequest",
+    "https://verite.id/types/VerificationRequest",
     from,
     replyUrl,
     statusUrl
