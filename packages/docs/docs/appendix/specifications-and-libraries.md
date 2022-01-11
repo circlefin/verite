@@ -31,7 +31,6 @@ Verity uses additional simplifications that remove the requirement for implement
 - [did-jwt-vc](https://github.com/decentralized-identity/did-jwt-vc)
 - [did-resolver](https://github.com/decentralized-identity/did-resolver)
 - [@transmute/did-key-ed25519](https://github.com/transmute-industries/did-key.js/tree/main/packages/did-key-ed25519)
-- [@fry/bits](https://github.com/fredricrylander/bits)
 
 ### Contracts
 

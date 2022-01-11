@@ -22,10 +22,9 @@
     "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
-    "@fry/bits": "^1.0.2",
     "@transmute/did-key-ed25519": "^0.3.0-unstable.4",
     "ajv": "^8.6.3",
-    "base64-js": "^1.5.1",
+    "bit-buffers": "^1.0.2",
     "did-jwt-vc": "^2.1.6",
     "did-resolver": "^3.1.0",
     "ethers": "^5.4.4",
@@ -34,7 +33,6 @@
     "lodash": "^4.17.21",
     "multibase": "4.0.6",
     "multicodec": "^3.1.0",
-    "pako": "^2.0.4",
     "schema-dts": "^1.0.0",
     "semver": "^7.3.5",
     "uuid": "^8.3.2",
@@ -45,7 +43,6 @@
     "@types/jsonpath": "^0.2.0",
     "@types/lodash": "^4.14.171",
     "@types/node": "^16.4.5",
-    "@types/pako": "^1.0.2",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
