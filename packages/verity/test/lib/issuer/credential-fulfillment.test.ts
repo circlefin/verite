@@ -46,7 +46,7 @@ describe("buildAndSignVerifiableCredential", () => {
         KYCAMLAttestation: {
           "@type": "KYCAMLAttestation",
           process:
-            "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+            "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
           approvalDate: attestation.approvalDate
         },
         id: subjectDid.subject
@@ -59,7 +59,7 @@ describe("buildAndSignVerifiableCredential", () => {
       issuanceDate: "2021-10-26T16:17:13.000Z",
       "@context": [
         "https://www.w3.org/2018/credentials/v1",
-        "https://verity.id/identity"
+        "https://verite.id/identity"
       ]
     })
   })
@@ -152,7 +152,7 @@ describe("buildAndSignFulfillment", () => {
             KYCAMLAttestation: {
               "@type": "KYCAMLAttestation",
               process:
-                "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa"
+                "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa"
               // approvalDate: "2021-11-12T18:56:16.508Z",
             },
             id: subjectDid.subject
@@ -163,7 +163,7 @@ describe("buildAndSignFulfillment", () => {
           type: ["VerifiableCredential", "KYCAMLAttestation"],
           "@context": [
             "https://www.w3.org/2018/credentials/v1",
-            "https://verity.id/identity"
+            "https://verite.id/identity"
           ],
           // issuanceDate: "2021-11-12T18:56:17.000Z",
           proof: {

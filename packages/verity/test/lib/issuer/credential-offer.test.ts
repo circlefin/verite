@@ -15,7 +15,7 @@ describe("buildCredentialOffer", () => {
 
     const expected = {
       id,
-      type: "https://verity.id/types/CredentialOffer",
+      type: "https://verite.id/types/CredentialOffer",
       from: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
       // created_time: "2021-10-26T20:57:43.373Z",
       // expires_time: "2021-11-25T20:57:43.373Z",
@@ -35,7 +35,7 @@ describe("buildCredentialOffer", () => {
               id: "kycAttestationOutput",
               schema: [
                 {
-                  uri: "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation"
+                  uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
                 }
               ],
               name: "Proof of KYC from Issuer Inc.",
@@ -79,7 +79,7 @@ describe("buildCredentialOffer", () => {
                   "A Verifiable Presentation establishing proof of identifier control over the DID.",
                 schema: [
                   {
-                    uri: "https://demos.verity.id/schemas/identity/1.0.0/ProofOfControl"
+                    uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
                   }
                 ]
               }

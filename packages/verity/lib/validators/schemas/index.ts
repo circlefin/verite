@@ -2,8 +2,8 @@ import * as creditScoreSchema from "./CreditScoreAttestation.json"
 import * as kycSchema from "./KYCAMLAttestation.json"
 
 export const SCHEMA_MAP: Record<string, Record<string, unknown>> = {
-  "https://demos.verity.id/schemas/identity/1.0.0/KYCAMLAttestation": kycSchema,
-  "https://demos.verity.id/schemas/identity/1.0.0/CreditScoreAttestation":
+  "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation": kycSchema,
+  "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation":
     creditScoreSchema
 }
 

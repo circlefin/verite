@@ -13,7 +13,7 @@ export function buildCredentialOffer(
 ): CredentialOffer {
   const request = buildRequestCommon(
     id,
-    "https://verity.id/types/CredentialOffer",
+    "https://verite.id/types/CredentialOffer",
     manifest.issuer.id,
     replyUrl
   )

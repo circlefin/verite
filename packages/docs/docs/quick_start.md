@@ -54,7 +54,7 @@ const decodedApplication = await decodeCredentialApplication(application)
 //  The attestation is a standardized representation of the issuer
 const attestation = {
   "@type": "KYCAMLAttestation",
-  process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+  process: "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
   approvalDate: new Date().toISOString()
 }
 
