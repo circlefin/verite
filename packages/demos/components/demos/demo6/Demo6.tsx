@@ -46,13 +46,6 @@ export type Asset = {
   depositAddress: string
 }
 
-const contractAddress: string =
-  process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS ||
-  permissionedTokenContractAddress()
-
-const registryAddress: string =
-  process.env.NEXT_PUBLIC_ETH_REGISTRY_ADDRESS || registryContractAddress()
-
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
 
@@ -138,7 +131,9 @@ type Props = {
 
 const Demo6: FC<Props> = ({ verifierAddress }) => {
   const { account, library } = useWeb3React<Web3Provider>()
-  const { data: balance, mutate } = useBalance(contractAddress)
+  const { data: balance, mutate } = useBalance(
+    permissionedTokenContractAddress()
+  )
   const { data: verifierEthBalance } = useEthBalance(library, verifierAddress)
 
   // token name and symbol
@@ -164,7 +159,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
 
   const token = new Contract(
-    contractAddress,
+    permissionedTokenContractAddress(),
     permissionedTokenContractArtifact().abi,
     library.getSigner(0)
   )
@@ -239,7 +234,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       // Create a Verification Request
       const resp = await fetch(
         fullURL(
-          `/api/demos/verifier?type=kyc&subjectAddress=${account}&registryAddress=${registryAddress}&verifierSubmit=true`
+          `/api/demos/verifier?type=kyc&subjectAddress=${account}&registryAddress=${registryContractAddress()}&verifierSubmit=true`
         ),
         { method: "POST" }
       )
@@ -296,11 +291,11 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
     const postData = {
       subjectAddress: account,
-      contractAddress: contractAddress
+      contractAddress: permissionedTokenContractAddress()
     }
     const res = await fetch(
       fullURL(
-        `/api/demos/demo6/simulate-verification?registryAddress=${registryAddress}`
+        `/api/demos/demo6/simulate-verification?registryAddress=${registryContractAddress()}`
       ),
       {
         method: "POST",
