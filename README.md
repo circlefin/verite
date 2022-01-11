@@ -2,7 +2,7 @@
 
 Decentralized Identity for Crypto Finance.
 
-This repository is a monorepo containing the Core Verity Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verity standard.
+This repository is a monorepo containing the Core Verite Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verite standard.
 
 ## Getting Started
 
@@ -19,13 +19,13 @@ Each package in this repository lives in the `packages/` directory.
 
 The primary packages in this repository are:
 
-- [@verity/docs](./packages/docs) - Documentation for the Verity
+- [@verity/docs](./packages/docs) - Documentation for the Verite
 - [@verity/core](./packages/verity) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
 - [@verity/contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verity into a smart contract.
-- [@verity/demos](./packages/demos) - A demo walkthrough of the entire verity project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
+- [@verity/demos](./packages/demos) - A demo walkthrough of the entire Verite project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
-from the `demos` package to help clarify each major function of verity credentials.
+from the `demos` package to help clarify each major function of Verite credentials.
 
 - [@verity/demo-issuer](./packages/demo-issuer) - A simplified demo of issuing Verifiable Credentials using `@verity/core`.
 - [@verity/demo-verifier](./packages/demo-verifier) - A simplified demo of verifying Verifiable Credentials using `@verity/core`.
@@ -140,3 +140,4 @@ npm run format
 - [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
 - [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
 - [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))
+- [Justin Hunter](https://github.com/polluterofminds) ([polluterofminds](https://polluterofminds.com))

@@ -5,15 +5,15 @@ sidebar_position: 1
 
 # Quick Start
 
-If you'd like to jump right into writing code, we have a quick start guide below. You should still read through the foundations of Verity to learn more about the overall architecture and how verifiable credentials can be applied in the real-world, but it's understandable to get excited and want to dive head-first into code.
+If you'd like to jump right into writing code, we have a quick start guide below. You should still read through the foundations of Verite to learn more about the overall architecture and how verifiable credentials can be applied in the real-world, but it's understandable to get excited and want to dive head-first into code.
 
-This quick start is representative of the end-to-end flow of a person (subject) requesting a credential, an issuer issuing that credential, and a verifier verifying that credential. It is all encapsulated in a single function for readability and for quickly testing the referenced functions from the Verity library. However, it's important to understand that each step in the process will happen on different computers and in different environments.
+This quick start is representative of the end-to-end flow of a person (subject) requesting a credential, an issuer issuing that credential, and a verifier verifying that credential. It is all encapsulated in a single function for readability and for quickly testing the referenced functions from the Verite library. However, it's important to understand that each step in the process will happen on different computers and in different environments.
 
 For more detailed guides, please see the [For Developers](./tutorials/getting-started.md) section.
 
-## Installing Verity
+## Installing Verite
 
-The entire Verity library is housed in a single monorepo called `@centre/verity`. To install the library, simply run either:
+The entire Verite library is housed in a single monorepo called `@centre/verity`. To install the library, simply run either:
 
 `npm i @centre/verity`
 

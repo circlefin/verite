@@ -19,7 +19,7 @@ sidebar_position: 2
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
   },
   "issuer": {
-    "id": "did:web:verity.id"
+    "id": "did:web:verite.id"
   },
   "type": ["VerifiableCredential", "KYCAMLAttestation"],
   "@context": [
@@ -47,7 +47,7 @@ sidebar_position: 2
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
   },
   "issuer": {
-    "id": "did:web:verity.id"
+    "id": "did:web:verite.id"
   },
   "type": ["VerifiableCredential", "KYCAMLAttestation"],
   "credentialStatus": {
@@ -72,7 +72,7 @@ sidebar_position: 2
 
 ### Credential Offer
 
-Verity's Credential Offer structure is a simple JWM wrapper around a DIF Credential Manifest.
+Verite's Credential Offer structure is a simple JWM wrapper around a DIF Credential Manifest.
 
 ```json
 {
@@ -125,8 +125,8 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
           "uri": "https://verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
         }
       ],
-      "name": "Proof of KYC from Verity",
-      "description": "Attestation that Verity has completed KYC/AML verification for this subject",
+      "name": "Proof of KYC from Verite",
+      "description": "Attestation that Verite has completed KYC/AML verification for this subject",
       "display": {
         "subtitle": {
           "path": ["$.approvalDate", "$.vc.approvalDate"],
@@ -156,7 +156,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       "styles": {
         "thumbnail": {
           "uri": "http://example.com/img/kyc-aml-thumbnail.png",
-          "alt": "Verity Logo"
+          "alt": "Verite Logo"
         },
         "hero": {
           "uri": "http://example.com/img/kyc-aml-hero.png",
@@ -314,7 +314,7 @@ Details:
         }
       },
       "issuer": {
-        "id": "did:web:verity.id"
+        "id": "did:web:verite.id"
       }
     }
   ]

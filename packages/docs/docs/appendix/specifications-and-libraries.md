@@ -5,11 +5,11 @@ sidebar_position: 9
 
 # Specifications and Libraries
 
-Decentralized Identity standards are emerging and at varying levels of maturity. Nonetheless, these standards are important to Verity’s design principles.
+Decentralized Identity standards are emerging and at varying levels of maturity. Nonetheless, these standards are important to Verite's design principles.
 
 To navigate this, the following specifications and libraries were selected for their promise of broad adoption and interoperability. This list isn’t intended to be exclusive; support for additional standards may be added in the future.
 
-Verity uses additional simplifications that remove the requirement for implementers to fully implement the referenced specifications. The flows and message structures described in our documentation suffice for implementers.
+Verite uses additional simplifications that remove the requirement for implementers to fully implement the referenced specifications. The flows and message structures described in our documentation suffice for implementers.
 
 ## Specifications
 
