@@ -6,7 +6,6 @@ import { useWeb3React } from "@web3-react/core"
 import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR, { SWRResponse } from "swr"
-import type { VerificationResultResponse } from "verite"
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -306,7 +305,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       subjectAddress: account,
       contractAddress: permissionedTokenContractAddress()
     }
-    const res = await fetch(
+    await fetch(
       fullURL(
         `/api/demos/demo6/simulate-verification?registryAddress=${registryContractAddress()}`
       ),
