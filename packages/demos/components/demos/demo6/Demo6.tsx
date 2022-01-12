@@ -6,7 +6,6 @@ import { useWeb3React } from "@web3-react/core"
 import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR, { SWRResponse } from "swr"
-import type { VerificationResultResponse } from "verite"
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -168,8 +167,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   // non-error status message for rendering
   const [statusMessage, setStatusMessage] = useState("")
   // verification-related state
-  const [verificationInfoSet, setVerificationInfoSet] =
-    useState<VerificationResultResponse>(null)
   const [verification, setVerification] =
     useState<VerificationRequestResponse>(null)
 
@@ -273,17 +270,14 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
       if (verification.status === "approved") {
         setVerification(undefined)
-        setVerificationInfoSet(verification.result)
         setStatusMessage("Verification complete. You can now deposit funds.")
         setPage(2)
       } else if (verification.status === "rejected") {
         setVerification(undefined)
-        setVerificationInfoSet(undefined)
         setStatusMessage("Verification failed.")
       }
     } catch (e) {
       setVerification(undefined)
-      setVerificationInfoSet(undefined)
 
       setStatusMessage(
         "API call to Verifier failed. Are you running the demo server?"
@@ -292,7 +286,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   }
   // End demos verifier
 
-  const getVerificationResult = async () => {
+  const simulateVerification = async () => {
     // Clear verification if one exists. This will stop polling on the
     // unsimulated verification workflow
     setVerification(undefined)
@@ -311,7 +305,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       subjectAddress: account,
       contractAddress: permissionedTokenContractAddress()
     }
-    const res = await fetch(
+    await fetch(
       fullURL(
         `/api/demos/demo6/simulate-verification?registryAddress=${registryContractAddress()}`
       ),
@@ -323,13 +317,9 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         body: JSON.stringify(postData)
       }
     )
-    const verificationInfoSet: VerificationResultResponse = await res.json()
-
     // For now the verifier is merely returning a signed result as if verification succeeded.
     // What should happen is that this component polls the verifier to see when verification
     // has succeeded (or failed).
-
-    setVerificationInfoSet(verificationInfoSet)
     setStatusMessage("Verification complete. You can now deposit funds.")
     setPage(2)
   }
@@ -392,7 +382,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         message.indexOf("VerificationRegistry:") != -1
       ) {
         setVerification(undefined)
-        setVerificationInfoSet(undefined)
       }
 
       // This is the error message to kick off the Verification workflow. We
@@ -541,7 +530,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   } else if (page === 1) {
     children = (
       <TransferStatus
-        simulateFunction={getVerificationResult}
+        simulateFunction={simulateVerification}
         verification={verification}
       ></TransferStatus>
     )

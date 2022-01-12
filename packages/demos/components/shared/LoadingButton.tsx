@@ -6,7 +6,7 @@ import Spinner from "./Spinner"
 type Props = {
   className?: string
   loading: boolean
-  onClick?: () => void | Promise<void>
+  onClick?: (e?) => void | Promise<void>
   type?: "button" | "submit" | "reset"
   style?: string
 }
