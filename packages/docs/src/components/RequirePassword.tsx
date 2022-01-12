@@ -15,7 +15,7 @@ const RequirePassword: FC = ({ children }) => {
   const [password, setPassword] = useState("")
   const [isAuthenticated, setIsAuthenticated] = useState(
     !siteConfig.customFields.passwordProtected ||
-      cookies.get("verity-auth") === "1"
+      cookies.get("verite-auth") === "1"
   )
 
   const checkPassword = async (e: React.FormEvent<HTMLButtonElement>) => {
@@ -32,7 +32,7 @@ const RequirePassword: FC = ({ children }) => {
       }
     )
 
-    cookies.set("verity-auth", "1", {
+    cookies.set("verite-auth", "1", {
       httpOnly: false,
       domain: siteConfig.customFields.cookieDomain as string
     })

@@ -1,13 +1,13 @@
 import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
+import { reverse, sortBy } from "lodash"
+import { NextPage } from "next"
+import Link from "next/link"
+import { asyncMap, isRevoked } from "verite"
 import {
   isRevocable,
   RevocableCredential,
   RevocationListCredential
-} from "@verity/core"
-import { asyncMap, isRevoked } from "@verity/core"
-import { reverse, sortBy } from "lodash"
-import { NextPage } from "next"
-import Link from "next/link"
+} from "verite"
 import RevocationLayout from "../../../../components/demos/revocation/Layout"
 import { requireAuth } from "../../../../lib/auth-fns"
 import {

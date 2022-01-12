@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@prisma/client"
-import { asyncMap } from "@verity/core"
+import { asyncMap } from "verite"
 import { Wallet } from "ethers"
 
 const prisma = new PrismaClient()

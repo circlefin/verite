@@ -7,7 +7,7 @@ sidebar_position: 1
 
 The decentralized protocols that Verite employs are general purpose and can support a broad number of use cases across healthcare, creative arts, entertainment, gaming, agriculture, education and other domains.
 
-Verity’s specifc focus, however, is to provide a powerful, interoperable, free, open path for identity to unlock new value while meeting compliance needs in crypto finance and the USD Coin (USDC) ecosystem.
+Verite’s specifc focus, however, is to provide a powerful, interoperable, free, open path for identity to unlock new value while meeting compliance needs in crypto finance and the USD Coin (USDC) ecosystem.
 
 Verite's digital identity attestations enable such benefits as KYC compliance and lower DeFi collateral requirements without the need for participants to disclose personal data. The decentralized approach avoids risks resulting from silos of identity data and allows individuals and institutions to transact seamlessly over open networks.
 

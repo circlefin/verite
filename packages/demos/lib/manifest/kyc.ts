@@ -1,5 +1,5 @@
-import { buildKycAmlManifest } from "@verity/core"
-import type { CredentialManifest } from "@verity/core"
+import { buildKycAmlManifest } from "verite"
+import type { CredentialManifest } from "verite"
 import { fullURL } from "../utils"
 import { manifestIssuer } from "./issuer"
 
@@ -8,7 +8,7 @@ export const kycManifest: CredentialManifest = buildKycAmlManifest(
   {
     thumbnail: {
       uri: fullURL("/img/kyc-aml-thumbnail.png"),
-      alt: "Verity Logo"
+      alt: "Verite Logo"
     },
     hero: {
       uri: fullURL("/img/kyc-aml-hero.png"),

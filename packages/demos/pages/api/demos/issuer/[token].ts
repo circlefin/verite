@@ -6,7 +6,7 @@ import {
   isRevocable,
   RevocableCredential,
   RevocationList2021Status
-} from "@verity/core"
+} from "verite"
 import {
   buildIssuer,
   revokeCredential,
@@ -14,7 +14,7 @@ import {
   getManifestIdFromCredentialApplication,
   requiresRevocableCredentials,
   validateCredentialApplication
-} from "@verity/core"
+} from "verite"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {

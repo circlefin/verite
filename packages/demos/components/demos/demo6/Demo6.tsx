@@ -2,11 +2,11 @@
 // by a verifier to this dapp
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
-import type { VerificationResultResponse } from "@verity/core"
 import { useWeb3React } from "@web3-react/core"
 import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR, { SWRResponse } from "swr"
+import type { VerificationResultResponse } from "verite"
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

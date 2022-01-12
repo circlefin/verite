@@ -1,6 +1,6 @@
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
-import type { VerificationResultResponse } from "@verity/core"
 import { FC, useState } from "react"
+import type { VerificationResultResponse } from "verite"
 import { classNames } from "../../../lib/react-fns"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
 import { LoadingButton } from "../../shared/LoadingButton"

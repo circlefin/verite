@@ -216,7 +216,7 @@ describe("requiresRevocableCredentials", () => {
 describe("validateManifestFormat", () => {
   it("returns true if all required fields are present", () => {
     const issuerDidKey = randomDidKey()
-    const credentialIssuer = { id: issuerDidKey.subject, name: "Verity" }
+    const credentialIssuer = { id: issuerDidKey.subject, name: "Verite" }
     const manifest = omit(buildKycAmlManifest(credentialIssuer), [
       "format",
       "presentation_definition"
@@ -227,7 +227,7 @@ describe("validateManifestFormat", () => {
 
   it("ignores optional fields", () => {
     const issuerDid = randomDidKey()
-    const credentialIssuer = { id: issuerDid.subject, name: "Verity" }
+    const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
     expect(hasPaths(manifest, ["presentation_definition", "format"])).toBe(true)
@@ -236,7 +236,7 @@ describe("validateManifestFormat", () => {
 
   it("returns false if any of the fields are missing", async () => {
     const issuerDid = await randomDidKey()
-    const credentialIssuer = { id: issuerDid.subject, name: "Verity" }
+    const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
     const requiredKeys = ["id", "version", "issuer", "output_descriptors"]
 

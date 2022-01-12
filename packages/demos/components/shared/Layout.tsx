@@ -20,7 +20,7 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
   return (
     <>
       <Head>
-        <title>{compact(["Verity.id", title]).join(" | ")}</title>
+        <title>{compact(["Verite.id", title]).join(" | ")}</title>
         <link rel="icon" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/path/to/apple-touch-icon.png" />
       </Head>
@@ -34,7 +34,7 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
           <header className="flex flex-col items-center justify-between p-4 pt-8 space-y-4 sm:p-8 sm:flex-row sm:space-y-0">
             <Link href="/">
               <a className="text-2xl font-extrabold tracking-tight text-center text-gray-900 hover:text-blue-500">
-                Verity.id
+                Verite.id
               </a>
             </Link>
 

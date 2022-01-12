@@ -1,4 +1,4 @@
-import { randomDidKey } from "@verity/core"
+import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
   const issuerDidKey = randomDidKey()

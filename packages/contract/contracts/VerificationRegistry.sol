@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: MIT
  *
- * Copyright (c) 2018-2021 CENTRE SECZ
+ * Copyright (c) 2018-2022 CENTRE SECZ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -205,13 +205,13 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
      * @inheritdoc IVerificationRegistry
      */
     function registerVerification(
-        VerificationResult memory verificationResult, 
+        VerificationResult memory verificationResult,
         bytes memory signature
     ) external override onlyVerifier returns (VerificationRecord memory) {
         _beforeVerificationValidation(verificationResult);
         VerificationRecord memory verificationRecord = _validateVerificationResult(verificationResult, signature);
         require(
-            verificationRecord.verifier == msg.sender, 
+            verificationRecord.verifier == msg.sender,
             "VerificationRegistry: Caller is not the verifier of the verification"
         );
         _persistVerificationRecord(verificationRecord);
@@ -220,22 +220,22 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
     }
 
     /**
-     * A caller may be the subject of a successful VerificationResult 
+     * A caller may be the subject of a successful VerificationResult
      * and register that verification itself rather than rely on a verifier
      * to do so. The registry will validate the result, and if the result
-     * is valid, signed by a known verifier, and the subject of the verification 
+     * is valid, signed by a known verifier, and the subject of the verification
      * is this caller, then the resulting VerificationRecord will be persisted and returned.
      *
      * To use this pattern, a derived contract should inherit and invoke this function,
-     * otherwise the caller will not be the subject but an intermediary. 
+     * otherwise the caller will not be the subject but an intermediary.
      * See ThresholdToken.sol for a simple example.
      */
     function _registerVerificationBySubject(
-        VerificationResult memory verificationResult, 
+        VerificationResult memory verificationResult,
         bytes memory signature
     ) internal returns (VerificationRecord memory) {
         require(
-            verificationResult.subject == msg.sender, 
+            verificationResult.subject == msg.sender,
             "VerificationRegistry: Caller is not the verified subject"
         );
         _beforeVerificationValidation(verificationResult);
@@ -252,7 +252,7 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
      * usage in the future.
      *
      * To use this pattern, a derived contract should inherit and invoke this function,
-     * otherwise the caller will not be the subject but an intermediary. 
+     * otherwise the caller will not be the subject but an intermediary.
      * See ThresholdToken.sol for a simple example.
      */
     function _removeVerificationBySubject(bytes32 uuid) internal {
@@ -266,27 +266,27 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
     /* VERIFICATION INTERNAL MECHANICS */
     /***********************************/
 
-    /** 
+    /**
      * This hook may be overridden to enable registry-specific or credential-specific
      * filtering of a Verification Result. For example, a registry devoted to risk scoring
      * or accredited investor status may make assertions based on the result's payload
      * or on the designation of the issuer or verifier. The default behavior is a no-op,
      * no additional processing of the payload or other properties is executed.
      */
-    function _beforeVerificationValidation(VerificationResult memory verificationResult) internal {        
+    function _beforeVerificationValidation(VerificationResult memory verificationResult) internal {
     }
 
     /**
-     * A verifier provides a signed hash of a verification result it 
-     * has created for a subject address. This function recreates the hash 
-     * given the result artifacts and then uses it and the signature to recover 
-     * the public address of the signer. If that address is a trusted verifier's 
-     * signing address, and the assessment completes within the deadline (unix time in 
+     * A verifier provides a signed hash of a verification result it
+     * has created for a subject address. This function recreates the hash
+     * given the result artifacts and then uses it and the signature to recover
+     * the public address of the signer. If that address is a trusted verifier's
+     * signing address, and the assessment completes within the deadline (unix time in
      * seconds since epoch), then the verification succeeds and is valid until revocation,
      * expiration, or removal from storage.
      */
     function _validateVerificationResult(
-        VerificationResult memory verificationResult, 
+        VerificationResult memory verificationResult,
         bytes memory signature
     ) internal view returns(VerificationRecord memory) {
 
@@ -297,10 +297,10 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
           verificationResult.expiration,
           verificationResult.payload
         )));
-        
+
         // recover the public address corresponding to the signature and regenerated hash
         address signerAddress = ECDSA.recover(digest, signature);
-        
+
         // retrieve a verifier address for the recovered address
         address verifierAddress = _signers[signerAddress];
 

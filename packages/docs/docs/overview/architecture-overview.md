@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Architecture Overview
 
-Verity’s identity topology is attestation-based. People and institutions make claims about their identities, and others (such as financial institutions and service providers) attest to the validity of those claims by providing cryptographic proofs about them. Once such a cryptographic attestation exists, people can choose to share them with other entities and services that can then verify the attestation as proof of the claim.
+Verite’s identity topology is attestation-based. People and institutions make claims about their identities, and others (such as financial institutions and service providers) attest to the validity of those claims by providing cryptographic proofs about them. Once such a cryptographic attestation exists, people can choose to share them with other entities and services that can then verify the attestation as proof of the claim.
 
 This article describes the architectural topology and key components of this model.
 

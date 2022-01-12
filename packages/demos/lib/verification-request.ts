@@ -1,11 +1,11 @@
+import { v4 as uuidv4 } from "uuid"
 import {
   ChallengeTokenUrlWrapper,
   challengeTokenUrlWrapper,
   buildCreditScoreVerificationOffer,
   buildKycVerificationOffer,
   VerificationOffer
-} from "@verity/core"
-import { v4 as uuidv4 } from "uuid"
+} from "verite"
 import { saveVerificationOffer } from "./database/verificationRequests"
 import { NotFoundError } from "./errors"
 import { fullURL } from "./utils"
