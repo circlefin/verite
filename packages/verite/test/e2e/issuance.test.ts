@@ -25,7 +25,7 @@ describe("issuance", () => {
     /**
      * The issuer generates a QR code for the client to scan
      */
-    const credentialIssuer = { id: issuer.did, name: "Verity" }
+    const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
     /**

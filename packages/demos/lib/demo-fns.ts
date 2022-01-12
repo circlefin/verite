@@ -1,8 +1,5 @@
-import {
-  VerificationResultResponse,
-  verificationResult
-} from "@verity/core/dist"
 import { Contract, Wallet } from "ethers"
+import { VerificationResultResponse, verificationResult } from "verite/dist"
 import { User } from "./database"
 import {
   getProvider,

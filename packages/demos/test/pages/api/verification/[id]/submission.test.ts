@@ -1,3 +1,5 @@
+import { createMocks } from "node-mocks-http"
+import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
   buildAndSignFulfillment,
@@ -8,10 +10,8 @@ import {
   decodeCredentialApplication,
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer
-} from "@verity/core"
-import type { DidKey } from "@verity/core"
-import { createMocks } from "node-mocks-http"
-import { v4 as uuidv4 } from "uuid"
+} from "verite"
+import type { DidKey } from "verite"
 import {
   fetchVerificationOfferStatus,
   saveVerificationOffer

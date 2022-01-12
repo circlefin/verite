@@ -72,7 +72,7 @@ export const revokeCredential = async (
     return statusList
   }
 
-  const list = await expandBitstring(statusList.credentialSubject.encodedList)
+  const list = expandBitstring(statusList.credentialSubject.encodedList)
   const index = parseInt(credential.credentialStatus.statusListIndex, 10)
   list.push(index)
 
@@ -97,7 +97,7 @@ export const unrevokeCredential = async (
     return statusList
   }
 
-  const list = await expandBitstring(statusList.credentialSubject.encodedList)
+  const list = expandBitstring(statusList.credentialSubject.encodedList)
   const index = list.indexOf(
     parseInt(credential.credentialStatus.statusListIndex, 10)
   )
@@ -109,7 +109,7 @@ export const unrevokeCredential = async (
 }
 
 /**
- * Given a verififable credential, check if it has been revoked.
+ * Given a verifiable credential, check if it has been revoked.
  *
  * @returns true if the credential is revoked, false otherwise
  */
@@ -130,9 +130,7 @@ export const isRevoked = async (
     return false
   }
 
-  const results = await expandBitstring(
-    statusList.credentialSubject.encodedList
-  )
+  const results = expandBitstring(statusList.credentialSubject.encodedList)
 
   const index = parseInt(
     (credential as RevocableCredential).credentialStatus.statusListIndex,

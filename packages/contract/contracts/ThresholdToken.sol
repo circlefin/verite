@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: MIT
  *
- * Copyright (c) 2018-2021 CENTRE SECZ
+ * Copyright (c) 2018-2022 CENTRE SECZ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,10 +35,6 @@ contract ThresholdToken is ERC20, VerificationRegistry {
         _mint(msg.sender, initialSupply);
     }
 
-    function decimals() public view virtual override returns (uint8) {
-        return 0;
-    }
-
     /**
      * @dev This hook executes as part of the ERC20 transfer implementation. In this
      * example, it ensures that the amount transferred is either below a demo
@@ -55,7 +51,7 @@ contract ThresholdToken is ERC20, VerificationRegistry {
     {
         super._beforeTokenTransfer(from, to, amount);
         if (owner() != msg.sender) {
-            require(amount < _credentialThreshold || this.isVerified(from), 
+            require(amount < _credentialThreshold || this.isVerified(from),
                 "ThresholdToken: Transfers of this amount require sender verification");
         }
     }

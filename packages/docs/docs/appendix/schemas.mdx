@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Schemas
 
-The following schemas are used in Verity's implementation.
+The following schemas are used in Verite's implementation.
 
 ISSUE: Discuss "@type" vs "type" and array vs single-valued
 
@@ -48,7 +48,7 @@ The "approvalDate" attribute is used to define the date of KYC/AML process compl
 - Additional details obtained during the KYC/AML process should not be included in the attestation. For example, service provider scores are not needed and will leak personal information.
 - Support for additional use cases (such as jurisdiction shopping) that require additional data should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplised with ZKPs or by issuing separate credentials containing the additional attributes (such as residence), enabling wallet aggregation of minimal required data.
 
-Verity's intial release contains only the USA KYC/AML process definition ("https://verite.id/schemas/definitions/1.0.0/kycaml/usa",). Additional process defnitions will be developed based on existing practices/requirements per country.
+Verite's intial release contains only the USA KYC/AML process definition ("https://verite.id/schemas/definitions/1.0.0/kycaml/usa",). Additional process defnitions will be developed based on existing practices/requirements per country.
 
 ### Additional Considerations
 
@@ -66,7 +66,7 @@ When used as inputs by verifiers into verification registries, the auditing/fore
   - Other "registry" information stored by verifiers when deciding which issuer VCs to accept
 - Lastly, auditor contacts the issuer(s) for subject data corresponding to the VC id.
 
-[See further discussion of registry forensics flows](/docs/patterns/smart-contract-verity#auditing-and-forensics-sequences)
+[See further discussion of registry forensics flows](/docs/patterns/smart-contract-verite#auditing-and-forensics-sequences)
 
 ## Address Ownership
 

@@ -4,7 +4,7 @@ import {
   KYCAMLAttestation,
   CreditScoreAttestation,
   buildIssuer
-} from "@verity/core"
+} from "verite"
 import { NextApiRequest, NextApiResponse } from "next"
 import jwt from "jsonwebtoken"
 

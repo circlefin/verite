@@ -5,16 +5,16 @@ sidebar_position: 3
 
 # Verify a Verifiable Credential
 
-_This tutorial will walk you through consuming and verifying verifiable credentials using the verity sdks. For additional context about the verification and credential exchange flow, see [Consuming Verifiable Credentials](/patterns/verification-flow.md)._
+_This tutorial will walk you through consuming and verifying verifiable credentials using the verite sdks. For additional context about the verification and credential exchange flow, see [Consuming Verifiable Credentials](/patterns/verification-flow.md)._
 
 ## Step 1: Expose Verification Requirements
 
-The verifier first needs to inform credential holders of their input requirements. Verity uses the [Presentation Exchange (PEx)](https://identity.foundation/presentation-exchange/) approach for this purpose, in which verifiers express these requirements as a Presentation Definition.
+The verifier first needs to inform credential holders of their input requirements. Verite uses the [Presentation Exchange (PEx)](https://identity.foundation/presentation-exchange/) approach for this purpose, in which verifiers express these requirements as a Presentation Definition.
 
-Verity exposes library helpers that create a few predefined types of presentation definitions, for example a KYC verification offer:
+Verite exposes library helpers that create a few predefined types of presentation definitions, for example a KYC verification offer:
 
 ```ts
-import { buildKycVerificationOffer } from "@centre/verity"
+import { buildKycVerificationOffer } from "verite"
 
 const offer = buildKycVerificationOffer(
   uuidv4(),
@@ -31,13 +31,13 @@ The verification offer also informs the credential holder where to submit the re
 
 The credential holder uses the presentation definition to gather the required inputs, form a Presentation Submission, submit proof, and send it back to the verifier. The credential holder can take their verifiable presentation, extract the credential they'd like verified, and submit it to the verifier.
 
-Verity exposes libraries to help with this. First, an example of extracting the verifiable credential from a verifiable presentation and decoding it:
+Verite exposes libraries to help with this. First, an example of extracting the verifiable credential from a verifiable presentation and decoding it:
 
 ```ts
 import {
   decodeVerifiablePresentation,
   decodeVerifiableCredential
-} from "@centre/verity"
+} from "verite"
 
 const decoded = await decodeVerifiablePresentation(presentation)
 const vc = decoded.verifiableCredential[0]
@@ -47,7 +47,7 @@ const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
 Then, an example of building the presentation submission using the decoded verifiable credential:
 
 ```ts
-import { buildPresentationSubmission } from "@centre/verity"
+import { buildPresentationSubmission } from "verite"
 
 const submission = await buildPresentationSubmission(
   clientDidKey,

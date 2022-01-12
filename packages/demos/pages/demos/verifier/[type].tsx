@@ -48,7 +48,7 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
           <>
             <h2>{title} Verification User Experience</h2>
             <p>
-              Using the Verity demo wallet app, scan this QR code to begin the
+              Using the Verite demo wallet app, scan this QR code to begin the
               verification sequence:
             </p>
             <QRCode

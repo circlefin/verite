@@ -5,7 +5,7 @@ sidebar_position: 5
 
 # Primer: DIDs, Verifiable Credentials, Verifiable Presentations
 
-Verity is based on several foundational standards to achieve a safer, more robust, more transparent solution for compliance verifications and record-keeping that does not leak identity data, is not private or permissioned, does not rely on metadata mappings or central registries, works with existing identity solutions rather than reinventing, and supports key DeFi use cases.
+Verite is based on several foundational standards to achieve a safer, more robust, more transparent solution for compliance verifications and record-keeping that does not leak identity data, is not private or permissioned, does not rely on metadata mappings or central registries, works with existing identity solutions rather than reinventing, and supports key DeFi use cases.
 
 ## Decentralized Identifiers (DIDs)
 
@@ -75,7 +75,7 @@ DIDs can be anchored to public blockchains through a number of approaches. Ancho
 
 The resolution of a DID from underlying storage and chains, and CRUD operations on DIDs, are handled by DID Resolvers and Controllers, and the method component of a DID URL will determine what kind of resolver the DID needs and expects. Different resolvers use different anchoring mechanisms.
 
-For example, [ION](https://techcommunity.microsoft.com/t5/identity-standards-blog/ion-we-have-liftoff/ba-p/1441555) (from the DIF and Microsoft) is a resolver that periodically anchors thousands of DID CRUD ops into a single bitcoin transaction, while uPort’s ethereum DID resolver ([ethr-did](https://github.com/uport-project/ethr-did)) maps one eth account to one DID and leverages a deployed smart contract for managing state changes and metadata such as service attributes. [Veramo](http://veramo.io/) provides a plugin architecture to utilize several resolvers at once. Any or all of these at once can be used for Verity.
+For example, [ION](https://techcommunity.microsoft.com/t5/identity-standards-blog/ion-we-have-liftoff/ba-p/1441555) (from the DIF and Microsoft) is a resolver that periodically anchors thousands of DID CRUD ops into a single bitcoin transaction, while uPort’s ethereum DID resolver ([ethr-did](https://github.com/uport-project/ethr-did)) maps one eth account to one DID and leverages a deployed smart contract for managing state changes and metadata such as service attributes. [Veramo](http://veramo.io/) provides a plugin architecture to utilize several resolvers at once. Any or all of these at once can be used for Verite.
 
 **DID Spec**
 
@@ -85,7 +85,7 @@ For example, [ION](https://techcommunity.microsoft.com/t5/identity-standards-blo
 
 DID may serve as an identifier for both the issuer and recipient ("subject") of Verifiable Credentials (VCs). VCs can represent any number of claims, including proof of KYC and proof of ownership of a blockchain account.
 
-Verity's demo wallet generates and manages DIDs and associated key pairs on behalf of subjects. The wallet sends DIDs to issuers to serve as a subject identifier of a Verifiable Credential. Upon issuance, the wallet holds multiple Verifiable Credentials about its addresses and the real world entities who own those addresses. This allows wallet holders to prove control over the DIDs embedded in the credentials, which in turn enables identity binding for the owner of a wallet.
+Verite's demo wallet generates and manages DIDs and associated key pairs on behalf of subjects. The wallet sends DIDs to issuers to serve as a subject identifier of a Verifiable Credential. Upon issuance, the wallet holds multiple Verifiable Credentials about its addresses and the real world entities who own those addresses. This allows wallet holders to prove control over the DIDs embedded in the credentials, which in turn enables identity binding for the owner of a wallet.
 
 In a typical decentralized identity case, a verifier would request a Verifiable Credential from an identity holder. That requires discovery or knowledge of the holder first _(simple analogy: someone asks you to prove you are vaccinated)_.
 

@@ -1,11 +1,11 @@
 import { Disclosure } from "@headlessui/react"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
-import { challengeTokenUrlWrapper } from "@verity/core"
-import type { ChallengeTokenUrlWrapper } from "@verity/core"
 import { NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
+import type { ChallengeTokenUrlWrapper } from "verite"
+import { challengeTokenUrlWrapper } from "verite"
 import IssuerLayout from "../../../components/demos/issuer/Layout"
 import { currentUser, requireAuth } from "../../../lib/auth-fns"
 import { temporaryAuthToken } from "../../../lib/database"
@@ -96,7 +96,7 @@ const KycAmlPage: NextPage<Props> = ({
           Credentials and DID data may be custodied in crypto/identity wallets
           such as browser extensions, mobile apps, or hosted wallet providers.
           For this demo, begin the request protocol by scanning this QR code
-          using the Verity demo mobile app wallet:
+          using the Verite demo mobile app wallet:
         </p>
         <QRCode
           value={JSON.stringify(qrCodeData)}

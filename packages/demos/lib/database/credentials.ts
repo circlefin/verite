@@ -1,3 +1,5 @@
+import { compact, random, sample } from "lodash"
+import { v4 as uuidv4 } from "uuid"
 import {
   isRevocable,
   MaybeRevocableCredential,
@@ -9,9 +11,7 @@ import {
   decodeVerifiableCredential,
   generateRevocationList,
   buildIssuer
-} from "@verity/core"
-import { compact, random, sample } from "lodash"
-import { v4 as uuidv4 } from "uuid"
+} from "verite"
 import { fullURL } from "../utils"
 import { prisma, User, Credential } from "./prisma"
 import { findUser } from "./users"

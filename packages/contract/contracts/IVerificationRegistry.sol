@@ -1,7 +1,7 @@
 /**
  * SPDX-License-Identifier: MIT
  *
- * Copyright (c) 2018-2021 CENTRE SECZ
+ * Copyright (c) 2018-2022 CENTRE SECZ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ struct VerificationResult {
 }
 
 /**
-* @dev The registry will accept VerificationResults submitted to it, 
+* @dev The registry will accept VerificationResults submitted to it,
 * and if valid, will persist them on-chain as VerificationRecords
 */
 struct VerificationRecord {
@@ -112,7 +112,7 @@ interface IVerificationRegistry {
     /**********************/
 
     /**
-     * @dev Retrieve the current total number of registered VerificationRecords 
+     * @dev Retrieve the current total number of registered VerificationRecords
      */
     function getVerificationCount() external view returns(uint256);
 
@@ -142,20 +142,20 @@ interface IVerificationRegistry {
     function revokeVerification(bytes32 uuid) external;
 
     /**
-     * @dev Verifiers can remove verifications they previously created. Nothing is 
-     * truly 'deleted' from on-chain storage, as the record exists in previous 
+     * @dev Verifiers can remove verifications they previously created. Nothing is
+     * truly 'deleted' from on-chain storage, as the record exists in previous
      * state, but this does prevent the record from usage in the future.
      */
     function removeVerification(bytes32 uuid) external;
 
     /**
-     * @dev A verifier registers a VerificationResult after it has executed a 
+     * @dev A verifier registers a VerificationResult after it has executed a
      * successful verification. The contract will validate the result, and
      * if it is valid and is signed by this calling verifier's signer,
      * then the resulting VerificationRecord will be persisted and returned.
      */
     function registerVerification(
-        VerificationResult memory verificationResult, 
+        VerificationResult memory verificationResult,
         bytes memory signature
     ) external returns (VerificationRecord memory);
 }

@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # Travel Rule Implementations
 
-The Verity open source examples include a demonstration of how exchanging verifiable credentials may be helpful in implementing a scalable mechanism for financial institutions to comply with Travel Rule regulations.
+The Verite open source examples include a demonstration of how exchanging verifiable credentials may be helpful in implementing a scalable mechanism for financial institutions to comply with Travel Rule regulations.
 
 ## About the Travel Rule
 
@@ -14,7 +14,7 @@ Mapping Travel Rule requirements to blockchain transactions poses several challe
 
 The crypto ecosystem has proposed many potential solutions to this problem: maintaining registries of known blockchain addresses mapped to VASP network endpoints, maintaining a network of VASP nodes which FIs can query/poll prior to transaction broadcasts, leveraging analytics services and tools that glean metadata about addresses, transacting only on permissioned networks or specific chains designed with different identity capabilities, introducing new identifier schemes for transacting customers, or a hybrid combination of these approaches.
 
-Verity's example addresses these problems by bootstrapping verifiable credentials exchange using a decentralized mem pool pattern, mirroring the memory/transaction pool pattern that most blockchains use prior to updating their ledgers. This approach may be more scalable than registry and private network approaches and also more privacy-preserving and potentially more accurate than analytics approaches alone. Mem pools are effectively decentralized messaging architectures that allow nodes to publish and subscribe/observe messages in peer-to-peer fashion. In blockchains, the messages represent transactions; wallets publish to them and observers can then validate or mine them. Verity uses the same concept to broadcast a privacy-preserving message about the intent to broadcast a future transaction (without sharing its value) on a given chain.
+Verite's example addresses these problems by bootstrapping verifiable credentials exchange using a decentralized mem pool pattern, mirroring the memory/transaction pool pattern that most blockchains use prior to updating their ledgers. This approach may be more scalable than registry and private network approaches and also more privacy-preserving and potentially more accurate than analytics approaches alone. Mem pools are effectively decentralized messaging architectures that allow nodes to publish and subscribe/observe messages in peer-to-peer fashion. In blockchains, the messages represent transactions; wallets publish to them and observers can then validate or mine them. Verite uses the same concept to broadcast a privacy-preserving message about the intent to broadcast a future transaction (without sharing its value) on a given chain.
 
 ## Discovery and Credentials Exchange Sequence
 
@@ -47,7 +47,7 @@ Before the transaction is broadcast, the sending and receiving FIs use the chain
 5. Alice's FI receives M4 and verifies Bob's beneficiary counterparty verifiable credential, and then executes its internal compliance procedures.
 6. Once Alice's FI clears the information, it broadcasts the planned transaction to the appropriate blockchain's mem pool to execute the exchange of value.
 
-If the transaction does not meet the threshold required for the Travel Rule, then Part 2 is not necessary and does not apply, as Alice's FI can simply broadcast the blockchain transaction. If the Travel Rule does apply, however, both financial insitutions are able to exchange counterparty verifiable credentials over callback URLs that allow for private off-chain secure communication. Although traditional financial institutions typically have terms and conditions that grant the rights to transfer this private information, Verity's demonstration surfaces notifications as alerts to customers so that they have visibility into when their data is requested, and to provide them the choice to cancel sending or receiving transactions that require such counterparty credentials exchange.
+If the transaction does not meet the threshold required for the Travel Rule, then Part 2 is not necessary and does not apply, as Alice's FI can simply broadcast the blockchain transaction. If the Travel Rule does apply, however, both financial insitutions are able to exchange counterparty verifiable credentials over callback URLs that allow for private off-chain secure communication. Although traditional financial institutions typically have terms and conditions that grant the rights to transfer this private information, Verite's demonstration surfaces notifications as alerts to customers so that they have visibility into when their data is requested, and to provide them the choice to cancel sending or receiving transactions that require such counterparty credentials exchange.
 
 ## Future Development
 

@@ -29,12 +29,12 @@ In this example, an individual's financial institution offers the ability to req
    - The issuer DID.
    - A URL for the wallet to submit a Credential Application.
    - A challenge to sign.
-1. The wallet prompts the user to proceed. The Credential Manifest includes descriptive properties, e.g. in the Verity demo app a title and description of the credential are shown.
+1. The wallet prompts the user to proceed. The Credential Manifest includes descriptive properties, e.g. in the Verite demo app a title and description of the credential are shown.
 1. Once the recipient proceeds, the wallet prepares a signed [Credential Application](https://identity.foundation/credential-manifest/#credential-application),
    - If the wallet doesn't have a DID, it generates one.
    - The wallet creates a Credential Application for the DID.
    - The application is signed along with the challenge in the Credential Offer
-   - The Verity library exposes a convenience method `createCredentialApplication` for this purpose.
+   - The Verite library exposes a convenience method `createCredentialApplication` for this purpose.
 1. Wallet submits the Credential Application to the URL found in the Credential Offer.
 1. The Issuer creates a Verifiable Credential and returns it to the wallet as a [Credential Fulfillment](https://identity.foundation/credential-manifest/#credential-fulfillment).
 1. Wallet persists the credential.

@@ -1,4 +1,3 @@
-import { Bits } from "@fry/bits"
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import {
   generateRevocationList,
@@ -8,11 +7,8 @@ import {
 } from "../../../lib/issuer"
 import {
   asyncMap,
-  compress,
-  decompress,
   decodeVerifiableCredential,
   expandBitstring,
-  expandBitstringToBooleans,
   generateBitstring,
   buildIssuer
 } from "../../../lib/utils"
@@ -22,19 +18,6 @@ import type {
   Revocable,
   RevocableCredential
 } from "../../../types"
-
-/**
- * Helper to create a Buffer with the bits set to 1 at the indices given.
- */
-const indices2Buffer = (indices: number[], bitlength = 16): Buffer => {
-  const bits = new Bits(bitlength)
-
-  indices.forEach((credential) => {
-    bits.setBit(credential)
-  })
-
-  return bits.buffer
-}
 
 const vectors = [
   {
@@ -96,16 +79,6 @@ const statusListFactory = async (credentials: number[]) => {
 }
 
 describe("Status List 2021", () => {
-  it("compress periods", () => {
-    const value = compress(".................................")
-    expect(value).toBe("eJzT0yMAAGTvBe8=")
-  })
-
-  it("decompress", () => {
-    const value = decompress("eJzT0yMAAGTvBe8=")
-    expect(value.toString()).toBe(".................................")
-  })
-
   it("generateRevocationList", async () => {
     const revoke = [3]
     const url = "https://example.com/credentials/status/3" // Need to create a list
@@ -280,30 +253,8 @@ describe("Status List 2021", () => {
     await asyncMap(vectors, async (vector) => {
       const { credentials, bitstring } = vector
 
-      const decodedList = await expandBitstring(bitstring)
+      const decodedList = expandBitstring(bitstring)
       expect(decodedList).toEqual(credentials)
     })
-  })
-
-  it("expandBitstringToBooleans", async () => {
-    const buffer = indices2Buffer([0, 1, 15], 16)
-    expect(expandBitstringToBooleans(buffer)).toEqual([
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      true
-    ])
   })
 })

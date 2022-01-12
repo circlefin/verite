@@ -41,7 +41,7 @@ const AdminPage: NextPage<Props> = ({ lastIssuedUserId, users }) => {
         </p>
 
         <p>
-          To protect privacy, Verity employs{" "}
+          To protect privacy, Verite employs{" "}
           <Link href="https://w3c-ccg.github.io/vc-status-list-2021">
             <a target="_blank">Status List 2021</a>
           </Link>{" "}

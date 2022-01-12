@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "paths": {
-      "@verity/*": ["./packages/*"]
+      "@verite/*": ["./packages/*"]
     }
   },
   "exclude": ["node_modules"]

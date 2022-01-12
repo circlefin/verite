@@ -16,7 +16,7 @@ const RequirePassword: FC<Props> = ({ children, passwordSuccessful }) => {
   const cookies = new Cookies()
   const [password, setPassword] = useState("")
   const [isAuthenticated, setIsAuthenticated] = useState(
-    passwordSuccessful || cookies.get("verity-auth") === "1"
+    passwordSuccessful || cookies.get("verite-auth") === "1"
   )
 
   const onSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {

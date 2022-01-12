@@ -1,8 +1,8 @@
-# Verity
+# Verite
 
 Decentralized Identity for Crypto Finance.
 
-This repository is a monorepo containing the Core Verity Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verity standard.
+This repository is a monorepo containing the Core Verite Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verite standard.
 
 ## Getting Started
 
@@ -19,17 +19,17 @@ Each package in this repository lives in the `packages/` directory.
 
 The primary packages in this repository are:
 
-- [@verity/docs](./packages/docs) - Documentation for the Verity
-- [@verity/core](./packages/verity) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
-- [@verity/contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verity into a smart contract.
-- [@verity/demos](./packages/demos) - A demo walkthrough of the entire verity project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
+- [verite/docs](./packages/docs) - Documentation for the Verite
+- [verite/core](./packages/verite) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
+- [verite/contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verite into a smart contract.
+- [verite/demos](./packages/demos) - A demo walkthrough of the entire Verite project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
-from the `demos` package to help clarify each major function of verity credentials.
+from the `demos` package to help clarify each major function of Verite credentials.
 
-- [@verity/demo-issuer](./packages/demo-issuer) - A simplified demo of issuing Verifiable Credentials using `@verity/core`.
-- [@verity/demo-verifier](./packages/demo-verifier) - A simplified demo of verifying Verifiable Credentials using `@verity/core`.
-- [@verity/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials using `@verity/core`.
+- [verite/demo-issuer](./packages/demo-issuer) - A simplified demo of issuing Verifiable Credentials using `verite/core`.
+- [verite/demo-verifier](./packages/demo-verifier) - A simplified demo of verifying Verifiable Credentials using `verite/core`.
+- [verite/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials using `verite/core`.
 
 Each package contains a README file with specific details about how to use the package.
 
@@ -50,15 +50,15 @@ npm run setup
 This script will do the following:
 
 - Install all dependencies
-- Build the `@verity/core` project
-- Set up the local IP hostname for `@verity/demos` to be used with the wallet.
-- Generate an auth JWT secret for `@verity/demos`
-- Generate issuer and verifier DIDs and secrets for `@verity/demos`
-- Build and migrate the database for `@verity/demos`
+- Build the `verite/core` project
+- Set up the local IP hostname for `verite/demos` to be used with the wallet.
+- Generate an auth JWT secret for `verite/demos`
+- Generate issuer and verifier DIDs and secrets for `verite/demos`
+- Build and migrate the database for `verite/demos`
 
 ## Running the Demos
 
-When first starting, you will likely be most interested in the `./packages/demos` package. This package contains several demos and integrates deeply with `@verity/core`.
+When first starting, you will likely be most interested in the `./packages/demos` package. This package contains several demos and integrates deeply with `verite/core`.
 
 This package contains several isolated demos. One of the demos showcases an Ethereum dApp integration, and requires running a local Ethereum node.
 
@@ -112,7 +112,7 @@ Run tests by running
 npm run test
 ```
 
-**NOTE** Be sure to have built the `@verity/core` package by running `npm run build:verity`.
+**NOTE** Be sure to have built the `verite/core` package by running `npm run build:verite`.
 
 ### Linting the codebase
 
@@ -140,3 +140,4 @@ npm run format
 - [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
 - [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
 - [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))
+- [Justin Hunter](https://github.com/polluterofminds) ([polluterofminds](https://polluterofminds.com))

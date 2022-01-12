@@ -2,11 +2,11 @@
 // by a verifier to this dapp
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
-import type { VerificationResultResponse } from "@verity/core"
 import { useWeb3React } from "@web3-react/core"
 import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR, { SWRResponse } from "swr"
+import type { VerificationResultResponse } from "verite"
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -14,7 +14,8 @@ import {
   contractFetcher,
   permissionedTokenContractAddress,
   permissionedTokenContractArtifact,
-  registryContractAddress
+  registryContractAddress,
+  registryContractArtifact
 } from "../../../lib/eth-fns"
 import { fullURL } from "../../../lib/utils"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
@@ -31,6 +32,7 @@ import TransactionErrorMessage from "./TransactionErrorMessage"
 import TransferStatus from "./TransferStatus"
 import VerificationPrompt from "./VerificationPrompt"
 import VerifierFaucet from "./VerifierFaucet"
+import VerifierIsNotAVerifier from "./VerifierIsNotAVerifier"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
 
 export type Asset = {
@@ -99,6 +101,18 @@ export const useBalance = (
   return result
 }
 
+export const useIsVerifier = (
+  registryAddress: string,
+  verifierAddress: string
+): SWRResponse<boolean, unknown> => {
+  const { library } = useWeb3React<Web3Provider>()
+  const result = useSWR([registryAddress, "isVerifier", verifierAddress], {
+    fetcher: contractFetcher(library, registryContractArtifact().abi)
+  })
+
+  return result
+}
+
 // Generic SWR fetcher for calling arbitrary methods.
 const fetcher =
   (library) =>
@@ -135,6 +149,10 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
     permissionedTokenContractAddress()
   )
   const { data: verifierEthBalance } = useEthBalance(library, verifierAddress)
+  const { data: isVerifier } = useIsVerifier(
+    registryContractAddress(),
+    verifierAddress
+  )
 
   // token name and symbol
   const [tokenData, setTokenData] = useState<{ name: string; symbol: string }>()
@@ -484,9 +502,16 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
   let children
 
-  // If the user is just beginning the demo and has no tokens, we show them a
-  // faucet button.
-  if (verifierEthBalance.eq(0)) {
+  // Before we begin the demo, check that the verifier is properly configured.
+  if (!isVerifier) {
+    children = (
+      <VerifierIsNotAVerifier
+        registryAddress={registryContractAddress()}
+        verifierAddress={verifierAddress}
+      />
+    )
+  } else if (verifierEthBalance.eq(0)) {
+    // Verifier needs ETH to pay fees
     children = (
       <VerifierFaucet
         faucetFunction={ethFaucet}
@@ -494,6 +519,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       />
     )
   } else if (page === -1 && balance.eq(0)) {
+    // PUSDC faucet for the end-user so they have something to deposit
     children = (
       <NoTokensMessage faucetFunction={tokenFaucet} selectedAddress={account} />
     )

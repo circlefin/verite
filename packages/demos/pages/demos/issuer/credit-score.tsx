@@ -1,11 +1,11 @@
 import { Disclosure } from "@headlessui/react"
 import { ArrowCircleRightIcon } from "@heroicons/react/outline"
-import { challengeTokenUrlWrapper } from "@verity/core"
-import type { ChallengeTokenUrlWrapper } from "@verity/core"
 import { NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
+import type { ChallengeTokenUrlWrapper } from "verite"
+import { challengeTokenUrlWrapper } from "verite"
 import IssuerLayout from "../../../components/demos/issuer/Layout"
 import { currentUser, requireAuth } from "../../../lib/auth-fns"
 import { temporaryAuthToken } from "../../../lib/database"
@@ -111,7 +111,7 @@ const CreditScorePage: NextPage<Props> = ({
         </dl>
         <p>
           Request a VC for this credit score by scanning this QR code with the
-          Verity mobile app:
+          Verite mobile app:
         </p>
         <QRCode
           value={JSON.stringify(qrCodeData)}

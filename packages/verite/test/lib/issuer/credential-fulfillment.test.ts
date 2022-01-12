@@ -107,7 +107,7 @@ describe("buildAndSignFulfillment", () => {
     const issuerDid = randomDidKey()
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
-    const credentialIssuer = { id: issuer.did, name: "Verity" }
+    const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
     const subjectDid = randomDidKey()
