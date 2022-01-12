@@ -1,6 +1,6 @@
+import { v4 as uuidv4 } from "uuid"
 import type { CredentialOffer } from "verite"
 import { buildCredentialOffer } from "verite"
-import { v4 as uuidv4 } from "uuid"
 import { apiHandler } from "../../../../../../lib/api-fns"
 import { NotFoundError } from "../../../../../../lib/errors"
 import { MANIFEST_MAP } from "../../../../../../lib/manifest"

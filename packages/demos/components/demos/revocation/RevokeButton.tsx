@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import {
   decodeVerifiableCredential,
   isRevoked,
@@ -5,7 +6,6 @@ import {
   RevocableCredential,
   RevocationListCredential
 } from "verite"
-import { useEffect, useState } from "react"
 import { LoadingButton } from "../../shared/LoadingButton"
 
 type Props = {
