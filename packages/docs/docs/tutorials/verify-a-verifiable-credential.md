@@ -14,7 +14,7 @@ The verifier first needs to inform credential holders of their input requirement
 Verite exposes library helpers that create a few predefined types of presentation definitions, for example a KYC verification offer:
 
 ```ts
-import { buildKycVerificationOffer } from "@centre/verite"
+import { buildKycVerificationOffer } from "verite"
 
 const offer = buildKycVerificationOffer(
   uuidv4(),
@@ -37,7 +37,7 @@ Verite exposes libraries to help with this. First, an example of extracting the 
 import {
   decodeVerifiablePresentation,
   decodeVerifiableCredential
-} from "@centre/verite"
+} from "verite"
 
 const decoded = await decodeVerifiablePresentation(presentation)
 const vc = decoded.verifiableCredential[0]
@@ -47,7 +47,7 @@ const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
 Then, an example of building the presentation submission using the decoded verifiable credential:
 
 ```ts
-import { buildPresentationSubmission } from "@centre/verite"
+import { buildPresentationSubmission } from "verite"
 
 const submission = await buildPresentationSubmission(
   clientDidKey,
