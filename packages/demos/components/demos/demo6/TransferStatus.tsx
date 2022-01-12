@@ -1,5 +1,5 @@
 import QRCode from "qrcode.react"
-import { FC } from "react"
+import { FC, useState } from "react"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
 import Spinner from "../../shared/Spinner"
 
@@ -12,6 +12,8 @@ const TransferStatus: FC<TransferStatusProps> = ({
   simulateFunction,
   verification
 }) => {
+  const [loading, setLoading] = useState<boolean>(false)
+
   return (
     <div>
       <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -39,10 +41,13 @@ const TransferStatus: FC<TransferStatusProps> = ({
         Alternatively, you can simulate verification:
       </label>
       <button
+        disabled={loading}
         type="submit"
-        onClick={(e) => {
+        onClick={async (e) => {
           e.preventDefault()
-          return simulateFunction()
+          setLoading(true)
+          await simulateFunction()
+          setLoading(false)
         }}
         className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
