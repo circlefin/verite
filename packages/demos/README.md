@@ -1,6 +1,6 @@
-# Verity Demos
+# Verite Demos
 
-This package contains examples showcasing issuance, verification, and revocation of Verifiable Credentials using the verity protocols.
+This package contains examples showcasing issuance, verification, and revocation of Verifiable Credentials using the Verite protocols.
 
 Additional examples showcase a DeFi use-case and smart contract integration, and a central custody service example in which Verifiable Credentials are generated dynamically.
 

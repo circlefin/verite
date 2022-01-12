@@ -5,7 +5,7 @@ sidebar_position: 4
 
 # Creating a Registry Contract in Solidity
 
-When using the [smart contract pattern](../patterns/smart-contract-verity.md) for verifications, you can use any blockchain you would like. For the sake of this guide, we will focus on [Solidity](https://docs.soliditylang.org/en/v0.8.11/), which is the programming language for the Ethereum Virtual Machine.
+When using the [smart contract pattern](../patterns/smart-contract-verite.md) for verifications, you can use any blockchain you would like. For the sake of this guide, we will focus on [Solidity](https://docs.soliditylang.org/en/v0.8.11/), which is the programming language for the Ethereum Virtual Machine.
 
 ## Setup
 
@@ -31,7 +31,7 @@ The first library we will import into our contract is the `Ownable` library. Thi
 
 The next library we will import is the `ECDSA` library. This library is used to help us decode signed and hashed data.
 
-Finally, we will import the `EIP712` library. This is the most important library in our contract since it is foundational to how we will verify credentials. For more on this, be sure to reference the [Smart Contract Patterns section](../patterns/smart-contract-verity.md).
+Finally, we will import the `EIP712` library. This is the most important library in our contract since it is foundational to how we will verify credentials. For more on this, be sure to reference the [Smart Contract Patterns section](../patterns/smart-contract-verite.md).
 
 To import these libraries, add the following below the Solidity version in our contract:
 
@@ -491,7 +491,7 @@ function _createVerificationRecordUUID(VerificationRecord memory verificationRec
 }
 ```
 
-And that's it. That's the last function. Of course, there are many more you can add when building your own contract, but this is more than enough to get you started. In fact, this is based on the demo contract Verity uses.
+And that's it. That's the last function. Of course, there are many more you can add when building your own contract, but this is more than enough to get you started. In fact, this is based on the demo contract Verite uses.
 
 # Wrapping Up
 

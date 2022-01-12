@@ -1,4 +1,4 @@
-# Verity Smart Contract Examples
+# Verite Smart Contract Examples
 
 These recipes illustrate how smart contracts use results of Verifiable Credential verifications even when the contracts are not technically or economically capable of executing the verifications themselves.
 
