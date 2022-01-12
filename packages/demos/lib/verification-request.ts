@@ -4,7 +4,7 @@ import {
   buildCreditScoreVerificationOffer,
   buildKycVerificationOffer,
   VerificationOffer
-} from "@verity/core"
+} from "verite"
 import { v4 as uuidv4 } from "uuid"
 import { saveVerificationOffer } from "./database/verificationRequests"
 import { NotFoundError } from "./errors"

@@ -4,7 +4,7 @@ import {
   JWT,
   RevocableCredential,
   RevocationListCredential
-} from "@verity/core"
+} from "verite"
 import { useEffect, useState } from "react"
 import { LoadingButton } from "../../shared/LoadingButton"
 

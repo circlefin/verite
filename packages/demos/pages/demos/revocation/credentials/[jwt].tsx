@@ -1,5 +1,9 @@
 import { Disclosure } from "@headlessui/react"
 import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
+import { NextPage } from "next"
+import Link from "next/link"
+import { useState } from "react"
+import { isRevoked } from "verite"
 import {
   decodeVerifiableCredential,
   fetchStatusList,
@@ -7,11 +11,7 @@ import {
   MaybeRevocableCredential,
   RevocableCredential,
   RevocationListCredential
-} from "@verity/core"
-import { isRevoked } from "@verity/core"
-import { NextPage } from "next"
-import Link from "next/link"
-import { useState } from "react"
+} from "verite"
 import RevocationLayout from "../../../../components/demos/revocation/Layout"
 import RevokeButton from "../../../../components/demos/revocation/RevokeButton"
 import { requireAuth } from "../../../../lib/auth-fns"

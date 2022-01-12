@@ -1,7 +1,7 @@
 import { promisify } from "util"
-import { ValidationError, VerificationError } from "@verity/core"
 import Cors from "cors"
 import { NextApiHandler, NextApiRequest } from "next"
+import { ValidationError, VerificationError } from "verite"
 import { MethodNotAllowedError } from "./errors"
 
 const cors = promisify(

@@ -1,6 +1,6 @@
-import { buildKycVerificationOffer } from "@verity/core"
 import { createMocks } from "node-mocks-http"
 import { v4 as uuidv4 } from "uuid"
+import { buildKycVerificationOffer } from "verite"
 import { saveVerificationOffer } from "../../../../../lib/database"
 import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/demos/verifier/[id]/index"

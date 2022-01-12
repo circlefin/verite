@@ -1,5 +1,5 @@
-import { JWT } from "@verity/core"
 import jwt from "jsonwebtoken"
+import { JWT } from "verite"
 import { prisma, User } from "./prisma"
 
 const JWT_ALGORITHM = "HS256"

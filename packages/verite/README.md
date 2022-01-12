@@ -1,4 +1,4 @@
-# `@verity/core`
+# `verite`
 
 This package contains the Verity Javascript SDK for requesting, issuing, consuming, and revoking Verifiable Credentials.
 

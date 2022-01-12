@@ -4,8 +4,8 @@ import {
   validateVerificationSubmission,
   VerificationResultResponse,
   verificationResult
-} from "@verity/core"
-import type { EncodedPresentationSubmission } from "@verity/core"
+} from "verite"
+import type { EncodedPresentationSubmission } from "verite"
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import {
   findVerificationOffer,

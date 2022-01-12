@@ -1,10 +1,10 @@
 import { Contract } from "@ethersproject/contracts"
 import { Wallet } from "@ethersproject/wallet"
-import { VerificationResultResponse, verificationResult } from "@verity/core"
 import {
   getProvider,
   registryContractArtifact
 } from "@verity/demos/lib/eth-fns"
+import { VerificationResultResponse, verificationResult } from "verite"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 
 export default apiHandler<VerificationResultResponse>(async (req, res) => {

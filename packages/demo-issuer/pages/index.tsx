@@ -8,13 +8,13 @@ import {
   DecodedCredentialFulfillment,
   decodeCredentialApplication,
   DecodedCredentialApplication
-} from "@verity/core"
+} from "verite"
 import type {
   CredentialManifest,
   RevocablePresentation,
   Verifiable,
   W3CPresentation
-} from "@verity/core"
+} from "verite"
 import Head from "next/head"
 import QRCode from "qrcode.react"
 import { useState } from "react"
