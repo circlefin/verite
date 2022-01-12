@@ -31,7 +31,6 @@ task("faucet", "Sends 1 ETH to an address")
       value: hre.ethers.constants.WeiPerEther
     })
     await tx.wait()
-
     console.log(`Transferred 1 ETH to ${receiver}`)
   })
 
@@ -62,7 +61,8 @@ task("registryAddVerifier", "Add a Verifier to the contract")
       url: taskArgs.url,
       signer: taskArgs.address
     }
-    await registry.addVerifier(taskArgs.address, info)
+    const tx = await registry.addVerifier(taskArgs.address, info)
+    await tx.wait()
     console.log(`Added ${taskArgs.address} as a verifier`)
   })
 
@@ -83,7 +83,8 @@ task("registryUpdateVerifier", "Update information about a Verifier")
       url: taskArgs.url,
       signer: taskArgs.address
     }
-    await registry.updateVerifier(taskArgs.address, info)
+    const tx = await registry.updateVerifier(taskArgs.address, info)
+    await tx.wait()
     console.log(`Updated Verifier information for ${taskArgs.address}`)
   })
 
@@ -94,7 +95,8 @@ task("registryRemoveVerifier", "Remove a Verifier from the registry")
     const registryFactory: ContractFactory =
       await hre.ethers.getContractFactory("VerificationRegistry")
     const registry = registryFactory.attach(taskArgs.registry)
-    await registry.removeVerifier(taskArgs.address)
+    const tx = await registry.removeVerifier(taskArgs.address)
+    await tx.wait()
     console.log(`Removed verifier: ${taskArgs.address}`)
   })
 
@@ -207,7 +209,8 @@ task(
     const registryFactory: ContractFactory =
       await hre.ethers.getContractFactory("VerificationRegistry")
     const registry = registryFactory.attach(taskArgs.registry)
-    await registry.revokeVerification(taskArgs.uuid)
+    const tx = await registry.revokeVerification(taskArgs.uuid)
+    await tx.wait()
     console.log(`Revoked verification with UUID: ${taskArgs.uuid}`)
   })
 
@@ -221,7 +224,8 @@ task(
     const registryFactory: ContractFactory =
       await hre.ethers.getContractFactory("VerificationRegistry")
     const registry = registryFactory.attach(taskArgs.registry)
-    await registry.removeVerification(taskArgs.uuid)
+    const tx = await registry.removeVerification(taskArgs.uuid)
+    await tx.wait()
     console.log(`Revoked verification with UUID: ${taskArgs.uuid}`)
   })
 
@@ -268,7 +272,11 @@ task(
       verificationResult
     )
 
-    await registry.registerVerification(verificationResult, signature)
+    const tx = await registry.registerVerification(
+      verificationResult,
+      signature
+    )
+    await tx.wait()
     console.log(
       `Registered Verification for address: ${
         taskArgs.address
