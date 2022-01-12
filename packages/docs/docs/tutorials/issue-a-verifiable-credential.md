@@ -20,7 +20,7 @@ In order to issue a credential, you must have some way of identifying yourself a
 To start, you should create a DID keypair.
 
 ```ts
-import { randomDidKey } from "@centre/verite"
+import { randomDidKey } from "verite"
 
 const issuerDidKey = randomDidKey()
 ```
@@ -57,7 +57,7 @@ Generally, you would follow the [Presentation Exchange (PEx)](https://identity.f
 To do so, you need to create a [Credential Manifest](https://identity.foundation/credential-manifest/) showcasing what attestations you offer as Verifiable Credentials. In this example, we will offer a "Know Your Customer, Anti-Money Laundering" attestation (KYC/AML Attestation), meaning we are compliant with US regulations and have checked your account to determined you are not a bad actor. The benefit of this type of VC is that another service can be compliant with regulations without any personal information exposed in the VC.
 
 ```ts
-import { buildKycAmlManifest } from "@centre/verite"
+import { buildKycAmlManifest } from "verite"
 
 const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
 ```
@@ -67,7 +67,7 @@ This manifest contains instructions for the subject to use to request a VC.
 The subject uses that manifest to build a “Credential Application”, which serves as a request for a VC. For example, a subject could create the application as such:
 
 ```ts
-import { randomDidKey, buildCredentialApplication } from "@centre/verite"
+import { randomDidKey, buildCredentialApplication } from "verite"
 
 // The subject needs a did:key, generate a random one:
 const subjectDidKey = randomDidKey()
@@ -91,7 +91,7 @@ import {
   decodeCredentialApplication,
   buildIssuer,
   KYCAMLAttestation
-} from "@centre/verite"
+} from "verite"
 
 const decodedApplication = await decodeCredentialApplication(application)
 

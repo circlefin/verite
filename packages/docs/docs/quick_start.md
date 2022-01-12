@@ -13,13 +13,13 @@ For more detailed guides, please see the [For Developers](./tutorials/getting-st
 
 ## Installing Verite
 
-The entire Verite library is housed in a single monorepo called `@centre/verity`. To install the library, simply run either:
+The entire Verite library is housed in a single monorepo called `verite`. To install the library, simply run either:
 
-`npm i @centre/verity`
+`npm i verite`
 
 or
 
-`yarn add @centre/verity`
+`yarn add verite`
 
 ## Example Code
 
@@ -36,7 +36,7 @@ import {
   validateVerificationSubmission,
   decodeVerifiableCredential,
   decodeVerifiablePresentation
-} from "@centre/verity"
+} from "verite"
 import { v4 as uuidv4 } from "uuid"
 
 //  Simulation of key generation and storage
