@@ -109,7 +109,7 @@ export const unrevokeCredential = async (
 }
 
 /**
- * Given a verififable credential, check if it has been revoked.
+ * Given a verifiable credential, check if it has been revoked.
  *
  * @returns true if the credential is revoked, false otherwise
  */
