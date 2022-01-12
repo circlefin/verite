@@ -3,11 +3,11 @@
 echo "Installing dependencies..."
 npm install
 
-echo "Setting up verity..."
+echo "Setting up verite..."
 npm run setup --workspace verite
 
 echo "Setting up docs..."
-npm run setup --workspace @verity/docs
+npm run setup --workspace @verite/docs
 
 echo "Setting up demos..."
-npm run setup --workspace @verity/demos
+npm run setup --workspace @verite/demos

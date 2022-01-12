@@ -20,7 +20,7 @@ const TransferStatus: FC<TransferStatusProps> = ({
       {verification ? (
         <>
           <label className="block text-sm font-medium text-gray-700">
-            Scan this QR code with the verity app to provide your KYC Verifiable
+            Scan this QR code with the Verite app to provide your KYC Verifiable
             Credential:
           </label>
           <div className="py-4">

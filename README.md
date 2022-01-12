@@ -20,7 +20,7 @@ Each package in this repository lives in the `packages/` directory.
 The primary packages in this repository are:
 
 - [verite/docs](./packages/docs) - Documentation for the Verite
-- [verite/core](./packages/verity) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
+- [verite/core](./packages/verite) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
 - [verite/contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verite into a smart contract.
 - [verite/demos](./packages/demos) - A demo walkthrough of the entire Verite project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
 
@@ -112,7 +112,7 @@ Run tests by running
 npm run test
 ```
 
-**NOTE** Be sure to have built the `verite/core` package by running `npm run build:verity`.
+**NOTE** Be sure to have built the `verite/core` package by running `npm run build:verite`.
 
 ### Linting the codebase
 

@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-echo "Building verity..."
+echo "Building verite..."
 npm run build

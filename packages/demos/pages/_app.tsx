@@ -45,7 +45,7 @@ DemoApp.getInitialProps = async (appContext) => {
     // Rendering on the server, checkif the user is authenticated
     const cookies = new Cookies(appContext.ctx.req.headers.cookie)
 
-    if (cookies.get("verity-auth") === "1") {
+    if (cookies.get("verite-auth") === "1") {
       appProps.pageProps.passwordSuccessful = true
     }
   }

@@ -28,7 +28,7 @@ This project is built using TypeScript, and needs to be built before it can be c
 From the root of the monorepo, run:
 
 ```sh
-npm run build:verity
+npm run build:verite
 ```
 
 ### Folder Structure

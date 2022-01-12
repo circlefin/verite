@@ -20,13 +20,13 @@ export default apiHandler<Response>(async (req, res) => {
   const isAuthenticated = await authenticate(password)
 
   if (isAuthenticated) {
-    cookies.set("verity-auth", "1", {
+    cookies.set("verite-auth", "1", {
       domain: process.env.COOKIE_DOMAIN,
       httpOnly: false
     })
     res.status(200).json({ status: "ok" })
   } else {
-    cookies.set("verity-auth")
+    cookies.set("verite-auth")
     res.status(400).json({ status: "invalid" })
   }
 })
