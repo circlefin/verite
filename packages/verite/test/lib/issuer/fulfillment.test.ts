@@ -14,7 +14,7 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const issuerDidKey = await randomDidKey()
     const clientDidKey = await randomDidKey()
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-    const credentialIssuer = { id: issuer.did, name: "Verity" }
+    const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
     const credentialApplication = await buildCredentialApplication(
       clientDidKey,

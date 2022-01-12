@@ -18,7 +18,7 @@ export default apiHandler<VerificationResultResponse>(async (req, res) => {
 
   // VerificationInfo objects are encoded, hashed, and signed following EIP-712
   // See https://eips.ethereum.org/EIPS/eip-712
-  // Verity's domain separator includes a name, version, chainId, and
+  // Verite's domain separator includes a name, version, chainId, and
   // verifyingContract. Since the demos support contracts across multiple
   // chains and addresses, we'll need to specify them when generating the
   // verification result.

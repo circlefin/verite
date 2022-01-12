@@ -255,7 +255,7 @@ export default function Home({
   return (
     <div className="min-h-screen py-2 bg-gray-50">
       <Head>
-        <title>Verity Demo: Issuer</title>
+        <title>Verite Demo: Issuer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

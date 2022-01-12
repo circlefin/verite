@@ -18,7 +18,7 @@ const Home: NextPage = () => {
   return (
     <Layout title="Decentralized Identity for Crypto Finance.">
       <p className="mx-auto mb-8 text-xl text-gray-500 max-w-prose">
-        Verity defines data models, protocol recipes, and open source software
+        Verite defines data models, protocol recipes, and open source software
         that links identity proofs to crypto finance experiences.
       </p>
 
@@ -109,7 +109,7 @@ const Home: NextPage = () => {
                 People, institutions, and smart contracts can verify credentials
                 without accessing the private information used in the issuance
                 of the claim and without leaking information to the issuer.
-                Verity implements{" "}
+                Verite implements{" "}
                 <a
                   href="https://identity.foundation/presentation-exchange/"
                   target="_blank"

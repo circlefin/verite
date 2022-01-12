@@ -8,7 +8,7 @@ export const kycManifest: CredentialManifest = buildKycAmlManifest(
   {
     thumbnail: {
       uri: fullURL("/img/kyc-aml-thumbnail.png"),
-      alt: "Verity Logo"
+      alt: "Verite Logo"
     },
     hero: {
       uri: fullURL("/img/kyc-aml-hero.png"),

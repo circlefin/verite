@@ -14,7 +14,7 @@ describe("buildCredentialApplication", () => {
 
     // 1. CLIENT: The client gets a DID
     const clientDidKey = await randomDidKey()
-    const credentialIssuer = { id: issuer.did, name: "Verity" }
+    const credentialIssuer = { id: issuer.did, name: "Verite" }
     const kycManifest = buildKycAmlManifest(credentialIssuer)
 
     const credentialApplication = await buildCredentialApplication(

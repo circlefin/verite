@@ -17,12 +17,12 @@ Object {
   "id": "KYCAMLAttestation",
   "issuer": Object {
     "id": "did:web:demos.verite.id",
-    "name": "Verity",
+    "name": "Verite",
     "styles": Object {},
   },
   "output_descriptors": Array [
     Object {
-      "description": "Attestation that Verity has completed KYC/AML verification for this subject",
+      "description": "Attestation that Verite has completed KYC/AML verification for this subject",
       "display": Object {
         "description": Object {
           "text": "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers.",
@@ -56,11 +56,11 @@ Object {
           ],
         },
         "title": Object {
-          "text": "Verity KYC Attestation",
+          "text": "Verite KYC Attestation",
         },
       },
       "id": "kycAttestationOutput",
-      "name": "Proof of KYC from Verity",
+      "name": "Proof of KYC from Verite",
       "schema": Array [
         Object {
           "uri": "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation",
@@ -78,7 +78,7 @@ Object {
           "color": "#FFFFFF",
         },
         "thumbnail": Object {
-          "alt": "Verity Logo",
+          "alt": "Verite Logo",
           "uri": "http://test.host/img/kyc-aml-thumbnail.png",
         },
       },

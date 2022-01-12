@@ -9,7 +9,7 @@ export default async function challenges(
   // Generate manifest
   const manifest = buildKycAmlManifest({
     id: process.env.NEXT_PUBLIC_ISSUER_DID,
-    name: "Verity"
+    name: "Verite"
   })
 
   // Wrap the manifest with additional metadata, such as the URL to post the

@@ -17,12 +17,12 @@ Object {
   "id": "CreditScoreAttestation",
   "issuer": Object {
     "id": "did:web:demos.verite.id",
-    "name": "Verity",
+    "name": "Verite",
     "styles": Object {},
   },
   "output_descriptors": Array [
     Object {
-      "description": "Attestation that Verity has performed a Credit Score check for this subject",
+      "description": "Attestation that Verite has performed a Credit Score check for this subject",
       "display": Object {
         "description": Object {
           "text": "The Credit Score authority processes credit worthiness analysis, potentially employing a number of internal and external vendor providers.",
@@ -63,11 +63,11 @@ Object {
           ],
         },
         "title": Object {
-          "text": "Verity Risk Score",
+          "text": "Verite Risk Score",
         },
       },
       "id": "creditScoreAttestationOutput",
-      "name": "Proof of Credit Score from Verity",
+      "name": "Proof of Credit Score from Verite",
       "schema": Array [
         Object {
           "uri": "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation",
@@ -85,7 +85,7 @@ Object {
           "color": "#FFFFFF",
         },
         "thumbnail": Object {
-          "alt": "Verity Logo",
+          "alt": "Verite Logo",
           "uri": "http://test.host/img/credit-score-thumbnail.png",
         },
       },

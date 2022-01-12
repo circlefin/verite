@@ -8,7 +8,7 @@ export const creditScoreManifest: CredentialManifest = buildCreditScoreManifest(
   {
     thumbnail: {
       uri: fullURL("/img/credit-score-thumbnail.png"),
-      alt: "Verity Logo"
+      alt: "Verite Logo"
     },
     hero: {
       uri: fullURL("/img/credit-score-hero.png"),

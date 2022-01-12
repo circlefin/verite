@@ -259,7 +259,7 @@ export default function Home(): JSX.Element {
   return (
     <div className="min-h-screen py-2">
       <Head>
-        <title>Verity Demo: Verifier</title>
+        <title>Verite Demo: Verifier</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
