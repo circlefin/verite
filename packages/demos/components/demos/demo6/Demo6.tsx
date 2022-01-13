@@ -275,6 +275,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       } else if (verification.status === "rejected") {
         setVerification(undefined)
         setStatusMessage("Verification failed.")
+        setPage(2)
       }
     } catch (e) {
       setVerification(undefined)
@@ -305,7 +306,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       subjectAddress: account,
       contractAddress: permissionedTokenContractAddress()
     }
-    await fetch(
+    const response = await fetch(
       fullURL(
         `/api/demos/demo6/simulate-verification?registryAddress=${registryContractAddress()}`
       ),
@@ -317,10 +318,23 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         body: JSON.stringify(postData)
       }
     )
-    // For now the verifier is merely returning a signed result as if verification succeeded.
-    // What should happen is that this component polls the verifier to see when verification
-    // has succeeded (or failed).
-    setStatusMessage("Verification complete. You can now deposit funds.")
+
+    // The simulate API call waits for the Verification Result to be mined.
+    // Therefore, if we get a successful API call, we know it was successful.
+    // This is not ideal for most use cases as it would require keeping the
+    // API call alive for a relatively long time.
+    // See the workflow that scans the QR code for a more robust solution that
+    // polls the verifier for the verification status.
+    const json = await response.json()
+    if (json.signature && json.verificationResult) {
+      setStatusMessage("Verification complete. You can now deposit funds.")
+    } else {
+      console.error(json)
+      setTransactionError(
+        `Simulating Verification Failed: ${JSON.stringify(json)}`
+      )
+    }
+
     setPage(2)
   }
 
@@ -551,10 +565,12 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         If that happened, we show a message here.
       */}
         {transactionError && (
-          <TransactionErrorMessage
-            message={transactionError}
-            dismiss={() => dismissTransactionError()}
-          />
+          <div className="mb-8">
+            <TransactionErrorMessage
+              message={transactionError}
+              dismiss={() => dismissTransactionError()}
+            />
+          </div>
         )}
 
         {statusMessage && (
