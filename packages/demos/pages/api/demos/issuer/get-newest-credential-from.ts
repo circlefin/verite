@@ -1,4 +1,4 @@
-import { MaybeRevocableCredential } from "@verity/core"
+import { MaybeRevocableCredential } from "verite"
 import { apiHandler } from "../../../../lib/api-fns"
 import { findNewestCredentialSinceDate } from "../../../../lib/database/credentials"
 

@@ -1,4 +1,4 @@
-import type { CredentialManifest } from "@verity/core"
+import type { CredentialManifest } from "verite"
 import { creditScoreManifest } from "./creditScore"
 import { kycManifest } from "./kyc"
 

@@ -1,7 +1,4 @@
-import type {
-  VerificationOffer,
-  VerificationResultResponse
-} from "@verity/core"
+import type { VerificationOffer, VerificationResultResponse } from "verite"
 import { prisma } from "./prisma"
 
 export async function saveVerificationOffer(

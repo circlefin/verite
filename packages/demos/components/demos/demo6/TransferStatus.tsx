@@ -1,6 +1,7 @@
 import QRCode from "qrcode.react"
-import { FC } from "react"
+import { FC, useState } from "react"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
+import { LoadingButton } from "../../shared/LoadingButton"
 import Spinner from "../../shared/Spinner"
 
 type TransferStatusProps = {
@@ -12,6 +13,8 @@ const TransferStatus: FC<TransferStatusProps> = ({
   simulateFunction,
   verification
 }) => {
+  const [loading, setLoading] = useState<boolean>(false)
+
   return (
     <div>
       <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -20,7 +23,7 @@ const TransferStatus: FC<TransferStatusProps> = ({
       {verification ? (
         <>
           <label className="block text-sm font-medium text-gray-700">
-            Scan this QR code with the verity app to provide your KYC Verifiable
+            Scan this QR code with the Verite app to provide your KYC Verifiable
             Credential:
           </label>
           <div className="py-4">
@@ -38,16 +41,20 @@ const TransferStatus: FC<TransferStatusProps> = ({
       <label className="block text-sm font-medium text-gray-700">
         Alternatively, you can simulate verification:
       </label>
-      <button
+      <LoadingButton
+        loading={loading}
         type="submit"
-        onClick={(e) => {
+        style="dot-loader"
+        onClick={async (e) => {
           e.preventDefault()
-          return simulateFunction()
+          setLoading(true)
+          await simulateFunction()
+          setLoading(false)
         }}
-        className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         Simulate Verification
-      </button>
+      </LoadingButton>
     </div>
   )
 }

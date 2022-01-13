@@ -8,8 +8,8 @@ import {
   buildPresentationSubmission,
   VerificationOffer,
   ChallengeTokenUrlWrapper
-} from "@verity/core"
-import type { Verifiable } from "@verity/core"
+} from "verite"
+import type { Verifiable } from "verite"
 import Head from "next/head"
 import QRCode from "qrcode.react"
 import { useState } from "react"
@@ -38,7 +38,7 @@ const issueCredential = async () => {
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
-    process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+    process: "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
     approvalDate: new Date().toISOString()
   }
 
@@ -259,7 +259,7 @@ export default function Home(): JSX.Element {
   return (
     <div className="min-h-screen py-2">
       <Head>
-        <title>Verity Demo: Verifier</title>
+        <title>Verite Demo: Verifier</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

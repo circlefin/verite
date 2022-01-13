@@ -1,6 +1,6 @@
-import type { CredentialOffer } from "@verity/core"
-import { buildCredentialOffer } from "@verity/core"
 import { v4 as uuidv4 } from "uuid"
+import type { CredentialOffer } from "verite"
+import { buildCredentialOffer } from "verite"
 import { apiHandler } from "../../../../../../lib/api-fns"
 import { NotFoundError } from "../../../../../../lib/errors"
 import { MANIFEST_MAP } from "../../../../../../lib/manifest"

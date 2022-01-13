@@ -13,7 +13,7 @@ This tutorial demonstrates:
 
 ## About
 
-Verity's revocation implementation uses the approach described in [W3C Status List 2021](https://w3c-ccg.github.io/vc-status-list-2021/) -- a highly compressible, privacy-promoting approach.
+Verite's revocation implementation uses the approach described in [W3C Status List 2021](https://w3c-ccg.github.io/vc-status-list-2021/) -- a highly compressible, privacy-promoting approach.
 
 In this method, the revocation status of a given verifiable credential is stored in a specified index of a bitstring. If the value is 0, the credential is not revoked; otherwise it's revoked.
 
@@ -98,7 +98,7 @@ const subject = randomDidKey()
 // Stubbed out credential data
 const attestation: KYCAMLAttestation = {
   "@type": "KYCAMLAttestation",
-  process: "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+  process: "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
   approvalDate: new Date().toISOString()
 }
 
@@ -125,13 +125,13 @@ In a real implementation, an issuer may want to maintain multiple revocation sta
 
 ## Revoking a Credential
 
-When an issuer needs to revoke a credential, the bitstring approach requires the credential's index within the bitstring to be flipped to 1. Verity libraries expose a convenience method for issuers, as follows:
+When an issuer needs to revoke a credential, the bitstring approach requires the credential's index within the bitstring to be flipped to 1. Verite libraries expose a convenience method for issuers, as follows:
 
 ```ts
 statusList = await revokeCredential(credential, statusList, signer)
 ```
 
-Verity similarly exposes `unrevokeCredential` to undo the revocation. Unrevoking doesn't have to be supported by issuers; some issuers choose to issue a new credential instead.
+Verite similarly exposes `unrevokeCredential` to undo the revocation. Unrevoking doesn't have to be supported by issuers; some issuers choose to issue a new credential instead.
 
 In a deployment, the revoking and unrevoking operations could be exposed by authenticated API calls that would be accessed by an authorized party, such as a compliance agent.
 
@@ -139,7 +139,7 @@ Note that revoking a credential doesn't change the subject's credential or the r
 
 ## Verification
 
-The credential itself will inform a verifier whether the credential's status needs to be checked and how. A revocable Verity credential will have a `credentialStatus` field of type `RevocationList2021Status`, which informs the verifier how to proceed.
+The credential itself will inform a verifier whether the credential's status needs to be checked and how. A revocable Verite credential will have a `credentialStatus` field of type `RevocationList2021Status`, which informs the verifier how to proceed.
 
 At verification time, the verifier will fetch the content at the `revocationListUrl`. This content will be a verifiable credential, of type `"StatusList2021Credential"`, which contains the bitstring at the `credentialSubject.encodedList` property (zlib-compressed, base64-encoded). See [StatusList2021Credential](https://w3c-ccg.github.io/vc-status-list-2021/#statuslist2021credential) for additional details.
 
@@ -165,7 +165,7 @@ At verification time, the verifier will fetch the content at the `revocationList
 
 The verifier then inspects the credential's index in the bitstring to determine if it's revoked.
 
-Verity exposes a helper function `isRevoked`:
+Verite exposes a helper function `isRevoked`:
 
 ```ts
 await isRevoked(credential, statusList)

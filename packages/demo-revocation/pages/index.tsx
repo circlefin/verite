@@ -9,13 +9,13 @@ import {
   RevocationListCredential,
   revokeCredential,
   unrevokeCredential
-} from "@verity/core"
+} from "verite"
 import type {
   KYCAMLAttestation,
   Verifiable,
   W3CCredential,
   Issuer
-} from "@verity/core"
+} from "verite"
 import Head from "next/head"
 import useSWRImmutable from "swr/immutable"
 import useSWR from "swr"
@@ -59,7 +59,7 @@ const issueCredential = async (
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = {
     "@type": "KYCAMLAttestation",
-    process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+    process: "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
     approvalDate: new Date().toISOString()
   }
 

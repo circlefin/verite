@@ -2,7 +2,6 @@
 // by a verifier to this dapp
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers"
 import { InformationCircleIcon, XIcon } from "@heroicons/react/solid"
-import type { VerificationResultResponse } from "@verity/core"
 import { useWeb3React } from "@web3-react/core"
 import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
@@ -14,7 +13,8 @@ import {
   contractFetcher,
   permissionedTokenContractAddress,
   permissionedTokenContractArtifact,
-  registryContractAddress
+  registryContractAddress,
+  registryContractArtifact
 } from "../../../lib/eth-fns"
 import { fullURL } from "../../../lib/utils"
 import type { VerificationRequestResponse } from "../../../lib/verification-request"
@@ -31,6 +31,7 @@ import TransactionErrorMessage from "./TransactionErrorMessage"
 import TransferStatus from "./TransferStatus"
 import VerificationPrompt from "./VerificationPrompt"
 import VerifierFaucet from "./VerifierFaucet"
+import VerifierIsNotAVerifier from "./VerifierIsNotAVerifier"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
 
 export type Asset = {
@@ -45,13 +46,6 @@ export type Asset = {
   // Address where to transfer tokens
   depositAddress: string
 }
-
-const contractAddress: string =
-  process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS ||
-  permissionedTokenContractAddress()
-
-const registryAddress: string =
-  process.env.NEXT_PUBLIC_ETH_REGISTRY_ADDRESS || registryContractAddress()
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -106,6 +100,18 @@ export const useBalance = (
   return result
 }
 
+export const useIsVerifier = (
+  registryAddress: string,
+  verifierAddress: string
+): SWRResponse<boolean, unknown> => {
+  const { library } = useWeb3React<Web3Provider>()
+  const result = useSWR([registryAddress, "isVerifier", verifierAddress], {
+    fetcher: contractFetcher(library, registryContractArtifact().abi)
+  })
+
+  return result
+}
+
 // Generic SWR fetcher for calling arbitrary methods.
 const fetcher =
   (library) =>
@@ -138,8 +144,14 @@ type Props = {
 
 const Demo6: FC<Props> = ({ verifierAddress }) => {
   const { account, library } = useWeb3React<Web3Provider>()
-  const { data: balance, mutate } = useBalance(contractAddress)
+  const { data: balance, mutate } = useBalance(
+    permissionedTokenContractAddress()
+  )
   const { data: verifierEthBalance } = useEthBalance(library, verifierAddress)
+  const { data: isVerifier } = useIsVerifier(
+    registryContractAddress(),
+    verifierAddress
+  )
 
   // token name and symbol
   const [tokenData, setTokenData] = useState<{ name: string; symbol: string }>()
@@ -155,8 +167,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   // non-error status message for rendering
   const [statusMessage, setStatusMessage] = useState("")
   // verification-related state
-  const [verificationInfoSet, setVerificationInfoSet] =
-    useState<VerificationResultResponse>(null)
   const [verification, setVerification] =
     useState<VerificationRequestResponse>(null)
 
@@ -164,7 +174,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   const [pollVerificationInterval, setPollVerificationInterval] = useState(null)
 
   const token = new Contract(
-    contractAddress,
+    permissionedTokenContractAddress(),
     permissionedTokenContractArtifact().abi,
     library.getSigner(0)
   )
@@ -239,7 +249,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       // Create a Verification Request
       const resp = await fetch(
         fullURL(
-          `/api/demos/verifier?type=kyc&subjectAddress=${account}&registryAddress=${registryAddress}&verifierSubmit=true`
+          `/api/demos/verifier?type=kyc&subjectAddress=${account}&registryAddress=${registryContractAddress()}&verifierSubmit=true`
         ),
         { method: "POST" }
       )
@@ -260,17 +270,15 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
       if (verification.status === "approved") {
         setVerification(undefined)
-        setVerificationInfoSet(verification.result)
         setStatusMessage("Verification complete. You can now deposit funds.")
         setPage(2)
       } else if (verification.status === "rejected") {
         setVerification(undefined)
-        setVerificationInfoSet(undefined)
         setStatusMessage("Verification failed.")
+        setPage(2)
       }
     } catch (e) {
       setVerification(undefined)
-      setVerificationInfoSet(undefined)
 
       setStatusMessage(
         "API call to Verifier failed. Are you running the demo server?"
@@ -279,7 +287,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   }
   // End demos verifier
 
-  const getVerificationResult = async () => {
+  const simulateVerification = async () => {
     // Clear verification if one exists. This will stop polling on the
     // unsimulated verification workflow
     setVerification(undefined)
@@ -296,11 +304,11 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
     const postData = {
       subjectAddress: account,
-      contractAddress: contractAddress
+      contractAddress: permissionedTokenContractAddress()
     }
-    const res = await fetch(
+    const response = await fetch(
       fullURL(
-        `/api/demos/demo6/simulate-verification?registryAddress=${registryAddress}`
+        `/api/demos/demo6/simulate-verification?registryAddress=${registryContractAddress()}`
       ),
       {
         method: "POST",
@@ -310,14 +318,23 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         body: JSON.stringify(postData)
       }
     )
-    const verificationInfoSet: VerificationResultResponse = await res.json()
 
-    // For now the verifier is merely returning a signed result as if verification succeeded.
-    // What should happen is that this component polls the verifier to see when verification
-    // has succeeded (or failed).
+    // The simulate API call waits for the Verification Result to be mined.
+    // Therefore, if we get a successful API call, we know it was successful.
+    // This is not ideal for most use cases as it would require keeping the
+    // API call alive for a relatively long time.
+    // See the workflow that scans the QR code for a more robust solution that
+    // polls the verifier for the verification status.
+    const json = await response.json()
+    if (json.signature && json.verificationResult) {
+      setStatusMessage("Verification complete. You can now deposit funds.")
+    } else {
+      console.error(json)
+      setTransactionError(
+        `Simulating Verification Failed: ${JSON.stringify(json)}`
+      )
+    }
 
-    setVerificationInfoSet(verificationInfoSet)
-    setStatusMessage("Verification complete. You can now deposit funds.")
     setPage(2)
   }
 
@@ -379,7 +396,6 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         message.indexOf("VerificationRegistry:") != -1
       ) {
         setVerification(undefined)
-        setVerificationInfoSet(undefined)
       }
 
       // This is the error message to kick off the Verification workflow. We
@@ -489,9 +505,16 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
 
   let children
 
-  // If the user is just beginning the demo and has no tokens, we show them a
-  // faucet button.
-  if (verifierEthBalance.eq(0)) {
+  // Before we begin the demo, check that the verifier is properly configured.
+  if (!isVerifier) {
+    children = (
+      <VerifierIsNotAVerifier
+        registryAddress={registryContractAddress()}
+        verifierAddress={verifierAddress}
+      />
+    )
+  } else if (verifierEthBalance.eq(0)) {
+    // Verifier needs ETH to pay fees
     children = (
       <VerifierFaucet
         faucetFunction={ethFaucet}
@@ -499,6 +522,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       />
     )
   } else if (page === -1 && balance.eq(0)) {
+    // PUSDC faucet for the end-user so they have something to deposit
     children = (
       <NoTokensMessage faucetFunction={tokenFaucet} selectedAddress={account} />
     )
@@ -520,7 +544,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
   } else if (page === 1) {
     children = (
       <TransferStatus
-        simulateFunction={getVerificationResult}
+        simulateFunction={simulateVerification}
         verification={verification}
       ></TransferStatus>
     )
@@ -541,10 +565,12 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
         If that happened, we show a message here.
       */}
         {transactionError && (
-          <TransactionErrorMessage
-            message={transactionError}
-            dismiss={() => dismissTransactionError()}
-          />
+          <div className="mb-8">
+            <TransactionErrorMessage
+              message={transactionError}
+              dismiss={() => dismissTransactionError()}
+            />
+          </div>
         )}
 
         {statusMessage && (

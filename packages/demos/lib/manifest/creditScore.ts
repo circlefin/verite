@@ -1,5 +1,5 @@
-import { buildCreditScoreManifest } from "@verity/core"
-import type { CredentialManifest } from "@verity/core"
+import { buildCreditScoreManifest } from "verite"
+import type { CredentialManifest } from "verite"
 import { fullURL } from "../utils"
 import { manifestIssuer } from "./issuer"
 
@@ -8,7 +8,7 @@ export const creditScoreManifest: CredentialManifest = buildCreditScoreManifest(
   {
     thumbnail: {
       uri: fullURL("/img/credit-score-thumbnail.png"),
-      alt: "Verity Logo"
+      alt: "Verite Logo"
     },
     hero: {
       uri: fullURL("/img/credit-score-hero.png"),

@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+echo "Building verite..."
+npm run build

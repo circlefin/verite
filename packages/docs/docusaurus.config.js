@@ -3,20 +3,20 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: "Verity Documentation",
-  tagline: "Verity decentralized identity for DeFi",
-  url: "https://docs.verity.id",
+  title: "Verite Documentation",
+  tagline: "Verite decentralized identity for DeFi",
+  url: "https://verite.id",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
   organizationName: "centre.io",
-  projectName: "verity-docs",
+  projectName: "verite-docs",
   themeConfig: {
     navbar: {
-      title: "Verity Docs",
+      title: "Verite Docs",
       logo: {
-        alt: "Verity Logo",
+        alt: "Verite Logo",
         src: "img/logo.png"
       },
       items: [
@@ -41,7 +41,7 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "Intro to Verity",
+              label: "Intro to Verite",
               to: "/docs/intro"
             }
           ]
@@ -51,7 +51,7 @@ module.exports = {
           items: [
             {
               label: "Github",
-              href: "https://github.com/centrehq/verity"
+              href: "https://github.com/centrehq/verite"
             }
           ]
         }
@@ -69,11 +69,11 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/centrehq/verity"
+          editUrl: "https://github.com/centrehq/verite"
         },
         blog: {
           showReadingTime: true,
-          editUrl: "hhttps://github.com/centrehq/verity-docs"
+          editUrl: "https://github.com/centrehq/verite-docs"
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css")

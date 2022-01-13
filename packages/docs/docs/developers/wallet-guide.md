@@ -3,11 +3,11 @@ sidebar_label: "Wallet Implementation Guide"
 sidebar_position: 8
 ---
 
-# Verity Wallet Integration Guide
+# Verite Wallet Integration Guide
 
 **Contact**: [identity@centre.io](mailto:identity@centre.io)
 
-This guide is written for developers seeking to integrate Verity into custodial or non-custodial wallets.
+This guide is written for developers seeking to integrate Verite into custodial or non-custodial wallets.
 
 ## Minimal Wallet Requirements - Summary
 
@@ -19,7 +19,7 @@ This guide is written for developers seeking to integrate Verity into custodial 
 
 ## Architectural Foundations
 
-Verity uses a decentralized identity architecture, in which the individual (subject/holder) directly requests and receives credentials from an issuer, storing them in a digital wallet. In this model, individuals decide when and with whom they want to share their credentials, referred to as verifiers, or more generally, relying parties.
+Verite uses a decentralized identity architecture, in which the individual (subject/holder) directly requests and receives credentials from an issuer, storing them in a digital wallet. In this model, individuals decide when and with whom they want to share their credentials, referred to as verifiers, or more generally, relying parties.
 
 ![Identity relationship between issuer, subject, verifier, and registry](/img/design-overview/identity-relationships.png)
 
@@ -27,20 +27,20 @@ The relying party verifies the credential, without necessarily needing to contac
 
 ### Concepts Overview
 
-Verity’s basis is the [W3C Verifiable Credentials (VCs) Data Model](https://www.w3.org/TR/vc-data-model). A credential is a claim made by an issuer about an individual (subject), and a verifiable credential is a cryptographically secure wrapper around the credential.
+Verite's basis is the [W3C Verifiable Credentials (VCs) Data Model](https://www.w3.org/TR/vc-data-model). A credential is a claim made by an issuer about an individual (subject), and a verifiable credential is a cryptographically secure wrapper around the credential.
 
-Following is a list of concepts used in Verity.
+Following is a list of concepts used in Verite.
 
-- **W3C Verifiable Credentials**: flexible, tamper-evident way for an issuer to make a claim about a subject in a way that is independently verifiable and privacy-preserving. VCs are the data model used for Verity claims
+- **W3C Verifiable Credentials**: flexible, tamper-evident way for an issuer to make a claim about a subject in a way that is independently verifiable and privacy-preserving. VCs are the data model used for Verite claims
 - **Verifiable Presentations**: also defined in the VC spec, are a way to securely package a set of VCs for transmission to a relying party, in a way that also allows the subject to prove control over the credentials.
-- **Identifiers, Decentralized Identifiers**: an "identifier" refers to both a subject and an issuer of a VC. The identifier data type is a URI, one of which is a [W3C Decentralized Identifiers (DIDs)](https://www.w3.org/TR/did-core/), which is used in Verity implementations. Verity does not require the use of DIDs, but these are one way to implement identifiers that minimize correlatability and enable proof of control over credentials.
+- **Identifiers, Decentralized Identifiers**: an "identifier" refers to both a subject and an issuer of a VC. The identifier data type is a URI, one of which is a [W3C Decentralized Identifiers (DIDs)](https://www.w3.org/TR/did-core/), which is used in Verite implementations. Verite does not require the use of DIDs, but these are one way to implement identifiers that minimize correlatability and enable proof of control over credentials.
 - **Credential Manifest**: standard from the Decentralized Identity Foundation (DIF) for requesting and receiving a credential. [Credential Manifest](https://identity.foundation/credential-manifest/) allows an issuer to describe (in a machine-readable way) what types (schemas) of credentials they issue, and what their requirements are. It also describes the format for a subject/holder to submit an application for a credential that conforms to those requirements in a machine-readable way.
 - **Presentation Exchange**: A DIF standard enabling a verifier to describe what types of credentials they require from a subject/holder, and how the subject/holder can send a submission. See [DIF Presentation Exchange](https://identity.foundation/presentation-exchange)
 - **Wallet and Credential Interactions**: wallet interaction protocols use a lightweight flow loosely based on the work-in-progress [DIF Wallet and Credential Interactions](https://identity.foundation/waci-presentation-exchange/) spec.
 
 ### Specifications and Libraries Used
 
-See the [list of specifications and spec-conforming libraries](/docs/appendix/specifications-and-libraries) used by Verity.
+See the [list of specifications and spec-conforming libraries](/docs/appendix/specifications-and-libraries) used by Verite.
 
 ## Credential Flows
 
@@ -53,7 +53,7 @@ The credential flows demonstrate use of a non-custodial credential and identifie
 This flow enables a subject to send prerequisite information to the issuer before credential issuance. Prerequisites include:
 
 - subject-controlled identifier (e.g. decentralized identifier) the credential should be issued to, along with a proof of control of the identifier
-- other input credentials requested by the issuer (optional -- not used in initial verity flows)
+- other input credentials requested by the issuer (optional -- not used in initial verite flows)
 
 The process is initiated by the wallet holder scanning a QR code, which allows the wallet to determine the input requirements, asking for consent before sending (typically including cryptographically signed proof). The issuer validates the request, issues a credential to the identifier specified by the subject, and returns the credential
 
@@ -70,7 +70,7 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
 
       ```json
       {
-        "challengeTokenUrl": "https://verity.id/..."
+        "challengeTokenUrl": "https://verite.id/..."
       }
       ```
 
@@ -85,7 +85,7 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
       ```json
       {
         "id": "4487e7d1-7d10-4075-a923-bae9332266c1",
-        "type": "https://verity.id/types/CredentialOffer",
+        "type": "https://verite.id/types/CredentialOffer",
         "from": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
         "created_time": "2021-09-14T01:22:05.816Z",
         "expires_time": "2021-10-14T01:22:05.816Z",
@@ -100,9 +100,9 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
 3. Depending on the wallet implementation, the wallet generally prompts the user for approval to proceed, notifying which data is to be shared (from the credential manifest)
 4. On approval, the wallet generates/provides a decentralized identifier, builds the credential request, and signs it to achieve [proof of identifier control](https://identity.foundation/presentation-exchange/#proof-of-identifier-control).
 
-   1. In the Verity demo, the wallet generates a did:key DID, builds a [credential application](https://identity.foundation/credential-manifest/#credential-application), and signs the credential application, along with the challenge, with the private key corresponding to the DID.
-   1. The Verity library exposes a convenience method `createCredentialApplication` for this purpose -- this is used by demo-wallet in preparing a credential application.
-   1. Note: the Verity demo does not require the wallet to submit credentials for issuance, as the credential recipient is already known to the issuer, but the credential manifest and credential application structures allow for this if needed.
+   1. In the Verite demo, the wallet generates a did:key DID, builds a [credential application](https://identity.foundation/credential-manifest/#credential-application), and signs the credential application, along with the challenge, with the private key corresponding to the DID.
+   1. The Verite library exposes a convenience method `createCredentialApplication` for this purpose -- this is used by demo-wallet in preparing a credential application.
+   1. Note: the Verite demo does not require the wallet to submit credentials for issuance, as the credential recipient is already known to the issuer, but the credential manifest and credential application structures allow for this if needed.
    1. Example: [Credential Application](#credential-application)
 
 5. The wallet sends the credential application to the issuer's endpoint
@@ -114,7 +114,7 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
 6. The issuer issues the credential and returns it to the wallet
 
    1. The issuer accepts and validates the input and, on success, issues a Verifiable Credential.
-   1. In the Verity demo, the issuer replies with a [credential fulfullment](https://identity.foundation/credential-manifest/#credential-fulfillment)-structured result containing a JWT-encoded Verifiable Presentation.
+   1. In the Verite demo, the issuer replies with a [credential fulfullment](https://identity.foundation/credential-manifest/#credential-fulfillment)-structured result containing a JWT-encoded Verifiable Presentation.
    1. Examples:
       1. [Credential Fulfillment](#credential-fulfillment)
       1. [Decoded Credential](#decoded-credential)
@@ -151,7 +151,7 @@ Sample:
 
 ```
 {
-    "challengeTokenUrl": "https://verity.id/..."
+    "challengeTokenUrl": "https://verite.id/..."
 }
 ```
 
@@ -164,7 +164,7 @@ Sample:
 ```json
 {
   "id": "4487e7d1-7d10-4075-a923-bae9332266c1",
-  "type": "https://verity.id/types/CredentialOffer",
+  "type": "https://verite.id/types/CredentialOffer",
   "from": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
   "created_time": "2021-09-14T01:22:05.816Z",
   "expires_time": "2021-10-14T01:22:05.816Z",
@@ -252,19 +252,19 @@ A credential application is sent from the wallet to the issuer before issuance. 
 {
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    "https://verity.id/identity"
+    "https://verite.id/identity"
   ],
   "type": ["VerifiableCredential", "KYCAMLAttestation"],
   "credentialSubject": {
     "KYCAMLAttestation": {
       "@type": "KYCAMLAttestation",
-      "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+      "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z"
     },
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
   },
   "issuer": {
-    "id": "did:web:verity.id"
+    "id": "did:web:verite.id"
   },
   "credentialStatus": {
     "id": "http://192.168.1.16:3000/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91#94372",
@@ -290,7 +290,7 @@ Sample:
 
 ```json
 {
-  "challengeTokenUrl": "https://verity.id/..."
+  "challengeTokenUrl": "https://verite.id/..."
 }
 ```
 
@@ -299,7 +299,7 @@ Sample:
 ```json
 {
     "id": "1308e77f-9ab0-4de7-97a8-ad2111b585bf",
-    "type": "https://verity.id/types/VerificationRequest",
+    "type": "https://verite.id/types/VerificationRequest",
     "from": "did:key:z6MkizuwMHiYpZrBAn64ZnbS2cz5og7iGqAa3nV3EuTj4aaZ",
     "created_time": "2021-09-14T20:19:32.655Z",
     "expires_time": "2021-10-14T20:19:32.655Z",
@@ -346,12 +346,12 @@ Details:
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
           "@type": "KYCAMLAttestation",
-          "process": "https://verity.id/schemas/definitions/1.0.0/kycaml/usa",
+          "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
           "approvalDate": "2021-09-14T02:00:07.540Z"
         }
       },
       "issuer": {
-        "id": "did:web:verity.id"
+        "id": "did:web:verite.id"
       }
     }
   ]

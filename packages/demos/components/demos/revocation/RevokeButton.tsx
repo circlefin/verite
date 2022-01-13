@@ -1,11 +1,11 @@
+import { useEffect, useState } from "react"
 import {
   decodeVerifiableCredential,
   isRevoked,
   JWT,
   RevocableCredential,
   RevocationListCredential
-} from "@verity/core"
-import { useEffect, useState } from "react"
+} from "verite"
 import { LoadingButton } from "../../shared/LoadingButton"
 
 type Props = {

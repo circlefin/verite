@@ -4,7 +4,7 @@ import {
   KYCAMLAttestation,
   CreditScoreAttestation,
   buildIssuer
-} from "@verity/core"
+} from "verite"
 import { NextApiRequest, NextApiResponse } from "next"
 import jwt from "jsonwebtoken"
 
@@ -48,7 +48,7 @@ export default async function credentials(
   if (manifestId === "KYCAMLAttestation") {
     attestation = {
       "@type": "KYCAMLAttestation",
-      process: "https://demos.verity.id/schemas/definitions/1.0.0/kycaml/usa",
+      process: "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
       approvalDate: new Date().toISOString()
     }
   } else if (manifestId === "CreditScoreAttestation") {

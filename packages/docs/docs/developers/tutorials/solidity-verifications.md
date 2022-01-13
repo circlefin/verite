@@ -5,11 +5,11 @@ sidebar_position: 2
 
 # Interacting With a Verification Registry Written in Solidity
 
-As discussed in the [Smart Contract Patterns](../../patterns/smart-contract-verity.md) section of the documentation, using smart contracts to manage verification registries provides a trustless and decentralized mechanism for individuals and organizations to look up verification statuses, verification credentials, revoke credentials, and more. Any smart contract and blockchain can be used, but we will focus on Solidity in this example.
+As discussed in the [Smart Contract Patterns](../../patterns/smart-contract-verite.md) section of the documentation, using smart contracts to manage verification registries provides a trustless and decentralized mechanism for individuals and organizations to look up verification statuses, verification credentials, revoke credentials, and more. Any smart contract and blockchain can be used, but we will focus on Solidity in this example.
 
 Solidity is the language for the Ethereum Virtual Machine. Solidity is the most widely used blockchain programming language.
 
-First, we'll use the example verifier registry contract that Verity has created. [You can find that contract here](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol). While this contract should be treated as an example and you should create your own as needed by your specifications when deploying to production, it covers the necessary actions that a verification registry would need to take.
+First, we'll use the example verifier registry contract that Verite has created. [You can find that contract here](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol). While this contract should be treated as an example and you should create your own as needed by your specifications when deploying to production, it covers the necessary actions that a verification registry would need to take.
 
 ## Setting Up Hardhat
 
@@ -49,7 +49,7 @@ Next, you'll need to update your `hardhat.config.js` file. Add the following lin
 require("@nomiclabs/hardhat-waffle")
 ```
 
-In order to work on the smart contract, you'll need to create a `contracts` folder in the root of the project directory. Once you've done that, you can create a new file called `VerificationRegistry.sol`. For simplicity, you can copy over the code from the [example Verity registry contract](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol).
+In order to work on the smart contract, you'll need to create a `contracts` folder in the root of the project directory. Once you've done that, you can create a new file called `VerificationRegistry.sol`. For simplicity, you can copy over the code from the [example Verite registry contract](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol).
 
 You'll notice this contract references another contract (an interface contract), and it imports some libraries from OpenZeppelin. So, we need to do two things. We need to install OpenZeppelin, and we need to copy over the interface contract. We'll explain why the interface contract is important momentarily. First, let's install OpenZeppelin's library of contracts:
 

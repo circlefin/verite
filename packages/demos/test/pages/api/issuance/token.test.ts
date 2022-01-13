@@ -1,10 +1,10 @@
+import { createMocks } from "node-mocks-http"
 import {
   buildCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey
-} from "@verity/core"
-import type { DecodedCredentialFulfillment } from "@verity/core"
-import { createMocks } from "node-mocks-http"
+} from "verite"
+import type { DecodedCredentialFulfillment } from "verite"
 import { temporaryAuthToken } from "../../../../lib/database"
 import { findManifestById } from "../../../../lib/manifest"
 import handler from "../../../../pages/api/demos/issuer/[token]"

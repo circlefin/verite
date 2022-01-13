@@ -8,13 +8,13 @@ import {
   DecodedCredentialFulfillment,
   decodeCredentialApplication,
   DecodedCredentialApplication
-} from "@verity/core"
+} from "verite"
 import type {
   CredentialManifest,
   RevocablePresentation,
   Verifiable,
   W3CPresentation
-} from "@verity/core"
+} from "verite"
 import Head from "next/head"
 import QRCode from "qrcode.react"
 import { useState } from "react"
@@ -255,7 +255,7 @@ export default function Home({
   return (
     <div className="min-h-screen py-2 bg-gray-50">
       <Head>
-        <title>Verity Demo: Issuer</title>
+        <title>Verite Demo: Issuer</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

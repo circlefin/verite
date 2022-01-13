@@ -116,12 +116,20 @@ export function getProvider(): Provider {
   const chainId = parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
   let provider: Provider
   if (chainId === 1337) {
+    // Localhost
     provider = new ethers.providers.JsonRpcProvider()
+  } else if (chainId === 3) {
+    // For demo purposes we will use an Alchemy-specific provider since we
+    // are only using ropsten and to minimize the number of API tokens we must
+    // manage. However, Ethers recommends using the Default Provider for most
+    // use cases and is more appropriate for production environments.
+    // https://docs.ethers.io/v5/api/providers/
+    provider = new ethers.providers.AlchemyProvider(
+      "ropsten",
+      process.env.ALCHEMY_API_KEY
+    )
   } else {
-    const network = ethers.providers.getNetwork(chainId)
-    provider = ethers.providers.getDefaultProvider(network, {
-      alchemy: process.env.ALCHEMY_API_KEY
-    })
+    throw new Error("Unsupported network")
   }
   return provider
 }

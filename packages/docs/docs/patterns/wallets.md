@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Supporting different types of credential wallets
 
-Verity demonstrates a minimal, self-hosted, mobile credential wallet -- that is, one in which the credentials and signing keys are under the control of the individual. These patterns can easily be adapted to other contexts such as hosted wallets, browser wallets, etc.
+Verite demonstrates a minimal, self-hosted, mobile credential wallet -- that is, one in which the credentials and signing keys are under the control of the individual. These patterns can easily be adapted to other contexts such as hosted wallets, browser wallets, etc.
 
 ## Issuance to a hosted wallet
 
@@ -18,10 +18,10 @@ This is contingent on the wallet supporting Verifiable Credentials and associate
 
 ## Other Transport Protocols
 
-The Presentation Exchange standards Verity uses are transport agnostic
+The Presentation Exchange standards Verite uses are transport agnostic
 
 > This specification does not define transport protocols, specific endpoints, or other means for conveying the formatted objects it codifies, but encourages other specifications and projects that do define such mechanisms to utilize these data formats within their flows.
 
-The Verity examples do use the PEx formats, but augment them with lightweight wrappers where necessary to provide supplemental information such as specific endpoints to submit API calls to and signing challenges. QR Codes are also used to transport data from on-screen to a mobile device.
+The Verite examples do use the PEx formats, but augment them with lightweight wrappers where necessary to provide supplemental information such as specific endpoints to submit API calls to and signing challenges. QR Codes are also used to transport data from on-screen to a mobile device.
 
 Alternative solutions are certainly possible. Since an Identity Wallet closely resembles existing DeFi wallets, existing solutions for connecting device to dApp are all potential solutions.
