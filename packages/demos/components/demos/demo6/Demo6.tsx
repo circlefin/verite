@@ -275,6 +275,7 @@ const Demo6: FC<Props> = ({ verifierAddress }) => {
       } else if (verification.status === "rejected") {
         setVerification(undefined)
         setStatusMessage("Verification failed.")
+        setPage(2)
       }
     } catch (e) {
       setVerification(undefined)
