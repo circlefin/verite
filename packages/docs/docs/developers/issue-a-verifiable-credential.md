@@ -11,7 +11,7 @@ For the sake of this demo, we will be using Decentralized Identifiers (DIDs) to 
 
 ## Prerequisites: Issuer Setup
 
-[See issuer setup instructions](/docs/tutorials/issuer-setup).
+[See issuer setup instructions](/docs/developers/issuer-setup).
 
 ## Step 1: Create a DID for your issuer
 
