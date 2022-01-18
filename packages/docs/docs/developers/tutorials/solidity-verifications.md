@@ -9,7 +9,7 @@ As discussed in the [Smart Contract Patterns](../../patterns/smart-contract-veri
 
 Solidity is the language for the Ethereum Virtual Machine. Solidity is the most widely used blockchain programming language.
 
-First, we'll use the example verifier registry contract that Verite has created. [You can find that contract here](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol). While this contract should be treated as an example and you should create your own as needed by your specifications when deploying to production, it covers the necessary actions that a verification registry would need to take.
+First, we'll use the example verifier registry contract that Verite has created. [You can find that contract here](https://github.com/centrehq/verite/blob/main/packages/contract/contracts/VerificationRegistry.sol). While this contract should be treated as an example and you should create your own as needed by your specifications when deploying to production, it covers the necessary actions that a verification registry would need to take.
 
 ## Setting Up Hardhat
 
@@ -49,13 +49,13 @@ Next, you'll need to update your `hardhat.config.js` file. Add the following lin
 require("@nomiclabs/hardhat-waffle")
 ```
 
-In order to work on the smart contract, you'll need to create a `contracts` folder in the root of the project directory. Once you've done that, you can create a new file called `VerificationRegistry.sol`. For simplicity, you can copy over the code from the [example Verite registry contract](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol).
+In order to work on the smart contract, you'll need to create a `contracts` folder in the root of the project directory. Once you've done that, you can create a new file called `VerificationRegistry.sol`. For simplicity, you can copy over the code from the [example Verite registry contract](https://github.com/centrehq/verite/blob/main/packages/contract/contracts/VerificationRegistry.sol).
 
 You'll notice this contract references another contract (an interface contract), and it imports some libraries from OpenZeppelin. So, we need to do two things. We need to install OpenZeppelin, and we need to copy over the interface contract. We'll explain why the interface contract is important momentarily. First, let's install OpenZeppelin's library of contracts:
 
 `npm install @openzeppelin/contracts`
 
-Now, you can create a new file in the `contracts` folder called `IVerificationRegistry.sol`. Copy the code [from here](https://github.com/centrehq/demo-site/blob/main/packages/contract/contracts/VerificationRegistry.sol) and paste it into that file.
+Now, you can create a new file in the `contracts` folder called `IVerificationRegistry.sol`. Copy the code [from here](https://github.com/centrehq/verite/blob/main/packages/contract/contracts/VerificationRegistry.sol) and paste it into that file.
 
 Before compiling the contracts, check the Solidity version in the contracts. You'll need to make sure it matches the version in the `hardhat.config.js` file. If it doesn't, simply update the config file to match.
 
