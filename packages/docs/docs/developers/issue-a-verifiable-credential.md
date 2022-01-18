@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # Issue a Verifiable Credential
 
-_This tutorial will walk you through issuing verifiable credentials using the verite sdks. For additional context, see [Issuance Flow](/patterns/issuance-flow.md). A complete example of building an issuer is available at our [demo-issuer](https://github.com/centrehq/demo-site/packages/demo-issuer) demo._
+_This tutorial will walk you through issuing verifiable credentials using the verite sdks. For additional context, see [Issuance Flow](/patterns/issuance-flow.md). A complete example of building an issuer is available at our [demo-issuer](https://github.com/centrehq/verite/packages/demo-issuer) demo._
 
 For the sake of this demo, we will be using Decentralized Identifiers (DIDs) to identify the issuer (you) and subject (the person or entity the credential is about), as well as JSON Web Tokens (JWTs) as the means of signing and verifying the credentials. In practice, you are not limited to using DIDs to prove ownership; anything with a public/private key pair is a valid owner. Likewise, you do not need to use JWTs.
 
@@ -114,4 +114,4 @@ The subject can then decode the presentation and store their Verifiable Credenti
 
 🎉 That’s it. You have now issued a Verifiable Credential.
 
-You can view this demo as a full working example in our [demo-issuer](https://github.com/centrehq/demo-site/tree/main/packages/demo-issuer) demo.
+You can view this demo as a full working example in our [demo-issuer](https://github.com/centrehq/verite/tree/main/packages/demo-issuer) demo.

@@ -97,4 +97,4 @@ await validateVerificationSubmission(
 )
 ```
 
-You can view this demo as a full working example in our [demo-issuer](https://github.com/centrehq/demo-site/tree/main/packages/demo-verifier) demo.
+You can view this demo as a full working example in our [demo-issuer](https://github.com/centrehq/verite/tree/main/packages/demo-verifier) demo.
