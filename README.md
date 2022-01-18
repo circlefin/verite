@@ -19,17 +19,17 @@ Each package in this repository lives in the `packages/` directory.
 
 The primary packages in this repository are:
 
-- [verite/docs](./packages/docs) - Documentation for the Verite
-- [verite/core](./packages/verite) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
-- [verite/contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verite into a smart contract.
-- [verite/demos](./packages/demos) - A demo walkthrough of the entire Verite project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
+- [docs](./packages/docs) - Documentation for the Verite
+- [verite](./packages/verite) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
+- [contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verite into a smart contract.
+- [e2e-demo](./packages/e2e-demo) - A demo walkthrough of the entire Verite project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
-from the `demos` package to help clarify each major function of Verite credentials.
+from the `e2e-demo` package to help clarify each major function of Verite credentials.
 
-- [verite/demo-issuer](./packages/demo-issuer) - A simplified demo of issuing Verifiable Credentials using `verite/core`.
-- [verite/demo-verifier](./packages/demo-verifier) - A simplified demo of verifying Verifiable Credentials using `verite/core`.
-- [verite/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials using `verite/core`.
+- [verite/demo-issuer](./packages/demo-issuer) - A simplified demo of issuing Verifiable Credentials using `verite`.
+- [verite/demo-verifier](./packages/demo-verifier) - A simplified demo of verifying Verifiable Credentials using `verite`.
+- [verite/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials using `verite`.
 
 Each package contains a README file with specific details about how to use the package.
 
@@ -50,15 +50,15 @@ npm run setup
 This script will do the following:
 
 - Install all dependencies
-- Build the `verite/core` project
-- Set up the local IP hostname for `verite/demos` to be used with the wallet.
-- Generate an auth JWT secret for `verite/demos`
-- Generate issuer and verifier DIDs and secrets for `verite/demos`
-- Build and migrate the database for `verite/demos`
+- Build the `verite` project
+- Set up the local IP hostname for `@verite/e2e-demo` to be used with the wallet.
+- Generate an auth JWT secret for `@verite/e2e-demo`
+- Generate issuer and verifier DIDs and secrets for `@verite/e2e-demo`
+- Build and migrate the database for `@verite/e2e-demo`
 
-## Running the Demos
+## Running the end-to-end Demo
 
-When first starting, you will likely be most interested in the `./packages/demos` package. This package contains several demos and integrates deeply with `verite/core`.
+When first starting, you will likely be most interested in the `./packages/e2e-demo` package. This package contains several demos and integrates deeply with `verite`.
 
 This package contains several isolated demos. One of the demos showcases an Ethereum dApp integration, and requires running a local Ethereum node.
 
@@ -112,7 +112,7 @@ Run tests by running
 npm run test
 ```
 
-**NOTE** Be sure to have built the `verite/core` package by running `npm run build:verite`.
+**NOTE** Be sure to have built the `verite` package by running `npm run build:verite`.
 
 ### Linting the codebase
 

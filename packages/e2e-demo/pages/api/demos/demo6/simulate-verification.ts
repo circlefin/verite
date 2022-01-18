@@ -3,7 +3,7 @@ import { Wallet } from "@ethersproject/wallet"
 import {
   getProvider,
   registryContractArtifact
-} from "@verite/demos/lib/eth-fns"
+} from "@verite/e2e-demo/lib/eth-fns"
 import { VerificationResultResponse, verificationResult } from "verite"
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 
