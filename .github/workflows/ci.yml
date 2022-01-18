@@ -19,7 +19,7 @@ jobs:
           node-version: "16"
           cache: "npm"
       - run: npm run setup
-      - run: npm run setup:ci -w @verite/demos
+      - run: npm run setup:ci -w @verite/e2e-demo
       - run: npm run build:verite
       - run: npm run lint
       - run: npm run type-check

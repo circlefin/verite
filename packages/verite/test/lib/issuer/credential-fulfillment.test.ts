@@ -53,9 +53,6 @@ describe("buildAndSignVerifiableCredential", () => {
       },
       issuer: { id: issuerDid.subject },
       type: ["VerifiableCredential", "KYCAMLAttestation"],
-      evidence: undefined,
-      credentialStatus: undefined,
-      termsOfUse: undefined,
       issuanceDate: "2021-10-26T16:17:13.000Z",
       "@context": [
         "https://www.w3.org/2018/credentials/v1",

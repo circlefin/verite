@@ -193,4 +193,4 @@ https://github.com/centrehq/verite/blob/main/packages/contract/test/Verification
 
 An example Dapp with MetaMask integration that uses the ThresholdToken is available here:
 
-https://github.com/centrehq/verite/tree/main/packages/demos/components/dapp
+https://github.com/centrehq/verite/tree/main/packages/e2e-demo/components/dapp

@@ -1,4 +1,4 @@
-# Verite Demos
+# Verite E2E Demo
 
 This package contains examples showcasing issuance, verification, and revocation of Verifiable Credentials using the Verite protocols.
 
