@@ -18,8 +18,7 @@ CREATE TABLE "Credential" (
 -- CreateTable
 CREATE TABLE "RevocationList" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "jwt" TEXT NOT NULL,
-    "host" TEXT NOT NULL
+    "encodedList" TEXT NOT NULL
 );
 
 -- CreateTable

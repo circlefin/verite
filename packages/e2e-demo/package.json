@@ -37,8 +37,8 @@
     "@prisma/client": "^3.3.0",
     "@tailwindcss/forms": "^0.3.3",
     "@tailwindcss/typography": "^0.4.1",
-    "verite": "*",
     "@web3-react/core": "^6.1.9",
+    "bit-buffers": "^1.0.2",
     "cookies": "^0.8.0",
     "cors": "^2.8.5",
     "date-fns": "^2.23.0",
@@ -54,7 +54,8 @@
     "react-spinners": "^0.11.0",
     "swr": "^1.0.0",
     "universal-cookie": "^4.0.4",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "verite": "*"
   },
   "devDependencies": {
     "@ethersproject/providers": "^5.4.3",

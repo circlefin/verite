@@ -18,7 +18,7 @@ import {
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {
-  allRevocationLists,
+  findAllOrCreateRevocationLists,
   saveRevocationList,
   findCredentialsByUserIdAndType,
   generateRevocationListStatus,
@@ -109,20 +109,24 @@ async function revokeUserCredentials(user: User, type: string) {
   ) as RevocableCredential[]
 
   for (const credential of revocable) {
-    // Find the credential's revocation list
-    const url = credential.credentialStatus.statusListCredential
-    const revocationLists = await allRevocationLists()
-    const revocationList = revocationLists.find((l) => l.id === url)
+    try {
+      // Find the credential's revocation list
+      const url = credential.credentialStatus.statusListCredential
+      const revocationLists = await findAllOrCreateRevocationLists()
+      const revocationList = revocationLists.find((l) => l.id === url)
 
-    // Revoke the credential
-    const list = await revokeCredential(
-      credential,
-      revocationList,
-      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
-    )
+      // Revoke the credential
+      const list = await revokeCredential(
+        credential,
+        revocationList,
+        buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+      )
 
-    // Persist the new revocation list
-    await saveRevocationList(list)
+      // Persist the new revocation list
+      await saveRevocationList(list)
+    } catch (e) {
+      console.error(e)
+    }
   }
 }
 

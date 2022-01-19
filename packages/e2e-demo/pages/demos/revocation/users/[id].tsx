@@ -11,7 +11,7 @@ import {
 import RevocationLayout from "../../../../components/demos/revocation/Layout"
 import { requireAuth } from "../../../../lib/auth-fns"
 import {
-  allRevocationLists,
+  findAllOrCreateRevocationLists,
   DecodedDatabaseCredential,
   findCredentialsByUserId,
   findUser
@@ -39,7 +39,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
     JSON.stringify(await findCredentialsByUserId(user.id))
   ) as DecodedDatabaseCredential[]
   const revocationLists = JSON.parse(
-    JSON.stringify(await allRevocationLists())
+    JSON.stringify(await findAllOrCreateRevocationLists())
   ) as RevocationListCredential[]
 
   // Map data for easy rendering
