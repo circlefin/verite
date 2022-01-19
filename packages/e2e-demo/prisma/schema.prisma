@@ -18,9 +18,8 @@ model Credential {
 }
 
 model RevocationList {
-  id   String @id @default(uuid())
-  jwt  String
-  host String
+  id          String @id @default(uuid())
+  encodedList String
 }
 
 model User {

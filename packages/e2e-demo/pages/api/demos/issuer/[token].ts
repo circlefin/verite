@@ -18,7 +18,7 @@ import {
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {
-  allRevocationLists,
+  findAllOrCreateRevocationLists,
   saveRevocationList,
   findCredentialsByUserIdAndType,
   generateRevocationListStatus,
@@ -112,7 +112,7 @@ async function revokeUserCredentials(user: User, type: string) {
     try {
       // Find the credential's revocation list
       const url = credential.credentialStatus.statusListCredential
-      const revocationLists = await allRevocationLists()
+      const revocationLists = await findAllOrCreateRevocationLists()
       const revocationList = revocationLists.find((l) => l.id === url)
 
       // Revoke the credential

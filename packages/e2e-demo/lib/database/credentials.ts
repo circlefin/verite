@@ -1,3 +1,4 @@
+import { BitBuffer } from "bit-buffers"
 import { compact, random, sample } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 import {
@@ -45,14 +46,10 @@ export const storeCredentials = async (
  * @param host to filter by
  * @returns revocation lists filtered by host
  */
-export const allRevocationLists = async (
-  host: string = undefined
-): Promise<RevocationListCredential[]> => {
-  let options
-  if (host) {
-    options = { where: { host } }
-  }
-  const lists = await prisma.revocationList.findMany(options)
+export const findAllOrCreateRevocationLists = async (): Promise<
+  RevocationListCredential[]
+> => {
+  const lists = await prisma.revocationList.findMany()
 
   // Create one if it doesn't exist.
   if (lists.length === 0) {
@@ -67,9 +64,14 @@ export const allRevocationLists = async (
   }
 
   return await asyncMap(lists, async (list) => {
-    return (await decodeVerifiableCredential(
-      list.jwt
-    )) as RevocationListCredential
+    const bits = BitBuffer.fromBitstring(list.encodedList)
+
+    return generateRevocationList(
+      bits.toIndexArray(),
+      fullURL(`/api/demos/revocation/${list.id}`),
+      process.env.ISSUER_DID,
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+    )
   })
 }
 
@@ -84,7 +86,7 @@ export const findRevocationListForCredential = async (
   }
 
   const url = credential.credentialStatus.statusListCredential
-  const revocationLists = await allRevocationLists()
+  const revocationLists = await findAllOrCreateRevocationLists()
   return revocationLists.find((list) => list.id === url)
 }
 
@@ -171,6 +173,8 @@ export const findNewestCredentialSinceDate = async (
 const findCredentialsByRevocationlist = async (
   revocationList: RevocationListCredential
 ): Promise<DecodedDatabaseCredential<RevocableCredential>[]> => {
+  // NOTE: This is not efficient. In production you would normally have an index
+  // to allow for these credentials to be mapped to a revocation list record.
   const records = await prisma.credential.findMany()
   const decoded = await decodeDatabaseCredentials(records)
 
@@ -181,45 +185,58 @@ const findCredentialsByRevocationlist = async (
 
   return revocable.filter(
     ({ credential }) =>
-      credential.credentialStatus.statusListCredential === revocationList.id
+      credential.credentialStatus.statusListCredential.split("/").pop() ===
+      revocationList.id
   )
 }
 
 /**
- *
+ * Find a revocation list by its ID
  */
 export const getRevocationListById = async (
   id: string
 ): Promise<RevocationListCredential | undefined> => {
-  const list = await prisma.revocationList.findFirst({
+  const revocationList = await prisma.revocationList.findFirst({
     where: {
       id
     }
   })
 
-  if (list) {
-    return (await decodeVerifiableCredential(
-      list.jwt
-    )) as RevocationListCredential
+  if (!revocationList) {
+    return
   }
+
+  const bits = BitBuffer.fromBitstring(revocationList.encodedList)
+
+  return generateRevocationList(
+    bits.toIndexArray(),
+    fullURL(`/api/demos/revocation/${revocationList.id}`),
+    process.env.ISSUER_DID,
+    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+  )
 }
 
 /**
- *
+ * Upsert a Revocation List record to the database
  */
 export const saveRevocationList = async (
   revocationList: RevocationListCredential
 ): Promise<void> => {
+  // Use the uuid from the URL as the ID
+  const id = revocationList.id.split("/").pop()
+
   await prisma.revocationList.upsert({
     where: {
-      id: revocationList.id
+      id
     },
     create: {
-      id: revocationList.id,
-      jwt: revocationList.proof.jwt,
-      host: fullURL()
+      id,
+      encodedList: revocationList.credentialSubject.encodedList
     },
-    update: { id: revocationList.id, jwt: revocationList.proof.jwt }
+    update: {
+      id,
+      encodedList: revocationList.credentialSubject.encodedList
+    }
   })
 }
 
@@ -234,7 +251,7 @@ export const saveRevocationList = async (
 export const generateRevocationListStatus =
   async (): Promise<RevocationList2021Status> => {
     // Pick a random revocation list
-    const lists = await allRevocationLists(fullURL())
+    const lists = await findAllOrCreateRevocationLists()
     const revocationList = sample(lists)
 
     // Find all credentials in the revocation list and map the index

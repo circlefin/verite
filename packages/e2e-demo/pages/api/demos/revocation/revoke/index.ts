@@ -2,7 +2,7 @@ import { RevocableCredential, JWT, buildIssuer } from "verite"
 import { revokeCredential, decodeVerifiableCredential } from "verite"
 import { apiHandler } from "../../../../../lib/api-fns"
 import {
-  allRevocationLists,
+  findAllOrCreateRevocationLists,
   saveRevocationList
 } from "../../../../../lib/database"
 import { NotFoundError } from "../../../../../lib/errors"
@@ -19,7 +19,7 @@ export default apiHandler<string>(async (req, res) => {
 
   // Find the credential's revocation list
   const url = credential.credentialStatus.statusListCredential
-  const revocationLists = await allRevocationLists()
+  const revocationLists = await findAllOrCreateRevocationLists()
   const revocationList = revocationLists.find((l) => l.id === url)
 
   // Revoke the credential
