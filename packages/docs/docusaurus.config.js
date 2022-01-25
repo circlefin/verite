@@ -1,7 +1,7 @@
 const lightCodeTheme = require("prism-react-renderer/themes/github")
 const darkCodeTheme = require("prism-react-renderer/themes/dracula")
 const DEMOS_URL =
-  "https://github.com/centrehq/demo-site/tree/main/packages/demos"
+  "https://github.com/centrehq/verite/tree/main/packages/e2e-demo#readme"
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
