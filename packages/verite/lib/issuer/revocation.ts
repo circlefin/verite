@@ -1,8 +1,10 @@
+import { decode } from "punycode"
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
 import type {
   CredentialPayload,
+  EncodedRevocationListCredential,
   Issuer,
   MaybeRevocableCredential,
   RevocableCredential,
@@ -17,24 +19,43 @@ import {
   generateBitstring
 } from "../utils"
 
+type GenerateRevocationListOptions = {
+  /**
+   * The existing revocation status list to use as a base
+   */
+  statusList: number[]
+  /**
+   * The revocation status list URL, which serves as the list ID
+   */
+  url: string
+  /**
+   * The issuer DID
+   */
+  issuer: string
+  /**
+   * The credential signer
+   */
+  signer: Issuer
+  /**
+   * The creation date of this revocation list. Defaults to now
+   */
+  issuanceDate?: Date
+}
+
 /**
- * Generate a revocation list to store revocation status of a credential.
+ * Generate an encoded revocation list to store revocation status of a
+ * credential.
  *
- * @param stutusList - the existing revocation status list to use as a base
- * @param url - the revocation status list URL, which serves as the list ID
- * @param issuer - the issuer did
- * @param signer - the credential signer
- * @param issuanceDate - the creation date of this revocation list
- *
- * @returns a revocation list credential consisting of the provided status list
+ * @returns a revocation list credential as a JWT consisting of the provided
+ * status list
  */
-export const generateRevocationList = async (
-  statusList: number[],
-  url: string,
-  issuer: string,
-  signer: Issuer,
-  issuanceDate = new Date()
-): Promise<RevocationListCredential> => {
+export const generateEncodedRevocationList = async ({
+  statusList,
+  url,
+  issuer,
+  signer,
+  issuanceDate
+}: GenerateRevocationListOptions): Promise<EncodedRevocationListCredential> => {
   const encodedList = generateBitstring(statusList)
 
   const vcPayload: RevocationList<CredentialPayload> = {
@@ -45,7 +66,7 @@ export const generateRevocationList = async (
     id: url,
     type: ["VerifiableCredential", "StatusList2021Credential"],
     issuer,
-    issuanceDate,
+    issuanceDate: issuanceDate ?? new Date(),
     credentialSubject: {
       id: `${url}#list`,
       type: "RevocationList2021",
@@ -53,7 +74,20 @@ export const generateRevocationList = async (
     }
   }
 
-  const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
+  return createVerifiableCredentialJwt(vcPayload, signer)
+}
+
+/**
+ * Generate a decoded revocation list to store revocation status of a
+ * credential.
+ *
+ * @returns a revocation list credential consisting of the provided status list
+ */
+export const generateRevocationList = async (
+  opts: GenerateRevocationListOptions
+): Promise<RevocationListCredential> => {
+  const vcJwt = await generateEncodedRevocationList(opts)
+
   return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
 }
 
@@ -64,19 +98,26 @@ export const generateRevocationList = async (
  */
 export const revokeCredential = async (
   credential: RevocableCredential,
-  statusList: RevocationListCredential,
+  revocationList: RevocationListCredential,
   signer: Issuer
 ): Promise<RevocationListCredential> => {
   // If a credential does not have a credential status, it cannot be revoked.
   if (!isRevocable(credential)) {
-    return statusList
+    return revocationList
   }
 
-  const list = expandBitstring(statusList.credentialSubject.encodedList)
+  const statusList = expandBitstring(
+    revocationList.credentialSubject.encodedList
+  )
   const index = parseInt(credential.credentialStatus.statusListIndex, 10)
-  list.push(index)
+  statusList.push(index)
 
-  return await generateRevocationList(list, statusList.id, signer.did, signer)
+  return await generateRevocationList({
+    statusList,
+    url: revocationList.id,
+    issuer: signer.did,
+    signer
+  })
 }
 
 /**
@@ -89,23 +130,30 @@ export const revokeCredential = async (
  */
 export const unrevokeCredential = async (
   credential: RevocableCredential,
-  statusList: RevocationListCredential,
+  revocationList: RevocationListCredential,
   signer: Issuer
 ): Promise<RevocationListCredential> => {
   // If a credential does not have a credential status, it cannot be revoked.
   if (!isRevocable(credential)) {
-    return statusList
+    return revocationList
   }
 
-  const list = expandBitstring(statusList.credentialSubject.encodedList)
-  const index = list.indexOf(
+  const statusList = expandBitstring(
+    revocationList.credentialSubject.encodedList
+  )
+  const index = statusList.indexOf(
     parseInt(credential.credentialStatus.statusListIndex, 10)
   )
   if (index !== -1) {
-    list.splice(index, 1)
+    statusList.splice(index, 1)
   }
 
-  return await generateRevocationList(list, statusList.id, signer.did, signer)
+  return await generateRevocationList({
+    statusList,
+    url: revocationList.id,
+    issuer: signer.did,
+    signer
+  })
 }
 
 /**
@@ -159,7 +207,11 @@ export async function fetchStatusList(
     const response = await fetch(url)
 
     if (response.status === 200) {
-      return response.json()
+      const vcJwt = await response.text()
+
+      return decodeVerifiableCredential(
+        vcJwt
+      ) as Promise<RevocationListCredential>
     }
   } catch (e) {}
 }

@@ -11,7 +11,9 @@ import {
   asyncMap,
   decodeVerifiableCredential,
   generateRevocationList,
-  buildIssuer
+  buildIssuer,
+  EncodedRevocationListCredential,
+  generateEncodedRevocationList
 } from "verite"
 import { fullURL } from "../utils"
 import { prisma, User, Credential } from "./prisma"
@@ -53,12 +55,12 @@ export const findAllOrCreateRevocationLists = async (): Promise<
 
   // Create one if it doesn't exist.
   if (lists.length === 0) {
-    const list = await generateRevocationList(
-      [],
-      fullURL(`/api/demos/revocation/${uuidv4()}`),
-      process.env.ISSUER_DID,
-      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
-    )
+    const list = await generateRevocationList({
+      statusList: [],
+      url: fullURL(`/api/demos/revocation/${uuidv4()}`),
+      issuer: process.env.ISSUER_DID,
+      signer: buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+    })
     await saveRevocationList(list)
     return [list]
   }
@@ -66,12 +68,12 @@ export const findAllOrCreateRevocationLists = async (): Promise<
   return await asyncMap(lists, async (list) => {
     const bits = BitBuffer.fromBitstring(list.encodedList)
 
-    return generateRevocationList(
-      bits.toIndexArray(),
-      fullURL(`/api/demos/revocation/${list.id}`),
-      process.env.ISSUER_DID,
-      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
-    )
+    return generateRevocationList({
+      statusList: bits.toIndexArray(),
+      url: fullURL(`/api/demos/revocation/${list.id}`),
+      issuer: process.env.ISSUER_DID,
+      signer: buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+    })
   })
 }
 
@@ -195,7 +197,7 @@ const findCredentialsByRevocationlist = async (
  */
 export const getRevocationListById = async (
   id: string
-): Promise<RevocationListCredential | undefined> => {
+): Promise<EncodedRevocationListCredential | undefined> => {
   const revocationList = await prisma.revocationList.findFirst({
     where: {
       id
@@ -208,12 +210,12 @@ export const getRevocationListById = async (
 
   const bits = BitBuffer.fromBitstring(revocationList.encodedList)
 
-  return generateRevocationList(
-    bits.toIndexArray(),
-    fullURL(`/api/demos/revocation/${revocationList.id}`),
-    process.env.ISSUER_DID,
-    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
-  )
+  return generateEncodedRevocationList({
+    statusList: bits.toIndexArray(),
+    url: fullURL(`/api/demos/revocation/${revocationList.id}`),
+    issuer: process.env.ISSUER_DID,
+    signer: buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+  })
 }
 
 /**
