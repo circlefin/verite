@@ -6,5 +6,8 @@ npm install
 echo "Setting up verite..."
 npm run setup --workspace verite
 
+echo "Setting up docs..."
+npm run setup --workspace @verite/docs
+
 echo "Setting up e2e-demos..."
 npm run setup --workspace @verite/e2e-demo
