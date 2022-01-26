@@ -1,7 +1,5 @@
 const lightCodeTheme = require("prism-react-renderer/themes/github")
 const darkCodeTheme = require("prism-react-renderer/themes/dracula")
-const DEMOS_URL =
-  "https://github.com/centrehq/verite/tree/main/packages/e2e-demo#readme"
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -29,7 +27,7 @@ module.exports = {
           position: "left"
         },
         {
-          to: DEMOS_URL,
+          to: process.env.DEMOS_URL || "/",
           label: "Demos",
           position: "left",
           target: "_self"
@@ -86,6 +84,6 @@ module.exports = {
   customFields: {
     cookieDomain: process.env.COOKIE_DOMAIN,
     passwordProtected: process.env.PASSWORD_PROTECTED === "true",
-    demosUrl: DEMOS_URL
+    demosUrl: process.env.DEMOS_URL || "/"
   }
 }
