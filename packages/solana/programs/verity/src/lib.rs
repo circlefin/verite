@@ -1,11 +1,21 @@
 use anchor_lang::prelude::*;
 
 use solana_program::{
+    keccak,
     secp256k1_recover::{Secp256k1Pubkey, secp256k1_recover},
-    keccak
+    program_error::ProgramError
 };
 
+use borsh::BorshDeserialize;
+
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+
+/// Generic Payload Deserialization
+#[derive(BorshDeserialize, Debug)]
+struct VerificationResult {
+    subject: Pubkey,
+    expiration: i64
+}
 
 #[program]
 pub mod verity {
@@ -14,14 +24,13 @@ pub mod verity {
         Ok(())
     }
 
-    pub fn verify(_ctx: Context<Verify>, signature: [u8; 64], recovery_id: u8, message: String) -> ProgramResult {
+    pub fn verify(ctx: Context<Verify>, signature: [u8; 64], recovery_id: u8, message: [u8; 64]) -> ProgramResult {
         // Log parameters to assist debugging
         msg!("Signature {:?}", signature);
         msg!("Recovery Id: {}", recovery_id);
-        msg!("Message: {}", message);
 
         // Assume this is the verifier
-        let eth_address = [
+        let verifier = [
             132,  13, 245, 117, 107,  89, 226, 100, 189, 117,
             164, 237, 253,  81, 149, 203,  12, 190, 180, 209,
             204,  79, 154,  35, 109, 129, 227, 187, 234, 225,
@@ -30,8 +39,15 @@ pub mod verity {
             202, 166,   3, 100, 188, 127, 136,  15, 119, 187,
             214,  19,  33,  12
         ];
-        let pubkey = Secp256k1Pubkey(eth_address);
+        let pubkey = Secp256k1Pubkey(verifier);
         msg!("Pubkey: {:?}", pubkey.to_bytes());
+
+        // Deserialize the message
+        let verification_result = VerificationResult::try_from_slice(message[0..40].as_ref()).unwrap();
+        msg!("Message: {:?}", verification_result);
+
+        // Require that the subject signs the transaction
+        require!(ctx.accounts.subject.is_signer, ErrorCode::SubjectIsNotSigher);
 
         let hash = keccak::hash(message.as_ref());
         msg!("Hash: {}", hash);
@@ -40,9 +56,9 @@ pub mod verity {
         msg!("Recovered: {:?}", result.clone().unwrap().to_bytes());
 
         require!(result.is_ok(), ErrorCode::NotOk);
+        // Ensure the verifier 
         require!(result.unwrap() == pubkey, ErrorCode::Invalid);
 
-        // Err(ErrorCode::Invalid.into())
         Ok(())
     }
 
@@ -52,10 +68,14 @@ pub mod verity {
 pub struct Initialize {}
 
 #[derive(Accounts)]
-pub struct Verify {}
+#[instruction(signature: [u8; 64], recovery_id: u8, message: [u8; 64])]
+pub struct Verify<'info> {
+    pub subject: Signer<'info>
+}
 
 #[error]
 pub enum ErrorCode {
     NotOk,
     Invalid,
+    SubjectIsNotSigher
 }
