@@ -27,7 +27,7 @@ module.exports = {
           position: "left"
         },
         {
-          to: process.env.DEMOS_URL || "/",
+          to: "https://github.com/centrehq/verite/tree/main/packages/e2e-demo#readme",
           label: "Demos",
           position: "left",
           target: "_self"
