@@ -56,25 +56,28 @@ describe("verity", () => {
     const publicKey = publicKeyCreate(privateKey, false).slice(1)
     const ethAddress = Secp256k1Program.publicKeyToEthAddress(publicKey)
 
-    // Message will
+    // Alice will be the subject
     const alice = anchor.web3.Keypair.generate()
-    const expiration = new anchor.BN(Date.now())
+
+    // Setup message contents
+    const expiration = new anchor.BN(Date.now() / 1000 + 60)
     const data = {
       subject: alice.publicKey,
       expiration
     }
 
+    // Allocate buffer for the message and borsh encode the data
     const message = Buffer.alloc(64)
     LAYOUT.encode(data, message)
 
+    // Create Signature from the message
     const messageHash = Buffer.from(keccak_256.update(message).digest())
-
-    // Signature
     const { signature, recid: recoveryId } = ecdsaSign(messageHash, privateKey)
 
     await program.rpc.verify(signature, recoveryId, message, {
       accounts: {
-        subject: alice.publicKey
+        subject: alice.publicKey,
+        clock: anchor.web3.SYSVAR_CLOCK_PUBKEY
       },
       signers: [alice]
     })

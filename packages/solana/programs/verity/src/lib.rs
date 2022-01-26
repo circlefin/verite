@@ -47,7 +47,11 @@ pub mod verity {
         msg!("Message: {:?}", verification_result);
 
         // Require that the subject signs the transaction
-        require!(ctx.accounts.subject.is_signer, ErrorCode::SubjectIsNotSigher);
+        require!(ctx.accounts.subject.is_signer, ErrorCode::SubjectIsNotSigner);
+
+        // Require that the message is not expired
+        msg!("Clock: {}", ctx.accounts.clock.unix_timestamp);
+        require!(ctx.accounts.clock.unix_timestamp < verification_result.expiration, ErrorCode::Expired);
 
         let hash = keccak::hash(message.as_ref());
         msg!("Hash: {}", hash);
@@ -70,12 +74,14 @@ pub struct Initialize {}
 #[derive(Accounts)]
 #[instruction(signature: [u8; 64], recovery_id: u8, message: [u8; 64])]
 pub struct Verify<'info> {
-    pub subject: Signer<'info>
+    pub subject: Signer<'info>,
+    pub clock: Sysvar<'info, Clock>
 }
 
 #[error]
 pub enum ErrorCode {
     NotOk,
     Invalid,
-    SubjectIsNotSigher
+    SubjectIsNotSigner,
+    Expired
 }
