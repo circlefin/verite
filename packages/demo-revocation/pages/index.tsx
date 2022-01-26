@@ -37,12 +37,12 @@ const issueRevocationList = async () => {
    * Note that the second parameter should be a URL that resolves to the
    * Revocation List Credential.
    */
-  return generateRevocationList(
-    [],
-    "http://localhost:3000/api/demos/revocation",
-    issuer.did,
-    issuer
-  )
+  return generateRevocationList({
+    statusList: [],
+    url: "http://localhost:3000/api/demos/revocation",
+    issuer: issuer.did,
+    signer: issuer
+  })
 }
 
 /**

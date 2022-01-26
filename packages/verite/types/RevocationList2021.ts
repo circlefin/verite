@@ -1,4 +1,5 @@
 import type { Verifiable, W3CCredential, W3CPresentation } from "./DidJwt"
+import { JWT } from "./Jwt"
 
 export type RevocationList2021Status = {
   id: string
@@ -33,3 +34,4 @@ export type RevocationList<T> = T & {
 }
 
 export type RevocationListCredential = RevocationList<Verifiable<W3CCredential>>
+export type EncodedRevocationListCredential = JWT
