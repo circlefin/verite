@@ -235,6 +235,6 @@ export async function fetchStatusList(
  */
 export const isRevocable = (
   credential: Verifiable<W3CCredential> | RevocableCredential
-): boolean => {
+): credential is RevocableCredential => {
   return has(credential, "credentialStatus.statusListIndex")
 }
