@@ -98,7 +98,7 @@ const signer = ethers.Wallet.fromMnemonic(mnemonic)
 
 // get a random subject address that will be used for verified subject tests
 let subjectAddress
-it("Should find a random address to use as a subject to verifiy", async function () {
+it("Should find a random address to use as a subject to verify", async function () {
   const addresses = await ethers.getSigners()
   const r = Math.floor(Math.random() * addresses.length)
   subjectAddress = await addresses[r].getAddress()
@@ -208,9 +208,9 @@ it("Should have one verifier", async function () {
 })
 ```
 
-In our tests, we have still only added the contract onwer address, so when we call `getVerifierCount`, we expect there to be one verifier.
+In our tests, we have still only added the contract owner address, so when we call `getVerifierCount`, we expect there to be one verifier.
 
-Now that we have one verifier on the registy contract, we can call `getVerifier` again, and we should have success this time:
+Now that we have one verifier on the registry contract, we can call `getVerifier` again, and we should have success this time:
 
 ```js
 it("Should find a verifier for owner address", async function () {

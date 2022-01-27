@@ -89,7 +89,7 @@ mapping(bytes32 => VerificationRecord) private _verifications;
 // Verifications mapped to subject addresses (those who receive verifications)
 mapping(address => bytes32[]) private _verificationsForSubject;
 
-// Verfications issued by a given trusted verifier (those who execute verifications)
+// Verifications issued by a given trusted verifier (those who execute verifications)
 mapping(address => bytes32[]) private _verificationsForVerifier;
 
 // Total verifications registered (mapping keys not being enumerable, countable, etc)
@@ -358,7 +358,7 @@ First, let's take a look at the arguments. The function takes a `verificationRes
 
 The tutorial referenced above will walk you through how to create a signed message that can be sent through as an argument.
 
-As you can see, this function uses the `onlyVerifier` modifer, which makes sense. A verifier has to be the one to add a verification record.
+As you can see, this function uses the `onlyVerifier` modifier, which makes sense. A verifier has to be the one to add a verification record.
 
 The function then takes the verification result and passes it through another function for validation called `_validateVerificationResult`. This is a pretty massive function and we'll cover it in a few minutes. But the basics of the function are that it uses the EIP712 standard and verifies both the signature and the format of the record before inserting the record into the registry.
 
@@ -469,10 +469,10 @@ function _validateVerificationResult(
 
 The function has some comments to help you understand what's happening, but at the end of the day, think of this function as simply verifying a signature is actually valid before adding a record to the registry. The function updates the verification record passed to it with four new pieces of information:
 
-1.  Verifier Address
-2.  Entry Time
-3.  Revoked
-4.  UUID
+1. Verifier Address
+2. Entry Time
+3. Revoked
+4. UUID
 
 The UUID is created by calling a helper function called `_createVerificationRecordUUID`. You may implement a different method for identifying records, but if you choose to use UUIDs generated on the contract, this function should help:
 
