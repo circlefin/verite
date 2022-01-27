@@ -1,4 +1,3 @@
-import { decode } from "punycode"
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import fetch from "isomorphic-unfetch"
 import { has } from "lodash"

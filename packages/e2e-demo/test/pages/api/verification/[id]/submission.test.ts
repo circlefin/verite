@@ -1,4 +1,3 @@
-import { createMocks } from "node-mocks-http"
 import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
@@ -17,6 +16,7 @@ import {
   saveVerificationOffer
 } from "../../../../../lib/database"
 import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment"
+import { createMocks } from "../../../../support/mocks"
 import { findManifestById } from "../../../../../lib/manifest"
 import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/demos/verifier/[id]/submission"
