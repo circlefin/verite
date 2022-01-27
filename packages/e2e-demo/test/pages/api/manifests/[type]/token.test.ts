@@ -1,4 +1,4 @@
-import { createMocks } from "node-mocks-http"
+import { createMocks } from "../../../../support/mocks"
 import { temporaryAuthToken } from "../../../../../lib/database"
 import handler from "../../../../../pages/api/demos/issuer/manifests/[type]/[token]"
 import { userFactory } from "../../../../factories"
