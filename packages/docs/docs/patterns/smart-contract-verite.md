@@ -169,7 +169,7 @@ A provable yet privacy-preserving audit path is simple. However, a deeper forens
 
 While verification records may be extended to store additional properties, implementors should ensure data stored on-chain does not contribute to the re-identification of the individual to which it applies.
 
-In general, this requires registry design to target clear use cases dertermined by stakeholders, without reliance of on-chain data for additional optionality (relying instead on offchain protocols when this is needed).
+In general, this requires registry design to target clear use cases determined by stakeholders, without reliance of on-chain data for additional optionality (relying instead on offchain protocols when this is needed).
 
 ## Alternative Patterns and Future Work
 
@@ -183,14 +183,14 @@ The source code examples referenced here are also not intended for production us
 
 A reference implementation smart contract that executes Verifier Management, Verification Result validation, and Verification Record persistence is the IVerificationRegistry interface and its VerificationRegistry.sol implementation:
 
-https://github.com/centrehq/verite/tree/main/packages/contract/contracts
+<https://github.com/centrehq/verite/tree/main/packages/contract/contracts>
 
 This registry implementation is used by two examples, PermissionedToken.sol (a verifier submission example) and ThresholdToken.sol (a subject submission example).
 
 The test suite leverages hardhat and waffle, and is located in the ‘test’ subdirectory of the above repo:
 
-https://github.com/centrehq/verite/blob/main/packages/contract/test/VerificationRegistryTests.ts
+<https://github.com/centrehq/verite/blob/main/packages/contract/test/VerificationRegistryTests.ts>
 
 An example Dapp with MetaMask integration that uses the ThresholdToken is available here:
 
-https://github.com/centrehq/verite/tree/main/packages/e2e-demo/components/dapp
+<https://github.com/centrehq/verite/tree/main/packages/e2e-demo/components/dapp>
