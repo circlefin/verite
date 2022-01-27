@@ -1,3 +1,4 @@
+import { BitBuffer } from "bit-buffers"
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
@@ -12,11 +13,7 @@ import type {
   Verifiable,
   W3CCredential
 } from "../../types"
-import {
-  decodeVerifiableCredential,
-  expandBitstring,
-  generateBitstring
-} from "../utils"
+import { decodeVerifiableCredential, generateBitstring } from "../utils"
 
 type GenerateRevocationListOptions = {
   /**
@@ -100,19 +97,22 @@ export const revokeCredential = async (
   revocationList: RevocationListCredential,
   signer: Issuer
 ): Promise<RevocationListCredential> => {
-  // If a credential does not have a credential status, it cannot be revoked.
+  /**
+   * If the credential is not revocable, it can not be revoked
+   */
   if (!isRevocable(credential)) {
     return revocationList
   }
 
-  const statusList = expandBitstring(
+  const indexArray = BitBuffer.fromBitstring(
     revocationList.credentialSubject.encodedList
-  )
+  ).toIndexArray()
+
   const index = parseInt(credential.credentialStatus.statusListIndex, 10)
-  statusList.push(index)
+  indexArray.push(index)
 
   return await generateRevocationList({
-    statusList,
+    statusList: indexArray,
     url: revocationList.id,
     issuer: signer.did,
     signer
@@ -132,23 +132,27 @@ export const unrevokeCredential = async (
   revocationList: RevocationListCredential,
   signer: Issuer
 ): Promise<RevocationListCredential> => {
-  // If a credential does not have a credential status, it cannot be revoked.
+  /**
+   * If the credential is not revocable, it can not be revoked
+   */
   if (!isRevocable(credential)) {
     return revocationList
   }
 
-  const statusList = expandBitstring(
+  const indexArray = BitBuffer.fromBitstring(
     revocationList.credentialSubject.encodedList
-  )
-  const index = statusList.indexOf(
+  ).toIndexArray()
+
+  const index = indexArray.indexOf(
     parseInt(credential.credentialStatus.statusListIndex, 10)
   )
+
   if (index !== -1) {
-    statusList.splice(index, 1)
+    indexArray.splice(index, 1)
   }
 
   return await generateRevocationList({
-    statusList,
+    statusList: indexArray,
     url: revocationList.id,
     issuer: signer.did,
     signer
@@ -164,7 +168,9 @@ export const isRevoked = async (
   credential: Verifiable<W3CCredential> | RevocableCredential,
   revocationStatusList?: RevocationListCredential
 ): Promise<boolean> => {
-  // If there is no credentialStatus, assume not revoked
+  /**
+   * If the credential is not revocable, it can not be revoked
+   */
   if (!isRevocable(credential)) {
     return false
   }
@@ -173,18 +179,22 @@ export const isRevoked = async (
   const statusList =
     revocationStatusList || (await fetchStatusList(revocableCredential))
 
+  /**
+   * If we are unable to fetch a status list for this credential, we can not
+   * know if it is revoked.
+   */
   if (!statusList) {
     return false
   }
 
-  const results = expandBitstring(statusList.credentialSubject.encodedList)
+  const list = BitBuffer.fromBitstring(statusList.credentialSubject.encodedList)
 
   const index = parseInt(
     (credential as RevocableCredential).credentialStatus.statusListIndex,
     10
   )
 
-  return results.indexOf(index) !== -1
+  return list.test(index)
 }
 
 /**
@@ -195,6 +205,9 @@ export const isRevoked = async (
 export async function fetchStatusList(
   credential: MaybeRevocableCredential
 ): Promise<RevocationListCredential | undefined> {
+  /**
+   * If the credential is not revocable, it can not be revoked
+   */
   if (!isRevocable(credential)) {
     return
   }

@@ -8,7 +8,6 @@ import {
 import {
   asyncMap,
   decodeVerifiableCredential,
-  expandBitstring,
   generateBitstring,
   buildIssuer
 } from "../../../lib/utils"
@@ -251,15 +250,6 @@ describe("Status List 2021", () => {
 
       const encodedList = generateBitstring(credentials)
       expect(encodedList).toEqual(bitstring)
-    })
-  })
-
-  it("expandBitstring", async () => {
-    await asyncMap(vectors, async (vector) => {
-      const { credentials, bitstring } = vector
-
-      const decodedList = expandBitstring(bitstring)
-      expect(decodedList).toEqual(credentials)
     })
   })
 })
