@@ -56,14 +56,13 @@ describe("verity", () => {
     // whereas javascript uses milliseconds.
     const expiration = new anchor.BN(Date.now() / 1000 + 6000)
     const data = {
-      subject: alice.publicKey,
-      expiration,
-      schema: "centre.io/credentials/kyc"
+      subject: alice.publicKey, // 32 bytes
+      expiration, // 8 bytes
+      schema: "centre.io/credentials/kyc" // 25 + 4 bytes
     }
 
     // Allocate buffer for the message and borsh encode the data
-    // The example program allows for messages up to 128 bytes.
-    const message = Buffer.alloc(128)
+    const message = Buffer.alloc(32 + 8 + 25 + 4)
     LAYOUT.encode(data, message)
 
     // Create Signature from the message
@@ -71,7 +70,7 @@ describe("verity", () => {
     const { signature, recid: recoveryId } = ecdsaSign(messageHash, verifier)
 
     // Make RPC call to verify
-    await program.rpc.verify(signature, recoveryId, message, {
+    await program.rpc.verify(signature, recoveryId, data, {
       accounts: {
         subject: alice.publicKey,
         clock: anchor.web3.SYSVAR_CLOCK_PUBKEY
