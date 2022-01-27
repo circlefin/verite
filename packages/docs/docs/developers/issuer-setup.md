@@ -17,4 +17,4 @@ Before issuing credentials, you will need to following at minimum.
 3. Allow users and credential wallets to discover how to interact with you as an issuer
    - In the flows described here, this starts with a QR code or deep link that the user opens from their credential wallet
    - The flow should enable the wallet to discover metadata about how to request and receive the credential
-   - Verite uses [DIF Credential Manifest](https://identity.foundation/credential-manifest/) for this purpose. It allowa an issuer to describe what sort of credentials they issue, prerequisites for issuance, and output schemas
+   - Verite uses [DIF Credential Manifest](https://identity.foundation/credential-manifest/) for this purpose. It allows an issuer to describe what sort of credentials they issue, prerequisites for issuance, and output schemas

@@ -46,9 +46,9 @@ The "approvalDate" attribute is used to define the date of KYC/AML process compl
 - Verifiers must ensure they update verification results per updated issuer actions
 - Verifiers are expected to determine fitness-for-purpose based on awareness of process definitions
 - Additional details obtained during the KYC/AML process should not be included in the attestation. For example, service provider scores are not needed and will leak personal information.
-- Support for additional use cases (such as jurisdiction shopping) that require additional data should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplised with ZKPs or by issuing separate credentials containing the additional attributes (such as residence), enabling wallet aggregation of minimal required data.
+- Support for additional use cases (such as jurisdiction shopping) that require additional data should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplished with ZKPs or by issuing separate credentials containing the additional attributes (such as residence), enabling wallet aggregation of minimal required data.
 
-Verite's intial release contains only the USA KYC/AML process definition ("https://verite.id/schemas/definitions/1.0.0/kycaml/usa",). Additional process defnitions will be developed based on existing practices/requirements per country.
+Verite's initial release contains only the USA KYC/AML process definition ([https://verite.id/schemas/definitions/1.0.0/kycaml/usa](https://verite.id/schemas/definitions/1.0.0/kycaml/usa)). Additional process definitions will be developed based on existing practices/requirements per country.
 
 ### Additional Considerations
 
@@ -110,7 +110,7 @@ The "proof" attribute is used to define the proof of address ownership. The "pro
 ### Recommendations
 
 - A credential containing an `AddressOwner` attestation SHOULD be considered a snapshot of address ownership at a point in time.
-- Issuers SHOULD prefer setting a quick expiration on an `AddressOwner` attestation credential (rather than rely on crerdential revocation)
+- Issuers SHOULD prefer setting a quick expiration on an `AddressOwner` attestation credential (rather than rely on credential revocation)
 
 ## Counterparty Compliance
 

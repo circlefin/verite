@@ -29,7 +29,7 @@ Verite is a set of free open source decentralized identity protocols and data mo
 
 Unlike centralized identity architectures, Verite's decentralized approach enables people and institutions to control how their identity data is accessed and avoids identity vendor lock-in. Verite is not a token, requires no specific blockchain but functions across many, and never stores sensitive data on any blockchain.
 
-Verite empowers developers, financial institutions, regulators, and individuals with an open, free, interoperable identity model for decentralized finance. Interoperability ensures that applications, services, wallets, and smart contracts can interact with one another following a shared set of standard rules without requiring bespoke negotation or any specific vendor implementation.
+Verite empowers developers, financial institutions, regulators, and individuals with an open, free, interoperable identity model for decentralized finance. Interoperability ensures that applications, services, wallets, and smart contracts can interact with one another following a shared set of standard rules without requiring bespoke negotiation or any specific vendor implementation.
 
 ## How to Use this Site
 

@@ -114,7 +114,7 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
 6. The issuer issues the credential and returns it to the wallet
 
    1. The issuer accepts and validates the input and, on success, issues a Verifiable Credential.
-   1. In the Verite demo, the issuer replies with a [credential fulfullment](https://identity.foundation/credential-manifest/#credential-fulfillment)-structured result containing a JWT-encoded Verifiable Presentation.
+   1. In the Verite demo, the issuer replies with a [credential fulfillment](https://identity.foundation/credential-manifest/#credential-fulfillment)-structured result containing a JWT-encoded Verifiable Presentation.
    1. Examples:
       1. [Credential Fulfillment](#credential-fulfillment)
       1. [Decoded Credential](#decoded-credential)
