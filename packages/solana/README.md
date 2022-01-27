@@ -25,5 +25,5 @@ Additionally, you must install rust, solana, and anchor. You can find [instructi
 ## Testing
 
 ```
-npm run test
+anchor test
 ```
