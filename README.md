@@ -22,6 +22,7 @@ The primary packages in this repository are:
 - [docs](./packages/docs) - Documentation for the Verite
 - [verite](./packages/verite) - The core Javascript SDK for issuing, verifying, and revoking Verifiable Credentials.
 - [contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verite into a smart contract.
+- [solana](./packages/solana) - A sample Solana program demonstrating how to implement Verite into a program.
 - [e2e-demo](./packages/e2e-demo) - A demo walkthrough of the entire Verite project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted

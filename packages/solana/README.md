@@ -9,3 +9,21 @@ The verifier either registers the result directly with a Verification Registry p
 This specific exampledemonstrates the minimally viable process of verifying the result.
 
 Read more about Verifier and Subject Submission patterns in TODO LINK.
+
+## Getting Started
+
+This package is set up as an [npm workspace](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (requires npm v7 or greater), and as such, the dependencies for all included packages are installed from the root level using `npm install`. Do not run `npm install` from this directory.
+
+From the root of the monorepo, run:
+
+```sh
+npm install
+```
+
+Additionally, you must install rust, solana, and anchor. You can find [instructions at the Anchor website](https://project-serum.github.io/anchor/getting-started/installation.html).
+
+## Testing
+
+```
+anchor test
+```
