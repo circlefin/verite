@@ -41,9 +41,9 @@ Verifiers may apply additional criteria to determine whether to accept a credent
 
 ### Expiration and Revocation Tradeoffs
 
-While expiration and revocation are semantically different, the VC design goals of enabling privacy while minimiznig issuer dependencies result in common tradeoffs for implementers:
+While expiration and revocation are semantically different, the VC design goals of enabling privacy while minimizing issuer dependencies result in common tradeoffs for implementers:
 
-- For an VC with a long lifespan that the issuer may need to revoke, devising and deploying a privacy-preserving, yet decentralized revocation mechanism may seem prohibiitve from an implementation perspective. For this reason, some issuers choose to set more aggressive expiration dates to avoid or reduce the need to revoke credentials.
+- For an VC with a long lifespan that the issuer may need to revoke, devising and deploying a privacy-preserving, yet decentralized revocation mechanism may seem prohibitive from an implementation perspective. For this reason, some issuers choose to set more aggressive expiration dates to avoid or reduce the need to revoke credentials.
 - At the same time, an overly aggressive expiration date requires the credential subject to frequently re-request the credential, again increasing the dependency on the issuer.
 
 To that end, [Status Registry Practices](/docs/patterns/revocation-practices) expands on approaches to achieve privacy-preserving revocation (or more generally, status) methods.
