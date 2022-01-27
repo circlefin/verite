@@ -22,7 +22,8 @@ type Message = {
 
 const LAYOUT: borsh.Layout<Message> = borsh.struct([
   borsh.publicKey("subject"),
-  borsh.i64("expiration")
+  borsh.i64("expiration"),
+  borsh.str("schema")
 ])
 
 describe("verity", () => {
@@ -60,14 +61,15 @@ describe("verity", () => {
     const alice = anchor.web3.Keypair.generate()
 
     // Setup message contents
-    const expiration = new anchor.BN(Date.now() / 1000 + 60)
+    const expiration = new anchor.BN(Date.now() / 1000 + 6000)
     const data = {
       subject: alice.publicKey,
-      expiration
+      expiration,
+      schema: "centre.io/credentials/kyc"
     }
 
     // Allocate buffer for the message and borsh encode the data
-    const message = Buffer.alloc(64)
+    const message = Buffer.alloc(128)
     LAYOUT.encode(data, message)
 
     // Create Signature from the message
@@ -89,10 +91,11 @@ describe("verity", () => {
 
     const message = {
       subject: keypair.publicKey,
-      expiration
+      expiration,
+      schema: "hello, world"
     }
 
-    const buffer = Buffer.alloc(LAYOUT.span)
+    const buffer = Buffer.alloc(128)
     LAYOUT.encode(message, buffer)
 
     const decoded = LAYOUT.decode(buffer)

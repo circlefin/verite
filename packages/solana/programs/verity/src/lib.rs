@@ -14,7 +14,8 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 #[derive(BorshDeserialize, Debug)]
 struct VerificationResult {
     subject: Pubkey,
-    expiration: i64
+    expiration: i64,
+    schema: String
 }
 
 #[program]
@@ -24,7 +25,7 @@ pub mod verity {
         Ok(())
     }
 
-    pub fn verify(ctx: Context<Verify>, signature: [u8; 64], recovery_id: u8, message: [u8; 64]) -> ProgramResult {
+    pub fn verify(ctx: Context<Verify>, signature: [u8; 64], recovery_id: u8, message: [u8; 128]) -> ProgramResult {
         // Log parameters to assist debugging
         msg!("Signature {:?}", signature);
         msg!("Recovery Id: {}", recovery_id);
@@ -43,7 +44,7 @@ pub mod verity {
         msg!("Pubkey: {:?}", pubkey.to_bytes());
 
         // Deserialize the message
-        let verification_result = VerificationResult::try_from_slice(message[0..40].as_ref()).unwrap();
+        let verification_result = VerificationResult::deserialize(&mut message.as_ref()).unwrap();
         msg!("Message: {:?}", verification_result);
 
         // Require that the subject signs the transaction
@@ -52,6 +53,10 @@ pub mod verity {
         // Require that the message is not expired
         msg!("Clock: {}", ctx.accounts.clock.unix_timestamp);
         require!(ctx.accounts.clock.unix_timestamp < verification_result.expiration, ErrorCode::Expired);
+
+        // Require that the schema is KYC
+        msg!("Schema: {}", verification_result.schema);
+        require!(verification_result.schema == "centre.io/credentials/kyc", ErrorCode::InvalidSchema);
 
         let hash = keccak::hash(message.as_ref());
         msg!("Hash: {}", hash);
@@ -83,5 +88,6 @@ pub enum ErrorCode {
     NotOk,
     Invalid,
     SubjectIsNotSigner,
-    Expired
+    Expired,
+    InvalidSchema
 }
