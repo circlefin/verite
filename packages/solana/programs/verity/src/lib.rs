@@ -5,12 +5,10 @@ use solana_program::{
     secp256k1_recover::{Secp256k1Pubkey, secp256k1_recover},
 };
 
-use borsh::BorshDeserialize;
-
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
-#[derive(BorshDeserialize, Debug)]
-struct VerificationResult {
+#[derive(AnchorSerialize, AnchorDeserialize, Debug)]
+pub struct VerificationResult {
     subject: Pubkey,
     expiration: i64,
     schema: String
@@ -23,7 +21,7 @@ pub mod verity {
         Ok(())
     }
 
-    pub fn verify(ctx: Context<Verify>, signature: [u8; 64], recovery_id: u8, message: [u8; 128]) -> ProgramResult {
+    pub fn verify(ctx: Context<Verify>, signature: [u8; 64], recovery_id: u8, verification_result: VerificationResult) -> ProgramResult {
         // Log parameters to assist debugging
         msg!("Signature {:?}", signature);
         msg!("Recovery Id: {}", recovery_id);
@@ -48,7 +46,6 @@ pub mod verity {
         msg!("Pubkey: {:?}", pubkey.to_bytes());
 
         // Deserialize the message
-        let verification_result = VerificationResult::deserialize(&mut message.as_ref()).unwrap();
         msg!("Message: {:?}", verification_result);
 
         // Require that the subject account is the subject
@@ -66,6 +63,9 @@ pub mod verity {
         require!(verification_result.schema == "centre.io/credentials/kyc", ErrorCode::InvalidSchema);
 
         // Recover the address that signed the signature
+        let mut message = Vec::new();
+        verification_result.serialize(&mut message).unwrap();
+
         let hash = keccak::hash(message.as_ref());
         msg!("Hash: {}", hash);
         let result = secp256k1_recover(hash.as_ref(), recovery_id, signature.as_ref());
