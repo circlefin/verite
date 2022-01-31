@@ -29,6 +29,7 @@ import { buildAttestationForUser } from "../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../lib/manifest"
 
 const oneMinute = 60 * 1000
+const twoMonths = 2 * 30 * 24 * 60 * 60 * 1000
 
 /**
  * Handle a POST request to containing an empty Verifiable Presentation proving
@@ -66,7 +67,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   const expirationDate =
     manifest.id === "CreditScoreAttestation"
       ? new Date(Date.now() + oneMinute)
-      : undefined
+      : new Date(Date.now() + twoMonths)
 
   // Generate new credentials for the user
   const fulfillment = await buildAndSignFulfillment(
