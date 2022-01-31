@@ -5,7 +5,6 @@ import clsx from "clsx"
 import React from "react"
 
 import HomepageFeatures from "../components/HomepageFeatures"
-import RequirePassword from "../components/RequirePassword"
 import styles from "./index.module.css"
 
 function HomepageHeader() {
@@ -29,13 +28,11 @@ export default function Home() {
   const { siteConfig } = useDocusaurusContext()
 
   return (
-    <RequirePassword>
-      <Layout title={siteConfig.title} description={siteConfig.tagline}>
-        <HomepageHeader />
-        <main>
-          <HomepageFeatures />
-        </main>
-      </Layout>
-    </RequirePassword>
+    <Layout title={siteConfig.title} description={siteConfig.tagline}>
+      <HomepageHeader />
+      <main>
+        <HomepageFeatures />
+      </main>
+    </Layout>
   )
 }
