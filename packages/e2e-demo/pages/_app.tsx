@@ -3,6 +3,7 @@ import { Web3ReactProvider } from "@web3-react/core"
 import { Provider } from "next-auth/client"
 import App, { AppProps } from "next/app"
 import "tailwindcss/tailwind.css"
+import "../../../styles.css"
 import NextNprogress from "nextjs-progressbar"
 import Cookies from "universal-cookie"
 
