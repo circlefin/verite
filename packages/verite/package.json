@@ -1,13 +1,16 @@
 {
   "name": "verite",
   "version": "0.0.1",
-  "description": "",
+  "description": "Decentralized Identity for the Crypto Economy",
   "license": "MIT",
   "contributors": [
     "Kim Hamilton Duffy (https://github.com/kimdhamilton)",
     "Sean Neville (https://github.com/psnevio)",
     "Brice Stacey <brice@m2.xyz> (https://m2.xyz)",
     "Matt Venables <matt@m2.xyz> (https://m2.xyz)"
+  ],
+  "files": [
+    "dist"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,6 +20,7 @@
     "dev": "tsc --watch --preserveWatchOutput",
     "format": "prettier  --write .",
     "lint": "eslint .",
+    "prepublish": "npm run build",
     "setup": "./bin/setup",
     "test": "jest",
     "type-check": "tsc --pretty --noEmit"
