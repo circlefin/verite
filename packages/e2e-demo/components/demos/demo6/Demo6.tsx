@@ -7,8 +7,6 @@ import { BigNumber, Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR, { SWRResponse } from "swr"
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import {
   contractFetcher,
   permissionedTokenContractAddress,
@@ -17,11 +15,6 @@ import {
   registryContractArtifact
 } from "../../../lib/eth-fns"
 import { fullURL } from "../../../lib/utils"
-import type { VerificationRequestResponse } from "../../../lib/verification-request"
-
-// All the logic of this dapp is contained in the Dapp component.
-// These other components are just presentational ones: they don't have any
-// logic. They just render HTML.
 import DepositModal from "./DepositModal"
 import DappLayout from "./Layout"
 import Loading from "./Loading"
@@ -33,6 +26,8 @@ import VerificationPrompt from "./VerificationPrompt"
 import VerifierFaucet from "./VerifierFaucet"
 import VerifierIsNotAVerifier from "./VerifierIsNotAVerifier"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
+
+import type { VerificationRequestResponse } from "../../../lib/verification-request"
 
 export type Asset = {
   name: string

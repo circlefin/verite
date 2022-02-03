@@ -1,7 +1,8 @@
-import type { VerificationResultResponse } from "verite"
 import { apiHandler } from "../../../../../lib/api-fns"
 import { fetchVerificationOfferStatus } from "../../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../../lib/errors"
+
+import type { VerificationResultResponse } from "verite"
 
 type Resp = {
   result: VerificationResultResponse

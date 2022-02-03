@@ -1,4 +1,5 @@
 import { ethers } from "ethers"
+
 import { verificationResult } from "../../../lib/verifier/result"
 
 describe("verificationResult", () => {

@@ -3,8 +3,9 @@ import {
   KYCAML_ATTESTATION_MANIFEST_ID,
   CredentialManifest
 } from "verite"
-import type { CreditScoreAttestation, KYCAMLAttestation } from "verite"
+
 import type { User } from "../database"
+import type { CreditScoreAttestation, KYCAMLAttestation } from "verite"
 
 export function buildAttestationForUser(
   user: User,

@@ -1,7 +1,8 @@
-import type { VerificationOffer } from "verite"
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import { findVerificationOffer } from "../../../../../lib/database/verificationRequests"
 import { NotFoundError } from "../../../../../lib/errors"
+
+import type { VerificationOffer } from "verite"
 
 /**
  * GET request handler

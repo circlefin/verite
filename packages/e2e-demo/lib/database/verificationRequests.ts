@@ -1,5 +1,6 @@
-import type { VerificationOffer, VerificationResultResponse } from "verite"
 import { prisma } from "./prisma"
+
+import type { VerificationOffer, VerificationResultResponse } from "verite"
 
 export async function saveVerificationOffer(
   verificationRequest: VerificationOffer,

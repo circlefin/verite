@@ -3,6 +3,7 @@ import { Wallet } from "@ethersproject/wallet"
 import { useWeb3React } from "@web3-react/core"
 import { NextPage } from "next"
 import React from "react"
+
 import ConnectWallet from "../../../components/demos/dapp/ConnectWallet"
 import DappLayout from "../../../components/demos/dapp/Layout"
 import Demo6 from "../../../components/demos/demo6/Demo6"

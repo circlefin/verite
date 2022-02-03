@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from "uuid"
-import type { CredentialOffer } from "verite"
 import { buildCredentialOffer } from "verite"
+
 import { apiHandler } from "../../../../../../lib/api-fns"
 import { NotFoundError } from "../../../../../../lib/errors"
 import { MANIFEST_MAP } from "../../../../../../lib/manifest"
 import { fullURL } from "../../../../../../lib/utils"
+
+import type { CredentialOffer } from "verite"
 
 export default apiHandler<CredentialOffer>(async (req, res) => {
   const manifestName = req.query.type as string

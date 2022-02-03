@@ -3,6 +3,13 @@ import {
   VerifyPresentationOptions
 } from "did-jwt-vc/src/types"
 import { v4 as uuidv4 } from "uuid"
+
+import {
+  buildIssuer,
+  decodeVerifiablePresentation,
+  encodeVerifiablePresentation
+} from "../utils"
+
 import type {
   CredentialManifest,
   DecodedCredentialApplication,
@@ -10,11 +17,6 @@ import type {
   DidKey,
   EncodedCredentialApplication
 } from "../../types"
-import {
-  buildIssuer,
-  decodeVerifiablePresentation,
-  encodeVerifiablePresentation
-} from "../utils"
 
 /**
  * Generates a Credential Application as response to a Credential Manifest

@@ -4,13 +4,15 @@ import { NextPage } from "next"
 import Link from "next/link"
 import QRCode from "qrcode.react"
 import useSWR from "swr"
-import type { ChallengeTokenUrlWrapper } from "verite"
 import { challengeTokenUrlWrapper } from "verite"
+
 import IssuerLayout from "../../../components/demos/issuer/Layout"
 import { currentUser, requireAuth } from "../../../lib/auth-fns"
 import { temporaryAuthToken } from "../../../lib/database"
-import type { User } from "../../../lib/database"
 import { fullURL, jsonFetch } from "../../../lib/utils"
+
+import type { User } from "../../../lib/database"
+import type { ChallengeTokenUrlWrapper } from "verite"
 
 type Props = {
   createdAt: string

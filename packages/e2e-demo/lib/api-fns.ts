@@ -1,7 +1,8 @@
-import { promisify } from "util"
 import Cors from "cors"
 import { NextApiHandler, NextApiRequest } from "next"
+import { promisify } from "util"
 import { ValidationError, VerificationError } from "verite"
+
 import { MethodNotAllowedError } from "./errors"
 
 const cors = promisify(

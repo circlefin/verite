@@ -1,6 +1,6 @@
-import { buildKycAmlManifest, buildCredentialOffer } from "verite"
 import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
+import { buildKycAmlManifest, buildCredentialOffer } from "verite"
 
 export default async function challenges(
   req: NextApiRequest,

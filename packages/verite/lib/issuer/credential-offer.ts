@@ -1,5 +1,6 @@
-import type { CredentialManifest, CredentialOffer } from "../../types"
 import { buildRequestCommon } from "../submission-requests"
+
+import type { CredentialManifest, CredentialOffer } from "../../types"
 
 /**
  * Build a Credential Offer. It is a light-weight wrapper around the Credential

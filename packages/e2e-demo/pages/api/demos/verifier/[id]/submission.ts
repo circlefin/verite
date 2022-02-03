@@ -5,7 +5,7 @@ import {
   VerificationResultResponse,
   verificationResult
 } from "verite"
-import type { EncodedPresentationSubmission } from "verite"
+
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import {
   findVerificationOffer,
@@ -16,6 +16,8 @@ import {
   getProvider,
   registryContractArtifact
 } from "../../../../../lib/eth-fns"
+
+import type { EncodedPresentationSubmission } from "verite"
 
 type PostResponse = { status: string; result?: VerificationResultResponse }
 

@@ -6,6 +6,7 @@ import {
   RevocableCredential,
   RevocationListCredential
 } from "verite"
+
 import { LoadingButton } from "../../shared/LoadingButton"
 
 type Props = {

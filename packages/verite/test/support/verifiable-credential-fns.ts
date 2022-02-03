@@ -4,8 +4,9 @@ import {
   decodeVerifiableCredential,
   randomDidKey
 } from "../../lib/utils"
-import type { Verifiable, W3CCredential } from "../../types/DidJwt"
 import { creditScoreAttestationFixture } from "../fixtures/attestations"
+
+import type { Verifiable, W3CCredential } from "../../types/DidJwt"
 
 export async function generateVerifiableCredential(): Promise<
   Verifiable<W3CCredential>

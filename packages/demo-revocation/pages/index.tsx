@@ -1,3 +1,7 @@
+import Head from "next/head"
+import { useState } from "react"
+import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 import {
   buildAndSignVerifiableCredential,
   buildIssuer,
@@ -10,16 +14,13 @@ import {
   revokeCredential,
   unrevokeCredential
 } from "verite"
+
 import type {
   KYCAMLAttestation,
   Verifiable,
   W3CCredential,
   Issuer
 } from "verite"
-import Head from "next/head"
-import useSWRImmutable from "swr/immutable"
-import useSWR from "swr"
-import { useState } from "react"
 
 // In a production environment, these values would be secured by the issuer
 const issuer = buildIssuer(
@@ -127,10 +128,9 @@ export default function Home(): JSX.Element {
     )
   }
 
-  // Component to render the issued credentail
+  // Component to render the issued credential
   const Credential = ({
-    credential,
-    revocationList
+    credential
   }: {
     credential:
       | Verifiable<W3CCredential>
@@ -138,9 +138,6 @@ export default function Home(): JSX.Element {
       | RevocableCredential
     revocationList: RevocationListCredential
   }) => {
-    const { data } = useSWR("revoked", async () =>
-      isRevoked(credential, revocationList)
-    )
     return (
       <>
         <div className="prose" style={{ maxWidth: "100%" }}>
@@ -241,7 +238,7 @@ export default function Home(): JSX.Element {
           </p>
           <p>
             To simplify the demo, everything is performed within the browser. In
-            a produciton envrionment:
+            a production environment:
           </p>
           <ul>
             <li>

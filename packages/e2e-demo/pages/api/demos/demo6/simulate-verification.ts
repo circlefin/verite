@@ -5,6 +5,7 @@ import {
   registryContractArtifact
 } from "@verite/e2e-demo/lib/eth-fns"
 import { VerificationResultResponse, verificationResult } from "verite"
+
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
 
 export default apiHandler<VerificationResultResponse>(async (req, res) => {

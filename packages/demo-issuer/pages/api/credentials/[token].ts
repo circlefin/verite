@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken"
+import { NextApiRequest, NextApiResponse } from "next"
 import {
   buildAndSignFulfillment,
   decodeCredentialApplication,
@@ -5,8 +7,6 @@ import {
   CreditScoreAttestation,
   buildIssuer
 } from "verite"
-import { NextApiRequest, NextApiResponse } from "next"
-import jwt from "jsonwebtoken"
 
 export default async function credentials(
   req: NextApiRequest,
@@ -38,7 +38,7 @@ export default async function credentials(
    * the requirements. The demo extracts the user id, but for demo purposes
    * we assume the user meets the requirements.
    */
-  const user = jwt.decode(req.query.token as string).sub
+  const _user = jwt.decode(req.query.token as string).sub
 
   /**
    * Generate the attestation.

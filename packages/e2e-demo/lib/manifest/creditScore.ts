@@ -1,7 +1,9 @@
 import { buildCreditScoreManifest } from "verite"
-import type { CredentialManifest } from "verite"
+
 import { fullURL } from "../utils"
 import { manifestIssuer } from "./issuer"
+
+import type { CredentialManifest } from "verite"
 
 export const creditScoreManifest: CredentialManifest = buildCreditScoreManifest(
   manifestIssuer,

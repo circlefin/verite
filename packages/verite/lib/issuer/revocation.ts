@@ -2,6 +2,9 @@ import { BitBuffer } from "bit-buffers"
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
+
+import { decodeVerifiableCredential, generateBitstring } from "../utils"
+
 import type {
   CredentialPayload,
   EncodedRevocationListCredential,
@@ -13,7 +16,6 @@ import type {
   Verifiable,
   W3CCredential
 } from "../../types"
-import { decodeVerifiableCredential, generateBitstring } from "../utils"
 
 type GenerateRevocationListOptions = {
   /**

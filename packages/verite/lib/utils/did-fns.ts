@@ -1,11 +1,12 @@
-import { randomBytes } from "crypto"
 import * as ed25519 from "@stablelib/ed25519"
 import * as didKeyEd25519 from "@transmute/did-key-ed25519"
+import { randomBytes } from "crypto"
 import { EdDSASigner } from "did-jwt"
 import { DIDResolutionResult, DIDResolver, Resolver } from "did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
 import { getResolver as getWebResolver } from "web-did-resolver"
+
 import type { DidKey, Issuer } from "../../types"
 
 type GenerateDidKeyParams = {

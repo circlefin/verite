@@ -1,4 +1,5 @@
 import Cookies from "cookies"
+
 import { apiHandler, requireMethod } from "../../../lib/api-fns"
 import { authenticate } from "../../../lib/database/demoAccounts"
 

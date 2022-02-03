@@ -1,4 +1,5 @@
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
+
 import {
   generateRevocationList,
   isRevoked,
@@ -11,6 +12,7 @@ import {
   generateBitstring,
   buildIssuer
 } from "../../../lib/utils"
+
 import type {
   CredentialPayload,
   Issuer,

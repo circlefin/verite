@@ -1,4 +1,5 @@
 import { ethers, Wallet } from "ethers"
+
 import type { VerificationResultResponse } from "../../types"
 
 export const verificationResult = async (

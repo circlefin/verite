@@ -1,10 +1,12 @@
 import { PaperAirplaneIcon } from "@heroicons/react/solid"
 import { FC, useState } from "react"
-import type { VerificationResultResponse } from "verite"
+
 import { classNames } from "../../../lib/react-fns"
-import type { VerificationRequestResponse } from "../../../lib/verification-request"
 import { LoadingButton } from "../../shared/LoadingButton"
 import TransferStatus from "./TransferStatus"
+
+import type { VerificationRequestResponse } from "../../../lib/verification-request"
+import type { VerificationResultResponse } from "verite"
 
 type TransferProps = {
   transferTokens: (to: string, amount: string) => Promise<void>

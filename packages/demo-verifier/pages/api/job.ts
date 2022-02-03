@@ -1,6 +1,6 @@
-import { challengeTokenUrlWrapper, PresentationDefinition } from "verite"
 import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
+import { challengeTokenUrlWrapper } from "verite"
 
 export default async function job(
   req: NextApiRequest,

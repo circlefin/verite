@@ -1,3 +1,9 @@
+import { CheckIcon, XIcon } from "@heroicons/react/solid"
+import { W3CCredential } from "did-jwt-vc"
+import Head from "next/head"
+import QRCode from "qrcode.react"
+import { useState } from "react"
+import useSWRImmutable from "swr/immutable"
 import {
   randomDidKey,
   buildAndSignVerifiableCredential,
@@ -9,13 +15,8 @@ import {
   VerificationOffer,
   ChallengeTokenUrlWrapper
 } from "verite"
+
 import type { Verifiable } from "verite"
-import Head from "next/head"
-import QRCode from "qrcode.react"
-import { useState } from "react"
-import useSWRImmutable from "swr/immutable"
-import { W3CCredential } from "did-jwt-vc"
-import { CheckIcon, XIcon } from "@heroicons/react/solid"
 
 const holder = randomDidKey()
 
