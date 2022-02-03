@@ -1,4 +1,5 @@
 import { last, compact } from "lodash"
+import { asyncMap, CredentialManifest, Verifiable, W3CCredential } from "verite"
 
 import { CredentialAndManifest } from "../types"
 import {
@@ -7,12 +8,6 @@ import {
   getRevocationStatus,
   saveItemInList
 } from "./storage"
-import {
-  asyncMap,
-  CredentialManifest,
-  Verifiable,
-  W3CCredential
-} from "./verite"
 
 export const getManifest = async (
   id: string

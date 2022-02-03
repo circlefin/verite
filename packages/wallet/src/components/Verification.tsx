@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { ActivityIndicator, View, StyleSheet, Text } from "react-native"
+import { Verifiable, VerificationOffer, W3CCredential } from "verite"
 
 import { getOrCreateDidKey } from "../lib/storage"
 import { submitVerification } from "../lib/verification"
-import { Verifiable, VerificationOffer, W3CCredential } from "../lib/verite"
+import type { VerificationSubmissionError } from "../lib/verification"
 import { NavigationElement } from "../types"
 import Card from "./Card"
-
-import type { VerificationSubmissionError } from "../lib/verification"
 
 const Verification: NavigationElement = ({ navigation, route }) => {
   const credential = route.params.credential as Verifiable<W3CCredential>

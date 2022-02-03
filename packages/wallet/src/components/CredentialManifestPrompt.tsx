@@ -1,7 +1,7 @@
 import React from "react"
 import { Text, View, Image, StyleSheet } from "react-native"
+import { CredentialManifest } from "verite"
 
-import { CredentialManifest } from "../lib/verite"
 import Card from "./Card"
 
 const CredentialManifestPrompt = ({

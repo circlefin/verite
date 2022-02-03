@@ -22,19 +22,12 @@ Install [Expo Go](https://expo.dev/client). This is where the app will run in de
 npm start
 ```
 
-### Running on Device
+The console will display a QR code.
 
-- Scan the QR code with your phone's camera. This will launch Expo Go.
+On iOS, you can scan the QR code with the camera app. This will launch Expo Go.
+On Android, you can launch Expo Go and scan the QR code from within Expo Go.
 
-## Updating Verite Library
-
-React Native does not play nice with symlinks and NPM workspaces so we could not directly link the [`@centrehq/verite`](https://github.com/centrehq/verite/tree/main/packages/verite) project as a dependency. As such, we manually copy the code into this project. We have included a bin script that will do most of the heavy lifting. See the script's contents for complete instructions.
-
-```
-./bin/update-verite
-```
-
-That command is only sufficient to copy of the code. Any additional changes, e.g. adding new dependencies, would require manually updating demo-wallet's `package.json` oneself.
+Once you've scanned the code once, you can launch Expo Go and the app will be listed in the "Recently Opened" list.
 
 ## Contributors
 

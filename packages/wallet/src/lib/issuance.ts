@@ -1,4 +1,3 @@
-import { saveCredential } from "./storage"
 import {
   DidKey,
   CredentialManifest,
@@ -6,7 +5,9 @@ import {
   decodeVerifiablePresentation,
   Verifiable,
   W3CCredential
-} from "./verite"
+} from "verite"
+
+import { saveCredential } from "./storage"
 
 export const requestIssuance = async (
   url: string,

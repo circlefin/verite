@@ -1,4 +1,4 @@
-import { CredentialManifest, Verifiable, W3CCredential } from "../lib/verite"
+import { CredentialManifest, Verifiable, W3CCredential } from "verite"
 
 export type CredentialAndManifest = {
   id: string

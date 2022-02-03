@@ -1,7 +1,7 @@
 import React from "react"
 import { Text, View, StyleSheet } from "react-native"
+import { VerificationOffer } from "verite"
 
-import { VerificationOffer } from "../lib/verite"
 import Card from "./Card"
 
 const VerificationPrompt = ({

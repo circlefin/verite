@@ -7,15 +7,11 @@ import {
   LogBox,
   ActivityIndicator
 } from "react-native"
+import { CredentialManifest, VerificationOffer, handleScan } from "verite"
 
 import { requestIssuance } from "../lib/issuance"
 import { saveManifest } from "../lib/manifestRegistry"
 import { getOrCreateDidKey } from "../lib/storage"
-import {
-  CredentialManifest,
-  VerificationOffer,
-  handleScan
-} from "../lib/verite"
 import { NavigationElement } from "../types"
 import CredentialManifestPrompt from "./CredentialManifestPrompt"
 import VerificationPrompt from "./VerificationPrompt"

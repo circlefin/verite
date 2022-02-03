@@ -10,11 +10,11 @@ import {
   View
 } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import { isExpired, isRevoked } from "verite"
 
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getCredentialsWithManifests } from "../lib/manifestRegistry"
 import { saveRevocationStatus } from "../lib/storage"
-import { isExpired, isRevoked } from "../lib/verite"
 import { CredentialAndManifest, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 

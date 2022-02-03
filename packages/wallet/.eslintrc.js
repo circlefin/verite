@@ -1,10 +1,5 @@
 module.exports = {
-  extends: [
-    "universe/native",
-    "universe/shared/typescript-analysis",
-    "plugin:import/recommended",
-    "plugin:import/typescript"
-  ],
+  extends: ["universe/native", "universe/shared/typescript-analysis"],
   overrides: [
     {
       files: ["*.ts", "*.tsx", "*.d.ts"],
@@ -13,24 +8,6 @@ module.exports = {
       }
     }
   ],
-  rules: {
-    "import/order": [
-      "error",
-      {
-        "newlines-between": "always",
-        groups: [
-          ["builtin", "external", "internal"],
-          ["sibling", "parent"],
-          "index",
-          "object",
-          "type"
-        ],
-        alphabetize: {
-          order: "asc"
-        }
-      }
-    ]
-  },
   settings: {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]

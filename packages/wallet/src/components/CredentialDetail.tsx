@@ -11,16 +11,16 @@ import {
 } from "react-native"
 import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
-
-import { getDisplayProperties } from "../lib/manifest-fns"
-import { getManifest } from "../lib/manifestRegistry"
 import {
   asyncMap,
   CredentialManifest,
   CreditScoreAttestation,
   KYCAMLAttestation,
   MaybeRevocableCredential
-} from "../lib/verite"
+} from "verite"
+
+import { getDisplayProperties } from "../lib/manifest-fns"
+import { getManifest } from "../lib/manifestRegistry"
 import { NavigationElement } from "../types"
 
 type AttestationProperties = Partial<KYCAMLAttestation> &

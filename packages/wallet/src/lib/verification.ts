@@ -4,7 +4,7 @@ import {
   Verifiable,
   W3CCredential,
   VerificationOffer
-} from "./verite"
+} from "verite"
 
 type SubmissionResponse = {
   status: string

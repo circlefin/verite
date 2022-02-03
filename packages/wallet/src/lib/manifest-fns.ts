@@ -1,12 +1,11 @@
 import { JSONPath } from "jsonpath-plus"
-
 import {
   CredentialManifest,
   DisplayMapping,
   LabeledDisplayMapping,
   Verifiable,
   W3CCredential
-} from "./verite"
+} from "verite"
 
 function findMap<T, P>(list: T[], func: (arg0: T) => P | undefined) {
   let result

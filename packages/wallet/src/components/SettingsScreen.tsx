@@ -8,9 +8,9 @@ import {
   Button
 } from "react-native"
 import { Colors } from "react-native/Libraries/NewAppScreen"
+import { DidKey } from "verite"
 
 import { clear as clearStorage, getOrCreateDidKey } from "../lib/storage"
-import { DidKey } from "../lib/verite"
 
 const Section: React.FC<{
   title: string

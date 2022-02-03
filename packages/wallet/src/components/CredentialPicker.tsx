@@ -10,10 +10,6 @@ import {
   ActivityIndicator
 } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-
-import { getDisplayProperties } from "../lib/manifest-fns"
-import { getCredentialsWithManifests } from "../lib/manifestRegistry"
-import { saveRevocationStatus } from "../lib/storage"
 import {
   CredentialManifest,
   InputDescriptor,
@@ -23,7 +19,11 @@ import {
   Verifiable,
   VerificationOffer,
   W3CCredential
-} from "../lib/verite"
+} from "verite"
+
+import { getDisplayProperties } from "../lib/manifest-fns"
+import { getCredentialsWithManifests } from "../lib/manifestRegistry"
+import { saveRevocationStatus } from "../lib/storage"
 import { CredentialAndManifest, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 

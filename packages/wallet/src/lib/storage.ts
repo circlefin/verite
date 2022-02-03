@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
-import { DidKey, randomDidKey, Verifiable, W3CCredential } from "./verite"
+import { DidKey, randomDidKey, Verifiable, W3CCredential } from "verite"
 
 export const clear = async (): Promise<void> => {
   await AsyncStorage.clear()
