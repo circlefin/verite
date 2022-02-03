@@ -1,6 +1,6 @@
-import { randomDidKey } from "verite"
 import { randomBytes } from "crypto"
 import { Wallet } from "ethers"
+import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
   const issuerDidKey = await randomDidKey()
