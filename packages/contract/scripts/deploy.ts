@@ -72,7 +72,10 @@ async function main() {
     // We will include the contract deployer in the set of Verifiers. This will
     // allow us to register verifications, with the assumption that the
     // deployer will have enough gas to complete the transactions.
-    await deployer.getAddress()
+    await deployer.getAddress(),
+    // Verifier, will be used at runtime for demo purposes. We purposely do not
+    // seed this account with ETH for gas for the sake of the demo.
+    "0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1"
   ]
   await createTrustedVerifier(verifiers, registryContract, thresholdToken)
 
