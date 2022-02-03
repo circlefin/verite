@@ -1,9 +1,10 @@
-import type { VerificationOffer } from "../../types"
 import { buildRequestCommon } from "../submission-requests"
 import {
   creditScorePresentationDefinition,
   kycPresentationDefinition
 } from "./presentation-definitions"
+
+import type { VerificationOffer } from "../../types"
 
 export function buildKycVerificationOffer(
   id: string,

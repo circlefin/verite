@@ -1,6 +1,7 @@
 import { Web3Provider } from "@ethersproject/providers"
 import { useWeb3React } from "@web3-react/core"
 import { FC } from "react"
+
 import { formatEthAddress, getEthErrorMessage } from "../../../lib/eth-fns"
 import Layout from "../../shared/Layout"
 

@@ -3,10 +3,10 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
-import type {
-  CreatePresentationOptions,
-  VerifyPresentationOptions
-} from "did-jwt-vc/src/types"
+
+import { VerificationError } from "../errors"
+import { didResolver } from "./did-fns"
+
 import type {
   Issuer,
   JWT,
@@ -18,8 +18,10 @@ import type {
   W3CPresentation,
   RevocablePresentation
 } from "../../types"
-import { VerificationError } from "../errors"
-import { didResolver } from "./did-fns"
+import type {
+  CreatePresentationOptions,
+  VerifyPresentationOptions
+} from "did-jwt-vc/src/types"
 
 /**
  * Decodes a JWT with a Verifiable Credential payload.

@@ -1,7 +1,9 @@
 import { buildKycAmlManifest } from "verite"
-import type { CredentialManifest } from "verite"
+
 import { fullURL } from "../utils"
 import { manifestIssuer } from "./issuer"
+
+import type { CredentialManifest } from "verite"
 
 export const kycManifest: CredentialManifest = buildKycAmlManifest(
   manifestIssuer,

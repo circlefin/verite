@@ -3,8 +3,7 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
 import { useState } from "react"
-import { isRevoked } from "verite"
-import {
+import { isRevoked ,
   decodeVerifiableCredential,
   fetchStatusList,
   isRevocable,
@@ -12,6 +11,7 @@ import {
   RevocableCredential,
   RevocationListCredential
 } from "verite"
+
 import RevocationLayout from "../../../../components/demos/revocation/Layout"
 import RevokeButton from "../../../../components/demos/revocation/RevokeButton"
 import { requireAuth } from "../../../../lib/auth-fns"

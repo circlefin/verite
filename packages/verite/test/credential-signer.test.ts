@@ -1,5 +1,7 @@
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
+
 import { buildIssuer, decodeVerifiableCredential } from "../lib/utils"
+
 import type { JwtCredentialPayload } from "../types"
 
 describe("VC signing", () => {

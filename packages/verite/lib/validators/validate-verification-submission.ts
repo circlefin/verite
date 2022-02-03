@@ -1,6 +1,11 @@
 import Ajv from "ajv"
-import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import jsonpath from "jsonpath"
+
+import { ValidationError } from "../errors"
+import { isRevoked } from "../issuer"
+import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
+import { findSchemaById, validateAttestationSchema } from "./validate-schema"
+
 import type {
   DecodedPresentationSubmission,
   InputDescriptor,
@@ -11,10 +16,7 @@ import type {
   Verifiable,
   InputDescriptorConstraintField
 } from "../../types"
-import { ValidationError } from "../errors"
-import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
-import { findSchemaById, validateAttestationSchema } from "./validate-schema"
+import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
 const ajv = new Ajv()
 
@@ -109,7 +111,7 @@ function mapInputsToDescriptors(
   submission: DecodedPresentationSubmission | DecodedCredentialApplication,
   definition?: PresentationDefinition
 ): Map<string, Verifiable<W3CCredential>[]> {
-  const descriptorMap = submission.presentation_submission?.descriptor_map || []
+  const descriptorMap = submission.presentation_submission?.descriptor_map ?? []
 
   return descriptorMap.reduce((map, d) => {
     const match = definition?.input_descriptors.find((id) => id.id === d.id)
@@ -130,7 +132,7 @@ async function ensureNotRevoked(
   presentation: Verifiable<W3CPresentation>
 ): Promise<void> {
   const anyRevoked = await asyncSome(
-    presentation.verifiableCredential || [],
+    presentation.verifiableCredential ?? [],
     async (credential) => {
       return isRevoked(credential)
     }

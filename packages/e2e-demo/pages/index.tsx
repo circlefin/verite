@@ -7,6 +7,7 @@ import {
 import { NextPage } from "next"
 import Image from "next/image"
 import Link from "next/link"
+
 import Layout from "../components/shared/Layout"
 
 /**

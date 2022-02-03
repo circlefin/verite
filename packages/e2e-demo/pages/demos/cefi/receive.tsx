@@ -1,6 +1,7 @@
 import { NextPage } from "next"
 import QRCode from "qrcode.react"
 import React, { useState } from "react"
+
 import Alert from "../../../components/demos/cefi/Alert"
 import Layout from "../../../components/demos/cefi/Layout"
 import PickupPanel from "../../../components/demos/cefi/PickupPanel"

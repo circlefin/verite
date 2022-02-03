@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
+
 import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
 import { manifestFixture } from "../../fixtures/manifests"
 describe("buildCredentialOffer", () => {

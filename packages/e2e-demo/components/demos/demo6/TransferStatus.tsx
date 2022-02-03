@@ -1,8 +1,10 @@
 import QRCode from "qrcode.react"
 import { FC, useState } from "react"
-import type { VerificationRequestResponse } from "../../../lib/verification-request"
+
 import { LoadingButton } from "../../shared/LoadingButton"
 import Spinner from "../../shared/Spinner"
+
+import type { VerificationRequestResponse } from "../../../lib/verification-request"
 
 type TransferStatusProps = {
   simulateFunction: () => Promise<void>

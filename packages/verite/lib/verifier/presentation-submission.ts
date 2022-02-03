@@ -1,5 +1,7 @@
-import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 import { v4 as uuidv4 } from "uuid"
+
+import { buildIssuer, encodeVerifiablePresentation } from "../utils"
+
 import type {
   DescriptorMap,
   DidKey,
@@ -7,7 +9,7 @@ import type {
   Verifiable,
   W3CCredential
 } from "../../types"
-import { buildIssuer, encodeVerifiablePresentation } from "../utils"
+import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
 export async function buildPresentationSubmission(
   didKey: DidKey,

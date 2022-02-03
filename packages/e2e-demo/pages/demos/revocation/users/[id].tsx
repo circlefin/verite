@@ -2,12 +2,12 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import Link from "next/link"
-import { asyncMap, isRevoked } from "verite"
-import {
+import { asyncMap, isRevoked ,
   isRevocable,
   RevocableCredential,
   RevocationListCredential
 } from "verite"
+
 import RevocationLayout from "../../../../components/demos/revocation/Layout"
 import { requireAuth } from "../../../../lib/auth-fns"
 import {
@@ -16,6 +16,7 @@ import {
   findCredentialsByUserId,
   findUser
 } from "../../../../lib/database"
+
 import type { User } from "../../../../lib/database"
 
 type CredentialList = Array<{

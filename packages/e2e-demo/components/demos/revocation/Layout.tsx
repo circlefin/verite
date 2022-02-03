@@ -1,5 +1,6 @@
 import { signOut, useSession } from "next-auth/client"
 import { FC } from "react"
+
 import Layout from "../../shared/Layout"
 
 type Props = {

@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken"
+
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
 import { findUserByAddress } from "../../../../../lib/database"
 import { prisma } from "../../../../../lib/database/prisma"

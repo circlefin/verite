@@ -1,4 +1,5 @@
 import jsonpath from "jsonpath"
+
 import { buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
 import {
   buildIssuer,

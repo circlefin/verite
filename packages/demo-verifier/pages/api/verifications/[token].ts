@@ -1,12 +1,12 @@
+import jwt from "jsonwebtoken"
+import { NextApiRequest, NextApiResponse } from "next"
+import { v4 as uuidv4 } from "uuid"
 import {
   kycPresentationDefinition,
   buildKycVerificationOffer,
   validateVerificationSubmission,
   verificationResult
 } from "verite"
-import { NextApiRequest, NextApiResponse } from "next"
-import jwt from "jsonwebtoken"
-import { v4 as uuidv4 } from "uuid"
 
 export default async function verifications(
   req: NextApiRequest,

@@ -4,6 +4,7 @@ import {
   NextApiRequest
 } from "next"
 import { getSession } from "next-auth/client"
+
 import { findUser, User } from "./database"
 
 /**

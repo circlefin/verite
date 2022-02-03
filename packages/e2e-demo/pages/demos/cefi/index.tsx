@@ -1,6 +1,7 @@
 import { GetServerSideProps, NextPage } from "next"
 import { getSession } from "next-auth/client"
 import Image from "next/image"
+
 import Layout from "../../../components/demos/cefi/Layout"
 import SignInFormCeFi from "../../../components/demos/cefi/SignInFormCeFi"
 

@@ -1,3 +1,7 @@
+import jwt from "jsonwebtoken"
+import Head from "next/head"
+import QRCode from "qrcode.react"
+import { useState } from "react"
 import {
   randomDidKey,
   buildCredentialApplication,
@@ -9,16 +13,8 @@ import {
   decodeCredentialApplication,
   DecodedCredentialApplication
 } from "verite"
-import type {
-  CredentialManifest,
-  RevocablePresentation,
-  Verifiable,
-  W3CPresentation
-} from "verite"
-import Head from "next/head"
-import QRCode from "qrcode.react"
-import { useState } from "react"
-import jwt from "jsonwebtoken"
+
+import type { RevocablePresentation, Verifiable, W3CPresentation } from "verite"
 
 type Presentation = Verifiable<W3CPresentation | RevocablePresentation>
 

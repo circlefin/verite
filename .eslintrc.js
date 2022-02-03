@@ -1,5 +1,3 @@
-const { resolve } = require("path")
-
 module.exports = {
   env: {
     browser: true,
@@ -9,20 +7,35 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "prettier"
   ],
+  parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
   rules: {
     "import/order": [
       "error",
       {
+        "newlines-between": "always",
+        groups: [
+          ["builtin", "external", "internal"],
+          ["sibling", "parent"],
+          "index",
+          "object",
+          "type"
+        ],
         alphabetize: {
           order: "asc"
         }
       }
     ],
     "no-empty": ["error", { allowEmptyCatch: true }],
-    "no-warning-comments": "warn"
+    "no-warning-comments": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { varsIgnorePattern: "^_", argsIgnorePattern: "^_" }
+    ]
   },
   settings: {
     "import/parsers": {

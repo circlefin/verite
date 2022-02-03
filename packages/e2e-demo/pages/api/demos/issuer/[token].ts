@@ -5,9 +5,7 @@ import {
   EncodedCredentialFulfillment,
   isRevocable,
   RevocableCredential,
-  RevocationList2021Status
-} from "verite"
-import {
+  RevocationList2021Status,
   buildIssuer,
   revokeCredential,
   decodeVerifiablePresentation,
@@ -15,9 +13,11 @@ import {
   requiresRevocableCredentials,
   validateCredentialApplication
 } from "verite"
+
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
-import { findUserFromTemporaryAuthToken, User } from "../../../../lib/database"
 import {
+  findUserFromTemporaryAuthToken,
+  User,
   findAllOrCreateRevocationLists,
   saveRevocationList,
   findCredentialsByUserIdAndType,

@@ -1,5 +1,5 @@
-import { RevocableCredential, JWT, buildIssuer } from "verite"
-import { decodeVerifiableCredential, unrevokeCredential } from "verite"
+import { RevocableCredential, JWT, buildIssuer , decodeVerifiableCredential, unrevokeCredential } from "verite"
+
 import { apiHandler } from "../../../../../lib/api-fns"
 import {
   findRevocationListForCredential,

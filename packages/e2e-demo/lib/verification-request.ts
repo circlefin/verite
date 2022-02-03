@@ -6,6 +6,7 @@ import {
   buildKycVerificationOffer,
   VerificationOffer
 } from "verite"
+
 import { saveVerificationOffer } from "./database/verificationRequests"
 import { NotFoundError } from "./errors"
 import { fullURL } from "./utils"

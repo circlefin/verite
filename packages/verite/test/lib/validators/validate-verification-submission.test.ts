@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
+
 import { ValidationError } from "../../../lib/errors"
 import { buildCredentialApplication } from "../../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
@@ -11,17 +12,18 @@ import {
   buildCreditScoreVerificationOffer,
   buildKycVerificationOffer
 } from "../../../lib/verifier/verification-offer"
-import type {
-  DecodedCredentialApplication,
-  EncodedPresentationSubmission,
-  VerificationOffer
-} from "../../../types"
 import {
   creditScoreAttestationFixture,
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
+
+import type {
+  DecodedCredentialApplication,
+  EncodedPresentationSubmission,
+  VerificationOffer
+} from "../../../types"
 
 describe("Submission validator", () => {
   it("validates a KYC Verification Submission", async () => {

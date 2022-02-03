@@ -8,6 +8,6 @@
     "strict": true,
     "resolveJsonModule": true
   },
-  "include": ["lib/**/*.ts", "types/**/*.ts", "index.ts"],
+  "include": ["lib/**/*.ts", "types/**/*.ts", "index.ts", "test/**/*.ts"],
   "exclude": ["node_modules"]
 }

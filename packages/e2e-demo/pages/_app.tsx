@@ -1,11 +1,11 @@
 import { Web3Provider } from "@ethersproject/providers"
 import { Web3ReactProvider } from "@web3-react/core"
 import { Provider } from "next-auth/client"
-import { AppProps } from "next/app"
-import App from "next/app"
+import App, { AppProps } from "next/app"
 import "tailwindcss/tailwind.css"
 import NextNprogress from "nextjs-progressbar"
 import Cookies from "universal-cookie"
+
 import RequirePassword from "../components/auth/RequirePassword"
 
 /**

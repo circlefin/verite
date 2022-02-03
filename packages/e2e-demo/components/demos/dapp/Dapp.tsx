@@ -6,22 +6,13 @@ import { useWeb3React } from "@web3-react/core"
 import { Contract } from "ethers"
 import React, { FC, useEffect, useState } from "react"
 import useSWR from "swr"
-import type { VerificationResultResponse } from "verite"
 
-// import the contract's artifacts and address
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import TokenArtifact from "../../../contracts/ThresholdToken.json"
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import contractAddressJSON from "../../../contracts/threshold-token-address.json"
-import { contractFetcher } from "../../../lib/eth-fns"
+import {
+  contractFetcher,
+  thresholdTokenContractAddress,
+  thresholdTokenContractArtifact
+} from "../../../lib/eth-fns"
 import { fullURL } from "../../../lib/utils"
-import type { VerificationRequestResponse } from "../../../lib/verification-request"
-
-// All the logic of this dapp is contained in the Dapp component.
-// These other components are just presentational ones: they don't have any
-// logic. They just render HTML.
 import DappLayout from "./Layout"
 import Loading from "./Loading"
 import NoTokensMessage from "./NoTokensMessage"
@@ -29,9 +20,8 @@ import TransactionErrorMessage from "./TransactionErrorMessage"
 import Transfer from "./Transfer"
 import WaitingForTransactionMessage from "./WaitingForTransactionMessage"
 
-const contractAddress: string =
-  process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS ||
-  contractAddressJSON.ThresholdToken
+import type { VerificationRequestResponse } from "../../../lib/verification-request"
+import type { VerificationResultResponse } from "verite"
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001
@@ -50,12 +40,16 @@ const ERROR_CODE_TX_REJECTED_BY_USER = 4001
  * transaction.
  */
 const Dapp: FC = () => {
+  const contractAddress: string =
+    process.env.NEXT_PUBLIC_ETH_CONTRACT_ADDRESS ??
+    thresholdTokenContractAddress()
+
   const { account, library } = useWeb3React<Web3Provider>()
   // Refresh the user's contract balance every 1 second
   const { data: balance, mutate } = useSWR(
     [contractAddress, "balanceOf", account],
     {
-      fetcher: contractFetcher(library, TokenArtifact.abi),
+      fetcher: contractFetcher(library, thresholdTokenContractArtifact().abi),
       refreshInterval: 1000
     }
   )
@@ -81,7 +75,7 @@ const Dapp: FC = () => {
 
   const token = new Contract(
     contractAddress,
-    TokenArtifact.abi,
+    thresholdTokenContractArtifact().abi,
     library.getSigner(0)
   )
 

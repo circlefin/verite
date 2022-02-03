@@ -1,6 +1,7 @@
-import type { CredentialManifest } from "verite"
 import { creditScoreManifest } from "./creditScore"
 import { kycManifest } from "./kyc"
+
+import type { CredentialManifest } from "verite"
 
 export const MANIFEST_MAP: Record<string, CredentialManifest> = {
   "credit-score": creditScoreManifest,

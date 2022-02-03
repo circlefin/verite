@@ -1,5 +1,6 @@
-import type { PresentationDefinition } from "./PresentationDefinition"
 import { SubmissionOffer } from "./SubmissionOffer"
+
+import type { PresentationDefinition } from "./PresentationDefinition"
 
 export type VerificationOffer = SubmissionOffer & {
   body: {

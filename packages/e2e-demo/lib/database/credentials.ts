@@ -15,6 +15,7 @@ import {
   EncodedRevocationListCredential,
   generateEncodedRevocationList
 } from "verite"
+
 import { fullURL } from "../utils"
 import { prisma, User, Credential } from "./prisma"
 import { findUser } from "./users"

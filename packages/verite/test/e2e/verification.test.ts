@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
+
 import { buildCredentialApplication } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"

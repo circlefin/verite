@@ -1,10 +1,9 @@
 import { createVerifiableCredentialJwt } from "did-jwt-vc"
-import type {
-  CreateCredentialOptions,
-  CreatePresentationOptions
-} from "did-jwt-vc/src/types"
 import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
+
+import { encodeVerifiablePresentation } from "../utils/credentials"
+
 import type {
   DescriptorMap,
   EncodedCredentialFulfillment,
@@ -16,7 +15,10 @@ import type {
   DidKey,
   JWT
 } from "../../types"
-import { encodeVerifiablePresentation } from "../utils/credentials"
+import type {
+  CreateCredentialOptions,
+  CreatePresentationOptions
+} from "did-jwt-vc/src/types"
 
 /**
  * Build a VerifiableCredential containing an attestation for the given holder.
@@ -87,7 +89,7 @@ export async function buildAndSignFulfillment(
                 path: `$.presentation.credential[${i}]`
               }
             }
-          ) || []
+          ) ?? []
       }
     }
   )
