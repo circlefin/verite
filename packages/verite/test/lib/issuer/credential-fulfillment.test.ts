@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto"
+
 import {
   buildCredentialApplication,
   decodeCredentialApplication
@@ -19,11 +21,11 @@ import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 describe("buildAndSignVerifiableCredential", () => {
   it("builds a valid credential application", async () => {
     // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey()
+    const issuerDid = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
     // Subject DID
-    const subjectDid = randomDidKey()
+    const subjectDid = randomDidKey(randomBytes)
 
     // Claims
     const attestation = kycAmlAttestationFixture
@@ -63,11 +65,11 @@ describe("buildAndSignVerifiableCredential", () => {
 
   it("can optionally support a credentialStatus", async () => {
     // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey()
+    const issuerDid = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
     // Subject DID
-    const subjectDid = randomDidKey()
+    const subjectDid = randomDidKey(randomBytes)
 
     // Claims
     const attestation = kycAmlAttestationFixture
@@ -101,13 +103,13 @@ describe("buildAndSignFulfillment", () => {
   it("works", async () => {
     // We need an Issuer, Credential Application, the credential claims or attestations
     // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey()
+    const issuerDid = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
-    const subjectDid = randomDidKey()
+    const subjectDid = randomDidKey(randomBytes)
     const options = {}
     const encodedApplication = await buildCredentialApplication(
       subjectDid,

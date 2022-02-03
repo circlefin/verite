@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import * as Random from "expo-random"
 import { DidKey, randomDidKey, Verifiable, W3CCredential } from "verite"
 
 export const clear = async (): Promise<void> => {
@@ -15,7 +16,7 @@ export const getOrCreateDidKey = async (): Promise<DidKey> => {
     return parseDid
   }
 
-  const newDid = randomDidKey()
+  const newDid = randomDidKey(Random.getRandomBytes)
 
   await AsyncStorage.setItem("did", JSON.stringify(newDid))
 

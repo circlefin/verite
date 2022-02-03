@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import Head from "next/head"
 import { useState } from "react"
 import useSWR from "swr"
@@ -55,7 +56,7 @@ const issueCredential = async (
   revocationList: RevocationListCredential
 ): Promise<RevocableCredential> => {
   // We will create a random did to represent our own identity wallet
-  const subject = randomDidKey()
+  const subject = randomDidKey(randomBytes)
 
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = {

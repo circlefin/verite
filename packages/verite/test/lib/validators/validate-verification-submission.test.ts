@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 
 import { ValidationError } from "../../../lib/errors"
@@ -27,8 +28,8 @@ import type {
 
 describe("Submission validator", () => {
   it("validates a KYC Verification Submission", async () => {
-    const clientDidKey = randomDidKey()
-    const verifierDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
     const encodedApplication = await buildCredentialApplication(
       clientDidKey,
@@ -73,8 +74,8 @@ describe("Submission validator", () => {
   })
 
   it("validates a Credit Score Verification Submission", async () => {
-    const clientDidKey = randomDidKey()
-    const verifierDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const encodedApplication = await buildCredentialApplication(
       clientDidKey,
@@ -119,8 +120,8 @@ describe("Submission validator", () => {
   })
 
   it("rejects if the issuer is not trusted", async () => {
-    const clientDidKey = randomDidKey()
-    const verifierDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
     const encodedApplication = await buildCredentialApplication(
       clientDidKey,
@@ -164,8 +165,8 @@ describe("Submission validator", () => {
   })
 
   it("rejects if the credit score is too low", async () => {
-    const clientDidKey = randomDidKey()
-    const verifierDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
     const encodedApplication = await buildCredentialApplication(
       clientDidKey,
@@ -210,8 +211,8 @@ describe("Submission validator", () => {
   })
 
   it("rejects if the submission includes a KYC credential when a Credit Score is required", async () => {
-    const clientDidKey = randomDidKey()
-    const verifierDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const encodedApplication = await buildCredentialApplication(
       clientDidKey,
@@ -256,8 +257,8 @@ describe("Submission validator", () => {
   })
 
   it("rejects if the submission is not signed by the subject", async () => {
-    const clientDidKey = randomDidKey()
-    const verifierDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
     const encodedApplication = await buildCredentialApplication(
       clientDidKey,
@@ -287,7 +288,7 @@ describe("Submission validator", () => {
       [issuer.did]
     )
 
-    const differentHolderThanSubject = randomDidKey()
+    const differentHolderThanSubject = randomDidKey(randomBytes)
     const submission = await buildPresentationSubmission(
       differentHolderThanSubject,
       verificationRequest.body.presentation_definition,

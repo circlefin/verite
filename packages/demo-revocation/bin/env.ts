@@ -1,7 +1,8 @@
+import { randomBytes } from "crypto"
 import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
-  const issuerDidKey = randomDidKey()
+  const issuerDidKey = randomDidKey(randomBytes)
 
   console.log(`NEXT_PUBLIC_ISSUER_DID=${issuerDidKey.subject}`)
   console.log(

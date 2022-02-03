@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import jsonpath from "jsonpath"
 
 import { buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
@@ -14,10 +15,10 @@ import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 describe("buildPresentationSubmission", () => {
   it("builds a Presentation Submission", async () => {
     // DID of the holder
-    const didKey = randomDidKey()
+    const didKey = randomDidKey(randomBytes)
 
     // DID of the issuer
-    const issuerDid = randomDidKey()
+    const issuerDid = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
     // Builds a signed Verifiable Credential

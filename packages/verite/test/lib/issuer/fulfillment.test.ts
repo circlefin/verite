@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto"
+
 import {
   buildCredentialApplication,
   decodeCredentialApplication
@@ -11,8 +13,8 @@ import { revocationListFixture } from "../../fixtures/revocation-list"
 
 describe("buildAndSignKycAmlFulfillment", () => {
   it("builds and signs a kyc/aml fulfillment", async () => {
-    const issuerDidKey = await randomDidKey()
-    const clientDidKey = await randomDidKey()
+    const issuerDidKey = await randomDidKey(randomBytes)
+    const clientDidKey = await randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)

@@ -37,13 +37,14 @@ import {
   decodeVerifiableCredential,
   decodeVerifiablePresentation
 } from "verite"
+import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 
 //  Simulation of key generation and storage
 //  Each party will have their own keys and will need to maintain these
-const subject = randomDidKey()
-const issuerDidKey = randomDidKey()
-const verifier = randomDidKey()
+const subject = randomDidKey(randomBytes)
+const issuerDidKey = randomDidKey(randomBytes)
+const verifier = randomDidKey(randomBytes)
 
 //  Issuer builds a manifest representing the type of credential (in this case a KYCAML credential)
 const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })

@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import { omit } from "lodash"
 
 import { hasPaths } from "../../../lib"
@@ -200,14 +201,14 @@ describe("buildCreditScoreManifest", () => {
 
 describe("requiresRevocableCredentials", () => {
   it("is true for KYCAMLAttestations", () => {
-    const issuerDid = randomDidKey()
+    const issuerDid = randomDidKey(randomBytes)
     const issuer = { id: issuerDid.subject }
     const manifest = buildKycAmlManifest(issuer)
     expect(requiresRevocableCredentials(manifest)).toBeTruthy()
   })
 
   it("is false for CreditScoreAttestations", () => {
-    const issuerDid = randomDidKey()
+    const issuerDid = randomDidKey(randomBytes)
     const issuer = { id: issuerDid.subject }
     const manifest = buildCreditScoreManifest(issuer)
     expect(requiresRevocableCredentials(manifest)).toBeFalsy()
@@ -216,7 +217,7 @@ describe("requiresRevocableCredentials", () => {
 
 describe("validateManifestFormat", () => {
   it("returns true if all required fields are present", () => {
-    const issuerDidKey = randomDidKey()
+    const issuerDidKey = randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDidKey.subject, name: "Verite" }
     const manifest = omit(buildKycAmlManifest(credentialIssuer), [
       "format",
@@ -227,7 +228,7 @@ describe("validateManifestFormat", () => {
   })
 
   it("ignores optional fields", () => {
-    const issuerDid = randomDidKey()
+    const issuerDid = randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
@@ -236,7 +237,7 @@ describe("validateManifestFormat", () => {
   })
 
   it("returns false if any of the fields are missing", async () => {
-    const issuerDid = await randomDidKey()
+    const issuerDid = await randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
     const requiredKeys = ["id", "version", "issuer", "output_descriptors"]

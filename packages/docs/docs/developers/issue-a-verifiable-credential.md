@@ -21,8 +21,9 @@ To start, you should create a DID keypair.
 
 ```ts
 import { randomDidKey } from "verite"
+import { randomBytes } from "crypto"
 
-const issuerDidKey = randomDidKey()
+const issuerDidKey = randomDidKey(randomBytes)
 ```
 
 That keypair should look like the following:
@@ -70,7 +71,7 @@ The subject uses that manifest to build a “Credential Application”, which se
 import { randomDidKey, buildCredentialApplication } from "verite"
 
 // The subject needs a did:key, generate a random one:
-const subjectDidKey = randomDidKey()
+const subjectDidKey = randomDidKey(randomBytes)
 
 const application = await buildCredentialApplication(subject, manifest)
 ```

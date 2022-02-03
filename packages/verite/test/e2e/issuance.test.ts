@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import nock from "nock"
 
 import { buildCredentialApplication } from "../../lib/issuer/credential-application"
@@ -20,9 +21,9 @@ describe("issuance", () => {
     /**
      * The issuer and the client get a DID
      */
-    const issuerDidKey = randomDidKey()
+    const issuerDidKey = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-    const clientDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
 
     /**
      * The issuer generates a QR code for the client to scan
@@ -89,12 +90,12 @@ describe("issuance", () => {
     /**
      * The issuer and the client get a DID
      */
-    const issuerDidKey = randomDidKey()
+    const issuerDidKey = randomDidKey(randomBytes)
     const didWeb = "did:web:example.com"
     const issuer = buildIssuer("did:web:example.com", issuerDidKey.privateKey)
     const publicKey = Buffer.from(issuerDidKey.publicKey).toString("base64")
 
-    const clientDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
 
     const didDocument = {
       "@context": [
