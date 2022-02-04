@@ -30,7 +30,7 @@ const DEMOS = [
   },
   {
     title: "Lending Market Dapp Requiring KYC",
-    href: "demos/demo6",
+    href: "/demos/demo6",
     description:
       "An example of how a lending market Dapp can require KYC verification before depositing assets."
   },
