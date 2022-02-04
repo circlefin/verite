@@ -2,23 +2,25 @@
 
 ## Getting Started
 
-See the [Setting up the development environment](https://reactnative.dev/docs/environment-setup) documentation for React Native CLI.
-
-The instructions suggest using the default system ruby, but it works just as well with a version manager such as asdf.
-
-First run and after updating dependencies, you will need to update NPM and CocoaPod dependencies:
-
-```
+```sh
 npm install
 ```
 
-## Install Expo Go
+## Install Expo Go on your mobile device
 
 Install [Expo Go](https://expo.dev/client). This is where the app will run in development.
 
 ## Running the App
 
+From the root of the monorepo, you can run
+
+```sh
+npm run wallet
 ```
+
+Or, from the packages/wallet directory, you can run:
+
+```sh
 npm start
 ```
 

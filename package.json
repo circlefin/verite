@@ -35,7 +35,8 @@
     "setup": "./bin/setup",
     "start": "npm run start --workspace @verite/e2e-demo",
     "test": "npm test --workspaces --if-present",
-    "type-check": "npm run type-check --workspaces --if-present"
+    "type-check": "npm run type-check --workspaces --if-present",
+    "wallet": "npm run build:verite; npm start -w wallet"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"
