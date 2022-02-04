@@ -1,10 +1,10 @@
 import { compact } from "lodash"
 import Head from "next/head"
 import Link from "next/link"
-import VeriteLogo from "../../../../assets/Verite_Full_Color.svg"
 import { FC } from "react"
 
 import { classNames } from "../../lib/react-fns"
+import VeriteLogo from "./Logo"
 
 type Props = {
   title?: string
@@ -35,8 +35,8 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
         <div className="max-w-3xl mx-auto">
           <header className="flex flex-col items-center justify-between p-4 pt-8 space-y-4 sm:p-8 sm:flex-row sm:space-y-0">
             <Link href="/">
-              <a className="main-logo text-2xl tracking-tight text-center text-gray-900 hover:text-blue-500">
-                <img src={VeriteLogo.src} />
+              <a className="text-2xl tracking-tight text-center text-gray-900 main-logo hover:text-blue-500">
+                <VeriteLogo />
               </a>
             </Link>
 
