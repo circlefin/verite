@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "anchor test"
+    "anchor": "anchor test"
   },
   "dependencies": {
     "@project-serum/anchor": "^0.20.1"
