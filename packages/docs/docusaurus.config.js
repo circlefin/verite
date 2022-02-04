@@ -17,7 +17,7 @@ module.exports = {
       title: "Verite Docs",
       logo: {
         alt: "Verite Logo",
-        src: "img/logo.png"
+        src: "img/Verite_Full_Color.svg"
       },
       items: [
         {

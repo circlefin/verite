@@ -4,6 +4,7 @@ import Link from "next/link"
 import { FC } from "react"
 
 import { classNames } from "../../lib/react-fns"
+import VeriteLogo from "./Logo"
 
 type Props = {
   title?: string
@@ -28,14 +29,14 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
       <div
         className={classNames(
           bgColor || "bg-gray-100",
-          "min-h-screen px-4 antialiased text-black font-inter font-feature-default"
+          "min-h-screen px-4 antialiased text-black font-proxima-nova"
         )}
       >
         <div className="max-w-3xl mx-auto">
           <header className="flex flex-col items-center justify-between p-4 pt-8 space-y-4 sm:p-8 sm:flex-row sm:space-y-0">
             <Link href="/">
-              <a className="text-2xl font-extrabold tracking-tight text-center text-gray-900 hover:text-blue-500">
-                Verite.id
+              <a className="max-w-[150px] text-2xl tracking-tight text-center text-gray-900 hover:text-blue-500">
+                <VeriteLogo />
               </a>
             </Link>
 
@@ -55,7 +56,7 @@ const Layout: FC<Props> = ({ children, title, bgColor }) => {
           </header>
           <main className="max-w-4xl p-4 mx-auto bg-white sm:p-8 rounded-xl">
             {title && (
-              <h1 className="pb-4 mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              <h1 className="pb-4 mt-2 text-3xl tracking-tight text-gray-900 sm:text-4xl">
                 {title}
               </h1>
             )}
