@@ -1,5 +1,6 @@
-import { FC, SVGProps } from "react"
 import { classNames } from "../../lib/react-fns"
+
+import type { FC, SVGProps } from "react"
 
 const VeriteLogo: FC<SVGProps<SVGSVGElement>> = ({ className, ...props }) => {
   return (
