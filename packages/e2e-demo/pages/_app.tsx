@@ -1,13 +1,16 @@
+import "../styles/fonts.css"
+import "tailwindcss/tailwind.css"
+
 import { Web3Provider } from "@ethersproject/providers"
 import { Web3ReactProvider } from "@web3-react/core"
 import { Provider } from "next-auth/client"
-import App, { AppProps } from "next/app"
-import "tailwindcss/tailwind.css"
-import "../../../styles.css"
+import App from "next/app"
 import NextNprogress from "nextjs-progressbar"
 import Cookies from "universal-cookie"
 
 import RequirePassword from "../components/auth/RequirePassword"
+
+import type { AppProps } from "next/app"
 
 /**
  * Build an `ethers.js` Web3Provider for the given wallet
