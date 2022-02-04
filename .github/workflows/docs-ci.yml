@@ -23,4 +23,4 @@ jobs:
           node-version: "16"
           cache: "npm"
       - run: npm install
-      - run: npm run build -w docs
+      - run: npm run build -w @verite/docs
