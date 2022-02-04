@@ -2,8 +2,8 @@ import { randomBytes } from "crypto"
 import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
-  const issuerDidKey = await randomDidKey()
-  const verifierDidKey = await randomDidKey()
+  const issuerDidKey = await randomDidKey(randomBytes)
+  const verifierDidKey = await randomDidKey(randomBytes)
   const jwtSecret = randomBytes(256).toString("base64")
 
   console.log(`ISSUER_DID=${issuerDidKey.subject}`)

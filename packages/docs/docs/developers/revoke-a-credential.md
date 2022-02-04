@@ -93,7 +93,7 @@ A complete example follows:
 
 ```ts
 // We will create a random did to represent our own identity wallet
-const subject = randomDidKey()
+const subject = randomDidKey(randomBytes)
 
 // Stubbed out credential data
 const attestation: KYCAMLAttestation = {

@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 
 import { buildCredentialApplication } from "../../lib/issuer/credential-application"
@@ -20,8 +21,8 @@ import { generateManifestAndIssuer } from "../support/manifest-fns"
 describe("verification", () => {
   it("accepts and validates a verification submission containing credentials", async () => {
     // 1. Ensure client has Verifiable Credentials
-    const verifierDidKey = await randomDidKey()
-    const clientDidKey = await randomDidKey()
+    const verifierDidKey = await randomDidKey(randomBytes)
+    const clientDidKey = await randomDidKey(randomBytes)
     const verifiableCredentials = await getClientVerifiableCredential(
       clientDidKey
     )

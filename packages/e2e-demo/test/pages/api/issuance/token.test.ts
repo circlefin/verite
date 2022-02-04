@@ -1,14 +1,17 @@
+import { randomBytes } from "crypto"
 import {
   buildCredentialApplication,
   decodeVerifiablePresentation,
   randomDidKey
 } from "verite"
-import type { DecodedCredentialFulfillment } from "verite"
-import { createMocks } from "../../../support/mocks"
+
 import { temporaryAuthToken } from "../../../../lib/database"
 import { findManifestById } from "../../../../lib/manifest"
 import handler from "../../../../pages/api/demos/issuer/[token]"
 import { userFactory } from "../../../factories"
+import { createMocks } from "../../../support/mocks"
+
+import type { DecodedCredentialFulfillment } from "verite"
 
 const expiredPresentation =
   "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
@@ -17,7 +20,7 @@ describe("POST /issuance/[token]", () => {
   it("returns a KYC credential", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = randomDidKey()
+    const clientDid = randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLAttestation")
     const credentialApplication = await buildCredentialApplication(
       clientDid,
@@ -48,7 +51,7 @@ describe("POST /issuance/[token]", () => {
   it("returns a Credit Score credential", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = await randomDidKey()
+    const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("CreditScoreAttestation")
     const credentialApplication = await buildCredentialApplication(
       clientDid,
@@ -152,7 +155,7 @@ describe("POST /issuance/[token]", () => {
   it("returns a KYC credential with known input/output", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = await randomDidKey()
+    const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLAttestation")
     const credentialApplication = await buildCredentialApplication(
       clientDid,

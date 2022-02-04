@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import nock from "nock"
 
 import {
@@ -26,7 +27,7 @@ describe("generateDidKey()", () => {
 
 describe("buildIssuer()", () => {
   it("builds an Issuer object", async () => {
-    const didKey = randomDidKey()
+    const didKey = randomDidKey(randomBytes)
     const issuer = buildIssuer(didKey.subject, didKey.privateKey)
     expect(issuer.did).toBe(didKey.subject)
   })
@@ -34,7 +35,7 @@ describe("buildIssuer()", () => {
 
 describe("didResolver", () => {
   it("resolves did:key documents", async () => {
-    const didKey = randomDidKey()
+    const didKey = randomDidKey(randomBytes)
 
     const result = await didResolver.resolve(didKey.subject)
     expect(result).toBeTruthy()

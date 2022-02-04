@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto"
+
 import { VerificationError } from "../../../lib/errors"
 import {
   buildCredentialApplication,
@@ -9,11 +11,11 @@ import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("buildCredentialApplication", () => {
   it("builds a valid credential application", async () => {
-    const issuerDidKey = await randomDidKey()
+    const issuerDidKey = await randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 
     // 1. CLIENT: The client gets a DID
-    const clientDidKey = await randomDidKey()
+    const clientDidKey = await randomDidKey(randomBytes)
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const kycManifest = buildKycAmlManifest(credentialIssuer)
 
@@ -36,7 +38,7 @@ describe("buildCredentialApplication", () => {
 
 describe("decodeCredentialApplication", () => {
   it("decodes the Credential Application", async () => {
-    const clientDidKey = randomDidKey()
+    const clientDidKey = randomDidKey(randomBytes)
     const { manifest } = await generateManifestAndIssuer()
     const application = await buildCredentialApplication(clientDidKey, manifest)
 

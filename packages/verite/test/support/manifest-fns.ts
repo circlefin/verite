@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto"
+
 import {
   buildCreditScoreManifest,
   buildKycAmlManifest
@@ -14,7 +16,7 @@ type GenerateManifestAndIssuer = {
 export async function generateManifestAndIssuer(
   manifestType = "kyc"
 ): Promise<GenerateManifestAndIssuer> {
-  const issuerDidKey = await randomDidKey()
+  const issuerDidKey = await randomDidKey(randomBytes)
   const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
   const credentialIssuer = { id: issuer.did, name: "Verite" }
   const manifest =

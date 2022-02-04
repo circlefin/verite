@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
@@ -10,17 +11,19 @@ import {
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer
 } from "verite"
-import type { DidKey } from "verite"
+
 import {
   fetchVerificationOfferStatus,
   saveVerificationOffer
 } from "../../../../../lib/database"
 import { buildAttestationForUser } from "../../../../../lib/issuance/fulfillment"
-import { createMocks } from "../../../../support/mocks"
 import { findManifestById } from "../../../../../lib/manifest"
 import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/demos/verifier/[id]/submission"
 import { userFactory } from "../../../../factories"
+import { createMocks } from "../../../../support/mocks"
+
+import type { DidKey } from "verite"
 
 describe("POST /verification/[id]/submission", () => {
   it("validates the submission and updates the verification status", async () => {
@@ -31,7 +34,7 @@ describe("POST /verification/[id]/submission", () => {
       fullURL("/api/demos/verifier/callback")
     )
     await saveVerificationOffer(verificationRequest)
-    const clientDidKey = await randomDidKey()
+    const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
     const submission = await buildPresentationSubmission(
@@ -69,7 +72,7 @@ describe("POST /verification/[id]/submission", () => {
       fullURL("/api/demos/verifier/callback")
     )
     await saveVerificationOffer(verificationRequest)
-    const clientDidKey = await randomDidKey()
+    const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
     const submission = await buildPresentationSubmission(
@@ -114,7 +117,7 @@ describe("POST /verification/[id]/submission", () => {
       fullURL("/api/demos/verifier/callback")
     )
     await saveVerificationOffer(verificationRequest)
-    const clientDidKey = await randomDidKey()
+    const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
     const submission = await buildPresentationSubmission(

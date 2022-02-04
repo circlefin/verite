@@ -6,7 +6,7 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { Contract, ContractFactory, Signer, Wallet } from "ethers"
+import { Contract, ContractFactory } from "ethers"
 import * as hre from "hardhat"
 
 async function main() {

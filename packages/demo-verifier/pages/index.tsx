@@ -1,4 +1,5 @@
 import { CheckIcon, XIcon } from "@heroicons/react/solid"
+import { randomBytes } from "crypto"
 import { W3CCredential } from "did-jwt-vc"
 import Head from "next/head"
 import QRCode from "qrcode.react"
@@ -18,7 +19,7 @@ import {
 
 import type { Verifiable } from "verite"
 
-const holder = randomDidKey()
+const holder = randomDidKey(randomBytes)
 
 /**
  * Issue a Verifiable Credential. This would traditionally be issued by the

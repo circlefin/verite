@@ -24,6 +24,7 @@ The primary packages in this repository are:
 - [contract](./packages/contract) - Two sample ERC20 contracts showcasing how to implement Verite into a smart contract.
 - [solana](./packages/solana) - A sample Solana program demonstrating how to implement Verite into a program.
 - [e2e-demo](./packages/e2e-demo) - A demo walkthrough of the entire Verite project, showcasing issuance, verification, and revocation, with additional demos for DeFi and custodial use cases.
+- [wallet](./packages/wallet) - A demo wallet for storing and submitting credentials. Written in React Native using Expo.
 
 In addition to the packages above, there are 3 single-purpose demo packages, largely extracted
 from the `e2e-demo` package to help clarify each major function of Verite credentials.
@@ -33,12 +34,6 @@ from the `e2e-demo` package to help clarify each major function of Verite creden
 - [verite/demo-revocation](./packages/demo-revocation) - A simplified demo of revoking credentials using `verite`.
 
 Each package contains a README file with specific details about how to use the package.
-
-#### Mobile Wallet
-
-There is another repository, [centrehq/demo-wallet](https://github.com/centrehq/demo-wallet) which contains code for a sample mobile wallet client which can be used to interact with all of the demos in this repository.
-
-The mobile wallet only runs on iOS at this time.
 
 ### Development Environment Setup
 
@@ -89,6 +84,21 @@ npm run dev
 
 This will start your server at [http://localhost:3000](http://localhost:3000)
 
+### Running the wallet
+
+To run the wallet, you will need the [Expo Go](https://expo.dev/client) app on your phone.
+
+1. Start the wallet:
+
+   ```sh
+   npm run wallet
+   ```
+
+2. Scan the QR code with your phone.
+
+On iOS, scan the QR code with your phone's camera.
+On Android, scan the QR code from within the Expo Go app.
+
 ### Manually running services
 
 Each packages in the `./packages` folder has instructions on how to get started
@@ -101,7 +111,7 @@ in the package's `README.md` file.
 
 To run type-checking, linting, and tests, simply run:
 
-```
+```sh
 npm run check
 ```
 
@@ -109,7 +119,7 @@ npm run check
 
 Run tests by running
 
-```
+```sh
 npm run test
 ```
 
@@ -117,21 +127,21 @@ npm run test
 
 ### Linting the codebase
 
-```
+```sh
 npm run lint
 ```
 
 or, with autofix:
 
-```
-npm run lint --fix
+```sh
+npm run lint -- --fix
 ```
 
 ### Fixing with Prettier
 
 This app uses [Prettier](https://prettier.io) to format the code, and you can auto-format all files with
 
-```
+```sh
 npm run format
 ```
 

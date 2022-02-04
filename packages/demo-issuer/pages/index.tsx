@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto"
 import jwt from "jsonwebtoken"
 import Head from "next/head"
 import QRCode from "qrcode.react"
@@ -63,7 +64,7 @@ export default function Home({
   challenge: ChallengeTokenUrlWrapper
 }): JSX.Element {
   // To simulate a mobile wallet, we generate a random keypair.
-  const subject = randomDidKey()
+  const subject = randomDidKey(randomBytes)
 
   // Challenge Response
   const [challengeResponse, setChallengeResponse] = useState()

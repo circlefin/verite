@@ -2,7 +2,7 @@ import { randomBytes } from "crypto"
 import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
-  const issuerDidKey = randomDidKey()
+  const issuerDidKey = randomDidKey(randomBytes)
   const jwtSecret = randomBytes(256).toString("base64")
 
   console.log(`NEXT_PUBLIC_ISSUER_DID=${issuerDidKey.subject}`)
