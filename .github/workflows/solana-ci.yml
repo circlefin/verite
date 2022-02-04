@@ -79,6 +79,8 @@ jobs:
       - name: Install Anchor
         run: npm install @project-serum/anchor-cli@${{ env.ANCHOR_VERSION }}
 
-      # Run tests
       - name: Cache build
         uses: Swatinem/rust-cache@v1
+
+      # Run tests
+      - run: npm run anchor -w solana
