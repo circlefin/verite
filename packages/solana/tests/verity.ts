@@ -1,19 +1,26 @@
 import * as anchor from "@project-serum/anchor"
 import { Program } from "@project-serum/anchor"
-import { Verity } from "../target/types/verity"
+import * as borsh from "@project-serum/borsh"
+import { PublicKey } from "@solana/web3.js"
+import { expect } from "chai"
 import { keccak_256 } from "js-sha3"
 import { ecdsaSign } from "secp256k1"
-import { PublicKey } from "@solana/web3.js"
-import * as borsh from "@project-serum/borsh"
-import { expect } from "chai"
+
+import { Verity } from "../target/types/verity"
 
 type Message = {
+  name: string
+  version: number
+  cluster: string
   subject: PublicKey
   expiration: anchor.BN
   schema: string
 }
 
 const LAYOUT: borsh.Layout<Message> = borsh.struct([
+  borsh.str("name"),
+  borsh.u8("version"),
+  borsh.str("cluster"),
   borsh.publicKey("subject"),
   borsh.i64("expiration"),
   borsh.str("schema")
@@ -52,17 +59,32 @@ describe("verity", () => {
     // Alice will be the subject
     const alice = anchor.web3.Keypair.generate()
 
-    // Setup message contents. Solana uses unix timestamp for clock time,
-    // whereas javascript uses milliseconds.
+    /**
+     * Setup message contents.
+     *
+     * The combination of name, version, and cluster form a domain
+     * discriminator. In this manner, verification results from one
+     * cluster, e.g. devnet cannot be reused on mainnet-beta.
+     *
+     * Solana uses unix timestamp for clock time, whereas javascript uses
+     * milliseconds. This example uses 1 minute in the future
+     */
     const expiration = new anchor.BN(Date.now() / 1000 + 6000)
     const data = {
+      name: "VerificationRegistry", // 24 bytes
+      version: 1, // 1 byte
+      cluster: "localnet", // 12 bytes
       subject: alice.publicKey, // 32 bytes
       expiration, // 8 bytes
-      schema: "centre.io/credentials/kyc" // 25 + 4 bytes
+      schema: "centre.io/credentials/kyc" // 29 bytes
     }
 
-    // Allocate buffer for the message and borsh encode the data
-    const message = Buffer.alloc(32 + 8 + 25 + 4)
+    // Allocate buffer for the message and borsh encode the data. Each type has
+    // a distinct storage requirement:
+    // Public Key - 32 bytes
+    // i64 - 8 bytes
+    // strings - the length of the string plus 4 bytes to store its length
+    const message = Buffer.alloc(106)
     LAYOUT.encode(data, message)
 
     // Create Signature from the message
@@ -84,6 +106,9 @@ describe("verity", () => {
     const expiration = new anchor.BN(Date.now())
 
     const message = {
+      name: "VerificationRegistry",
+      version: 1,
+      cluster: "devnet",
       subject: keypair.publicKey,
       expiration,
       schema: "hello, world"
@@ -93,8 +118,12 @@ describe("verity", () => {
     LAYOUT.encode(message, buffer)
 
     const decoded = LAYOUT.decode(buffer)
+    expect(decoded.name).to.eq("VerificationRegistry")
+    expect(decoded.version).to.eq(1)
+    expect(decoded.cluster).to.eq("devnet")
     expect(decoded.subject.equals(keypair.publicKey)).to.be.true
     expect(decoded.expiration.eq(expiration)).to.be.true
     expect(decoded.schema).to.eq("hello, world")
+    expect(decoded.cluster).to.eq("devnet")
   })
 })
