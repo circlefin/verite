@@ -4,14 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - packages/contract/**
-      - packages/demo-issuer/**
-      - packages/demo-revocation/**
-      - packages/demo-verifier/**
-      - packages/e2e-demo/**
-      - packages/verite/**
-      - packages/wallet/**
   pull_request:
     branches:
       - main

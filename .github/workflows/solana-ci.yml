@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - packages/solana/**
   pull_request:
     branches:
       - main
@@ -13,9 +11,9 @@ on:
       - packages/solana/**
 
 env:
-  SOLANA_VERSION: "1.8.10"
+  SOLANA_VERSION: "1.9.4"
   ANCHOR_VERSION: "0.20.1"
-  RUST_TOOLCHAIN: nightly-2021-12-23
+  RUST_TOOLCHAIN: stable
 
 jobs:
   lint_and_test:
