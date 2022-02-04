@@ -2,9 +2,19 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - packages/contract/**
+      - packages/demo-issuer/**
+      - packages/demo-revocation/**
+      - packages/demo-verifier/**
+      - packages/e2e-demo/**
+      - packages/verite/**
+      - packages/wallet/**
 
 jobs:
   lint_and_test:
