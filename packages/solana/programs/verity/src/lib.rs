@@ -9,6 +9,9 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[derive(AnchorSerialize, AnchorDeserialize, Debug)]
 pub struct VerificationResult {
+    name: String,
+    version: u8,
+    cluster: String,
     subject: Pubkey,
     expiration: i64,
     schema: String
@@ -47,6 +50,13 @@ pub mod verity {
 
         // Deserialize the message
         msg!("Message: {:?}", verification_result);
+
+        // Require that the name, version, and cluster are as expected. When
+        // deploying to different cluster, e.g. mainnet-beta, you'd want to
+        // update this value before building.
+        require!(verification_result.name == "VerificationRegistry", ErrorCode::InvalidName);
+        require!(verification_result.version == 1, ErrorCode::InvalidVersion);
+        require!(verification_result.cluster == "localnet", ErrorCode::InvalidCluster);
 
         // Require that the subject account is the subject
         require!(ctx.accounts.subject.key() == verification_result.subject, ErrorCode::SubjectMismatch);
@@ -99,5 +109,8 @@ pub enum ErrorCode {
     SubjectMismatch,
     SubjectIsNotSigner,
     Expired,
-    InvalidSchema
+    InvalidSchema,
+    InvalidName,
+    InvalidVersion,
+    InvalidCluster
 }
