@@ -2,14 +2,27 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - packages/contract/**
+      - packages/demo-issuer/**
+      - packages/demo-revocation/**
+      - packages/demo-verifier/**
+      - packages/e2e-demo/**
+      - packages/verite/**
+      - packages/wallet/**
   pull_request:
-    branches: [main]
-
-env:
-  SOLANA_VERSION: "1.8.10"
-  ANCHOR_VERSION: "0.20.1"
-  RUST_TOOLCHAIN: nightly-2021-12-23
+    branches:
+      - main
+    paths:
+      - packages/contract/**
+      - packages/demo-issuer/**
+      - packages/demo-revocation/**
+      - packages/demo-verifier/**
+      - packages/e2e-demo/**
+      - packages/verite/**
+      - packages/wallet/**
 
 jobs:
   lint_and_test:
@@ -23,63 +36,6 @@ jobs:
         with:
           node-version: "16"
           cache: "npm"
-
-      # Install Rust
-      - name: Cache Cargo registry + index
-        uses: actions/cache@v2
-        id: cache-cargo
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: cargo-${{ runner.os }}-v0000-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install Rust nightly
-        uses: actions-rs/toolchain@v1
-        with:
-          override: true
-          profile: minimal
-          toolchain: ${{ env.RUST_TOOLCHAIN }}
-          components: rustfmt, clippy
-
-      - name: Install Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pkg-config build-essential libudev-dev
-
-      # Install Solana
-      - name: Cache Solana binaries
-        id: solana-cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/solana
-            ~/.local/share/solana/install
-          key: ${{ runner.os }}-${{ env.SOLANA_VERSION }}
-      - name: Install Solana
-        if: steps.solana-cache.outputs.cache-hit != 'true'
-        run: |
-          sh -c "$(curl -sSfL https://release.solana.com/v1.8.10/install)"
-      - name: Setup Solana Path
-        run: |
-          mkdir -p ~/.config/solana/
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
-          export PATH="/home/runner/.local/share/solana/install/active_release/bin:$PATH"
-          solana --version
-          solana config get
-      - name: Create a keypair
-        run: solana-keygen new --no-passphrase
-
-      # Install Anchor
-      - name: Install Anchor
-        run: npm install @project-serum/anchor-cli@${{ env.ANCHOR_VERSION }}
-
-      # Run tests
-      - name: Cache build
-        uses: Swatinem/rust-cache@v1
-
-      # Other stuff
       - run: npm run setup
       - run: npm run setup:ci -w @verite/e2e-demo
       - run: npm run build:verite
