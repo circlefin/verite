@@ -8,12 +8,12 @@
 @font-face {
   font-family: "Proxima Nova";
   src: url("/static/fonts/ProximaNova-Regular.ttf") format("ttf"),
-    url("/static/fonts/ProximaNova-Semibold.woff") format("woff"),
-    url("/static/fonts/ProximaNova-Semibold.ttf") format("ttf"),
-    url("/static/fonts/ProximaNova-Semibold.eot") format("woff"),
     url("/static/fonts/ProximaNovaSoft-Regular.woff") format("woff"),
     url("/static/fonts/ProximaNovaSoft-Regular.ttf") format("ttf"),
-    url("/static/fonts/ProximaNovaSoft-Regular.eot") format("eot");
+    url("/static/fonts/ProximaNovaSoft-Regular.eot") format("eot"),
+    url("/static/fonts/ProximaNova-Semibold.woff") format("woff"),
+    url("/static/fonts/ProximaNova-Semibold.ttf") format("ttf"),
+    url("/static/fonts/ProximaNova-Semibold.eot") format("woff");
 }
 
 /* You can override the default Infima variables here. */
@@ -25,7 +25,7 @@
   --ifm-color-primary-light: rgb(70, 203, 174);
   --ifm-color-primary-lighter: rgb(102, 212, 189);
   --ifm-color-primary-lightest: rgb(146, 224, 208);
-  --ifm-code-font-size: 95%;
+  /* --ifm-code-font-size: 95%; */
   --ifm-font-family-base: "Proxima Nova", system-ui, -apple-system, Segoe UI,
     Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont,
     "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
@@ -41,4 +41,36 @@
 
 html[data-theme="dark"] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.navbar .navbar__items {
+  flex: auto;
+}
+
+@media screen and (max-width: 996px) {
+  .navbar .navbar__items {
+    justify-content: flex-end;
+  }
+
+  .navbar .navbar__items.navbar__items--right {
+    display: none;
+  }
+
+  .navbar__brand {
+    flex-grow: 1;
+  }
+
+  .navbar__item {
+    display: block;
+  }
+
+  .hero__title {
+    font-size: 2.2rem;
+    letter-spacing: -0.75px;
+    font-weight: 400;
+  }
+
+  .hero.hero--primary.heroBanner_src-pages-index-module {
+    padding: 2rem 0.5rem;
+  }
 }

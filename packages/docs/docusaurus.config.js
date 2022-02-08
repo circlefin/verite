@@ -1,5 +1,5 @@
-const lightCodeTheme = require("prism-react-renderer/themes/github")
 const darkCodeTheme = require("prism-react-renderer/themes/dracula")
+const lightCodeTheme = require("prism-react-renderer/themes/github")
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -14,7 +14,6 @@ module.exports = {
   projectName: "verite-docs",
   themeConfig: {
     navbar: {
-      title: "Verite Docs",
       logo: {
         alt: "Verite Logo",
         src: "img/Verite_Full_Color.svg"
