@@ -8,12 +8,12 @@
 @font-face {
   font-family: "Proxima Nova";
   src: url("/static/fonts/ProximaNova-Regular.ttf") format("ttf"),
-    url("/static/fonts/ProximaNova-Semibold.woff") format("woff"),
-    url("/static/fonts/ProximaNova-Semibold.ttf") format("ttf"),
-    url("/static/fonts/ProximaNova-Semibold.eot") format("woff"),
     url("/static/fonts/ProximaNovaSoft-Regular.woff") format("woff"),
     url("/static/fonts/ProximaNovaSoft-Regular.ttf") format("ttf"),
-    url("/static/fonts/ProximaNovaSoft-Regular.eot") format("eot");
+    url("/static/fonts/ProximaNovaSoft-Regular.eot") format("eot"),
+    url("/static/fonts/ProximaNova-Semibold.woff") format("woff"),
+    url("/static/fonts/ProximaNova-Semibold.ttf") format("ttf"),
+    url("/static/fonts/ProximaNova-Semibold.eot") format("woff");
 }
 
 /* You can override the default Infima variables here. */
