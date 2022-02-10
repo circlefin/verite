@@ -1,5 +1,6 @@
 import { randomBytes } from "crypto"
 import { Wallet } from "ethers"
+import internalIP from "internal-ip"
 import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
@@ -24,6 +25,8 @@ async function setup(): Promise<void> {
   // Create a random address to represent the address of our smart contract
   const wallet = Wallet.createRandom()
   console.log(`CONTRACT_ADDRESS=${wallet.address}`)
+
+  console.log(`NEXT_PUBLIC_BASEURL=http://${internalIP.v4.sync()}:3000`)
 }
 
 setup()
