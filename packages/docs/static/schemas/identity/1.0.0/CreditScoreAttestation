@@ -1,0 +1,64 @@
+{
+  "$ref": "#/definitions/CreditScore",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "AddressOwner": {
+      "additionalProperties": false,
+      "properties": {
+        "@type": {
+          "const": "AddressOwner",
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "chain": {
+          "type": "string"
+        },
+        "proof": {
+          "type": "string"
+        }
+      },
+      "required": ["@type", "chain", "address", "proof"],
+      "type": "object"
+    },
+    "CreditScore": {
+      "additionalProperties": false,
+      "properties": {
+        "@type": {
+          "const": "CreditScoreAttestation",
+          "type": "string"
+        },
+        "AddressOwner": {
+          "items": {
+            "$ref": "#/definitions/AddressOwner"
+          },
+          "type": "array"
+        },
+        "historyStartDate": {
+          "type": "string"
+        },
+        "openAccounts": {
+          "type": "number"
+        },
+        "paymentHistoryPercentage": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "scoreType": {
+          "type": "string"
+        },
+        "utilization": {
+          "type": "number"
+        }
+      },
+      "required": ["@type", "score", "scoreType", "provider"],
+      "type": "object"
+    }
+  }
+}
