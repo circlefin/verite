@@ -77,7 +77,7 @@ const Page: NextPage = () => {
     if (response.ok) {
       const result = await response.json()
       if (result.status === "pending") {
-        info("Transfer pending.")
+        info("Transfer sent.")
       } else {
         info("Transfer complete.")
       }

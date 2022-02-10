@@ -145,6 +145,16 @@ This app uses [Prettier](https://prettier.io) to format the code, and you can au
 npm run format
 ```
 
+## Troubleshooting
+
+### Nonce too high
+
+Occasionally, the local hardhat ethereum node and MetaMask become out of sync. If you see an error stating "Nonce too high", you can fix this by:
+
+1. Open MetaMask settings
+2. Click "Advanced"
+3. Click "Reset Account"
+
 ## Contributors
 
 - [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))

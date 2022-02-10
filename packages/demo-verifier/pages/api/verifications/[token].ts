@@ -83,7 +83,14 @@ async function completeVerification(req: NextApiRequest, res: NextApiResponse) {
   try {
     await validateVerificationSubmission(req.body, definition)
   } catch (e) {
-    res.status(400).json({ status: "invalid" })
+    res.status(400).json({
+      status: "invalid",
+      errors: [
+        {
+          message: e.message
+        }
+      ]
+    })
     throw e
   }
 
