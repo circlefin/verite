@@ -14,7 +14,7 @@ ISSUE: Discuss "@type" vs "type" and array vs single-valued
 
 Represents an attestation a KYC/AML process has been performed according to a specified defined process. A KYC/AML process is defined at the country-level, referenced as linked data.
 
-The KYC/AML attestation structure is intended to address regulatory compliance only, and not filtering on additional personal data attributes. An example of the latter is filtering out users based on state residence ("jurisdiction shopping"). This distinction helps reduce required attributes about the credential subject (and finer-grained personal data) within the credential.
+The KYC/AML attestation structure is intended to address regulatory compliance only, and not filtering on additional personal data attributes. An example of the latter is filtering out users based on state residence for idiosyncratic compliance purposes. This distinction helps reduce required attributes about the credential subject (and finer-grained personal data) within the credential.
 
 ### Example
 
@@ -46,7 +46,7 @@ The "approvalDate" attribute is used to define the date of KYC/AML process compl
 - Verifiers must ensure they update verification results per updated issuer actions
 - Verifiers are expected to determine fitness-for-purpose based on awareness of process definitions
 - Additional details obtained during the KYC/AML process should not be included in the attestation. For example, service provider scores are not needed and will leak personal information.
-- Support for additional use cases (such as jurisdiction shopping) that require additional data should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplished with ZKPs or by issuing separate credentials containing the additional attributes (such as residence), enabling wallet aggregation of minimal required data.
+- Support for use cases that require additional data (such as residency information) should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplished with ZKPs or by issuing separate credentials containing the additional attributes, enabling wallet aggregation of minimal required data.
 
 Verite's initial release contains only the USA KYC/AML process definition ([https://verite.id/schemas/definitions/1.0.0/kycaml/usa](https://verite.id/schemas/definitions/1.0.0/kycaml/usa)). Additional process definitions will be developed based on existing practices/requirements per country.
 

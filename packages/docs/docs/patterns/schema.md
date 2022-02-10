@@ -41,7 +41,7 @@ The following are recommendations for safe practices while making minimal assump
 
 The Verifiable Credentials Data Model provides general guidance on the [principle of data minimization](https://www.w3.org/TR/vc-data-model/#the-principle-of-data-minimization), involving reducing the amount of personal information revealed to verifiers, either through issuance of multiple single-attribute credentials or through data minimizing signature suites such as ZKPs. Lack of library availability, or concerns about maturity, may discourage some implementers from relying on the latter. At the same time, it can be difficult for issuers to envision how to property atomize credentials into single-attribute credentials: not all attributes are meant to be mixed and matched in different combinations.
 
-A simpler approach is to tailor credential schemas to one specific use case, and avoiding use of one credential schema for multiple use cases. As an example, the Verite schema for a KYC/AML compliance credential is intended only to communicate KYC/AML compliance for a given country, while excluding adjacent use cases such as support for “jurisdiction shopping” (excluding residents of states with stricter regulatory requirements). This separation enabled a KYC/AML claim with minimal subject attributes -- not requiring detailed residence information about the subject.
+A simpler approach is to tailor credential schemas to one specific use case, and avoiding use of one credential schema for multiple use cases. As an example, the Verite schema for a KYC/AML compliance credential is intended only to communicate KYC/AML compliance for a given country -- not adjacent use cases (e.g., excluding residents of states with stricter regulatory requirements). This separation enabled a KYC/AML claim with minimal subject attributes -- not requiring detailed residence information about the subject.
 
 ### Prefer composability of credentials
 
@@ -49,7 +49,7 @@ Along with reducing the data required of a subject, careful consideration of the
 
 Composing and stacking credentials is another way to achieve some effects enabled by ZKPs, while not disclosing more information needed for a given scenario.
 
-Continuing the jurisdiction shopping example described above, suppose a verifier wanted to restrict to users that have been KYCs, and additionally, do not live in a specific state. With the composable approach, the subject would be issued a KYC credential and a separate residence credential, which would be combined to support the presentation requested by the verifier[^2].
+Continuing the residency restriction example described above, suppose a verifier wanted to restrict to users that have been KYCd, and additionally, do not live in a specific state. With the composable approach, the subject would be issued a KYC credential and a separate residence credential, which would be combined to support the presentation requested by the verifier[^2].
 
 ### Prefer reuse of existing schemas and vocabularies
 
