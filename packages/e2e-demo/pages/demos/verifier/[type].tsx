@@ -37,7 +37,9 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
   const { data } = useSWR(
     () => fullURL(`/api/demos/verifier/${verification.id}/status`),
     jsonFetch,
-    { refreshInterval: 1000 }
+    {
+      refreshInterval: 1000
+    }
   )
   const status = (data && (data.status as string)) || "pending"
   const result = data && data.result
@@ -45,7 +47,47 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
   return (
     <VerifierLayout>
       <div className="prose max-w-none">
-        {status === "pending" && (
+        {status === "approved" ? (
+          <>
+            <h3>
+              The Presentation Exchange completed and the credential was
+              verified.
+            </h3>
+
+            <BadgeCheckIcon className="mx-auto text-green-600 w-36 h-36" />
+
+            {result && (
+              <>
+                <p>
+                  The verifier signed and returned the following verification
+                  result, which can be used by a relying party such as a smart
+                  contract that can validate the result.
+                </p>
+                <pre>{JSON.stringify(result, null, 4)}</pre>
+              </>
+            )}
+          </>
+        ) : status === "rejected" ? (
+          <>
+            <h3>Your credential was not verified.</h3>
+            <XCircleIcon className="mx-auto text-red-400 w-36 h-36" />
+          </>
+        ) : status === "approved" || status === "rejected" ? (
+          <p>
+            <Link href="/demos/revocation" passHref>
+              <button
+                type="button"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Next: Issuers Can Revoke Credentials
+                <ArrowCircleRightIcon
+                  className="w-5 h-5 ml-2 -mr-1"
+                  aria-hidden="true"
+                />
+              </button>
+            </Link>
+          </p>
+        ) : (
           <>
             <h2>{title} Verification User Experience</h2>
             <p>
@@ -95,52 +137,6 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
               Presentation using its DID key and transmits it to the verifier.
             </p>
           </>
-        )}
-
-        {status === "approved" && (
-          <>
-            <h3>
-              The Presentation Exchange completed and the credential was
-              verified.
-            </h3>
-
-            <BadgeCheckIcon className="mx-auto text-green-600 w-36 h-36" />
-
-            {result && (
-              <>
-                <p>
-                  The verifier signed and returned the following verification
-                  result, which can be used by a relying party such as a smart
-                  contract that can validate the result.
-                </p>
-                <pre>{JSON.stringify(result, null, 4)}</pre>
-              </>
-            )}
-          </>
-        )}
-
-        {status === "rejected" && (
-          <>
-            <h3>Your credential was not verified.</h3>
-            <XCircleIcon className="mx-auto text-red-400 w-36 h-36" />
-          </>
-        )}
-
-        {(status === "approved" || status === "rejected") && (
-          <p>
-            <Link href="/demos/revocation" passHref>
-              <button
-                type="button"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Next: Issuers Can Revoke Credentials
-                <ArrowCircleRightIcon
-                  className="w-5 h-5 ml-2 -mr-1"
-                  aria-hidden="true"
-                />
-              </button>
-            </Link>
-          </p>
         )}
       </div>
     </VerifierLayout>
