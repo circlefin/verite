@@ -273,7 +273,7 @@ export default function Home(): JSX.Element {
             self-custodied identity wallet.
           </p>
           <p>
-            The first page prompts a compatable mobile wallet to scan a QR code.
+            The first page prompts a compatible mobile wallet to scan a QR code.
             When you click <em>Simulate Scanning</em>, it will follow the URL to
             retrieve the full presentation request. Assuming the mobile wallet
             does not share state with the browser, details about the user and
