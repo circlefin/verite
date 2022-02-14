@@ -54,7 +54,7 @@ export const submitVerification = async (
     body
   })
 
-  if (response.status === 200) {
+  if (response.status === 200 || response.status === 201) {
     const json = await response.json()
 
     submitToCallback(verificationRequest.body.status_url, json)
