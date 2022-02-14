@@ -22,8 +22,6 @@ describe("verificationResult", () => {
       // signature: "0x19e88da2f358047dc6c2388115c037dc0fa4f6e8af1b3a6ee61af5af1972457c11374071d0e44db96b05eb8fb8a6b85398879b938ca1ff00c99db856bafb885a1c",
       verificationResult: {
         // expiration: 1636574690,
-        payload:
-          "0x6578616d706c6500000000000000000000000000000000000000000000000000",
         schema: "centre.io/credentials/kyc",
         subject: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
       }
@@ -41,8 +39,7 @@ describe("verificationResult", () => {
       VerificationResult: [
         { name: "schema", type: "string" },
         { name: "subject", type: "address" },
-        { name: "expiration", type: "uint256" },
-        { name: "payload", type: "bytes32" }
+        { name: "expiration", type: "uint256" }
       ]
     }
 

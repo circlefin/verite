@@ -32,9 +32,8 @@ The registry smart contract validates the Verification Result and the verifierâ€
 Upon completing successful verification of Verifiable Credentials, verifiers create Verification Results and sign them. Verification Results contain minimal information:
 
 - A schema identifier identifying the type of credential that was verified
-- The public on-chain address associated with the verified subject
-- The expiration time of the result (which may occur sooner than the expiration of the credential), and
-- An optional payload relevant to the type of verification.
+- The public on-chain address associated with the verified subject, and
+- The expiration time of the result (which may occur sooner than the expiration of the credential)
 
 A Verification Result created by a verifier is never persisted to a blockchain.
 
