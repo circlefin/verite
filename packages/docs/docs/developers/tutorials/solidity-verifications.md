@@ -301,15 +301,13 @@ it("Should format a structured verification result", async function () {
     VerificationResult: [
       { name: "schema", type: "string" },
       { name: "subject", type: "address" },
-      { name: "expiration", type: "uint256" },
-      { name: "payload", type: "bytes32" }
+      { name: "expiration", type: "uint256" }
     ]
   }
   verificationResult = {
     schema: "centre.io/credentials/kyc",
     subject: subjectAddress,
-    expiration: expiration,
-    payload: ethers.utils.formatBytes32String("example")
+    expiration: expiration
   }
 })
 ```

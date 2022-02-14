@@ -517,11 +517,6 @@
               "internalType": "uint256",
               "name": "expiration",
               "type": "uint256"
-            },
-            {
-              "internalType": "bytes32",
-              "name": "payload",
-              "type": "bytes32"
             }
           ],
           "internalType": "struct VerificationResult",

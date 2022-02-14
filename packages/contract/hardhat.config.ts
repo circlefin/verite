@@ -1,8 +1,8 @@
 import { task } from "hardhat/config"
 import "@nomiclabs/hardhat-waffle"
-import * as fs from "fs"
 import dotenv from "dotenv"
 import { Contract, ContractFactory } from "ethers"
+import * as fs from "fs"
 dotenv.config()
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
@@ -251,16 +251,14 @@ task(
       VerificationResult: [
         { name: "schema", type: "string" },
         { name: "subject", type: "address" },
-        { name: "expiration", type: "uint256" },
-        { name: "payload", type: "bytes32" }
+        { name: "expiration", type: "uint256" }
       ]
     }
 
     const verificationResult = {
       schema: "centre.io/credentials/kyc",
       subject: taskArgs.address,
-      expiration: Math.floor(Date.now() / 1000) + 60, // 1 minute
-      payload: hre.ethers.utils.formatBytes32String("example")
+      expiration: Math.floor(Date.now() / 1000) + 60 // 1 minute
     }
 
     // We'll use Account #0 since it is used for deployment

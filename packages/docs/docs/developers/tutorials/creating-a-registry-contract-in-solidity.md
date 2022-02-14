@@ -424,11 +424,10 @@ function _validateVerificationResult(
 ) internal view returns(VerificationRecord memory) {
 
     bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
-        keccak256("VerificationResult(string schema,address subject,uint256 expiration,bytes32 payload)"),
+        keccak256("VerificationResult(string schema,address subject,uint256 expiration)"),
         keccak256(bytes(verificationResult.schema)),
         verificationResult.subject,
-        verificationResult.expiration,
-        verificationResult.payload
+        verificationResult.expiration
     )));
 
     // recover the public address corresponding to the signature and regenerated hash

@@ -40,7 +40,6 @@ struct VerificationResult {
     string schema; // indicator of the type of verification result
     address subject; // address of the subject of the verification
     uint256 expiration; // expiration of verification (may or may not be expiration of the VC)
-    bytes32 payload; // arbitrary data associated with the verification that may be employed in app logic
 }
 
 /**

@@ -105,8 +105,7 @@ async function registerVerifications(registry: Contract, addresses: string[]) {
     VerificationResult: [
       { name: "schema", type: "string" },
       { name: "subject", type: "address" },
-      { name: "expiration", type: "uint256" },
-      { name: "payload", type: "bytes32" }
+      { name: "expiration", type: "uint256" }
     ]
   }
   // We use a long expiration for these Verifications because we don't want
@@ -117,8 +116,7 @@ async function registerVerifications(registry: Contract, addresses: string[]) {
     const verificationResult = {
       schema: "centre.io/credentials/kyc",
       subject: address,
-      expiration: expiration,
-      payload: hre.ethers.utils.formatBytes32String("example")
+      expiration: expiration
     }
 
     // sign the structured result

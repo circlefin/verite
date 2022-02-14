@@ -1,6 +1,6 @@
-import { ethers } from "hardhat"
 import { expect } from "chai"
 import { Contract, Wallet } from "ethers"
+import { ethers } from "hardhat"
 
 describe("VerificationRegistry", function () {
   // create a wallet to generate a private key for signing verification results
@@ -133,15 +133,13 @@ describe("VerificationRegistry", function () {
       VerificationResult: [
         { name: "schema", type: "string" },
         { name: "subject", type: "address" },
-        { name: "expiration", type: "uint256" },
-        { name: "payload", type: "bytes32" }
+        { name: "expiration", type: "uint256" }
       ]
     }
     verificationResult = {
       schema: "centre.io/credentials/kyc",
       subject: subjectAddress,
-      expiration: expiration,
-      payload: ethers.utils.formatBytes32String("example")
+      expiration: expiration
     }
   })
 
@@ -243,8 +241,7 @@ describe("VerificationRegistry", function () {
     verificationResult = {
       schema: "centre.io/credentials/kyc",
       subject: tokenOwner,
-      expiration: expiration,
-      payload: ethers.utils.formatBytes32String("example")
+      expiration: expiration
     }
     const signature = await signer._signTypedData(
       domain,
