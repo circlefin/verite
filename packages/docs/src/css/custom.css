@@ -6,19 +6,24 @@
  */
 
 @font-face {
-  font-family: "Proxima Nova";
-  src: url("/static/fonts/ProximaNova-Regular.ttf") format("ttf"),
-    url("/static/fonts/ProximaNovaSoft-Regular.woff") format("woff"),
-    url("/static/fonts/ProximaNovaSoft-Regular.ttf") format("ttf"),
-    url("/static/fonts/ProximaNovaSoft-Regular.eot") format("eot"),
-    url("/static/fonts/ProximaNova-Semibold.woff") format("woff"),
-    url("/static/fonts/ProximaNova-Semibold.ttf") format("ttf"),
-    url("/static/fonts/ProximaNova-Semibold.eot") format("woff");
+  font-family: "proxima-nova";
+  src: url("/static/fonts/proxima-nova-regular.woff") format("woff"),
+    url("/static/fonts/proxima-nova-regular.ttf") format("ttf"),
+    url("/static/fonts/proxima-nova-regular.eot") format("eot"),
+    url("/static/fonts/proxima-nova-semibold.woff") format("woff"),
+    url("/static/fonts/proxima-nova-semibold.ttf") format("ttf"),
+    url("/static/fonts/proxima-nova-semibold.eot") format("eot")
+    url("/static/fonts/proxima-nova-bold.woff") format("woff"),
+    url("/static/fonts/proxima-nova-bold.ttf") format("ttf"),
+    url("/static/fonts/proxima-nova-bold.eot") format("eot");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary: #0FB193;
   --ifm-color-primary-dark: rgb(33, 175, 144);
   --ifm-color-primary-darker: rgb(31, 165, 136);
   --ifm-color-primary-darkest: rgb(26, 136, 112);
@@ -26,7 +31,7 @@
   --ifm-color-primary-lighter: rgb(102, 212, 189);
   --ifm-color-primary-lightest: rgb(146, 224, 208);
   /* --ifm-code-font-size: 95%; */
-  --ifm-font-family-base: "Proxima Nova", system-ui, -apple-system, Segoe UI,
+  --ifm-font-family-base: "proxima-nova", system-ui, -apple-system, Segoe UI,
     Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont,
     "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
@@ -47,6 +52,10 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
   flex: auto;
 }
 
+.footer--dark {
+  background-color: #121E36;
+}
+
 @media screen and (max-width: 996px) {
   .navbar .navbar__items {
     justify-content: flex-end;
@@ -62,12 +71,6 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
 
   .navbar__item {
     display: block;
-  }
-
-  .hero__title {
-    font-size: 2.2rem;
-    letter-spacing: -0.75px;
-    font-weight: 400;
   }
 
   .hero.hero--primary.heroBanner_src-pages-index-module {

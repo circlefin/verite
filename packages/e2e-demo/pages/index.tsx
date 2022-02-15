@@ -41,7 +41,7 @@ const Home: NextPage = () => {
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="ml-16 text-lg font-medium leading-6 text-gray-900">
+              <h3 className="ml-16 text-lg font-bold leading-6 text-gray-900">
                 Issue
               </h3>
             </dt>
@@ -77,7 +77,7 @@ const Home: NextPage = () => {
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="ml-16 text-lg font-medium leading-6 text-gray-900">
+              <h3 className="ml-16 text-lg font-bold leading-6 text-gray-900">
                 Custody
               </h3>
             </dt>
@@ -100,7 +100,7 @@ const Home: NextPage = () => {
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="ml-16 text-lg font-medium leading-6 text-gray-900">
+              <h3 className="ml-16 text-lg font-bold leading-6 text-gray-900">
                 Verify
               </h3>
             </dt>
@@ -138,7 +138,7 @@ const Home: NextPage = () => {
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="ml-16 text-lg font-medium leading-6 text-gray-900">
+              <h3 className="ml-16 text-lg font-bold leading-6 text-gray-900">
                 Identify
               </h3>
             </dt>
@@ -165,7 +165,7 @@ const Home: NextPage = () => {
 
       <div>
         <Link href="/demos">
-          <a className="flex items-center justify-center w-full px-4 py-2 pt-4 pb-4 font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm text-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <a className="flex items-center justify-center w-full px-4 py-2 pt-4 pb-4 font-bold text-white bg-blue-600 border border-transparent rounded-md shadow-sm text-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             <BadgeCheckIcon className="mr-2 -ml-1 w-7 h-7" aria-hidden="true" />
             View the Demos
           </a>
