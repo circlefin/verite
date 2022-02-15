@@ -66,27 +66,41 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
                 <pre>{JSON.stringify(result, null, 4)}</pre>
               </>
             )}
+
+            <p>
+              <Link href="/demos/revocation" passHref>
+                <button
+                  type="button"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Next: Issuers Can Revoke Credentials
+                  <ArrowCircleRightIcon
+                    className="w-5 h-5 ml-2 -mr-1"
+                    aria-hidden="true"
+                  />
+                </button>
+              </Link>
+            </p>
           </>
         ) : status === "rejected" ? (
           <>
             <h3>Your credential was not verified.</h3>
             <XCircleIcon className="mx-auto text-red-400 w-36 h-36" />
+            <p>
+              <Link href="/demos/revocation" passHref>
+                <button
+                  type="button"
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Next: Issuers Can Revoke Credentials
+                  <ArrowCircleRightIcon
+                    className="w-5 h-5 ml-2 -mr-1"
+                    aria-hidden="true"
+                  />
+                </button>
+              </Link>
+            </p>
           </>
-        ) : status === "approved" || status === "rejected" ? (
-          <p>
-            <Link href="/demos/revocation" passHref>
-              <button
-                type="button"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Next: Issuers Can Revoke Credentials
-                <ArrowCircleRightIcon
-                  className="w-5 h-5 ml-2 -mr-1"
-                  aria-hidden="true"
-                />
-              </button>
-            </Link>
-          </p>
         ) : (
           <>
             <h2>{title} Verification User Experience</h2>
