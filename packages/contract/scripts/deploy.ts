@@ -80,8 +80,12 @@ async function main() {
   await createTrustedVerifier(verifiers, registryContract, thresholdToken)
 
   const addresses = [
-    // Faucet
+    // Faucet Hardhat Account #0 (localhost)
     "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    // Faucet Production
+    "0x695f7BC02730E0702bf9c8C102C254F595B24161",
+    // Verifier
+    "0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1",
     // Imitation Permissioned Pool Deposit Addresses
     "0x70997970c51812dc3a010c7d01b50e0d17dc79c8", // DAI
     "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc", // USDC
@@ -97,7 +101,7 @@ async function registerVerifications(registry: Contract, addresses: string[]) {
   const domain = {
     name: "VerificationRegistry",
     version: "1.0",
-    chainId: 1337,
+    chainId: hre.network.config.chainId ?? 1337,
     verifyingContract: registry.address
   }
 

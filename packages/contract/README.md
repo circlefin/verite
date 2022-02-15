@@ -59,15 +59,55 @@ When restarting the app locally with a new freshly-run hardhat node, MetaMask ca
 
 ## Deploying to Ropsten Network
 
-The file `hardhat.config.ts` defines a list of supported networks. For demo purposes, we deployed the contract to the Ropsten network. The current configuration uses Alchemy as a network provider. When the contract is deployed, the full, fixed supply of VUSDC are credited to the account that deployed the contract. You can set your Alchemy API key and your Ropsten account's private key in `.env`.
+The file `hardhat.config.ts` defines a list of supported networks. For demo purposes, we deployed the contract to the Ropsten network. The current configuration uses Alchemy as a network provider. When the contracts are deployed, the full, fixed supply of tokens are credited to the account that deployed the contract. You can set your Alchemy API key and your Ropsten account's private key in `.env`.
 
 Each contract is deployed from the address `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
 
-- PermissionedToken contract address: `0xD5EeF0d9489f8a2FcAF325893FB04cA460566865`.
-- VerificationRegistry contract address: `0xF15791f60782cFD5c4677642463920B3501F10Bf`
-- ThresholdToken contract address is `0x9f876eadf17dc89e09bab0836a4046070ec0d20e`.
+- PermissionedToken contract address: `0x1387b6D8d0c33A4A2D8a925ddBc51EDbF6d0157e`.
+- VerificationRegistry contract address: `0xE6592dA6DdeAf19Ba9cE02cB433823CF50ABEd9D`
+- ThresholdToken contract address is `0xa7E42D87e0FB5185a804c67b5b823D0E33A4d895`.
 
-Each
+### Update Secrets
+
+Update the file `/packages/contract/.env` with your Ethereum secret key and Alchemy API key. The Ethereum secret key will be used to deploy the contract. You should be sure the wallet has sufficient funds to deploy the contract ahead of time.
+
+When deployed, the Threshold and Permissioned tokens mint their total supply to the contract deployer. The dapp uses this same wallet as the faucet. You can find the secret key used in the environment variable named `ETH_FAUCET_PRIVATE_KEY`
+
+You can use any Alchemy API key for the deploy, however you can find the one we use in the environment variable named `ALCHEMY_API_KEY`
+
+### Deploy Contract
+
+```sh
+[verite/packages/contract] npx hardhat run --network ropsten scripts/deploy.ts
+Deploying the contracts with the account: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+Account balance: 4425393267715985090
+Registry address: 0xE6592dA6DdeAf19Ba9cE02cB433823CF50ABEd9D
+Permissioned Token Address: 0x1387b6D8d0c33A4A2D8a925ddBc51EDbF6d0157e
+Threshold Token address: 0xa7E42D87e0FB5185a804c67b5b823D0E33A4d895
+Added trusted verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+Added trusted verifier: 0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1
+Registered Verification for address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+Registered Verification for address: 0x70997970c51812dc3a010c7d01b50e0d17dc79c8, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+Registered Verification for address: 0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+Registered Verification for address: 0x90f79bf6eb2c4f870365e785982e1f101e93b906, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+```
+
+### Contract Artifacts
+
+The Dapp reads contract artifacts, including the ABI and contract addresses from the `/packages/e2e-demo/contracts` directory. This folder is gitignored for developer convenience, as it changes often, after each contract deploy. For production builds, the files found in `/packages/e2e-demo/bin/fixtures` are copied over. If you change the ABI, you’ll need to update those files. After each contract deploy, you’ll need to update the contract addresses using the output from the contract deploy script. Then re-deploy the dapp so it has the latest values. You will also want to update the contract package’s README to track the latest contract changes.
+
+### Redeploy the Dapp
+
+With the updated contract artifacts, the e2e-demo site must be redeployed.
+
+### Seed the verifier and faucet accounts with funds
+
+Be sure the following accounts have ETH:
+
+- `0x695f7BC02730E0702bf9c8C102C254F595B24161`
+- `0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1`
+
+You can check the addresses using [https://ropsten.etherscan.io/](https://ropsten.etherscan.io/)
 
 ## Adding ETH to the faucet
 
