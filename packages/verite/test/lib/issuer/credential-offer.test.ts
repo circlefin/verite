@@ -16,7 +16,7 @@ describe("buildCredentialOffer", () => {
 
     const expected = {
       id,
-      type: "https://verite.id/types/CredentialOffer",
+      type: "CredentialOffer",
       from: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
       // created_time: "2021-10-26T20:57:43.373Z",
       // expires_time: "2021-11-25T20:57:43.373Z",
