@@ -67,7 +67,7 @@ module.exports = {
       "@docusaurus/preset-classic",
       {
         docs: {
-          routeBasePath: "/verite/",
+          routeBasePath: "/verite",
           sidebarPath: require.resolve("./sidebars.js")
         },
         blog: {
