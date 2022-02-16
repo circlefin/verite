@@ -5,7 +5,7 @@
     "KYCAMLAttestation": {
       "additionalProperties": false,
       "properties": {
-        "@type": {
+        "type": {
           "const": "KYCAMLAttestation",
           "type": "string"
         },
@@ -16,7 +16,7 @@
           "type": "string"
         }
       },
-      "required": ["@type", "process", "approvalDate"],
+      "required": ["type", "process", "approvalDate"],
       "type": "object"
     }
   }

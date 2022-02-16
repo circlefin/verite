@@ -97,8 +97,8 @@ import {
 const decodedApplication = await decodeCredentialApplication(application)
 
 const attestation: KYCAMLAttestation = {
-  "@type": "KYCAMLAttestation",
-  process: "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
+  type: "KYCAMLAttestation",
+  process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
   approvalDate: new Date().toISOString()
 }
 

@@ -54,8 +54,8 @@ const application = await buildCredentialApplication(subject, manifest)
 const decodedApplication = await decodeCredentialApplication(application)
 //  The attestation is a standardized representation of the issuer
 const attestation = {
-  "@type": "KYCAMLAttestation",
-  process: "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
+  type: "KYCAMLAttestation",
+  process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
   approvalDate: new Date().toISOString()
 }
 
