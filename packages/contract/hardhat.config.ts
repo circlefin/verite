@@ -243,7 +243,7 @@ task(
     const domain = {
       name: "VerificationRegistry",
       version: "1.0",
-      chainId: 1337,
+      chainId: hre.network.config.chainId ?? 1337,
       verifyingContract: registry.address
     }
 
