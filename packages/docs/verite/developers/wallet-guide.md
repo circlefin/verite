@@ -40,7 +40,7 @@ Following is a list of concepts used in Verite.
 
 ### Specifications and Libraries Used
 
-See the [list of specifications and spec-conforming libraries](/docs/appendix/specifications-and-libraries) used by Verite.
+See the [list of specifications and spec-conforming libraries](/verite/appendix/specifications-and-libraries) used by Verite.
 
 ## Credential Flows
 
