@@ -41,7 +41,7 @@ In this example, an individual's financial institution offers the ability to req
 
 ### Sample JSON objects
 
-- [Credential Offer](/docs/appendix/messages#credential-offer)
-- [Credential Manifest](/docs/appendix/messages#credential-manifest)
-- [Credential Application](/docs/appendix/messages#credential-application)
-- [Credential Fulfillment](/docs/appendix/messages#credential-fulfillment)
+- [Credential Offer](/verite/appendix/messages#credential-offer)
+- [Credential Manifest](/verite/appendix/messages#credential-manifest)
+- [Credential Application](/verite/appendix/messages#credential-application)
+- [Credential Fulfillment](/verite/appendix/messages#credential-fulfillment)
