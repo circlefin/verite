@@ -53,8 +53,8 @@ Foundational standards that Verite draws upon include:
 
 ### More About Standards
 
-A Verite primer on VCs, VPs, and DIDs is available for [reference here](/docs/appendix/primer).
+A Verite primer on VCs, VPs, and DIDs is available for [reference here](/verite/appendix/primer).
 
 ### Specification References
 
-The complete list of specifications used in Verite's implementation is available for [reference here](/docs/appendix/specifications-and-libraries).
+The complete list of specifications used in Verite's implementation is available for [reference here](/verite/appendix/specifications-and-libraries).

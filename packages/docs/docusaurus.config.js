@@ -20,7 +20,7 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/intro",
+          to: "verite/",
           activeBasePath: "docs/",
           label: "Intro",
           position: "left"
@@ -41,7 +41,7 @@ module.exports = {
           items: [
             {
               label: "Intro to Verite",
-              to: "/docs/intro"
+              to: "/verite/"
             }
           ]
         },
@@ -67,8 +67,8 @@ module.exports = {
       "@docusaurus/preset-classic",
       {
         docs: {
-          sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/centrehq/verite"
+          routeBasePath: "/verite/",
+          sidebarPath: require.resolve("./sidebars.js")
         },
         blog: {
           showReadingTime: true,

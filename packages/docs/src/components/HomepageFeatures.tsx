@@ -1,6 +1,6 @@
-import React from "react";
-import clsx from "clsx";
-import styles from "./HomepageFeatures.module.css";
+import React from "react"
+import clsx from "clsx"
+import styles from "./HomepageFeatures.module.css"
 
 const FeatureList = [
   {
@@ -11,7 +11,7 @@ const FeatureList = [
         Data models, protocol recipes, and open source software that links
         identity proofs to crypto finance experiences.
       </>
-    ),
+    )
   },
   {
     title: "Secure, privacy-preserving credentials",
@@ -21,7 +21,7 @@ const FeatureList = [
         Decentralized identity-based data models and protocols that are
         privacy-preserving by default.
       </>
-    ),
+    )
   },
   {
     title: "Lightweight, secure exchange and verification protocols",
@@ -33,9 +33,9 @@ const FeatureList = [
         accessing the private information used in the issuance of the claim and
         without leaking information.
       </>
-    ),
-  },
-];
+    )
+  }
+]
 
 function Feature({ Svg, title, description }) {
   return (
@@ -48,7 +48,7 @@ function Feature({ Svg, title, description }) {
         <p>{description}</p>
       </div>
     </div>
-  );
+  )
 }
 
 export default function HomepageFeatures() {
@@ -62,5 +62,5 @@ export default function HomepageFeatures() {
         </div>
       </div>
     </section>
-  );
+  )
 }

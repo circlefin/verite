@@ -13,7 +13,7 @@
     url("/static/fonts/proxima-nova-semibold.woff") format("woff"),
     url("/static/fonts/proxima-nova-semibold.ttf") format("ttf"),
     url("/static/fonts/proxima-nova-semibold.eot") format("eot")
-    url("/static/fonts/proxima-nova-bold.woff") format("woff"),
+      url("/static/fonts/proxima-nova-bold.woff") format("woff"),
     url("/static/fonts/proxima-nova-bold.ttf") format("ttf"),
     url("/static/fonts/proxima-nova-bold.eot") format("eot");
   font-weight: normal;
@@ -23,7 +23,7 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #0FB193;
+  --ifm-color-primary: #0fb193;
   --ifm-color-primary-dark: rgb(33, 175, 144);
   --ifm-color-primary-darker: rgb(31, 165, 136);
   --ifm-color-primary-darkest: rgb(26, 136, 112);
@@ -53,7 +53,7 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
 }
 
 .footer--dark {
-  background-color: #121E36;
+  background-color: #121e36;
 }
 
 @media screen and (max-width: 996px) {

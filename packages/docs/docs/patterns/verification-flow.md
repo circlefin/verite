@@ -17,7 +17,7 @@ A [presentation definition](https://identity.foundation/presentation-exchange/#p
 
 Assuming a mobile wallet stores the credentials, for the convenience of the user a verifier may initiate the process of sending the presentation request either by scanning a QR code (desktop) or a deep-link (mobile). Due to size limitations of a QR code, wallet and credential interactions often do not include the full presentation request in the QR code; instead the QR code encodes an endpoint with a unique URL. The wallet decodes the QR code, subsequently retrieving the presentation request from that endpoint.
 
-[See example Verite Presentation Request](/docs/appendix/messages#presentation-request)
+[See example Verite Presentation Request](/verite/appendix/messages#presentation-request)
 
 ## Credential Submission
 
@@ -25,7 +25,7 @@ The wallet parses the presentation definition to determine what types of inputs,
 
 Finally, the wallet sends the packaged credential to the `reply_url` contained in the presentation request.
 
-[See example Verite presentation submission](/docs/appendix/messages#presentation-submission).
+[See example Verite presentation submission](/verite/appendix/messages#presentation-submission).
 
 ## Verification
 
@@ -33,7 +33,7 @@ The verifier receives the presentation submission, unwraps it, and maps the pres
 
 Verification cannot always occur immediately. In these cases, the presentation request has an optional `status_url` that can be used to check its status.
 
-There is no required output or side-effect of verification. However, we have a pattern for [integrating with Ethereum](/docs/patterns/smart-contract-verite) using an on-chain Verification Registry. A web app, however, might simply update its state and allow the user to continue some action.
+There is no required output or side-effect of verification. However, we have a pattern for [integrating with Ethereum](/verite/patterns/smart-contract-verite) using an on-chain Verification Registry. A web app, however, might simply update its state and allow the user to continue some action.
 
 ## Verification Flow
 

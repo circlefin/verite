@@ -40,7 +40,7 @@ Following is a list of concepts used in Verite.
 
 ### Specifications and Libraries Used
 
-See the [list of specifications and spec-conforming libraries](/docs/appendix/specifications-and-libraries) used by Verite.
+See the [list of specifications and spec-conforming libraries](/verite/appendix/specifications-and-libraries) used by Verite.
 
 ## Credential Flows
 
@@ -85,7 +85,7 @@ This flow is based on the [DIF wallet and credential interaction (draft) specifi
       ```json
       {
         "id": "4487e7d1-7d10-4075-a923-bae9332266c1",
-        "type": "CredentialOffer",
+        "type": "https://verite.id/types/CredentialOffer",
         "from": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
         "created_time": "2021-09-14T01:22:05.816Z",
         "expires_time": "2021-10-14T01:22:05.816Z",
@@ -164,7 +164,7 @@ Sample:
 ```json
 {
   "id": "4487e7d1-7d10-4075-a923-bae9332266c1",
-  "type": "CredentialOffer",
+  "type": "https://verite.id/types/CredentialOffer",
   "from": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
   "created_time": "2021-09-14T01:22:05.816Z",
   "expires_time": "2021-10-14T01:22:05.816Z",
@@ -252,13 +252,13 @@ A credential application is sent from the wallet to the issuer before issuance. 
 {
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    { "@vocab": "https://verite.id/identity/" }
+    "https://verite.id/identity"
   ],
   "type": ["VerifiableCredential", "KYCAMLAttestation"],
   "credentialSubject": {
     "KYCAMLAttestation": {
-      "type": "KYCAMLAttestation",
-      "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+      "@type": "KYCAMLAttestation",
+      "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
       "approvalDate": "2021-09-14T02:00:07.540Z"
     },
     "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
@@ -299,7 +299,7 @@ Sample:
 ```json
 {
     "id": "1308e77f-9ab0-4de7-97a8-ad2111b585bf",
-    "type": "VerificationRequest",
+    "type": "https://verite.id/types/VerificationRequest",
     "from": "did:key:z6MkizuwMHiYpZrBAn64ZnbS2cz5og7iGqAa3nV3EuTj4aaZ",
     "created_time": "2021-09-14T20:19:32.655Z",
     "expires_time": "2021-10-14T20:19:32.655Z",
@@ -345,8 +345,8 @@ Details:
       "credentialSubject": {
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
-          "type": "KYCAMLAttestation",
-          "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+          "@type": "KYCAMLAttestation",
+          "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
           "approvalDate": "2021-09-14T02:00:07.540Z"
         }
       },

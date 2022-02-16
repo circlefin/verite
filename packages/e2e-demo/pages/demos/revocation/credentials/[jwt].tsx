@@ -3,7 +3,8 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
 import { useState } from "react"
-import { isRevoked ,
+import {
+  isRevoked,
   decodeVerifiableCredential,
   fetchStatusList,
   isRevocable,
