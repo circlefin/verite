@@ -5,7 +5,7 @@ sidebar_position: 8
 
 # Verite Wallet Integration Guide
 
-**Contact**: [identity@centre.io](mailto:identity@centre.io)
+**Contact**: [verite-dev@centre.io](mailto:verite-dev@centre.io)
 
 This guide is written for developers seeking to integrate Verite into custodial or non-custodial wallets.
 

@@ -5,7 +5,7 @@ const lightCodeTheme = require("prism-react-renderer/themes/github")
 module.exports = {
   title: "Verite Documentation",
   tagline: "Verite decentralized identity for DeFi",
-  url: "https://verite.id",
+  url: "https://docs.centre.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
