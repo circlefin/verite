@@ -5,7 +5,7 @@
     "AddressOwner": {
       "additionalProperties": false,
       "properties": {
-        "@type": {
+        "type": {
           "const": "AddressOwner",
           "type": "string"
         },
@@ -19,13 +19,13 @@
           "type": "string"
         }
       },
-      "required": ["@type", "chain", "address", "proof"],
+      "required": ["type", "chain", "address", "proof"],
       "type": "object"
     },
     "CreditScore": {
       "additionalProperties": false,
       "properties": {
-        "@type": {
+        "type": {
           "const": "CreditScoreAttestation",
           "type": "string"
         },
@@ -57,7 +57,7 @@
           "type": "number"
         }
       },
-      "required": ["@type", "score", "scoreType", "provider"],
+      "required": ["type", "score", "scoreType", "provider"],
       "type": "object"
     }
   }

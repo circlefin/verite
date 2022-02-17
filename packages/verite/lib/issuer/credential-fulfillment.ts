@@ -30,14 +30,14 @@ export function buildAndSignVerifiableCredential(
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
-  const type = attestation["@type"]
+  const type = attestation["type"]
   const subjectId = isString(subject) ? subject : subject.subject
 
   const vcPayload: CredentialPayload = Object.assign(
     {
       "@context": [
         "https://www.w3.org/2018/credentials/v1",
-        "https://verite.id/identity"
+        { "@vocab": "https://verite.id/identity/" }
       ],
       type: ["VerifiableCredential", type],
       credentialSubject: {

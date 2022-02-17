@@ -6,8 +6,6 @@ sidebar_position: 1
 
 The following schemas are used in Verite's implementation.
 
-ISSUE: Discuss "@type" vs "type" and array vs single-valued
-
 ## KYC/AML Attestation
 
 ### Purpose
@@ -20,17 +18,17 @@ The KYC/AML attestation structure is intended to address regulatory compliance o
 
 ```json
 {
-  "@type": "KYCAMLAttestation",
-  "process": "https://verite.id/schemas/definitions/1.0.0/kycaml/usa",
+  "type": "KYCAMLAttestation",
+  "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
   "approvalDate": "2021-08-25T02:13:43.387Z"
 }
 ```
 
 ### Attributes
 
-#### "@type" Attribute
+#### "type" Attribute
 
-The "@type" attribute MUST be "KYCAMLAttestation". Use of this attribute is REQUIRED.
+The "type" attribute MUST be "KYCAMLAttestation". Use of this attribute is REQUIRED.
 
 #### "process" Attribute
 
@@ -48,7 +46,7 @@ The "approvalDate" attribute is used to define the date of KYC/AML process compl
 - Additional details obtained during the KYC/AML process should not be included in the attestation. For example, service provider scores are not needed and will leak personal information.
 - Support for use cases that require additional data (such as residency information) should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplished with ZKPs or by issuing separate credentials containing the additional attributes, enabling wallet aggregation of minimal required data.
 
-Verite's initial release contains only the USA KYC/AML process definition ([https://verite.id/schemas/definitions/1.0.0/kycaml/usa](https://verite.id/schemas/definitions/1.0.0/kycaml/usa)). Additional process definitions will be developed based on existing practices/requirements per country.
+Verite's initial release contains only the USA KYC/AML process definition ([https://verite.id/definitions/processes/kycaml/0.0.1/usa](https://verite.id/definitions/processes/kycaml/0.0.1/usa)). Additional process definitions will be developed based on existing practices/requirements per country.
 
 ### Additional Considerations
 
@@ -66,7 +64,7 @@ When used as inputs by verifiers into verification registries, the auditing/fore
   - Other "registry" information stored by verifiers when deciding which issuer VCs to accept
 - Lastly, auditor contacts the issuer(s) for subject data corresponding to the VC id.
 
-[See further discussion of registry forensics flows](/docs/patterns/smart-contract-verite#auditing-and-forensics-sequences)
+[See further discussion of registry forensics flows](/verite/patterns/smart-contract-verite#auditing-and-forensics-sequences)
 
 ## Address Ownership
 
@@ -82,7 +80,7 @@ Proofs of control using both single-key and multiple-key ("multi-sig") variants 
 
 ```json
 {
-  "@type": "AddressOwner",
+  "type": "AddressOwner",
   "chain": "ethereum-ropsten",
   "address": "0x967af20D190EE4558Fd218A8B0be4065beEfCAce",
   "proof": "xyz"
@@ -91,9 +89,9 @@ Proofs of control using both single-key and multiple-key ("multi-sig") variants 
 
 ### Attributes
 
-#### "@type" Attribute
+#### "type" Attribute
 
-The "@type" attribute MUST be "AddressOwner". Use of this attribute is REQUIRED.
+The "type" attribute MUST be "AddressOwner". Use of this attribute is REQUIRED.
 
 #### "chain" Attribute
 
@@ -122,10 +120,10 @@ Describes an attestation of Counterparty PII used for originators and beneficiar
 
 ```json
 {
-  "@type": "CounterpartyAccountHolder",
+  "type": "CounterpartyAccountHolder",
   "legalName": "Some Account Holder",
   "address": {
-    "@type": "PostalAddress",
+    "type": "PostalAddress",
     "addressCountry": "United States",
     "addressLocality": "Mountain View",
     "addressRegion": "CA",
@@ -139,9 +137,9 @@ Describes an attestation of Counterparty PII used for originators and beneficiar
 
 ### Attributes
 
-#### "@type" Attribute
+#### "type" Attribute
 
-The "@type" attribute MUST be "CounterpartyAccountHolder". Use of this attribute is REQUIRED.
+The "type" attribute MUST be "CounterpartyAccountHolder". Use of this attribute is REQUIRED.
 
 #### "legalName" Attribute
 

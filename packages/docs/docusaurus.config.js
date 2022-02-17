@@ -5,7 +5,7 @@ const lightCodeTheme = require("prism-react-renderer/themes/github")
 module.exports = {
   title: "Verite Documentation",
   tagline: "Verite decentralized identity for DeFi",
-  url: "https://verite.id",
+  url: "https://docs.centre.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -20,7 +20,7 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/intro",
+          to: "verite",
           activeBasePath: "docs/",
           label: "Intro",
           position: "left"
@@ -41,7 +41,7 @@ module.exports = {
           items: [
             {
               label: "Intro to Verite",
-              to: "/docs/intro"
+              to: "/verite"
             }
           ]
         },
@@ -67,8 +67,9 @@ module.exports = {
       "@docusaurus/preset-classic",
       {
         docs: {
-          sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/centrehq/verite"
+          path: "verite",
+          routeBasePath: "/verite",
+          sidebarPath: require.resolve("./sidebars.js")
         },
         blog: {
           showReadingTime: true,

@@ -176,7 +176,7 @@ describe("POST /issuance/[token]", () => {
     const verifiablePresentation = await decodeVerifiablePresentation(response)
     const vc = verifiablePresentation.verifiableCredential[0]
     expect(vc.credentialSubject.id).toBe(clientDid.subject)
-    expect(vc.credentialSubject.KYCAMLAttestation["@type"]).toBe(
+    expect(vc.credentialSubject.KYCAMLAttestation["type"]).toBe(
       "KYCAMLAttestation"
     )
   })
