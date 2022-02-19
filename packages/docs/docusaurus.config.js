@@ -84,5 +84,14 @@ module.exports = {
   customFields: {
     cookieDomain: process.env.COOKIE_DOMAIN,
     demosUrl: process.env.DEMOS_URL || "/"
-  }
+  },
+  scripts: [
+    {
+      type: "text/javascript",
+      id: "hs-script-loader",
+      async: true,
+      defer: true,
+      src: "//js.hs-scripts.com/9304636.js"
+    }
+  ]
 }
