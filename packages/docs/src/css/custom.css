@@ -76,4 +76,8 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
   .hero.hero--primary.heroBanner_src-pages-index-module {
     padding: 2rem 0.5rem;
   }
+
+  .hero__title {
+    font-size: 2.5rem;
+  }
 }
