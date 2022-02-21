@@ -17,7 +17,7 @@ export async function buildPresentationSubmission(
   verifiedCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
   options?: VerifyPresentationOptions
 ): Promise<JWT> {
-  const client = buildIssuer(didKey.subject, didKey.privateKey)
+  const client = buildIssuer(didKey.subject, didKey.privateKey, "ES256K")
 
   const presentationSubmission = {
     id: uuidv4(),

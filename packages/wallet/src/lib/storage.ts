@@ -16,7 +16,7 @@ export const getOrCreateDidKey = async (): Promise<DidKey> => {
     return parseDid
   }
 
-  const newDid = randomDidKey(Random.getRandomBytes)
+  const newDid = randomDidKey(Random.getRandomBytes, "ES256K")
 
   await AsyncStorage.setItem("did", JSON.stringify(newDid))
 

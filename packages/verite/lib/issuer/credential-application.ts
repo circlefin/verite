@@ -28,7 +28,7 @@ export async function buildCredentialApplication(
   manifest: CredentialManifest,
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
-  const client = buildIssuer(didKey.subject, didKey.privateKey)
+  const client = buildIssuer(didKey.subject, didKey.privateKey, "ES256K")
 
   const credentialApplication = {
     id: uuidv4(),
