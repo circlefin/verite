@@ -1,7 +1,7 @@
 import * as ed25519 from "@stablelib/ed25519"
-import * as didKeyEd25519 from "@transmute/did-key-ed25519"
 import { EdDSASigner } from "did-jwt"
-import { DIDResolutionResult, DIDResolver, Resolver } from "did-resolver"
+import { Resolver } from "did-resolver"
+import { getResolver as getKeyResolver } from "key-did-resolver"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
 import { getResolver as getWebResolver } from "web-did-resolver"
@@ -68,25 +68,6 @@ export function buildIssuer(
     signer: EdDSASigner(privateKey),
     alg: "EdDSA"
   }
-}
-
-/**
- * A did:key resolver that adheres to the `did-resolver` API.
- *
- * @remark This resolver is used to verify the signature of a did:key JWT.
- */
-export function getKeyResolver(): Record<string, DIDResolver> {
-  async function resolve(did: string): Promise<DIDResolutionResult> {
-    const result = await didKeyEd25519.resolve(did)
-
-    return {
-      didResolutionMetadata: {},
-      didDocument: result.didDocument,
-      didDocumentMetadata: {}
-    }
-  }
-
-  return { key: resolve }
 }
 
 const didWebResolver = getWebResolver()

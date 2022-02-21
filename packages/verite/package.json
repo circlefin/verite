@@ -26,7 +26,6 @@
     "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
-    "@transmute/did-key-ed25519": "^0.3.0-unstable.4",
     "ajv": "^8.6.3",
     "bit-buffers": "^1.0.2",
     "did-jwt-vc": "^2.1.6",
@@ -34,6 +33,7 @@
     "ethers": "^5.4.4",
     "isomorphic-unfetch": "^3.1.0",
     "jsonpath": "^1.1.1",
+    "key-did-resolver": "^1.4.4",
     "lodash": "^4.17.21",
     "multibase": "4.0.6",
     "multicodec": "^3.1.0",
