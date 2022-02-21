@@ -9,13 +9,28 @@ import {
 } from "../../../lib/utils/did-fns"
 
 describe("generateDidKey()", () => {
-  it("generates a DiKey from the given input", async () => {
+  it("generates a EdDSA DidKey from the given input", async () => {
     const bytes = Buffer.from(
       "2ac8ddd5cca1ce6030fe41576b70a4f2f000441f272aa6a623292806a103ce42",
       "hex"
     )
 
-    const didKey = generateDidKey({ secureRandom: () => bytes })
+    const didKey = generateDidKey({ alg: "EdDSA", secureRandom: () => bytes })
+
+    expect(didKey.publicKey).toBeDefined()
+    expect(didKey.privateKey).toBeDefined()
+    expect(didKey.controller.startsWith("did:key")).toBe(true)
+    expect(didKey.subject.startsWith("did:key")).toBe(true)
+    expect(didKey.id.startsWith(didKey.subject)).toBe(true)
+  })
+
+  it("generates a ES256K DidKey from the given input", async () => {
+    const bytes = Buffer.from(
+      "2ac8ddd5cca1ce6030fe41576b70a4f2f000441f272aa6a623292806a103ce42",
+      "hex"
+    )
+
+    const didKey = generateDidKey({ alg: "ES256K", secureRandom: () => bytes })
 
     expect(didKey.publicKey).toBeDefined()
     expect(didKey.privateKey).toBeDefined()
@@ -26,9 +41,15 @@ describe("generateDidKey()", () => {
 })
 
 describe("buildIssuer()", () => {
-  it("builds an Issuer object", async () => {
+  it("builds an Issuer object using EdDSA", async () => {
     const didKey = randomDidKey(randomBytes)
     const issuer = buildIssuer(didKey.subject, didKey.privateKey)
+    expect(issuer.did).toBe(didKey.subject)
+  })
+
+  it("builds an Issuer object using ES256K", async () => {
+    const didKey = randomDidKey(randomBytes, "ES256K")
+    const issuer = buildIssuer(didKey.subject, didKey.privateKey, "ES256K")
     expect(issuer.did).toBe(didKey.subject)
   })
 })
