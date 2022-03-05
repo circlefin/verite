@@ -1,8 +1,10 @@
-import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 
-import { encodeVerifiablePresentation } from "../utils/credentials"
+import {
+  encodeVerifiableCredential,
+  encodeVerifiablePresentation
+} from "../utils/credentials"
 
 import type {
   DescriptorMap,
@@ -23,7 +25,7 @@ import type {
 /**
  * Build a VerifiableCredential containing an attestation for the given holder.
  */
-export function buildAndSignVerifiableCredential(
+export async function buildAndSignVerifiableCredential(
   signer: Issuer,
   subject: string | DidKey,
   attestation: KYCAMLAttestation | CreditScoreAttestation,
@@ -50,7 +52,7 @@ export function buildAndSignVerifiableCredential(
     payload
   )
 
-  return createVerifiableCredentialJwt(vcPayload, signer, options)
+  return encodeVerifiableCredential(vcPayload, signer, options)
 }
 
 /**

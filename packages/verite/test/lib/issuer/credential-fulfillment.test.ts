@@ -46,7 +46,7 @@ describe("buildAndSignVerifiableCredential", () => {
     expect(decoded).toMatchObject({
       credentialSubject: {
         KYCAMLAttestation: {
-          "type": "KYCAMLAttestation",
+          type: "KYCAMLAttestation",
           process:
             "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
           approvalDate: attestation.approvalDate
@@ -149,7 +149,7 @@ describe("buildAndSignFulfillment", () => {
         {
           credentialSubject: {
             KYCAMLAttestation: {
-              "type": "KYCAMLAttestation",
+              type: "KYCAMLAttestation",
               process:
                 "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa"
               // approvalDate: "2021-11-12T18:56:16.508Z",

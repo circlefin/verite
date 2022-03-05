@@ -1,9 +1,12 @@
 import { BitBuffer } from "bit-buffers"
-import { createVerifiableCredentialJwt } from "did-jwt-vc"
 import fetch from "isomorphic-unfetch"
 import { has } from "lodash"
 
-import { decodeVerifiableCredential, generateBitstring } from "../utils"
+import {
+  encodeVerifiableCredential,
+  decodeVerifiableCredential,
+  generateBitstring
+} from "../utils"
 
 import type {
   CredentialPayload,
@@ -72,7 +75,7 @@ export const generateEncodedRevocationList = async ({
     }
   }
 
-  return createVerifiableCredentialJwt(vcPayload, signer)
+  return encodeVerifiableCredential(vcPayload, signer)
 }
 
 /**

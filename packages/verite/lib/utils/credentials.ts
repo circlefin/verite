@@ -1,4 +1,5 @@
 import {
+  createVerifiableCredentialJwt,
   createVerifiablePresentationJwt,
   verifyCredential,
   verifyPresentation
@@ -8,6 +9,8 @@ import { VerificationError } from "../errors"
 import { didResolver } from "./did-fns"
 
 import type {
+  CredentialPayload,
+  JwtCredentialPayload,
   Issuer,
   JWT,
   VerifiableCredential,
@@ -19,9 +22,40 @@ import type {
   RevocablePresentation
 } from "../../types"
 import type {
+  CreateCredentialOptions,
   CreatePresentationOptions,
   VerifyPresentationOptions
 } from "did-jwt-vc/src/types"
+
+export async function encodeVerifiableCredential(
+  vcPayload: CredentialPayload | JwtCredentialPayload,
+  signer: Issuer,
+  options: CreateCredentialOptions = {}
+): Promise<JWT> {
+  const payload = Object.assign({
+    vc: vcPayload
+  })
+  if (vcPayload.id) {
+    payload.jti = vcPayload.id
+  }
+  if (vcPayload.issuanceDate) {
+    payload.nbf = Math.round(Date.parse(vcPayload.issuanceDate) / 1000)
+  }
+  if (vcPayload.expirationDate) {
+    payload.exp = Math.round(Date.parse(vcPayload.expirationDate) / 1000)
+  }
+  if (vcPayload.issuer) {
+    payload.iss =
+      typeof vcPayload.issuer === "string"
+        ? vcPayload.issuer
+        : vcPayload.issuer.id
+  }
+  if (vcPayload.credentialSubject && vcPayload.credentialSubject.id) {
+    payload.sub = vcPayload.credentialSubject.id
+  }
+
+  return createVerifiableCredentialJwt(payload, signer, options)
+}
 
 /**
  * Decodes a JWT with a Verifiable Credential payload.
