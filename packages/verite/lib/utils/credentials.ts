@@ -27,6 +27,9 @@ import type {
   VerifyPresentationOptions
 } from "did-jwt-vc/src/types"
 
+/**
+ * Encodes a Verifiable Credential as a JWT from passed payload object & issuer.
+ */
 export async function encodeVerifiableCredential(
   vcPayload: CredentialPayload | JwtCredentialPayload,
   signer: Issuer,
