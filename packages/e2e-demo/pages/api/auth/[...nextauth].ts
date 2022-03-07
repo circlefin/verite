@@ -3,7 +3,7 @@
 import NextAuth from "next-auth"
 import Providers from "next-auth/providers"
 
-import { findUser, User , authenticateUser } from "../../../lib/database"
+import { findUser, User, authenticateUser } from "../../../lib/database"
 
 type Credentials = {
   csrfToken: string
