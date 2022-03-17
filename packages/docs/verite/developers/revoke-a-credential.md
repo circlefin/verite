@@ -25,7 +25,7 @@ This has the advantage that, even if the issuer is consulted for the bitstring, 
 
 ## Example of a Revocable Credential
 
-Below is an [example from Status List 2021](https://w3c-ccg.github.io/vc-status-list-2021/#revocationlist2021) demonstrating what a Revocable Credential might look like. Note the addition of `credentialStatus` with several fields:
+Below is an [example from Status List 2021](https://w3c-ccg.github.io/vc-status-list-2021/#revocationlist2021) demonstrating what a Revocable Credential might look like. Note the addition of `credentialStatus` object with several fields:
 
 ```json
 {

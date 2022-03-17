@@ -6,9 +6,9 @@ sidebar_position: 5
 
 Verite conforms to the [VC-JWT Test Suite](https://github.com/decentralized-identity/JWS-Test-Suite), which is the interoperability test suite for the Verifiable Credential 1.1 data model.
 
-Verite relies on [did-jwt-vc](https://github.com/decentralized-identity/did-jwt-vc/) for the core VC-JWT signing and verifying, using the same preprocessing in the [did-jwt-vc implementation of JWS-Test-Suite](https://github.com/decentralized-identity/JWS-Test-Suite/tree/main/implementations/did-jwt-vc) to ensure conformance.
+Verite relies on [did-jwt-vc](https://github.com/decentralized-identity/did-jwt-vc/) for the core VC-JWT signing and verifying, using the same preprocessing as is used in the [did-jwt-vc implementation of JWS-Test-Suite](https://github.com/decentralized-identity/JWS-Test-Suite/tree/main/implementations/did-jwt-vc) to ensure conformance with the VC data model version 1.1 (including cross-compatibility with other verifiable encodings).
 
-Examples of direct use of these sign/verify functions are below.
+Examples of the direct use of these sign/verify functions are below.
 
 ## Create VC-JWT
 

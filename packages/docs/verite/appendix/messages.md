@@ -8,6 +8,8 @@ sidebar_position: 2
 
 ### Verifiable Credential
 
+The following represents the intermediate form of a JWT-encoded verifiable credential *post-verification* and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token):
+
 ```json
 {
   "credentialSubject": {
@@ -27,14 +29,12 @@ sidebar_position: 2
     { "@vocab": "https://verite.id/identity/" }
   ],
   "issuanceDate": "2021-09-14T02:00:07.000Z",
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ...IifQ.xu8eUyPtDhAiHUhIszVtLvrlUJ6H9nGTEcZ1paXvqNolDXd0X3ORugCWjAWMTASaIJcPrmkpLoZzw9OXMYofCg"
-  }
 }
 ```
 
 ### Verifiable Credential with status
+
+The following represents the intermediate form of a JWT-encoded verifiable credential *post-verification* and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token). Note that the credential status has not been dereferenced (i.e., "fetched" as a bitstring and validated), which some systems might want to do before processing and/or storing the credential.
 
 ```json
 {
@@ -61,10 +61,6 @@ sidebar_position: 2
     { "@vocab": "https://verite.id/identity/" }
   ],
   "issuanceDate": "2021-09-14T02:00:07.000Z",
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ...IifQ.xu8eUyPtDhAiHUhIszVtLvrlUJ6H9nGTEcZ1paXvqNolDXd0X3ORugCWjAWMTASaIJcPrmkpLoZzw9OXMYofCg"
-  }
 }
 ```
 
@@ -219,13 +215,10 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       }
     ]
   },
-  "verifiableCredential": [],
+  "verifiableCredential": [], // Credential would be found here
   "holder": "did:key:z6MkjFFeDnzyKL7Q39aNs1piGo27b12upMf1MmSDQcABJmmn",
   "type": ["VerifiablePresentation", "CredentialApplication"],
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy..."
-  }
+  "proof": {} // Proof object, i.e. typed VP signature, would be found here
 }
 ```
 
@@ -248,10 +241,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
     ]
   },
   "verifiableCredential": [], // Credential would be found here
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53..."
-  }
+  "proof": {} // Proof object, i.e. typed VP signature, would be found here
 }
 ```
 
