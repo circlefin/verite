@@ -235,7 +235,7 @@ A credential application is sent from the wallet to the issuer before issuance. 
       }
     ]
   },
-  "verifiableCredential": [], // Credential would be found here
+  "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
   "proof": {} // Proof object, i.e. typed VP signature, would be found here
 }
 ```

@@ -215,7 +215,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       }
     ]
   },
-  "verifiableCredential": [], // Credential would be found here
+  "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
   "holder": "did:key:z6MkjFFeDnzyKL7Q39aNs1piGo27b12upMf1MmSDQcABJmmn",
   "type": ["VerifiablePresentation", "CredentialApplication"],
   "proof": {} // Proof object, i.e. typed VP signature, would be found here
@@ -240,7 +240,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       }
     ]
   },
-  "verifiableCredential": [], // Credential would be found here
+  "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
   "proof": {} // Proof object, i.e. typed VP signature, would be found here
 }
 ```
