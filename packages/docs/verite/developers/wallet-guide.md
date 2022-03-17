@@ -187,6 +187,8 @@ Details:
 
 A credential application is sent from the wallet to the issuer before issuance. It contains the recipient identifier and other information required for issuance. This follows the DIF Credential Manifest Spec.
 
+What follows is a JSON object containing the same contents as a Verifiable Presentation in JWT form; there is no proof object, because it would be signed and transmitted as a JWT.
+
 ```json
 {
   "@context": ["https://www.w3.org/2018/credentials/v1"],
@@ -213,11 +215,12 @@ A credential application is sent from the wallet to the issuer before issuance. 
   "verifiableCredential": [],
   "holder": "did:key:z6MkjFFeDnzyKL7Q39aNs1piGo27b12upMf1MmSDQcABJmmn",
   "type": ["VerifiablePresentation", "CredentialApplication"],
-  "proof": {} // Proof object, i.e. typed VP signature, would be found here
 }
 ```
 
 #### Credential Fulfillment
+
+What follows is a JSON object containing the same contents as a Verifiable Presentation in JWT form; there is no proof object, because it would be signed and transmitted as a JWT.
 
 ```json
 {
@@ -236,7 +239,6 @@ A credential application is sent from the wallet to the issuer before issuance. 
     ]
   },
   "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
-  "proof": {} // Proof object, i.e. typed VP signature, would be found here
 }
 ```
 
