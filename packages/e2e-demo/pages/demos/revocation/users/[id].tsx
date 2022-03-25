@@ -2,7 +2,9 @@ import { ArrowCircleLeftIcon } from "@heroicons/react/solid"
 import { reverse, sortBy } from "lodash"
 import { NextPage } from "next"
 import Link from "next/link"
-import { asyncMap, isRevoked ,
+import {
+  asyncMap,
+  isRevoked,
   isRevocable,
   RevocableCredential,
   RevocationListCredential

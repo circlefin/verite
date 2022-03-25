@@ -187,6 +187,8 @@ Details:
 
 A credential application is sent from the wallet to the issuer before issuance. It contains the recipient identifier and other information required for issuance. This follows the DIF Credential Manifest Spec.
 
+What follows is a JSON object containing the same contents as a Verifiable Presentation in JWT form; there is no proof object, because it would be signed and transmitted as a JWT.
+
 ```json
 {
   "@context": ["https://www.w3.org/2018/credentials/v1"],
@@ -213,14 +215,12 @@ A credential application is sent from the wallet to the issuer before issuance. 
   "verifiableCredential": [],
   "holder": "did:key:z6MkjFFeDnzyKL7Q39aNs1piGo27b12upMf1MmSDQcABJmmn",
   "type": ["VerifiablePresentation", "CredentialApplication"],
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy..."
-  }
 }
 ```
 
 #### Credential Fulfillment
+
+What follows is a JSON object containing the same contents as a Verifiable Presentation in JWT form; there is no proof object, because it would be signed and transmitted as a JWT.
 
 ```json
 {
@@ -238,15 +238,13 @@ A credential application is sent from the wallet to the issuer before issuance. 
       }
     ]
   },
-  "verifiableCredential": [], // Credential would be found here
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...eyJ2cCI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53..."
-  }
+  "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
 }
 ```
 
 #### Decoded Credential
+
+The following represents the intermediate form of a JWT-encoded verifiable credential *post-verification* and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token):
 
 ```json
 {
@@ -273,12 +271,10 @@ A credential application is sent from the wallet to the issuer before issuance. 
     "statusListCredential": "http://192.168.1.16:3000/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91"
   },
   "issuanceDate": "2021-09-14T02:00:07.000Z",
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ...IifQ.xu8eUyPtDhAiHUhIszVtLvrlUJ6H9nGTEcZ1paXvqNolDXd0X3ORugCWjAWMTASaIJcPrmkpLoZzw9OXMYofCg"
-  }
 }
 ```
+
+
 
 ### Presentation Exchange
 
@@ -325,6 +321,8 @@ Details:
 
 #### Presentation Submission
 
+Note: In the Presentation Object that follows (a signed VP in JWT form), the `verifiableCredential` object contains one signed verifiable credentials. For clarity & exemplarity, a non-JWT expression in JSON-LD format is included, but the same credential, expressed as a JWT as it is in the rest of this guide, could be substituted for it in JWT format, i.e. `verifiableCredential": ["eyJhbGc..."]`. JSON-LD and JWT credentials could even be combined, if the relying party was expecting multiple VCs and processed both kinds, i.e. `verifiableCredential": ["eyJhbGc...", {"@Context":..."proof":...}]`.
+
 ```json
 {
   "@context": ["https://www.w3.org/2018/credentials/v1"],
@@ -341,6 +339,10 @@ Details:
   },
   "verifiableCredential": [
     {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://centre.io/contexts/identity.jsonld"
+      ],
       "type": ["VerifiableCredential", "KYCAMLAttestation"],
       "credentialSubject": {
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
@@ -352,8 +354,10 @@ Details:
       },
       "issuer": {
         "id": "did:web:verite.id"
-      }
+      },
+      "proof": {...} 
     }
+
   ]
 }
 ```

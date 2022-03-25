@@ -57,7 +57,10 @@ const CeFiPage: NextPage = () => {
         <h2>Centralized App with Travel Rule</h2>
         <p>
           In this demo, we have assigned our test users to two different
-          institutions: Trapezoid and Coinboss. To experience the end-to-end demo, you will want to open the demo in two different browser windows. Click a different user in each browser to sign in. One user should act as the sender, and the other should act as the receiver.
+          institutions: Trapezoid and Coinboss. To experience the end-to-end
+          demo, you will want to open the demo in two different browser windows.
+          Click a different user in each browser to sign in. One user should act
+          as the sender, and the other should act as the receiver.
         </p>
 
         <div className="flex flex-row">

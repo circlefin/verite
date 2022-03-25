@@ -43,6 +43,30 @@ describe("didResolver", () => {
     expect(result.didDocument!.id).toEqual(didKey.subject)
   })
 
+  it("resolves ed25519 did:keys", async () => {
+    const didKey = "did:key:z6Mki9h85dnLq1gttLjXYJwT3xDi5CwRndULX4cZv2GiBYgX"
+
+    const result = await didResolver.resolve(didKey)
+    expect(result).toBeTruthy()
+    expect(result.didDocument).toBeDefined()
+    expect(result.didDocument!.verificationMethod![0].type).toEqual(
+      "Ed25519VerificationKey2018"
+    )
+    expect(result.didDocument!.id).toEqual(didKey)
+  })
+
+  it("resolves a secp256k1 did:key", async () => {
+    const didKey = "did:key:zQ3shhuRynQdg1csMfXHzxoxkNd7HXZZDYamWf2fzRQS7JqCS"
+
+    const result = await didResolver.resolve(didKey)
+    expect(result).toBeTruthy()
+    expect(result.didDocument).toBeDefined()
+    expect(result.didDocument!.verificationMethod![0].type).toEqual(
+      "Secp256k1VerificationKey2018"
+    )
+    expect(result.didDocument!.id).toEqual(didKey)
+  })
+
   it("resolves did:web documents", async () => {
     const didDocument = {
       "@context": "https://w3id.org/did/v1",

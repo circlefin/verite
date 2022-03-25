@@ -30,7 +30,8 @@ Verite uses additional simplifications that remove the requirement for implement
 
 - [did-jwt-vc](https://github.com/decentralized-identity/did-jwt-vc)
 - [did-resolver](https://github.com/decentralized-identity/did-resolver)
-- [@transmute/did-key-ed25519](https://github.com/transmute-industries/did-key.js/tree/main/packages/did-key-ed25519)
+- [web-did-resolver](https://github.com/decentralized-identity/web-did-resolver)
+- [key-did-resolver](https://github.com/ceramicnetwork/js-ceramic/tree/develop/packages/key-did-resolver)
 
 ### Contracts
 

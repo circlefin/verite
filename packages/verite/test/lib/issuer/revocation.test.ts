@@ -1,5 +1,3 @@
-import { createVerifiableCredentialJwt } from "did-jwt-vc"
-
 import {
   generateRevocationList,
   isRevoked,
@@ -9,6 +7,7 @@ import {
 import {
   asyncMap,
   decodeVerifiableCredential,
+  encodeVerifiableCredential,
   generateBitstring,
   buildIssuer
 } from "../../../lib/utils"
@@ -62,7 +61,7 @@ const credentialFactory = async (
       statusListCredential: "http://example.com/revocation"
     }
   }
-  const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
+  const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
   return decodeVerifiableCredential(vcJwt) as Promise<RevocableCredential>
 }
 
@@ -120,7 +119,6 @@ describe("Status List 2021", () => {
 
       const vcPayload: CredentialPayload = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
-        sub: "did:web:example.com",
         type: ["VerifiableCredential"],
         issuer,
         issuanceDate,
@@ -129,7 +127,7 @@ describe("Status List 2021", () => {
           foo: "bar"
         }
       }
-      const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
+      const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
@@ -157,7 +155,6 @@ describe("Status List 2021", () => {
 
       const vcPayload: Revocable<CredentialPayload> = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
-        sub: "did:web:example.com",
         type: ["VerifiableCredential"],
         issuer,
         issuanceDate,
@@ -172,7 +169,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
+      const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
@@ -200,7 +197,6 @@ describe("Status List 2021", () => {
 
       const vcPayload: Revocable<CredentialPayload> = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
-        sub: "did:web:example.com",
         type: ["VerifiableCredential"],
         issuer,
         issuanceDate,
@@ -215,7 +211,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await createVerifiableCredentialJwt(vcPayload, signer)
+      const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
       const credential = await decodeVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
