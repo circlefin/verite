@@ -30,6 +30,12 @@ module.exports = {
           label: "Demos",
           position: "left",
           target: "_self"
+        },
+        {
+          to: "blog",
+          activeBasePath: "blog/",
+          label: "Blog",
+          position: "left"
         }
       ]
     },
