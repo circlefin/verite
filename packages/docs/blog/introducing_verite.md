@@ -4,7 +4,7 @@ description: Verite is an open source verifiable credentials library that makes 
 slug: introducing-verite
 authors:
   - name: Justin Hunter
-    # title: Product Guy
+    title: Head of Product, Pinata
     url: https://github.com/polluterofminds
     image_url: https://avatars.githubusercontent.com/u/10519834?v=4
 tags: [updates]
