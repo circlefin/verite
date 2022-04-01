@@ -16,7 +16,7 @@ We carry credentials with us everyday. Our drivers license or state ID, our libr
 
 <!--truncate-->
 
-The answer is Verifiable Credentials (VCs). VCs are on a web standards track and provide an open data model for digital credentials. We won't go deep into the details of VCs here because the [Verite documentation](../docs/../verite/index.md) does a great job of that. Instead, we will focus on what Verite is, why it exists, and how it might be used.
+The answer is Verifiable Credentials (VCs). VCs are on a web standards track and provide an open data model for digital credentials. We won't go deep into the details of VCs here because the [Verite documentation](../docs/../verite/) does a great job of that. Instead, we will focus on what Verite is, why it exists, and how it might be used.
 
 ## What Is Verite?
 
@@ -26,7 +26,7 @@ While contributions to the VCs standards themselves is important, and Centre is 
 
 Currently available in TypeScript and [published through NPM](https://www.npmjs.com/package/verite), the Verite library seeks to make it easier to implement VCs in a variety of forms. The library is early and an additional goal of the library is to collect community feedback.
 
-Verite's helper functions simplify VC flows such as requesting credentials, issuing credentials, presenting credentials, and verifying credentials. For the fastest possible start to using Verite, check out the [Quick Start guide](../docs/../verite/quick_start.md) in the documentation.
+Verite's helper functions simplify VC flows such as requesting credentials, issuing credentials, presenting credentials, and verifying credentials. For the fastest possible start to using Verite, check out the [Quick Start guide](../docs/../verite/quick_start) in the documentation.
 
 ## Why Does Verite Exist?
 
