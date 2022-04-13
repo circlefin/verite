@@ -8,7 +8,7 @@ authors:
     url: https://github.com/bumblefudge
     image_url: https://avatars.githubusercontent.com/u/37127325?v=4
 tags: [updates]
-image: https://i.imgur.com/mErPwqL.png
+image: https://user-images.githubusercontent.com/37127325/163224110-4438bb8f-9c01-49c1-84a1-c3aa502ded21.png
 hide_table_of_contents: false
 ---
 
@@ -26,7 +26,7 @@ miracles. Real progress is made by rich, cross-disciplinary teams and
 heterogeneous coalitions coming together to attack hard problems from every
 angle at once.
 
-![apples, oranges, and pears](https://i.imgur.com/mErPwqL.png)
+![apples, oranges, and pears](https://user-images.githubusercontent.com/37127325/163224110-4438bb8f-9c01-49c1-84a1-c3aa502ded21.png)
 
 Verite is one such coalition, in that it takes a truly cross-disciplinary
 approach to industry-wide problems. It is rooted in a multi-stakeholder design
