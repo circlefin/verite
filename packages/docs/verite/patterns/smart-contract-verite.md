@@ -192,4 +192,4 @@ The test suite leverages hardhat and waffle, and is located in the ‘test’ su
 
 An example Dapp with MetaMask integration that uses the ThresholdToken is available here:
 
-<https://github.com/centrehq/verite/tree/main/packages/e2e-demo/components/dapp>
+<https://github.com/centrehq/verite/tree/main/packages/e2e-demo/components/demos/dapp>
