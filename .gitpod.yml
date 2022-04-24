@@ -2,14 +2,8 @@ image:
   file: .gitpod.dockerfile
 
 tasks:
-  - init: npm install
-    command: npm run setup --workspace verite
-
-  - name: e2e-demo
-    command: npm run setup --workspace @verite/e2e-demo
-
-  - name: setup-docs
-    command: npm run setup --workspace @verite/docs
+  - init: npm run setup
+    command: npm run dev
 
 github:
   prebuilds:
