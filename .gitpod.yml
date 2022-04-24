@@ -4,3 +4,7 @@ image:
 tasks:
   - init: npm run setup
     command: npm run dev
+
+  - before: npm run hardhat:node
+    command: npm run hardhat:deploy
+
