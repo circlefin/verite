@@ -4,14 +4,6 @@ image:
 tasks:
   - name: Setup
   - init: npm run setup
-    command: echo 'setting up project'
-
-  - name: Start Local Ethereum
-    init: npm run hardhat:node
-    command: echo 'starting local ethereum'
-
-  - name: Deploy Smart Contract
-    command: npm run hardhat:deploy
 
   - name: Run Local Demos
     command: npm run dev
