@@ -5,6 +5,10 @@ tasks:
   - init: npm run setup
     command: npm run dev
 
+ports:
+  - port: 3000-8999
+    onOpen: open-browser
+
 github:
   prebuilds:
     # enable for the default branch (defaults to true)
