@@ -9,6 +9,17 @@ Checkout the code the demos at the Gitpod workspace
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/centrehq/verite)
 
+After the project is built out start up your hardhat node and deploy your smart contacts in gitpod.
+Run the following commands in order:
+
+```sh
+npm run hardhat:node
+```
+```sh
+npm run hardhat:deploy
+```
+
+
 ### Requirements
 
 - Node.js v14
