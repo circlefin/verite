@@ -4,3 +4,10 @@ image:
 tasks:
   - init: npm run setup
     command: npm run dev
+
+github:
+  prebuilds:
+    # enable for the default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: false
