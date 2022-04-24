@@ -4,10 +4,3 @@ image:
 tasks:
   - init: npm run setup
     command: npm run dev
-
-ports:
-  - port: 2999
-    onOpen: open-browser
-
-  - port: 3000
-    onOpen: open-browser
