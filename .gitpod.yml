@@ -6,7 +6,10 @@ tasks:
     command: npm run dev
 
 ports:
-  - port: 3000-8999
+  - port: 2999
+    onOpen: open-browser
+
+  - port: 3000
     onOpen: open-browser
 
 github:

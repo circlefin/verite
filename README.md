@@ -5,6 +5,9 @@ Decentralized Identity for Crypto Finance.
 This repository is a monorepo containing the Core Verite Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verite standard.
 
 ## Getting Started
+Checkout the code the demos at the Gitpod workspace
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/centrehq/verite)
 
 ### Requirements
 
