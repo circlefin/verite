@@ -1,1 +1,2 @@
-FROM gitpod/workspace-postgres:latest
+FROM gitpod/wnorkspace-postgres
+USER gitpod
