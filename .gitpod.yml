@@ -2,5 +2,22 @@ image:
   file: .gitpod.dockerfile
 
 tasks:
-  - init: npm run setup
-    command: npm run dev
+  - init: npm install
+    command: npm run setup --workspace verite
+
+  - name: e2e-demo
+    command: npm run setup --workspace @verite/e2e-demo
+
+  - name: setup-docs
+    command: npm run setup --workspace @verite/docs
+
+github:
+  prebuilds:
+    # enable for the default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: false
