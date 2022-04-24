@@ -40,3 +40,7 @@ build
 
 # Build artifacts
 *.tsbuildinfo
+
+# Postgres Docker Data
+.postgres-data
+.postgres-data/
