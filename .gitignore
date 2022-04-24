@@ -28,6 +28,7 @@ out
 
 # IDE files
 .vscode/
+.idea/
 
 # coverage
 coverage
