@@ -26,6 +26,8 @@ miracles. Real progress is made by rich, cross-disciplinary teams and
 heterogeneous coalitions coming together to attack hard problems from every
 angle at once.
 
+<!--truncate-->
+
 ![apples, oranges, and pears](https://user-images.githubusercontent.com/37127325/163224110-4438bb8f-9c01-49c1-84a1-c3aa502ded21.png)
 
 Verite is one such coalition, in that it takes a truly cross-disciplinary
@@ -47,16 +49,16 @@ bear with me while I explain things cross-wise.
 
 Cryptography makes getting data from one context to another fairly easy--
 insofar as you can look up someone's current, valid public key, you can be
-*just* as confident of any data they sign with the corresponding private key. If
+_just_ as confident of any data they sign with the corresponding private key. If
 that data includes a timestamp for the signature, an expiration date, and a way
 to check it hasn't been revoked, you're dealing with some pretty trustworthy
-data. This is the *easy* part of data portability.
+data. This is the _easy_ part of data portability.
 
 The harder part is what software engineers colloquially call "Semantics": the
 fine art of knowing what the heck any of those data actually meant in their
 original context. The data passed around in signed, portable form is only as
-useful and trustworthy as you are *certain* of what each "true", "false",
-"null", "", "3/5" and "pending" meant to the signer at the time of signing. 
+useful and trustworthy as you are _certain_ of what each "true", "false",
+"null", "", "3/5" and "pending" meant to the signer at the time of signing.
 
 If that sounds esoteric, it might help to put on your business developer hat and
 think through a concrete example: what exactly might `"AML_check":"true"` mean?
@@ -65,26 +67,26 @@ doors which only more rigorous AML checks should open, perhaps at different
 price-points or with different liability/insurance requirements. Who operated
 the check, and what exact definition they checked against (on what data points,
 against what jurisdiction's requirements, etc) are questions well beyond
-`true|false`.  At this point, it should be quite clear that "semantics" is not
+`true|false`. At this point, it should be quite clear that "semantics" is not
 just a required course in Computer Engineering programs: semantics is where the
-rubber of software design meets the road of real-world law and business. 
+rubber of software design meets the road of real-world law and business.
 
 ### Semantics from the Verifer's POV
 
 If semantics is how engineers scale up "reliance" (i.e., how one company can
 safely rely on other company's data), we need to walk through the semantics not
-from the issuer's POV, but from the Verifier's.  They are, after all, betting
+from the issuer's POV, but from the Verifier's. They are, after all, betting
 big on Other People's Properties.
 
 So let's take a little tour of the properties encoded in the "schemas"
 (sometimes called "schemata" or "credential definitions") that Verite authors
 and manages over time. Each schema is something like a recipe for data points,
-what engineers call the "data shape" of each credential or token.  Take, for
+what engineers call the "data shape" of each credential or token. Take, for
 example, the [v0.0.1 schema for a
 KYCAMLAttestation](https://github.com/centrehq/verite/blob/main/packages/docs/static/definitions/schemas/0.0.1/KYCAMLAttestation)
 credential: what you see, in machine-readable script, is a list of the mandatory
 and optional properties that each credential needs to have, and the "type" of
-each (string, integer, etc.).  Let's walk through some specific properties to
+each (string, integer, etc.). Let's walk through some specific properties to
 explain the options.
 
 ### ApprovalDate
@@ -94,13 +96,13 @@ time of signature, or to put it another way, the time of exporting the data and
 putting it under the direct control of the user; the underlying decision about
 considering a user "KYC'd" might have happened minutes, or days, or months
 before. For this reason, a distinct date property is included, which is the date
-of the *decision*; it is usually more accurate to require freshness of the KYC
+of the _decision_; it is usually more accurate to require freshness of the KYC
 decision than the data artifact.
 
 ### Process
 
 One of these properties, `process`, is not really a simple, singular property
-like the others.  It is a string, but that string actually contains a link to a
+like the others. It is a string, but that string actually contains a link to a
 second schema; in the example above, taken from the tutorials and examples of
 the current sample implementation, all the KYCAML credentials point to [this
 process
@@ -122,7 +124,7 @@ be equivalent; in fact, the whole point of schematizing them is to allow
 precision in defining their difference and choosing which to accept in a given
 situation. The closer this kind of system gets to production, the more likely
 this process of refinement will involve getting into the weeds and talking to
-lawyers! 
+lawyers!
 
 We are assuming that over time, more and more processes will be added to the
 system, as more and more issuers come on line and want to define precisely what
@@ -146,7 +148,7 @@ decides **whose** credentials it wants to accept, according to its own due
 diligence process and risk-management decisions; "signing on to Verite" does not
 forfeit that right at all.
 
-On the contrary, over time we hope Verite will build and iterate *automated*
+On the contrary, over time we hope Verite will build and iterate _automated_
 mechanisms that reduce the complexity and work involved in manually onboarding
 and vetting issuers. Once there are enough issuers for a given credential type,
 anchored to process definitions and pegged to requirements for different
@@ -155,12 +157,12 @@ scalable approach. When that day comes, we hope Verite can house some form of
 collective-diligence mechanism for deciding which issuers to trust for which
 credentials, something like a recommendation network or a vetting authority.
 This might use token-curated registries or other on-chain artefacts, or their
-auditing might be off-chain, depending on the use-case and parties involved. 
+auditing might be off-chain, depending on the use-case and parties involved.
 
 ## Composability: Extension-points and Decision-points
 
 Having looked at the schema for individual credentials, we've discussed how this
-kind of data can safely scale and be relied upon.  But with the mention of
+kind of data can safely scale and be relied upon. But with the mention of
 registries or other mechanisms to scale up equivalence (between issuers), we
 start to see the big picture of scalable and composable **reliance**. Companies
 need decision trees of whom to accept as a customer or how to onboard customers
@@ -178,10 +180,11 @@ divisions or subsidiaries of one company or across company lines.
 Putting aside a little the question of how many different entities are present
 in the chain, you could also think of each linkage between different credentials
 and processes and issuers as an "interface", allowing the end-to-end system to
-be highly composible, mixing and matching credentials and data points as needed.  
+be highly composible, mixing and matching credentials and data points as needed.
 
 A third way of conceptualizing the whole is to take an inventory of all the
 "decision points":
+
 - Each issuer chooses which credentials to issue,
 - Each credential issued refers specifically to the process definitions it used
   to arrive at those claims,
@@ -196,14 +199,14 @@ A third way of conceptualizing the whole is to take an inventory of all the
     authorities)
 
 Add to this that anyone can join and propose additional credential schemas,
-process schemas, and digital or real-world trust mechanisms. The superpower 
+process schemas, and digital or real-world trust mechanisms. The superpower
 
 ## Conclusion: Anti-fragile Identity Solutions
 
 Over time, we are expecting more and more implementers to show up, allowing a
 competitive ecosystem to emerge for multiple roles in this system. No one should
 fear this kind of competition, though, at least, no one interested in
-decentralization.  If anything, building in equivalence, semantic flexibility,
+decentralization. If anything, building in equivalence, semantic flexibility,
 and shared governance into an open-ended identity system is just common sense,
 given how uncertain the future of that system's requirements looks today.
 
@@ -220,11 +223,11 @@ industry of distributed identity-checking and verification; to stabilize and
 regularize this reliance, full-blown "trust frameworks" (multilateral reliance
 agreements) could emergy quite quickly as they have in other identity markets,
 particularly if the regulators of major markets demand both auditability and
-healthy competition outside of proprietary platforms.  
+healthy competition outside of proprietary platforms.
 
 To be ready for this development, we recommend everyone trying to pin identities
 onto financial actors think hard about how flexible and composable their trust
-system is.  If it's not regulation-ready and winter-proof, if it won't survive a
+system is. If it's not regulation-ready and winter-proof, if it won't survive a
 sudden redrawing of allegiances and a reorientation around new networks and
 flows, is it really fit-for-purpose? Identity problem necessitate
 lawyer-friendly engineering... but also open-ended, antifragile engineering, if
