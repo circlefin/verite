@@ -14,7 +14,7 @@
         },
         "approvalDate": {
           "type": "string"
-        },
+        }
       },
       "required": ["type", "process", "approvalDate"],
       "type": "object"
