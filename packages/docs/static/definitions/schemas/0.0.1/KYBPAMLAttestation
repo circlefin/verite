@@ -1,0 +1,23 @@
+{
+  "$ref": "#/definitions/KYBPAMLAttestation",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "KYBPAMLAttestation": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "KYBPAMLAttestation",
+          "type": "string"
+        },
+        "process": {
+          "type": "string"
+        },
+        "approvalDate": {
+          "type": "string"
+        }
+      },
+      "required": ["type", "process", "approvalDate"],
+      "type": "object"
+    }
+  }
+}
