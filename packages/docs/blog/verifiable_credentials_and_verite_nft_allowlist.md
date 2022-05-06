@@ -354,21 +354,31 @@ import { randomBytes } from "crypto"
 
 export default function Home() {
   const [view, setView] = useState("request")
+  const [ethereum, setEthereum] = useState(null)
 
   useEffect(() => {
-    setView("request")
-  }, [])
+    if (typeof window.ethereum !== "undefined") {
+      console.log("MetaMask is installed!")
+      setEthereum(window.ethereum)
+    }
+    if (ethereum) {
+      ethereum.request({ method: "eth_requestAccounts" })
+    }
+  }, [ethereum])
 
   const requestCredential = async () => {
     try {
-      const manifestRes = await fetch("/api/manifest")
-      const manifest = await manifestRes.json()
-      const subject = randomDidKey(randomBytes)
-      const application = await buildCredentialApplication(subject, manifest)
+      const messageToSign = await fetch("/api/application")
+      const messageData = await messageToSign.json()
+      const accounts = await ethereum.request({ method: "eth_requestAccounts" })
+      const account = accounts[0]
+      const signature = await ethereum.request({
+        method: "personal_sign",
+        params: [JSON.stringify(messageData), account, messageData.id]
+      })
       const applicationRes = await fetch("/api/application", {
-        headers: {
-          application: application
-        }
+        method: "POST",
+        body: JSON.stringify({ signature })
       })
 
       const response = await applicationRes.json()
