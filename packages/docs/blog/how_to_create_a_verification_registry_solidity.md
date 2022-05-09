@@ -42,7 +42,7 @@ The first library we will import into our contract is the `Ownable` library. Thi
 
 The next library we will import is the `ECDSA` library. This library is used to help us decode signed and hashed data.
 
-Finally, we will import the `EIP712` library. This is the most important library in our contract since it is foundational to how we will verify credentials. For more on this, be sure to reference the [Smart Contract Patterns section](../../patterns/smart-contract-verite.md).
+Finally, we will import the `EIP712` library. This is the most important library in our contract since it is foundational to how we will verify credentials. For more on this, be sure to reference the [Smart Contract Patterns section](../../patterns/smart-contract-verite).
 
 To import these libraries, add the following below the Solidity version in our contract:
 
@@ -365,7 +365,7 @@ function registerVerification(
 }
 ```
 
-First, let's take a look at the arguments. The function takes a `verificationResult` argument. This is defined in the `VerificationResult` type. Second, the function takes a `signature`. Both of these arguments are hard to conceptualize unless you see them in action, so it is recommended that you take a look at the [Verification Registry in Solidity](./solidity-verifications.md) tutorial.
+First, let's take a look at the arguments. The function takes a `verificationResult` argument. This is defined in the `VerificationResult` type. Second, the function takes a `signature`. Both of these arguments are hard to conceptualize unless you see them in action, so it is recommended that you take a look at the [Verification Registry in Solidity](./solidity-verifications) tutorial.
 
 The tutorial referenced above will walk you through how to create a signed message that can be sent through as an argument.
 
