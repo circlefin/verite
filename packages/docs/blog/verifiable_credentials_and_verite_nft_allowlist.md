@@ -268,24 +268,96 @@ Since the Verite library provides so much out of the box, it may be helpful to t
 Before we start building anything on the client, let's continue on our API routes. The manifest will be used by the client to send an application for the credential. So, let's create an API route that can handle that application. In the `pages/api` folder, create a new file called `application.js`. Then fill it with this:
 
 ```js
-import { randomDidKey, decodeCredentialApplication } from "verite"
+import {
+  randomDidKey,
+  decodeCredentialApplication,
+  buildIssuer,
+  buildAndSignFulfillment,
+  buildCredentialApplication,
+  buildKycAmlManifest
+} from "verite"
 import { randomBytes } from "crypto"
+import { verifyMessage } from "ethers/lib/utils"
+import { withIronSession } from "next-iron-session"
+import { v4 as uuidv4 } from "uuid"
 
-export default async function handler(req, res) {
-  if (req.method === "GET") {
+const allowedAddresses = [
+  {
+    wallet: "0xAddressYouWantToAddToAllowList",
+    keypair: {} //  This will be created by verite soon
+  }
+]
+
+const canReceiveAllowlistSpot = (address) => {
+  if (allowedAddresses.find((a) => a.wallet === address)) {
+    return true
+  }
+}
+
+const getDelegatedKey = async (address) => {
+  //  Check for existing key
+  let keyPairOnAllowlist = allowedAddresses.find((a) => a.wallet === address)
+  if (!keyPairOnAllowlist) {
+    const newKeypairObj = {
+      wallet: address,
+      keypair: randomDidKey(randomBytes)
+    }
+
+    allowedAddresses.push(newKeypairObj)
+    keyPaidOnAllowlist = newKeypaidObj
+  }
+
+  return keyPairOnAllowlist
+}
+
+const validApplicant = async (signature, message) => {
+  const fullMessage = `Verify your wallet address. Message id: ${message.id}`
+  const recoveredAddress = verifyMessage(fullMessage, signature)
+  if (canReceiveAllowlistSpot(recoveredAddress)) {
+    const delegatedKey = await getDelegatedKey(recoveredAddress)
+    return {
+      recoveredAddress,
+      delegatedKey
+    }
+  }
+
+  return null
+}
+
+function withSession(handler) {
+  return withIronSession(handler, {
+    password: process.env.SECRET_COOKIE_PASSWORD,
+    cookieName: "web3-auth-session",
+    cookieOptions: {
+      secure: process.env.NODE_ENV === "production" ? true : false
+    }
+  })
+}
+
+export default withSession(async (req, res) => {
+  if (req.method === "POST") {
     try {
-      const applicationHeader = req.header["application"]
+      const message = req.session.get("message-session")
+      const verified = await validApplicant(
+        JSON.parse(req.body).signature,
+        message
+      )
+      if (!verified) {
+        return res
+          .status(401)
+          .send("Not qualified for allowlist or invalid signature")
+      }
+      const issuerDidKey = randomDidKey(randomBytes)
+      const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
+
+      //  Build application
+      const application = await buildCredentialApplication(subject, manifest)
       const decodedApplication = await decodeCredentialApplication(application)
-
-      //  Check if we should issue verifiable credential to this person
-
-      const valid = await validApplicant(decodedApplication)
 
       if (!valid) {
         return res.status(401).send("Not eleigible for allowlist")
       }
 
-      const issuerDidKey = randomDidKey(randomBytes)
       const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
       const attestation = {
         type: "KYCAMLAttestation",
@@ -300,9 +372,21 @@ export default async function handler(req, res) {
       res.json({ presentation })
     } catch (error) {
       console.log(error)
+      res.status(500).send("Server error")
+    }
+  } else {
+    try {
+      const message = { id: uuidv4() }
+      req.session.set("message-session", message)
+      await req.session.save()
+      return res.json(message)
+    } catch (error) {
+      console.log(error)
+      const { response: fetchResponse } = error
+      return res.status(fetchResponse?.status || 500).json(error.data)
     }
   }
-}
+})
 ```
 
 On the client side, we will need to build a credential application using the manifest we received on the last API call. We'll do that soon. But let's look at what the API request looks like when we have that application built. We would make a GET request to the `api/application` endpoint. Since the application itself will be a JWT, we can pass this in as a request header called `application`.
@@ -372,9 +456,10 @@ export default function Home() {
       const messageData = await messageToSign.json()
       const accounts = await ethereum.request({ method: "eth_requestAccounts" })
       const account = accounts[0]
+      const message = `Verify your wallet address. Message id: ${messageData.id}`
       const signature = await ethereum.request({
         method: "personal_sign",
-        params: [JSON.stringify(messageData), account, messageData.id]
+        params: [message, account, messageData.id]
       })
       const applicationRes = await fetch("/api/application", {
         method: "POST",
@@ -433,3 +518,5 @@ export default function Home() {
   )
 }
 ```
+
+This is a simple, ugly, view that lets a user switch betwee a minting screen and a request screen where they can get their allowlist VC (if approved). The `requestCredential` function ultimately
