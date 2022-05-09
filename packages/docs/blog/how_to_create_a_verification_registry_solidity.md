@@ -12,6 +12,8 @@ image: https://i.imgur.com/mErPwqL.png
 hide_table_of_contents: false
 ---
 
+## Introduction
+
 Verifiable Credentials (VCs) allow people and organizations to issue statements on behalf of others. These statements are then verifiable even if the original issuer is no longer around. We can see VCs in action in many KYC (Know Your Customer) and AML (Anti-Money Laundering) flows. For the entire flow to work, though, there needs to be a verifier. This can be a centralized service, or it can be managed through a blockchain with verifications happening on-chain. Today, we'll walk through how to build a VC Registry Smart Contract in Solidity.
 
 <!--truncate-->
@@ -32,6 +34,8 @@ In the `contracts` folder, create a new file called `VerificationRegistry.sol`. 
 pragma solidity ^0.8.0;
 ```
 
+### OpenZeppelin Library
+
 Now, before we move on, let's install [OpenZeppelin's library of contracts](https://openzeppelin.com/). This will allow us to pull in dependent contracts that are safe and audited without us having to write them ourselves. To install, run the following:
 
 `npm install @openzeppelin/contracts`
@@ -40,9 +44,9 @@ Once the dependencies are installed, we can import the appropriate libraries int
 
 The first library we will import into our contract is the `Ownable` library. This one is designed to make it easier to lock function calls down to the owner of the contract.
 
-The next library we will import is the `ECDSA` library. This library is used to help us decode signed and hashed data.
+The next library we will import is the `ECDSA` library. This library is used to help us decode signed and hashed data; in the core examples for Verite, ECDSA keys are used to sign portable attestations in off-chain token form (i.e. VCs).
 
-Finally, we will import the `EIP712` library. This is the most important library in our contract since it is foundational to how we will verify credentials. For more on this, be sure to reference the [Smart Contract Patterns section](../docs/../verite/developers/tutorials/solidity-verifications).
+Finally, we will import the `EIP712` library. This is the most important library in our contract since it is foundational to how we will verify credentials-- allowing a standard crypto wallet to sign over VCs at time of live presentation using their private key. For more on this, be sure to reference the [Smart Contract Patterns section](../docs/../verite/developers/tutorials/solidity-verifications).
 
 To import these libraries, add the following below the Solidity version in our contract:
 
@@ -53,6 +57,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 ```
+
+### Verite Library
 
 There's one additional library we want to import. This one is an interface library that allows us to more easily map the types necessary in our contract variables and functions. For brevity, we're not going to write the interface itself. We'll just copy it from the existing example from Centre. You can [grab a copy of the interface library contract here](https://github.com/centrehq/verite/blob/main/packages/contract/contracts/IVerificationRegistry.sol).
 
@@ -66,7 +72,7 @@ import "./IVerificationRegistry.sol";
 
 Now, we're ready to write the contract!
 
-# State Variables
+## State Variables
 
 Our Verification Registry requires some contract state. If you remember from the Smart Contract Patterns part of the documentation, this means either a verifier or a subject will have to pay gas to update the state of the contract when a new verification is added to the registry.
 
@@ -81,6 +87,8 @@ contract VerificationRegistry is Ownable, EIP712("VerificationRegistry", "1.0"),
 There are a couple of interesting things going on already. First, we are using the EIP712 library to help us with signature validation and hashing. When we use that library, it requires two parameters: a name and a version.
 
 Next, we are extending our contract to use the types defined in our interface contract.
+
+### Declaring the Structural Variables
 
 Ok, now let's define some variables. We'll drop them all below and then we'll talk through each.
 
@@ -124,6 +132,8 @@ We won't copy over every type into this tutorial, but this shows how you can see
 
 The next variable we have is `_signers`. This is a mapping of the keys verifiers use to sign the verification records. It's how the Verification Registry contract can validate the verifier is who they say they are.
 
+### Count methods
+
 Next, we have a simple count to help track the number of verifiers: `_verifierCount`.
 
 ```solidity
@@ -137,6 +147,8 @@ mapping(bytes32 => VerificationRecord) private _verifications;
 ```
 
 In this example, we are mapping the verification identifier (a UUID) to the verification record. You may want to customize this mapping to your specification, but UUIDs are relatively collision resistant and tend to be good unique identifiers for things like this.
+
+### Verification Mappings
 
 Next, we have the mapping of verifications for a specific subject:
 
@@ -160,7 +172,9 @@ uint256 private _verificationRecordCount;
 
 Of course, the contract is nothing if it's just a bunch of state variables. Let's dive into writing the functions that will define the contract.
 
-# Contract Functions
+## Contract Functions Part 1: Plumbing
+
+### addVerifier()
 
 The first function we'll define is to add a verifier. Without a verifier, the registry doesn't work. This function should look like this:
 
@@ -180,6 +194,8 @@ The function takes a verifier's address and the verifier information structured 
 
 You'll notice the `emit` at the end of the function. We don't have any events defined on the `VerificationRegistry.sol` contract, but the example interface contract does. This is completely optional, but emitting events is a nice way to allow others to listen to those events and take some action.
 
+### isVerifier()
+
 The next function is a simple one that is available to anyone to call. It takes a wallet address and returns a boolean indicating whether the address is a verifier or not.
 
 ```
@@ -188,6 +204,8 @@ function isVerifier(address account) external override view returns (bool) {
 }
 ```
 
+### getVerifierCount()
+
 The next function is equally simple. It is also callable by anyone, not just the contract owner. It returns the total number of registered verifiers:
 
 ```
@@ -195,6 +213,8 @@ function getVerifierCount() external override view returns(uint) {
     return _verifierCount;
 }
 ```
+
+### getVerifier()
 
 We will also want to get information about specific verifiers—not just their wallet address, but their full `VerifierInfo` record. To do that, we can create the following function:
 
@@ -206,6 +226,8 @@ function getVerifier(address verifierAddress) external override view returns (Ve
 ```
 
 This function is another read-only function, and it can be called by anyone. It takes the verifier's wallet address and returns the full verifier info record.
+
+### updateVerifier()
 
 Verifier info can change, so we need a function to update that information. This function can only be called by the contract owner, but it allows for such updates:
 
@@ -222,6 +244,8 @@ This function is a complete replacement, so even if only part of the `VerifierIn
 
 This function also emits an event called `VerifierUpdated` that anyone can listen for.
 
+### removeVerifier()
+
 As you might expect, we also need to be able to remove verifiers. Again, only the contract owner can call this function.
 
 ```
@@ -236,6 +260,8 @@ function removeVerifier(address verifierAddress) external override onlyOwner {
 
 This function takes the wallet address for the verifier and removes that verifier from the `_verifiers` mapping. It removes the signing address for the verifier and reduces the total `_verifierCount`.
 
+### onlyVerifier() 
+
 We now move into some of the actual verification logic with our functions. The first function is a modifier that acts very much like the `onlyOwner` modifier mentioned before. This one is a modifier that checks if the function is called by a verifier.
 
 ```
@@ -248,6 +274,8 @@ modifier onlyVerifier() {
 }
 ```
 
+### getVerifierCount()
+
 Now, we want to allow people to call the smart contract to get the number of verification records created. We can do that with this function:
 
 ```
@@ -255,6 +283,8 @@ function getVerificationCount() external override view returns(uint256) {
     return _verificationRecordCount;
 }
 ```
+
+### isVerified()
 
 Next up, we get to a very important function. This function checks if a particular address has a verification record.
 
@@ -274,6 +304,8 @@ function isVerified(address subject) external override view returns (bool) {
 
 This is where the Verification Registry contract really shines. The verification is added to the registry, but that only has to happen once. Future checks can simply rely on this function or similar functions customized to your needs.
 
+### getVerification()
+
 When a single verification is needed, this next function will support that. It takes the UUID for the verification as an argument and then returns the full verification record:
 
 ```
@@ -282,7 +314,11 @@ function getVerification(bytes32 uuid) external override view returns (Verificat
 }
 ```
 
-But what about when you need all the verifications for a particular subject? Let's build a function that will return an array of verifications for a particular wallet address.
+But what about when you need all the verifications for a particular subject? 
+
+### getVerificationsForSubject()
+
+Let's build a function that will return an array of verifications for a particular wallet address.
 
 ```
 function getVerificationsForSubject(address subject) external override view returns (VerificationRecord[] memory) {
@@ -299,6 +335,8 @@ function getVerificationsForSubject(address subject) external override view retu
 
 This function takes the wallet address for the subject, filters on the existing verifications for just that address, and returns the records.
 
+### getVerificationsForVerifier()
+
 Similarly, we can get an array of verifications from a single verifier with this function:
 
 ```
@@ -314,7 +352,11 @@ function getVerificationsForVerifier(address verifier) external override view re
 }
 ```
 
-The function takes an argument of `verifier` and will return all of the verifications for that verifier.
+The function takes an argument of `verifier` and will return all of the verifications for that verifier. 
+
+This function is crucial to keeping verifiers honest and healthy checks and balances on collusion in any system. As this function can be used to detect collusive or dishonest behavior in verifiers, one may need to retroactively purge the verifications of a rogue verifier...
+
+### revokeVerifications()
 
 As you would imagine, verifications may be issued in mistake or become invalid for some other reason. So we need a way to revoke those in the registry. We can use a function with the `onlyVerifier` modifier to do so:
 
@@ -328,9 +370,11 @@ function revokeVerification(bytes32 uuid) external override onlyVerifier {
 
 This function takes the UUID of the record as an argument, checks to make sure the record was created by the address making the call, and then updates the `revoked` status to true.
 
-Notice, the record is not removed. It is updated. This is helpful when performing audits and tracking record history.
+**Note:** the record in this case has not been removed; rather, it's `status` property has been updated. This is helpful when performing audits and tracking record history.
 
 This function also emits an event so those interested in listening for revocations can be notified.
+
+### removeVerification()
 
 Of course, there are times where a verification will need to be completely removed. For that, we can create a function to remove them:
 
@@ -346,6 +390,10 @@ function removeVerification(bytes32 uuid) external override onlyVerifier {
 Like the previous function, this one takes the UUID of the record as an argument. It verifies the record was created by the address making the call, and then it removes the record from the registry entirely.
 
 This function emits a separate event indicating removal of a record.
+
+## Contract Functions Part 2: Advanced Topics
+
+### registerVerification()
 
 The next function we will cover is a big one. All of these go hand-in-hand, but without this function, nothing else is possible. This is the function to add verifications to the registry. Let's look at the function and then walk through what's going on.
 
@@ -371,7 +419,9 @@ The tutorial referenced above will walk you through how to create a signed messa
 
 As you can see, this function uses the `onlyVerifier` modifier, which makes sense. A verifier has to be the one to add a verification record.
 
-The function then takes the verification result and passes it through another function for validation called `_validateVerificationResult`. This is a pretty massive function and we'll cover it in a few minutes. But the basics of the function are that it uses the EIP712 standard and verifies both the signature and the format of the record before inserting the record into the registry.
+The function then takes the verification result and passes it through another function for validation called `_validateVerificationResult`. This is a pretty massive function and we'll cover it shortly. For now, we can just explain at a high level that the function uses the EIP712 "structured-data signing" standard rather than conventional transaction-signing. It first validates the *format* (i.e. shape and syntax) of the Verification record, then verifies the *signature* generated over that whole record by a verifier's signer, and only after both checks does it insert the record into the registry.
+
+### persistVerificationRecord
 
 Next, the function persists the record by calling the `_persistVerificationRecord` function. That's a pretty straightforward function, so we'll document it here. You can add this in your contract anywhere you'd like as it's a helper function more than anything else.
 
@@ -389,7 +439,9 @@ As you can see, this function has an `internal` modifier, meaning it can only be
 
 Finally, our original `registerVerification` function emits a message indicating that a new verification record was created.
 
-One important note on this function is that it must be called by the verifier. We mentioned this earlier, but you'll see in a second that a subject can also add their own record to the registry.
+**Note:** this function is that it must be called by the verifier. We mentioned this earlier, but you'll see in a second that a subject can also add their own record to the registry.
+
+### registerVerificationBySubject()
 
 This next function allows a subject to handle adding their signed verification record to the registry:
 
@@ -409,9 +461,11 @@ function _registerVerificationBySubject(
 }
 ```
 
-This function operates similarly to the previous one, but it expects the caller to be the subject of the verification record. Outside of that, the actions are the same.
+This function operates similarly to the previous one, but it expects the caller to be the **subject** of the verification record. Outside of that, the actions are the same.
 
-The final note on both of the above two functions is that you may want to implement additional logic based on your specific use cases. Always remember, this contract serves as a guide, but you can extend and modify it however you'd like.
+The final note on both of the above two functions is that you may want to implement *additional logic* based on your specific use cases. Always remember, this contract serves as a guide, but you can extend and modify it however you'd like.
+
+### removeVerificationBySubject()
 
 Moving on, let's create a function that allows a subject to remove a verification record about themself. We previously created a function that allowed a verifier to remove a record, so this will be similar but from the subject's perspective.
 
@@ -425,6 +479,8 @@ function _removeVerificationBySubject(bytes32 uuid) internal {
 ```
 
 The function takes the record's UUID as an argument, it checks if the caller is the record's subject, and then it deletes the record from the registry, emitting the `VerificationRemoved` event at the end.
+
+### validateVerificationResult()
 
 Ok, we covered the `_validateVerificationResult` function briefly earlier, but we didn't write out the function. Let's do that now. But remember, it's a doozy and it makes use of a lot of the internal workings we imported from the EIP712 library.
 
@@ -503,7 +559,7 @@ function _createVerificationRecordUUID(VerificationRecord memory verificationRec
 
 And that's it. That's the last function. Of course, there are many more you can add when building your own contract, but this is more than enough to get you started. In fact, this is based on the demo contract Verite uses.
 
-# Wrapping Up
+## Wrapping Up
 
 A verification registry contract is designed to create an easily searchable, easily verifiable central repository for verifications. This makes things reusable and faster.
 
