@@ -365,7 +365,7 @@ function registerVerification(
 }
 ```
 
-First, let's take a look at the arguments. The function takes a `verificationResult` argument. This is defined in the `VerificationResult` type. Second, the function takes a `signature`. Both of these arguments are hard to conceptualize unless you see them in action, so it is recommended that you take a look at the [Verification Registry in Solidity](./solidity-verifications) tutorial.
+First, let's take a look at the arguments. The function takes a `verificationResult` argument. This is defined in the `VerificationResult` type. Second, the function takes a `signature`. Both of these arguments are hard to conceptualize unless you see them in action, so it is recommended that you take a look at the [Verification Registry in Solidity](../verite/developers/tutorials/solidity-verifications) tutorial.
 
 The tutorial referenced above will walk you through how to create a signed message that can be sent through as an argument.
 
