@@ -7,7 +7,9 @@ sidebar_position: 2
 
 _This tutorial will walk you through issuing verifiable credentials using the verite sdks. For additional context, see [Issuance Flow](/patterns/issuance-flow.md). A complete example of building an issuer is available at our [demo-issuer](https://github.com/centrehq/verite/packages/demo-issuer) demo._
 
-For the sake of this demo, we will be using Decentralized Identifiers (DIDs) to identify the issuer (you) and subject (the person or entity the credential is about), as well as JSON Web Tokens (JWTs) as the means of signing and verifying the credentials. In practice, you are not limited to using DIDs to prove ownership; anything with a public/private key pair is a valid owner. Likewise, you do not need to use JWTs.
+For the sake of this demo, we will be using Decentralized Identifiers (DIDs) to identify the issuer (you) and subject (the person or entity the credential is about), as well as JSON Web Tokens (JWTs) as the means of signing and verifying the credentials. Strictly speaking, you do not need to use JWTs, but as they are industry-standard and tooling extensively available, they are used throughout this sample implementation.
+
+In practice, you are not limited to using DIDs to identify and prove ownership; anything with a public/private key pair can effectively be used to identity a credential's subject and later prove that identity. Public blockchain addresses offer less privacy and rotation/recovery capabilities than DIDs, but can simplify VC handling in some architectures where DIDs are inhibitive. To make them subjects of verifiable credentials, blockchain addresses can be expressed as DID-like URI's using the [did:pkh method](https://github.com/w3c-ccg/did-pkh/blob/main/did-pkh-method-draft.md), based on the [CAIP-10 URI scheme](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md).  To prove these, you will need a signature to recover the public key of a given address; the off-chain signatures used to "connect wallet" in most contemporary web3 apps and dApps is adequate for such purposes.
 
 ## Prerequisites: Issuer Setup
 
@@ -45,9 +47,9 @@ In order to leverage trust already established by your domain name, you can expo
 
 For example, instead of listing the issuer of your VCs as `did:key:z6Mkf2wKCqtkNcKB9kRdHnEjieCLJPSfgwuR19fxBhioAwR7`, you could issue your VCs from `did:web:example.com`.
 
-To do this, you need to create a `.well-known/did.json` file on your domain, which will allow did resolvers to find your public keys. An added benefit of did:web is that it will allow you to rotate your keys at your desire.
+To do this, you need to create a `.well-known/did.json` file on your domain, which will allow did resolvers to find your public keys. An added benefit of did:web is that it will allow you to rotate your keys at your desire;  previously-issued VCs will no longer verify against a rotated key.
 
-We won’t go into the specifics in this article, but you can read more [here](https://w3c-ccg.github.io/did-method-web/).
+We won’t go into the specifics in this article, but you can read more about did:web [here](https://w3c-ccg.github.io/did-method-web/), and you can set up a did:web in minutes using [this tutorial](https://spruceid.dev/docs/didkit/did-web).
 
 ## Step 2: Receive a subject’s (end-user) DID
 
