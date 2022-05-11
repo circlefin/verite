@@ -46,7 +46,55 @@ The "approvalDate" attribute is used to define the date of KYC/AML process compl
 - Additional details obtained during the KYC/AML process should not be included in the attestation. For example, service provider scores are not needed and will leak personal information.
 - Support for use cases that require additional data (such as residency information) should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplished with ZKPs or by issuing separate credentials containing the additional attributes, enabling wallet aggregation of minimal required data.
 
-Verite's initial release contains only the USA KYC/AML process definition ([https://verite.id/definitions/processes/kycaml/0.0.1/usa](https://verite.id/definitions/processes/kycaml/0.0.1/usa)). Additional process definitions will be developed based on existing practices/requirements per country.
+Verite's initial release contained only one sample USA KYC/AML process definition intended to cover all data points checked by at least the Pareto-majority of (if not all) US issuers (referred to in sample credentials as [https://verite.id/definitions/processes/kycaml/0.0.1/usa](https://verite.id/definitions/processes/kycaml/0.0.1/usa)). Additional process definitions are expected to be developed based on existing practices/requirements per country or jurisdiction, as needed, by issuers moving to production on the basis of Verite semantics. While interoperability is best helped by a single, minimalist process definition that applies to a common set of checks and data points most or all KYC providers in a given jurisdiction, it may some day be necessary for issuers to publicize additional processes per jurisdiction should business processes differ significantly between issuers interested in participating.
+
+### Additional Considerations
+
+This schema does not include attributes about the authority that executed the KYBP process, which may be separate from the issuer of the claim. This design enables minimal disclosure of data while satisfying use cases in which a relying party considers the issuer authoritative for KYBP credentials it issues. It allows relying parties to differentiate among which country-specific KYBP process the credential applies to, but not learn anything else about the executing authority.
+
+This pattern is well-suited for approaches in which allow-lists of trusted issuing authorities is available, but is available as a general, non-centralized, pattern that allows implementors to decide whom to trust.
+
+## KYBP/AML Attestation
+
+### Purpose
+
+Represents an attestation that a Know-Your-Business-Partner process, which includes a KYC/AML check on any named representative individuals (see above), has been performed according to a specified, defined process. Like the KYC/AML processes it automatically entails, each KYBP process is defined at the country-level, referenced as linked data.
+
+The KYBP/AML attestation structure is intended to address regulatory compliance only, and not filtering on additional personal data attributes. An example of the latter is filtering out users (in this case, legal persons) based on incorporation jurisdiction for more specific compliance purposes like tax reporting or jurisdiction-specific regulations. This distinction helps reduce required attributes about the credential subject (and finer-grained personal data) within the credential.  It is assumed in our design that should such finer-grained filters need to be applied, they would happen at a later stage or process; additional credential types and flows can be established over time to address such cases.
+
+### Example
+
+```json
+{
+  "type": "KYBPAMLAttestation",
+  "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-legal_person",
+  "approvalDate": "2021-08-25T02:13:43.387Z"
+}
+```
+
+### Attributes
+
+#### "type" Attribute
+
+The "type" attribute MUST be "KYBPAMLAttestation". Use of this attribute is REQUIRED.
+
+#### "process" Attribute
+
+The "process" attribute is used to define which KYC/AML process was performed. The "process" attribute value is a stringOrURI referencing the KYC process performed. Use of this attribute is REQUIRED.
+
+#### "approvalDate" Attribute
+
+The "approvalDate" attribute is used to define the date of KYC/AML process completion, which may be on or before the issuanceDate of the credential (in the outer VC wrapper). The "approvalDate" attribute value is an ISO 8601-formatted string. If not present, then the attribute value is assumed to be the same as the Verifiable Credential issuance date. Use of this attribute is OPTIONAL.
+
+### Recommendations
+
+- Issuers take responsibility for pro-actively revoking issued credentials due to updates of sanctions lists
+- Verifiers must ensure they update verification results per updated issuer actions (e.g. periodically re-querying status properties of revocable credentials)
+- Verifiers are expected to determine fitness-for-purpose based on awareness of process definitions per use case & per context, and/or check issuers against allowlists or registries
+- Additional details obtained during the KYBP/AML process should NOT be included in the attestation. For example, service provider scores are NOT needed and will leak personal information.
+- Support for use cases that require additional data (such as residency information) should be accomplished in ways that enable the subject to provide the least amount of data required. This may be accomplished with ZKPs or by issuing separate credentials containing the additional attributes, enabling wallet aggregation of minimal required data. 
+
+Note that the KYBP credential assumes that a KYC process has been run on listed representatives; for this reason, the process defition for KYBP includes a section defining the constituent checks run on said representatives (see [https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-legal_person](https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-legal_person)). Additional process definitions are expected to be developed based on existing practices/requirements per country or jurisdiction, as needed, by issuers moving to production on the basis of Verite semantics. While interoperability is best helped by a single, minimalist process definition that applies to a common set of checks and data points most or all KYC providers in a given jurisdiction, it may some day be necessary for issuers to publicize additional processes per jurisdiction should business processes differ significantly between issuers interested in participating.
 
 ### Additional Considerations
 
