@@ -564,3 +564,4 @@ And that's it. That's the last function. Of course, there are many more you can 
 A verification registry contract is designed to create an easily searchable, easily verifiable central repository for verifications. This makes things reusable and faster.
 
 This implementation is in Solidity and designed for EVM-compatible blockchains, but a verification registry contract can be implemented on any blockchain.
+ 
