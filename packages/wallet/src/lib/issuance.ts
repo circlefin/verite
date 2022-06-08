@@ -4,7 +4,8 @@ import {
   buildCredentialApplication,
   decodeVerifiablePresentation,
   Verifiable,
-  W3CCredential
+  W3CCredential,
+  VerificationError
 } from "verite"
 
 import { saveCredential } from "./storage"
@@ -25,16 +26,20 @@ export const requestIssuance = async (
     // Parse JSON
     const text = await response.text()
 
-    // Decode the VP
-    const verifiablePresentation = await decodeVerifiablePresentation(text)
+    try {
+      // Decode the VP
+      const verifiablePresentation = await decodeVerifiablePresentation(text)
 
-    // Extract the issued VC
-    const credentials = verifiablePresentation.verifiableCredential ?? []
+      // Extract the issued VC
+      const credentials = verifiablePresentation.verifiableCredential ?? []
 
-    // Persist the credential
-    saveCredential(credentials[0])
+      // Persist the credential
+      saveCredential(credentials[0])
 
-    return credentials[0]
+      return credentials[0]
+    } catch (e) {
+      console.error((e as VerificationError).cause)
+    }
   } else {
     console.log(response.status, await response.text())
   }
