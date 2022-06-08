@@ -44,7 +44,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "next": "^12.1.6",
-    "next-auth": "^3.27.1",
+    "next-auth": "^3.29.3",
     "nextjs-progressbar": "^0.0.13",
     "qrcode.react": "^1.0.1",
     "react": "17.0.2",
