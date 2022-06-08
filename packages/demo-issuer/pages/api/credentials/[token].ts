@@ -72,5 +72,5 @@ export default async function credentials(
   )
 
   // Response
-  res.status(200).json(presentation)
+  res.status(200).send(presentation)
 }

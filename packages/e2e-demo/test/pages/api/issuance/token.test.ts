@@ -37,7 +37,7 @@ describe("POST /issuance/[token]", () => {
 
     expect(res.statusCode).toBe(200)
 
-    const response = res._getJSONData()
+    const response = res._getData()
 
     const presentation = (await decodeVerifiablePresentation(
       response
@@ -68,7 +68,7 @@ describe("POST /issuance/[token]", () => {
 
     expect(res.statusCode).toBe(200)
 
-    const response = res._getJSONData()
+    const response = res._getData()
 
     const presentation = (await decodeVerifiablePresentation(
       response
@@ -172,7 +172,7 @@ describe("POST /issuance/[token]", () => {
 
     expect(res.statusCode).toBe(200)
 
-    const response = res._getJSONData()
+    const response = res._getData()
     const verifiablePresentation = await decodeVerifiablePresentation(response)
     const vc = verifiablePresentation.verifiableCredential[0]
     expect(vc.credentialSubject.id).toBe(clientDid.subject)
