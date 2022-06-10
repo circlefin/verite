@@ -10,12 +10,11 @@ import type {
   DescriptorMap,
   EncodedCredentialFulfillment,
   Issuer,
-  KYCAMLAttestation,
   DecodedCredentialApplication,
-  CreditScoreAttestation,
   CredentialPayload,
   DidKey,
-  JWT
+  JWT,
+  Attestation
 } from "../../types"
 import type {
   CreateCredentialOptions,
@@ -28,7 +27,7 @@ import type {
 export async function buildAndSignVerifiableCredential(
   signer: Issuer,
   subject: string | DidKey,
-  attestation: KYCAMLAttestation | CreditScoreAttestation,
+  attestation: Attestation,
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
@@ -61,7 +60,7 @@ export async function buildAndSignVerifiableCredential(
 export async function buildAndSignFulfillment(
   signer: Issuer,
   application: DecodedCredentialApplication,
-  attestation: KYCAMLAttestation | CreditScoreAttestation,
+  attestation: Attestation,
   payload: Partial<CredentialPayload> = {},
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
