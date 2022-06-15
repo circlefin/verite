@@ -12,25 +12,69 @@ image: https://i.imgur.com/mErPwqL.png
 hide_table_of_contents: false
 ---
 
-While Verite can help solve significantly more complex challenges than managing an early access (allowlist) list for NFT projects, it seemed like a fun experiment to see how well Verite could handle moving the costly process off-chain while still maintaining data integrity. Before we dive in, let's talk about what an NFT allowlist is, how it is normally managed, and what the problems are.
+While Verite can help solve significantly more complex challenges than managing
+an early access list (i.e., an "allowlist") for NFT projects, it seemed like a
+fun experiment to see how well Verite could handle moving the costly process
+off-chain while still maintaining data integrity. Before we dive in, let's talk
+about what an NFT allowlist is, how it is normally managed, and what the
+problems are.
 
 ### What is an Allowlist?
 
-For many NFT projects, rewarding early supporters is important. An allowlist helps do so. By putting supporters' wallet address on a list that grants them early access to mint NFTs from the new collection, these supporters can avoid what's commonly referred to as [gas wars](https://www.coindesk.com/learn/what-are-crypto-gas-wars/). Gas wars happen when a popular NFT project drops and people (and bots) spend exorbitant amounts of gas on the Ethereum network to ensure their minting transactions go through before anyone else's. This, of course, negatively impacts all participants because it can price people out of the collection and force them to buy the NFTs on secondary market at a higher premium.
+For many NFT projects, rewarding early supporters is crucial to the business
+model and community health. An allowlist helps give early supporters a distinct
+experience with unique terms and timing. By putting supporters' wallet address
+on a list that grants them early access to mint NFTs from the new collection,
+these supporters can avoid what's commonly referred to as "[gas
+wars](https://www.coindesk.com/learn/what-are-crypto-gas-wars/)". Gas wars
+happen when a popular NFT project drops and people (and bots) spend exorbitant
+amounts of gas on the Ethereum network to ensure their minting transactions go
+through before anyone else's to avoid missing the narrow window of availability
+in an oversubscribed market. Needless to say, this negatively impacts all
+participants because it can price people out of the collection and force them to
+buy the NFTs on secondary market at a higher premium. On the Ethereum mainnet,
+gas fees have even spiked to higher than the mint prices of the NFTs! That's a
+hefty surcharge.
 
-The allowlist concept lets people on the list mint for a period of time (normally 24 hours) before the public mint. This helps keep bots out of the mint, gaurnatees supply, and keeps gas prices relatively low. NFT projects will use allowlist spots as a reward for community participation.
+The allowlist concept lets people on the list mint for a period of time
+(normally 24 hours) before the public mint. This helps keep bots out of the
+mint, guarantees adequate supply to everyone on that list (or at least,
+guarantees each member on the list access to supply while it is adequate!), and
+keeps gas prices relatively low. NFT projects generally frame allowlist spots as
+a "reward" for community participation or various kinds of non-monetary
+contributions.
 
 ### How Are Allowlists Normally Managed?
 
-Historically, Ethereum-based NFT allowlists have been managed on-chain. This means a mapping of wallets addresses must be added on chain via a function on the NFT project's smart contract. The transaction to add these wallet addresses can be incredibly expensive. It can range from a few hundred dollars to a few thousand dollars depending on the price of ETH. This doesn't factor in multiple updates.
+Historically, Ethereum-based NFT allowlists have been managed on-chain. This
+means a mapping of wallets addresses must be added to on-chain storage, usually
+via a function on the NFT project's smart contract that populates that
+persistent mapping in storage accessible to other functions. The transaction to
+add these wallet addresses can be incredibly expensive, since it is literally
+buying and taking up additional blockspace with each additional address. It has
+historically ranged from a few hundred dollars to a few thousand dollars
+depending on the price of ETH at the time, even if the allowlist is bundled into
+a single transaction. This number goes much higher broken out into multiple
+gas-inflicting updates.
 
-Because of the cost, projects are incentivized to set the allowlist and never update it. Every update costs money. This can lead to errors in the list, inequity, and other problems. Additionally, allowlists become static requirements—a one-size-fits-all approach. Services like Premint have begun to change this, but projects should have the flexibility to implement whatever dynamic requirements they'd like to add people to an allowlist on their own if they choose.
+Because of the cost, projects are incentivized to set the allowlist once and
+never update it. Every update costs money. This can lead to errors in the list,
+inequity, justifiably grouchy late-comers to the community, and other problems.
+Additionally, allowlists can often become "static requirements": rigid patterns
+that get over-applied by a one-size-fits-all approach. Services like
+[Premint](https://www.premint.xyz/) have begun to change this, which introduces
+an economy of scale to save on gas and other features.  But further improvements
+are possible! Projects should have the flexibility to implement *dynamic*
+requirements on whom gets added to an allowlist and how.
 
 That's where Verifiable Credentials come in.
 
 ### How To Use Verite and Verifiable Credentials
 
-We're going to be working through an Ethereum ERC-721 NFT contract alongside a mechanism that allows us to issue verifiable credentials to participants that we want to allow on the allowlist. We'll use Hardhat to help us generate the skeleton for our smart contract code and to make it easier to test and deploy.
+We're going to be working through an Ethereum ERC-721 NFT contract alongside a
+mechanism that allows us to issue verifiable credentials to participants that we
+want to allow on the allowlist. We'll use Hardhat to help us generate the
+skeleton for our smart contract code and to make it easier to test and deploy.
 
 On the front-end side of the house, we'll build a simple page that allows potential allowlist recipients to request their verifiable credential, and we'll build the actual minting functionality.
 
