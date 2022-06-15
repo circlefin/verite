@@ -3,8 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import {
   buildAndSignFulfillment,
   decodeCredentialApplication,
-  KYCAMLAttestation,
-  CreditScoreAttestation,
+  Attestation,
   buildIssuer
 } from "verite"
 
@@ -44,16 +43,16 @@ export default async function credentials(
    * Generate the attestation.
    */
   const manifestId = application.credential_application.manifest_id
-  let attestation: KYCAMLAttestation | CreditScoreAttestation
+  let attestation: Attestation
   if (manifestId === "KYCAMLAttestation") {
     attestation = {
-      "type": "KYCAMLAttestation",
+      type: "KYCAMLAttestation",
       process: "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
       approvalDate: new Date().toISOString()
     }
   } else if (manifestId === "CreditScoreAttestation") {
     attestation = {
-      "type": "CreditScoreAttestation",
+      type: "CreditScoreAttestation",
       score: 90,
       scoreType: "Credit Score",
       provider: "Experian"
@@ -72,5 +71,5 @@ export default async function credentials(
   )
 
   // Response
-  res.status(200).json(presentation)
+  res.status(200).send(presentation)
 }

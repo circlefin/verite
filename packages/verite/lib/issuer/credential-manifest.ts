@@ -69,6 +69,14 @@ export function requiresRevocableCredentials(
   return manifest.id === KYCAML_ATTESTATION_MANIFEST_ID
 }
 
+/**
+ * Generate a Credential Manifest for a KYC/AML Attestation.
+ *
+ * @param issuer The issuer for the credential
+ * @param styles An optional list of styles to use for the credential
+ *
+ * @returns a Credential Manifest
+ */
 export function buildKycAmlManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}

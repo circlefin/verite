@@ -1,13 +1,14 @@
 import Ajv from "ajv"
 
-import { CreditScoreAttestation, KYCAMLAttestation } from "../../types"
 import { ValidationError } from "../errors"
+
+import type { Attestation } from "../../types"
 export { findSchemaById } from "./schemas"
 
 const ajv = new Ajv()
 
 export function validateAttestationSchema(
-  attestation: KYCAMLAttestation | CreditScoreAttestation,
+  attestation: Attestation,
   schema: Record<string, unknown>
 ): void {
   if (!attestation) {

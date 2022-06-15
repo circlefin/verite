@@ -1,5 +1,5 @@
 import * as ed25519 from "@stablelib/ed25519"
-import { EdDSASigner } from "did-jwt"
+import { EdDSASigner, base64ToBytes, hexToBytes, base58ToBytes } from "did-jwt"
 import { Resolver } from "did-resolver"
 import { getResolver as getKeyResolver } from "key-did-resolver"
 import Multibase from "multibase"
@@ -13,6 +13,10 @@ type RandomBytesMethod = (size: number) => Uint8Array
 type GenerateDidKeyParams = {
   secureRandom: () => Uint8Array
 }
+
+const hexMatcher = /^(0x)?([a-fA-F0-9]{64}|[a-fA-F0-9]{128})$/
+const base58Matcher = /^([1-9A-HJ-NP-Za-km-z]{44}|[1-9A-HJ-NP-Za-km-z]{88})$/
+const base64Matcher = /^([0-9a-zA-Z=\-_+/]{43}|[0-9a-zA-Z=\-_+/]{86})(={0,2})$/
 
 /**
  * Generate a `DidKey` for a given a seed function.
@@ -56,6 +60,24 @@ export function randomDidKey(randomBytes: RandomBytesMethod): DidKey {
   return generateDidKey({ secureRandom })
 }
 
+export function parseKey(input: string | Uint8Array): Uint8Array {
+  if (typeof input === 'string') {
+    if (hexMatcher.test(input)) {
+      return hexToBytes(input)
+    } else if (base58Matcher.test(input)) {
+      return base58ToBytes(input)
+    } else if (base64Matcher.test(input)) {
+      return base64ToBytes(input)
+    } else {
+      throw TypeError('bad_key: Invalid private key format')
+    }
+  } else if (input instanceof Uint8Array) {
+    return input
+  } else {
+    throw TypeError('bad_key: Invalid private key format')
+  }
+}
+
 /**
  * Build an issuer from a did and private key
  */
@@ -65,7 +87,7 @@ export function buildIssuer(
 ): Issuer {
   return {
     did,
-    signer: EdDSASigner(privateKey),
+    signer: EdDSASigner(parseKey(privateKey)),
     alg: "EdDSA"
   }
 }
