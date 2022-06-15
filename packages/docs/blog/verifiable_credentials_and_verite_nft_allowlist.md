@@ -10,6 +10,7 @@ authors:
 tags: [updates]
 image: https://i.imgur.com/mErPwqL.png
 hide_table_of_contents: false
+date: 2022-06-13T10:00
 ---
 
 While Verite can help solve significantly more complex challenges than managing
@@ -76,491 +77,436 @@ mechanism that allows us to issue verifiable credentials to participants that we
 want to allow on the allowlist. We'll use Hardhat to help us generate the
 skeleton for our smart contract code and to make it easier to test and deploy.
 
+We'll also use [Sign In With Ethereum](https://login.xyz/) (SIWE) to handle our user sessions. We're using SIWE because [it provides more protections and assurances](https://blog.spruceid.com/sign-in-with-ethereum-is-a-game-changer-part-1/) than the normal "Connect Wallet" flow does.
+
 On the front-end side of the house, we'll build a simple page that allows potential allowlist recipients to request their verifiable credential, and we'll build the actual minting functionality.
 
 Let's get started. You'll need Node.js version 12 or above for this. You'll also need a good text editor and some knowledge of the command line.
 
-From your command line, create a new project directory. You can name this whatever you want, but I'm going to call mine `vc-allowlist`:
+From your command line, change into the directory where you keep all your fancy NFT projects. Then, let's clone the example app I built ahead of this tutorial to make our lives easier.
 
 ```
-mkdir vc-allowlist
+git clone https://github.com/centrehq/verite-minter-allowlist
 ```
 
-Then, change into that directory:
+This is a repository that uses SIWE's base example app and extends it. So what you'll have is a folder for your frontend application, a folder for your backend express server, and a folder for your smart contract-related goodies.
 
+Let's start by looking at the backend server. Open the `backend/src/index.js` file. There's a lot going on in here, but half of it is related to SIWE, which is very well documented. So, we're going to gloss over those routes and just trust that they work (they do).
+
+### Request Allowlist Endpoint
+
+Scroll down in the file until you see the route for `requestAllowlist`. Now, before we go any further, let me walk through a quick explanation of how this entire flow will work.
+
+1. Project runs a web app and a server
+2. Web app handles both requesting/issuing verifiable credentials associated with the allowlist and minting
+3. During the minting process, a verifiable credential must be sent back to the project's server.
+4. Backend handles checking to see if a wallet should receive a credential, then generating the credential.
+5. Backend handles verifying that a credential sent as part of the minting process is valid.
+6. If credential is valid, backend signs an EIP712 message with a private key owned by the project.
+7. Signature is returned to the frontend and includes it as part of the mint function on the smart contract.
+
+We'll dive into details on the smart contract in a moment, but that's the basic flow for the front and backends. For those who love a good diagram, we've got you covered:
+
+![Full Diagram](https://opengateway.mypinata.cloud/ipfs/Qmbjbc48sZvG3S7iQMcAUri8UVUEjMGsevJynZ1wYGm339)
+
+Now, if we look at the route called `requestAllowlist`, we'll see:
+
+```js
+if (!req.session.siwe) {
+  res.status(401).json({ message: "You have to first sign_in" })
+  return
+}
+const address = req.session.siwe.address
+if (!validateAllowlistAccess(address)) {
+  res.status(401).json({ message: "You are not eligible for the allowlist" })
+  return
+}
+
+const { subject } = await getOrCreateDidKey(address)
+
+const issuerDidKey = await getIssuerKey()
+const application = await createApplication(issuerDidKey, subject)
+const presentation = await getPresentation(issuerDidKey, application)
+
+res.setHeader("Content-Type", "application/json")
+res.json(presentation)
 ```
-cd vc-allowlist
-```
 
-We need to initialize a new Node.js project in this directory. To do so, run the following command:
+We are using the SIWE library to make sure the user is signed in and has a valid session. This also gives us the user's wallet address. Remember, we're trusting that all the SIWE code above this route works (it does).
 
-```
-npm init -y
-```
+Next, we are checking to see if the project has determined that wallet to be eligible for the allowlist. This is a very low-tech process. Most projects ask participants to do something in order to get on the list and then they manage a spreadsheet of addresses. In this code example, we have a function called `validateAllowlistAccess()` that checks a hardcoded array of addresses from a config file:
 
-Now, let's add hardhat's Node.js library as a dependency to our project:
+```js
+const config = JSON.parse(fs.readFileSync("../config.json"))
 
-```
-npm i -D hardhat
-```
-
-Notice, we're using the `-D` flag. This is the same as saying `--save-dev`. It means we are installing hardhat as a development dependency. Any code compiled and deployed to a production server would not include the development dependencies.
-
-We can now initialize a new hardhat project. We're going to use a template project and just edit it for convenience. Run the following:
-
-```
-npx hardhat
-```
-
-Choose the "Create a basic sample project" option. Say yes to all the prompts, and the project will be initialized with dependencies installed. If you open the project up in your text editor now, you'll see a lot has been done for you. You should see a `contracts` folder, a `scripts` folder, and a `test` folder among other things.
-
-Hardhat gave us all the boilerplate we need to hit the ground running. Open up the `contracts` folder and let's get our smart contract updated.
-
-**Writing The Contract**
-
-You'll see the contract that came with the basic sample from hardhat is a simple hello, world contract. We're going to change this. First, change the name of the `Greeter.sol` file to `AllowNFT.sol`. Next, let's install [OpenZeppelin's smart contract library](https://openzeppelin.com). Back at the command line, in the root of the project, run:
-
-```
-npm install @openzeppelin/contracts
-```
-
-By installing OpenZeppelin's library, we get audited smart contracts we can use to extend our projects. I've created the base boilerplate for the NFT contract we'll use, so update your smart contract file to look like this:
-
-```
-pragma solidity ^0.8.0;
-
-import "hardhat/console.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-
-contract AllowNFT is ERC721Enumerable, Ownable {
-    using Counters for Counters.Counter;
-    using Strings for uint256;
-
-    string public BASE_URI;
-    uint256 public MAX_SUPPLY = 10_000;
-    uint public PRICE = 60000000000000000;
-    bool public PRESALE = false;
-    bool public PUBLICSALE = false;
-
-    constructor(
-        string memory baseURI,
-        string memory name,
-        string memory symbol
-    ) ERC721(name, symbol) {
-        BASE_URI = baseURI;
-    }
-
-    function _baseURI() internal view override returns (string memory) {
-        return string(abi.encodePacked(BASE_URI, "/"));
-    }
-
-    function togglePreSale() onlyOwner public {
-        PRESALE = !PRESALE;
-    }
-
-    function togglePublicSale() onlyOwner public {
-        PUBLICSALE = !PUBLICSALE;
-    }
-
-    function mint(address addr, uint256 quantity)
-        public
-        payable
-    {
-        require(totalSupply() <= MAX_SUPPLY, "Would exceed max supply");
-        require(msg.value >= PRICE, "insufficient funds");
-        for (uint256 i = 0; i < quantity; i++) {
-            uint256 tokenId = totalSupply() + 1;
-            _safeMint(addr, tokenId);
-        }
-    }
+const validateAllowlistAccess = (address) => {
+  return config.addressesForAllowlist.includes(address)
 }
 ```
 
-We already know that the mint function isn't going to work as it stands. We don't want just anyone to mint whenever they want. We want to allow people on the allowlist to mint first. Then, the mint function can be available when the `PUBLICSALE` variable is true. Let's make some changes first to the mint function:
+Next, we need to create a DID (decentralized identifier) key for the associated wallet (or we need to look up an existing DID key). In a perfect world, we'd be using a built-in credential wallet integration with the user's Ethereum wallet, but since we don't have that, we're going to manage a delegated key system. The system works like this:
 
-```solidity
-function mint(address addr, uint256 quantity)
-    public
-    payable
-{
-    require(PUBLICSALE == true, "Public sale not active");
-    require(totalSupply() <= MAX_SUPPLY, "Would exceed max supply");
-    require(msg.value >= PRICE, "insufficient funds");
-    for (uint256 i = 0; i < quantity; i++) {
-        uint256 tokenId = totalSupply() + 1;
-        _safeMint(addr, tokenId);
+1. Project checks to see if there is a DID key for the wallet in question in the database (note: the database here is just disk storage, but can be anything you'd like).
+2. If there is a DID key, project uses that key for Verite functions.
+3. If there is no DID key, project generates one and adds the mapping to the database.
+
+That's happening here:
+
+```js
+const { subject } = await getOrCreateDidKey(address)
+```
+
+And the `getOrCreateDidKey()` function looks like this:
+
+```js
+const getOrCreateDidKey = async (address) => {
+  const db = JSON.parse(fs.readFileSync("db.json"))
+  let keyInfo = db.find((entry) => entry.address === address)
+  if (!keyInfo) {
+    const subject = randomDidKey(randomBytes)
+    subject.privateKey = toHexString(subject.privateKey)
+    subject.publicKey = toHexString(subject.publicKey)
+    keyInfo = {
+      address,
+      subject
     }
+    db.push(keyInfo)
+    fs.writeFileSync("db.json", JSON.stringify(db))
+  }
+
+  return keyInfo
 }
 ```
 
-This was a simple change to make sure that the mint function could only be called if the public sale is toggled on. But we should also write a function to handle the presale for allowlist members. Above the mint function, add the following:
+As you can see, our database is making use of the always fashionable file system. We look up the key or we generate a new one using Verite's `randomDidKey` function. We then convert the public and private key portion of the payload to hex strings for easier storage.
 
-```solidity
-function mintAllowList(
-    uint256 quantity,
-    AllowList memory dataToVerify,
-    bytes memory signature
-) external payable {
-    require(PRESALE == true, "Presale sale not active");
-    require(totalSupply() <= MAX_SUPPLY, "Would exceed max supply");
-    require(msg.value >= PRICE, "insufficient funds");
-    require(_verifySignature(dataToVerify, signature), "Invalid signature");
-    for (uint256 i = 0; i < quantity; i++) {
-        uint256 tokenId = totalSupply() + 1;
-        _safeMint(addr, tokenId);
+Ok, moving on. Next, we grab the issuer key. This is a DID key that is associated with the project.
+
+```js
+const issuerDidKey = await getIssuerKey()
+```
+
+Much like the function to get the user's DID key, the `getIssuerKey` function just does a look up in the DB and returns the key. Remember to always protect your keys, kids. Even though these keys are exclusively for signing and issuing credentials, you should protect them as if they could spend your ETH.
+
+```js
+const getIssuerKey = async () => {
+  let issuer = JSON.parse(fs.readFileSync("issuer.json"))
+  if (!issuer.controller) {
+    issuer = randomDidKey(randomBytes)
+    issuer.privateKey = toHexString(issuer.privateKey)
+    issuer.publicKey = toHexString(issuer.publicKey)
+    if (!issuerDidKey.signingKey) {
+      const randomWallet = ethers.Wallet.createRandom()
+      const privateKey = randomWallet._signingKey().privateKey
+      issuerDidKey.signingKey = privateKey
     }
+    fs.writeFileSync("issuer.json", JSON.stringify(issuer))
+  }
+
+  return issuer
 }
 ```
 
-OK, our new function is pretty close to the mint function with some important differences. First, the parameters expected to be passed into the `mintAllowList` function includes a data payload that we will define soon (`dataToVerify`) and a signature. The function takes the data to verify and the signature and passes it to a function we have yet to write called `_verifySignature`. If all our checks pass, the person is allowed to mint.
+As you can see, in addition to creating a DID key or fetching a DID key with this function, we are creating a signing key using an ETH wallet. This will be the same key we use to deploy the smart contract and sign a message later. Stand by for disclaimers!
 
-One thing to note is that this function does not include a max quantity per transaction or per allowlist participant. Most NFT projects will add a limit here to ensure the entire mint is not exhausted during presale. That's outside the scope of this tutorial.
+Next, we call a function called `createApplication`.
 
-Before we write the new function to verify the signature, let's talk about this `dataToVerify` payload and its struct `AllowList`. We will be using [EIP-712](https://eips.ethereum.org/EIPS/eip-712) to verify the signature passed through. This standard requires a well-defined payload. In our case, we just need to verify that the address passed through to us matches the address of the person calling the `mintAllowList` function and that the signature is valid.
-
-At the top of your contract, above the constuctor, add the following:
-
-```solidity
-struct AllowList {
-    address allow; // address of the subject of the verification
+```js
+const createApplication = async (issuerDidKey, subject) => {
+  subject.privateKey = fromHexString(subject.privateKey)
+  subject.publicKey = fromHexString(subject.publicKey)
+  const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
+  const application = await buildCredentialApplication(subject, manifest)
+  return application
 }
 ```
 
-In order to use the EIP-712 standard, we need to import another library from OpenZeppelin. At the top of your file, add this line:
+This function includes some helpers to convert the DID key private and public keys back from hex strings to buffers. The function then uses the `buildKycAmlManifest` function from the Verite library to build a manifest that will be used in the credential application. It should be noted that I'm using the `KycAmlManifest` but you could create your own manifest that more closely mirrors adding someone to an allowlist. The KycAmlManifest fit closely enough for me, though.
 
-```solidity
+Finally, the manifest is used and passed into the Verite library function `buildCredentialApplication` and the application is returned.
+
+When the application is built, we now call a function called `getPresentation`:
+
+```js
+const getPresentation = async (issuerDidKey, application) => {
+  issuerDidKey.privateKey = fromHexString(issuerDidKey.privateKey)
+  issuerDidKey.publicKey = fromHexString(issuerDidKey.publicKey)
+
+  const decodedApplication = await decodeCredentialApplication(application)
+
+  const attestation = {
+    type: "KYCAMLAttestation",
+    process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+    approvalDate: new Date().toISOString()
+  }
+
+  const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
+  const presentation = await buildAndSignFulfillment(
+    issuer,
+    decodedApplication,
+    attestation
+  )
+
+  return presentation
+}
+```
+
+We're using the project's issuer DID key here. We decode the application using Verite's `decodeCredentialApplication` function. Then, we have to attest to the credential presentation.
+
+Using the issuer private key and public key, we call the Verite library `buildIssuer` function. With the result, we can then create the verifiable presentation that will ultimately be passed back to the user by calling Verite's `buildAndSignFulfillment` function.
+
+It is that presentation that is sent back to the user. We'll take a look at the frontend shortly, but just know that the presentation comes in the form of a JWT.
+
+### Verify Mint Access Endpoint
+
+Next, we'll take a look at the `verifyMintAccess` route. This route includes significantly more functionality. Let's dive in!
+
+```js
+try {
+  const { jwt } = req.body
+
+  if (!req.session || !req.session.siwe) {
+    return res.status(403).send("Unauthorized, please sign in")
+  }
+  const address = req.session.siwe.address
+
+  const decoded = await decodeVerifiablePresentation(jwt)
+
+  const vc = decoded.verifiableCredential[0]
+
+  const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+
+  const issuerDidKey = await getIssuerKey()
+
+  const { subject } = await getOrCreateDidKey(address)
+
+  const offer = buildKycVerificationOffer(
+    uuidv4(),
+    issuerDidKey.subject,
+    "https://test.host/verify"
+  )
+  const submission = await buildPresentationSubmission(
+    subject,
+    offer.body.presentation_definition,
+    decodedVc
+  )
+
+  //  The verifier will take the submission and verify its authenticity. There is no response
+  //  from this function, but if it throws, then the credential is invalid.
+  try {
+    await validateVerificationSubmission(
+      submission,
+      offer.body.presentation_definition
+    )
+  } catch (error) {
+    console.log(error)
+    return res.status(401).json({ message: "Could not verify credential" })
+  }
+
+  let privateKey = ""
+
+  if (!issuerDidKey.signingKey) {
+    throw new Error("No signing key found")
+  } else {
+    privateKey = issuerDidKey.signingKey
+  }
+
+  let wallet = new ethers.Wallet(privateKey)
+
+  const domain = {
+    name: "AllowList",
+    version: "1.0",
+    chainId: config.chainId,
+    verifyingContract: config.contractAddress
+  }
+  const types = {
+    AllowList: [{ name: "allow", type: "address" }]
+  }
+  const allowList = {
+    allow: address
+  }
+
+  const signature = await wallet._signTypedData(domain, types, allowList)
+
+  return res.send(signature)
+} catch (error) {
+  console.log(error)
+  res.status(500).send(error.message)
+}
+```
+
+Once again, the first thing we check is that the user has a valid SIWE session. This route takes a body that includes the verifiable presentation we had sent to the user previously. So, the next step is to call the Verite function `decodeVerifiablePresentation` to then be able to extract the verifiable credential and call the `decodeVerifiableCredential` function.
+
+As with our `requestAllowlist` route, we now need to get the issuer DID key and look up the user's delegated DID key. From there, we can use the issuer key to call the Verite library function `buildKycVerificationOffer`. We use the results of that call and the user's DID key to call the Verite library function `buildPresentationSubmission`.
+
+Now, we get on to the good stuff. We're going to make sure a valid credential was sent to us. We call the Verite library function `validateVerificationSubmission`. This function will throw if the credential is invalid. Otherwise, it does nothing. We're rooting for nothing!
+
+Next, the code might get a little confusing, so I want to spend some time walking through this implementation and highlighting how you'd probably do this differently in production. Once the credential is verified, we need to sign a message with a private key owned by the project. For simplicity, I chose to use the same private key that would deploy the smart contract. This is not secure. Don't do this. Hopefully, this is enough to illustrate how to execute the next few steps, though.
+
+We have the issuer DID key written to our database already (file system). We also included a signing key. We need that signing key to sign the message that will be sent back to the user. We use that key to build an Ethereum wallet that can be used for signing.
+
+```js
+let privateKey = ""
+
+if (!issuerDidKey.signingKey) {
+  throw new Error("No signing key found")
+} else {
+  privateKey = issuerDidKey.signingKey
+}
+
+let wallet = new ethers.Wallet(privateKey)
+```
+
+Finally, we build out the EIP-712 message and sign it. The resulting signature hash is what we send back to the browser so the user can use it in the smart contract's minting function.
+
+That was a lot, but guess what? The frontend and the smart contract should be a lot quicker and easier to follow.
+
+### Frontend
+
+If we back out of the `backend` folder in our project, we can then switch into the `frontend` folder. Take a look at `frontend/src/index.js`. The `requestAllowlist` function is the one the user will call to hit the project's server's endpoint to see if the user is even allowed to get an allowlist credential. If so, the credential is returned and stored in localstorage:
+
+```js
+async function requestAllowlistAccess() {
+  try {
+    const res = await fetch(`${BACKEND_ADDR}/requestAllowlist`, {
+      credentials: "include"
+    })
+    const message = await res.json()
+
+    if (res.status === 401) {
+      alert(message.message)
+      return
+    }
+    localStorage.setItem("nft-vc", message)
+    alert("Credential received and stored in browser")
+  } catch (error) {
+    console.log(error)
+    alert(error.message)
+  }
+}
+```
+
+Again, this would look a lot nicer if there was a built-in credential wallet integration with Ethereum wallets, but for simplicity, the credential is being stored in localstorage. Safe, safe localstorage.
+
+(narrator: localstorage is not safe).
+
+When it's time to mint during the presale, the user clicks on the mint button and the `mintPresale` function is called:
+
+```js
+async function mintPresale() {
+  const jwt = localStorage.getItem("nft-vc")
+  if (!jwt) {
+    alert("No early access credential found")
+    return
+  }
+
+  const res = await fetch(`${BACKEND_ADDR}/verifyMintAccess`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ jwt }),
+    credentials: "include"
+  })
+
+  if (res.status === 401 || res.status === 403) {
+    alert(
+      "You're not authorized to mint or not signed in with the right wallet"
+    )
+    return
+  }
+
+  const sig = await res.text()
+
+  const contract = new ethers.Contract(address, json(), signer)
+  const allowList = {
+    allow: address
+  }
+  let overrides = {
+    value: ethers.utils.parseEther((0.06).toString())
+  }
+  const mint = await contract.mintAllowList(
+    1,
+    allowList,
+    sig,
+    address,
+    overrides
+  )
+  console.log(mint)
+  alert("Minted successfully")
+}
+```
+
+This function grabs the credential from localstorage and sends it along to the project's backend server. Assuming the signature from the project is returned, the user is now able to mint. That signature is sent to the smart contract as well as how many tokens should be minted and the amount of ETH necessary to mint. Note, the allowlist object that we send as well. This helps the smart contract verify the signature. Simple!
+
+But how does that work with the smart contract exactly?
+
+### Smart Contract
+
+If you open up the `contract` folder, you'll see a sub-folder called `contracts`. In there, you'll see the smart contract we're using in this example, called `Base_ERC721.sol`.
+
+This is a pretty standard NFT minting contract. It's not a full implementation. There would be project-specific functions and requirements to make it complete, but it highlights the allowlist minting functionality.
+
+The first thing to note is we're using the EIP-712 standard via a contract imported from OpenZeppelin. You can see that with this line:
+
+```
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 ```
 
-And change the contract struct to open with this:
+Next, we are extending the ERC-721 contract and specifying use of EIP-712 here:
 
-```solidity
-contract AllowNFT is ERC721Enumerable, Ownable, EIP712("AllowList", "1.0") { ...
+```
+contract BASEERC721 is ERC721Enumerable, Ownable, EIP712("AllowList", "1.0") {
+  ...
 ```
 
-This tells the smart contract code that we are using the EIP-712 standard and defines our data payload as `AllowList`.
+A little further down in the contract, we create a struct that defines the allowlist data model. It's simple because we are only looking at the wallet address that should be on the allowlist:
 
-Now, we can write our `_verifySignature` function. Below the `mint` function, add the following:
+```
+struct AllowList {
+  address allow;
+}
+```
 
-```solidity
+We're going to focus in now on the `mintAllowList` function and the `_verifySignature` function. Our `mintAllowList` function starts off similar to a normal NFT minting function except it includes the required `signature` argument and `dataToVerify` argument. We do a couple of normal checks before we get to a check that verifies the signature itself. This is where the magic happens.
+
+The `_verifySignature` function is called. It takes in the data model and the signature.
+
+```
 function _verifySignature(
-    AllowList memory dataToVerify,
-    bytes memory signature
-) internal view returns(bool) {
-    bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
-      keccak256("AllowList(address allow)"),
-      dataToVerify.allow
-    )));
-
-    address signerAddress = ECDSA.recover(digest, signature);
-    require(CONTRACT_OWNER == signerAddress, "Invalid signature");
-    return true;
-}
-```
-
-This function takes in the `dataToVerify` payload and the signature. It then creates a digest using the function `_hashTypedDataV4` which we get by importing the EIP712.sol contract from earlier. We can then recover the address of the signer (the wallet that created the signature that was passed to the smart contract function) using the `ECDSA.recover` method. This, again, is provided to us through the EIP712.sol contract we imported.
-
-Something important to note and not entirely obvious yet is that we are not verifying the signature is from the person calling the smart contract's `mintAllowList` function. Instead, we are verifying the signature matches the "issuer" of the allowlist membership. For simplicity, we are going to assume only the contract owner can add people to the allowlist. So we are checking that the recovered address from the signature matches the contract owner address. If so, the person is allowed to mint during the presale.
-
-That was a lot, but this will start to make more sense once we connect the whole process together.
-
-### Creating The Issuer And Minting App
-
-To help illustrate how this all works together, we will need to create a simple web app where someone can go to request an allowlist spot. If approved, then they will be issued a Verifiable Credential indicating they are on the project's allowlist. That credential is what will then be presented to the smart contract.
-
-We're going to use [Next.js](https://nextjs.org/) for this part of the tutorial. Next.js is a sever-side rendering framework that includes serverless functions for our backend. It's a nice, all-in-one package. Be sure to follow the [getting started guide](https://nextjs.org/docs/getting-started) to make sure you have all the necessary dependencies and the right versions of those dependencies.
-
-In a new terminal window, let's create our new Next.js project. Run the following command from a different directory than the one that houses your smart contract:
-
-`npx create-next-app minting-issuer`
-
-Once the install and creation process is complete, you'll need to change into your project directory:
-
-`cd minting-issuer`
-
-Let's install the Verite library by running:
-
-`npm i verite`
-
-This will give us access to all the tools we need to build a credential application, issue credentials, and verify those credentials. We can start making use of this library by building out our first API route. I'm not going to go into deep detail about how Next.js handles API routing and serverless functions. [You read up on that here](https://nextjs.org/docs/api-routes/dynamic-api-routes). Just know that any routes we want to create should be placed in the `pages/api` folder.
-
-In that folder, create a file called `manifest.js`. In that file, add the following:
-
-```js
-import { buildKycAmlManifest, randomDidKey } from "verite"
-import { randomBytes } from "crypto"
-
-export default function handler(req, res) {
-  if (req.method === "GET") {
-    try {
-      //  We would normally have the key info stored as environment variables rather than generating on the fly
-      const issuerDidKey = randomDidKey(randomBytes)
-      const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
-      res.json(manifest)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-}
-```
-
-Since the Verite library provides so much out of the box, it may be helpful to take a dive into the full documentation to understand everything, but what we have here is a manifest file being created that represents the type of verifiable credential to issue. For simplicity, we're using a KYC/AML manifest since it closely matches our use case (we're verifying a person for an allowlist spot). Once the manifest is built, we return it to the client for use in the next step.
-
-Before we start building anything on the client, let's continue on our API routes. The manifest will be used by the client to send an application for the credential. So, let's create an API route that can handle that application. In the `pages/api` folder, create a new file called `application.js`. Then fill it with this:
-
-```js
-import {
-  randomDidKey,
-  decodeCredentialApplication,
-  buildIssuer,
-  buildAndSignFulfillment,
-  buildCredentialApplication,
-  buildKycAmlManifest
-} from "verite"
-import { randomBytes } from "crypto"
-import { verifyMessage } from "ethers/lib/utils"
-import { withIronSession } from "next-iron-session"
-import { v4 as uuidv4 } from "uuid"
-
-const allowedAddresses = [
-  {
-    wallet: "0xAddressYouWantToAddToAllowList",
-    keypair: {} //  This will be created by verite soon
-  }
-]
-
-const canReceiveAllowlistSpot = (address) => {
-  if (allowedAddresses.find((a) => a.wallet === address)) {
-    return true
-  }
-}
-
-const getDelegatedKey = async (address) => {
-  //  Check for existing key
-  let keyPairOnAllowlist = allowedAddresses.find((a) => a.wallet === address)
-  if (!keyPairOnAllowlist) {
-    const newKeypairObj = {
-      wallet: address,
-      keypair: randomDidKey(randomBytes)
-    }
-
-    allowedAddresses.push(newKeypairObj)
-    keyPaidOnAllowlist = newKeypaidObj
-  }
-
-  return keyPairOnAllowlist
-}
-
-const validApplicant = async (signature, message) => {
-  const fullMessage = `Verify your wallet address. Message id: ${message.id}`
-  const recoveredAddress = verifyMessage(fullMessage, signature)
-  if (canReceiveAllowlistSpot(recoveredAddress)) {
-    const delegatedKey = await getDelegatedKey(recoveredAddress)
-    return {
-      recoveredAddress,
-      delegatedKey
-    }
-  }
-
-  return null
-}
-
-function withSession(handler) {
-  return withIronSession(handler, {
-    password: process.env.SECRET_COOKIE_PASSWORD,
-    cookieName: "web3-auth-session",
-    cookieOptions: {
-      secure: process.env.NODE_ENV === "production" ? true : false
-    }
-  })
-}
-
-export default withSession(async (req, res) => {
-  if (req.method === "POST") {
-    try {
-      const message = req.session.get("message-session")
-      const verified = await validApplicant(
-        JSON.parse(req.body).signature,
-        message
+  AllowList memory dataToVerify,
+  bytes memory signature
+) internal view returns (bool) {
+  bytes32 digest = _hashTypedDataV4(
+      keccak256(
+          abi.encode(
+              keccak256("AllowList(address allow)"),
+              dataToVerify.allow
+          )
       )
-      if (!verified) {
-        return res
-          .status(401)
-          .send("Not qualified for allowlist or invalid signature")
-      }
-      const issuerDidKey = randomDidKey(randomBytes)
-      const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
+  );
 
-      //  Build application
-      const application = await buildCredentialApplication(subject, manifest)
-      const decodedApplication = await decodeCredentialApplication(application)
+  require(keccak256(bytes(signature)) != keccak256(bytes(PREVIOUS_SIGNATURE)), "Invalid nonce");
+  require(msg.sender == dataToVerify.allow, "Not on allow list");
 
-      if (!valid) {
-        return res.status(401).send("Not eleigible for allowlist")
-      }
+  address signerAddress = ECDSA.recover(digest, signature);
 
-      const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-      const attestation = {
-        type: "KYCAMLAttestation",
-        process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-        approvalDate: new Date().toISOString()
-      }
-      const presentation = await buildAndSignFulfillment(
-        issuer,
-        decodedApplication,
-        attestation
-      )
-      res.json({ presentation })
-    } catch (error) {
-      console.log(error)
-      res.status(500).send("Server error")
-    }
-  } else {
-    try {
-      const message = { id: uuidv4() }
-      req.session.set("message-session", message)
-      await req.session.save()
-      return res.json(message)
-    } catch (error) {
-      console.log(error)
-      const { response: fetchResponse } = error
-      return res.status(fetchResponse?.status || 500).json(error.data)
-    }
-  }
-})
-```
+  require(CONTRACT_OWNER == signerAddress, "Invalid signature");
 
-On the client side, we will need to build a credential application using the manifest we received on the last API call. We'll do that soon. But let's look at what the API request looks like when we have that application built. We would make a GET request to the `api/application` endpoint. Since the application itself will be a JWT, we can pass this in as a request header called `application`.
-
-On the server side, we will decode the application using Verite's tools. We will then need to look up the applicant to verify they should be allowed on the allowlist. If not, we reject the request with a 401. If so, we build the verifiable credential and verifiable presentation then return that to the client.
-
-Before we move on, let's write a placeholder function to look up and verify the applicant. In a production application, you would probably use a database or some other tool for tracking who should be on the allowlist. For this tutorial, I'm just going to use an array of wallet addresses. At the top of your `application.js` file, above the request function, add this:
-
-```js
-const validApplicants = ["0x..."]
-
-const validApplicant = (application) => {
-  if (validApplicants.includes(application.allowListAddress)) {
-    return true
-  }
-
-  return false
+  return true;
 }
 ```
 
-Pretty simple check, but you can extend this to check from a DB or from a local file or wherever you'd like to check.
+Using the EIP-712 contract imported through the OpenZeppelin library, we're able to create a digest representing the data that was originally signed. We can then recover the signing address and compare it to the expected address. In our simplified example, we expect the signer to be the same address as the contract deployer, but you can, of course, extend this much further.
 
-Let's start building our frontend now.
+To help avoid replay attacks, we also compare the current signature to a variable called `PREVIOUS_SIGNATURE`. If the signature is the same, we reject the entire call because a signature can only be used once.
 
-### Working On The Minting and Issuing Client
+Back to our `mintAllowList` function, if the signature is verified, we allow the minting to happen. When that's complete, we update the `PREVIOUS_SIGNATURE` variable. This is, as with many things in this demo, a simplified replay attack prevention model. This can and probably should be extended to support your own use cases.
 
-We now need to create a page in our web app that allows a user to request the allowlist verifiable credential. We will also need to build the minting functionality, but let's start with requesting the verifiable credential.
+### Caveats and Conclusion
 
-A couple of caveats to note here:
+In a perfect world, we would not be issuing credentials to a delegated subject DID. In our example, we could have just as easily have issued to the user's wallet address, but we wanted to highlight the DID functionality as best as possible.
 
-1. Because we are not asking people to maintain a separate verifiable credential wallet, we will be maintaining keypairs for each allowlist recipient. This is sufficient for our use case, but for other use cases, giving the end user full control over the delegated keypair may be necessary. In that case, you'd need to construct a key storage mechanism for the user. These keypairs are only for use when requesting and verifying credentials. So, they pose no risk of fund loss. They are completely separate from the cryptocurrency wallet private keys people maintain themselves.
-2. When an allowlist participant presents their verifiable crendential, we will need to ensure that the wallet maps to the delegated key and we will need to use that key in the presentation and verification process.
+It is possible today for the user to manage their own DID and keys, but the tricky part comes, as mentioned earlier in this post, when interacting with crypto wallets. Signing a transaction is not the same as signing a JWT. The keys used are different, the signatures are different, and the flow is different. Until these things become unified and more seamless, this demo helps illustrate how Verite can be used today to enforce allowlist restrictions for an NFT minting project.
 
-How you add people to the list of allowlist participants and how you retrieve that list is outside the scope of this tutorial. You can use centralized storage solutions like S3, but if you choose to use a decentralized and public option like IPFS, just ensure you are encrypting the data since this will include the person's wallet address AND the delegated key we create.
-
-For the tutorial, I will demonstrate with one approved wallet. We're going to hard-code our list of approved wallets, so we first need to get the wallet address and then generate a keypair for that wallet. You would do this for each wallet you add to the list.
-
-Fortunately, Verite makes the key-gen easy.
-
-Now that we have that out of the way, open up the `pages/index.js` file. Then add the following:
-
-```js
-import { useState, useEffect } from "react"
-import Head from "next/head"
-import Image from "next/image"
-import styles from "../styles/Home.module.css"
-import { randomDidKey, buildCredentialApplication } from "verite"
-import { randomBytes } from "crypto"
-
-export default function Home() {
-  const [view, setView] = useState("request")
-  const [ethereum, setEthereum] = useState(null)
-
-  useEffect(() => {
-    if (typeof window.ethereum !== "undefined") {
-      console.log("MetaMask is installed!")
-      setEthereum(window.ethereum)
-    }
-    if (ethereum) {
-      ethereum.request({ method: "eth_requestAccounts" })
-    }
-  }, [ethereum])
-
-  const requestCredential = async () => {
-    try {
-      const messageToSign = await fetch("/api/application")
-      const messageData = await messageToSign.json()
-      const accounts = await ethereum.request({ method: "eth_requestAccounts" })
-      const account = accounts[0]
-      const message = `Verify your wallet address. Message id: ${messageData.id}`
-      const signature = await ethereum.request({
-        method: "personal_sign",
-        params: [message, account, messageData.id]
-      })
-      const applicationRes = await fetch("/api/application", {
-        method: "POST",
-        body: JSON.stringify({ signature })
-      })
-
-      const response = await applicationRes.json()
-      localStorage.setItem("allowlist-vc", JSON.stringify(response))
-      alert("Allowlist credential saved to local storage!")
-    } catch (error) {
-      alert("You are not eligible for the allowlist")
-    }
-  }
-
-  const Navigation = () => {
-    return (
-      <div>
-        <button onClick={() => setView("request")}>Request Allowlist</button>
-        <button onClick={() => setView("mint")}>Mint</button>
-      </div>
-    )
-  }
-
-  const renderView = () => {
-    switch (view) {
-      case "mint":
-        return (
-          <div>
-            <Navigation />
-            <h1>Mint now</h1>
-            <button>Mint</button>
-          </div>
-        )
-      case "request":
-      default:
-        return (
-          <div>
-            <Navigation />
-            <h1>Request allow list access</h1>
-            <button onClick={requestCredential}>Request</button>
-          </div>
-        )
-    }
-  }
-
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>NFT Allowlist and Mint</title>
-        <meta name="description" content="NFT allowlist and mint" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      {renderView()}
-    </div>
-  )
-}
-```
-
-This is a simple, ugly, view that lets a user switch betwee a minting screen and a request screen where they can get their allowlist VC (if approved). The `requestCredential` function ultimately
+Hopefully, this sparks some creativity. Hopefully, it inspires some people to go and build even more creative solutions that leverage verifiable credentials and Verite.
