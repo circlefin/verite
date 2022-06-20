@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - packages/solana/**
+      - .github/workflows/solana-ci.yml
 
 env:
   SOLANA_VERSION: "1.9.4"
@@ -64,7 +65,7 @@ jobs:
       - name: Install Solana
         if: steps.solana-cache.outputs.cache-hit != 'true'
         run: |
-          sh -c "$(curl -sSfL https://release.solana.com/v1.8.10/install)"
+          sh -c "$(curl -sSfL https://release.solana.com/v${{ env.SOLANA_VERSION }}/install)"
       - name: Setup Solana Path
         run: |
           mkdir -p ~/.config/solana/
