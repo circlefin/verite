@@ -40,7 +40,6 @@
     "multibase": "4.0.6",
     "multicodec": "^3.1.0",
     "schema-dts": "^1.0.0",
-    "semver": "^7.3.5",
     "uuid": "^8.3.2",
     "web-did-resolver": "^2.0.6"
   },
