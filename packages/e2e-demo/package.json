@@ -39,6 +39,7 @@
     "bit-buffers": "^1.0.2",
     "cookies": "^0.8.0",
     "cors": "^2.8.5",
+    "cross-fetch": "^3.1.5",
     "date-fns": "^2.23.0",
     "ethers": "^5.4.4",
     "jsonwebtoken": "^8.5.1",
