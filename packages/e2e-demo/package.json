@@ -1,5 +1,5 @@
 {
-  "name": "@verite/e2e-demo",
+  "name": "e2e-demo",
   "version": "0.1.0",
   "license": "MIT",
   "private": true,

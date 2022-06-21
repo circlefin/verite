@@ -47,10 +47,10 @@ This script will do the following:
 
 - Install all dependencies
 - Build the `verite` project
-- Set up the local IP hostname for `@verite/e2e-demo` to be used with the wallet.
-- Generate an auth JWT secret for `@verite/e2e-demo`
-- Generate issuer and verifier DIDs and secrets for `@verite/e2e-demo`
-- Build and migrate the database for `@verite/e2e-demo`
+- Set up the local IP hostname for `e2e-demo` to be used with the wallet.
+- Generate an auth JWT secret for `e2e-demo`
+- Generate issuer and verifier DIDs and secrets for `e2e-demo`
+- Build and migrate the database for `e2e-demo`
 
 ## Running the end-to-end Demo
 
