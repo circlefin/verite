@@ -1,3 +1,3 @@
-import internalIP from "internal-ip"
+import { internalIpV4Sync } from "internal-ip"
 
-console.log(`HOSTNAME=${internalIP.v4.sync()}`)
+console.log(`HOSTNAME=${internalIpV4Sync()}`)
