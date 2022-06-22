@@ -7,7 +7,7 @@ echo "Setting up verite..."
 npm run setup --workspace verite
 
 echo "Setting up docs..."
-npm run setup --workspace @verite/docs
+npm run setup --workspace docs
 
 echo "Setting up e2e-demos..."
 npm run setup --workspace e2e-demo

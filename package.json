@@ -23,7 +23,7 @@
     "db:reset": "npm run db:reset --workspace e2e-demo",
     "db:seed": "npm run db:seed --workspace e2e-demo",
     "db:studio": "npm run db:studio --workspace e2e-demo",
-    "dev": "run-p \"dev -w verite\" \"dev -w e2e-demo\" \"dev -w @verite/docs\"",
+    "dev": "run-p \"dev -w verite\" \"dev -w e2e-demo\" \"dev -w docs\"",
     "hardhat:node": "npm run hardhat:node --workspace @verite/contract",
     "hardhat:deploy": "npm run hardhat:deploy --workspace @verite/contract",
     "hardhat:test": "npm run hardhat:test --workspace @verite/contract",
