@@ -2,7 +2,7 @@ import { Disclosure } from "@headlessui/react"
 import { ArrowCircleRightIcon } from "@heroicons/react/solid"
 import { NextPage } from "next"
 import Link from "next/link"
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import useSWR from "swr"
 import { challengeTokenUrlWrapper } from "verite"
 
@@ -100,10 +100,9 @@ const KycAmlPage: NextPage<Props> = ({
           For this demo, begin the request protocol by scanning this QR code
           using the Verite demo mobile app wallet:
         </p>
-        <QRCode
+        <QRCodeSVG
           value={JSON.stringify(qrCodeData)}
           className="w-48 h-48 mx-auto"
-          renderAs="svg"
         />
         <h2>Behind the Scenes</h2>
         <p>

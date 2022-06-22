@@ -2,7 +2,7 @@ import { Disclosure } from "@headlessui/react"
 import { ArrowCircleRightIcon } from "@heroicons/react/outline"
 import { NextPage } from "next"
 import Link from "next/link"
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import useSWR from "swr"
 import { challengeTokenUrlWrapper } from "verite"
 
@@ -115,10 +115,9 @@ const CreditScorePage: NextPage<Props> = ({
           Request a VC for this credit score by scanning this QR code with the
           Verite mobile app:
         </p>
-        <QRCode
+        <QRCodeSVG
           value={JSON.stringify(qrCodeData)}
           className="w-48 h-48 mx-auto"
-          renderAs="svg"
         />
         <p>
           <strong>NOTE: </strong> In this demo, the credit score credential{" "}
