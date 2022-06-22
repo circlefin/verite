@@ -21,6 +21,7 @@
     "dev": "next dev",
     "format": "prettier  --write .",
     "lint": "next lint",
+    "postinstall": "prisma generate",
     "setup": "./bin/setup",
     "setup:ci": "dotenv -c test prisma migrate reset -- --force",
     "start": "next start",

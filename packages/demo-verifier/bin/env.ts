@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto"
 import { Wallet } from "ethers"
-import internalIP from "internal-ip"
+import { internalIpV4Sync } from "internal-ip"
 import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
@@ -26,7 +26,7 @@ async function setup(): Promise<void> {
   const wallet = Wallet.createRandom()
   console.log(`CONTRACT_ADDRESS=${wallet.address}`)
 
-  console.log(`NEXT_PUBLIC_BASEURL=http://${internalIP.v4.sync()}:3000`)
+  console.log(`NEXT_PUBLIC_BASEURL=http://${internalIpV4Sync()}:3000`)
 }
 
 setup()
