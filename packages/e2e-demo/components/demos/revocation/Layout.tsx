@@ -1,4 +1,4 @@
-import { signOut, useSession } from "next-auth/client"
+import { signOut, useSession } from "next-auth/react"
 import { FC } from "react"
 
 import Layout from "../../shared/Layout"
@@ -8,7 +8,7 @@ type Props = {
 }
 
 const RevocationLayout: FC<Props> = ({ children, hideAuth }) => {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   return (
     <Layout title="Demo: Compliance &amp; Basic Revocation">

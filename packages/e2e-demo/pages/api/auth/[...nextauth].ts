@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import NextAuth from "next-auth"
-import Providers from "next-auth/providers"
+import CredentialsProvider from "next-auth/providers/credentials"
 
-import { findUser, User, authenticateUser } from "../../../lib/database"
+import { findUser, authenticateUser } from "../../../lib/database"
 
 type Credentials = {
   csrfToken: string
@@ -13,7 +13,7 @@ type Credentials = {
 
 export default NextAuth({
   providers: [
-    Providers.Credentials({
+    CredentialsProvider({
       name: "Demo App",
       credentials: {
         email: { label: "Email", type: "email" },
@@ -24,10 +24,10 @@ export default NextAuth({
       }
     })
   ],
-  session: { jwt: true },
+  session: { strategy: "jwt" },
   callbacks: {
-    async session(session, jwtUser) {
-      const user = await findUser(jwtUser.uid as string)
+    async session({ session, token }) {
+      const user = await findUser(token.sub as string)
 
       if (!user) {
         return Promise.reject()
@@ -38,12 +38,6 @@ export default NextAuth({
       session.user.fullName = user.fullName
 
       return Promise.resolve(session)
-    },
-    jwt: async (token, user?: User) => {
-      if (user) {
-        token.uid = user.id
-      }
-      return Promise.resolve(token)
     }
   }
 })

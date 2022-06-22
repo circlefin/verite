@@ -1,5 +1,5 @@
 import { NextPage } from "next"
-import { signIn, useSession } from "next-auth/client"
+import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/router"
 import { useState } from "react"
 
@@ -10,7 +10,7 @@ import { fullURL } from "../../../lib/utils"
 const RevocationPage: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   const signInAsCompliance = () => {
     setIsLoading(true)

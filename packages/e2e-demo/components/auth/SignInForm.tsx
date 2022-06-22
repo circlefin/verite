@@ -1,4 +1,4 @@
-import { signIn } from "next-auth/client"
+import { signIn } from "next-auth/react"
 import { FC, useState } from "react"
 
 import { LoadingButton } from "../shared/LoadingButton"
