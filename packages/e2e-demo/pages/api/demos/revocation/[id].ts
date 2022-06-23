@@ -13,5 +13,5 @@ export default apiHandler<EncodedRevocationListCredential>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  res.json(revocationList)
+  res.send(revocationList)
 })
