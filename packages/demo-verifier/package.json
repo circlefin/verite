@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.2",
-    "internal-ip": "^7.0.0",
+    "internal-ip": "^6.2.0",
     "postcss": "^8.4.5",
     "tailwindcss": "^3.0.17",
     "tailwindcss-font-inter": "^3.0.1",

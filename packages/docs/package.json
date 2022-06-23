@@ -35,7 +35,7 @@
     "@types/react-router-dom": "^5.1.8",
     "docusaurus-plugin-typedoc": "^0.17.5",
     "dotenv-cli": "^5.1.0",
-    "internal-ip": "^7.0.0",
+    "internal-ip": "^6.2.0",
     "prettier": "^2.3.2",
     "ts-node": "^10.4.0",
     "typedoc": "^0.22.0",
