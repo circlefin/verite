@@ -16,7 +16,7 @@
     "ios": "expo start --ios",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "start": "expo start",
+    "start": "expo start --clear",
     "test": "jest --passWithNoTests",
     "type-check": "tsc --pretty --noEmit"
   },
