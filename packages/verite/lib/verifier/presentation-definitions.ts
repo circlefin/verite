@@ -1,8 +1,7 @@
 import {
   InputDescriptorConstraintField,
   InputDescriptorConstraintStatusDirective,
-  InputDescriptorConstraintSubjectConstraint,
-  InputDescriptorConstraintSubjectConstraintDirective
+  InputDescriptorConstraintSubjectConstraint
 } from "../../types/InputDescriptor"
 import { PresentationDefinition } from "../../types/PresentationDefinition"
 
@@ -10,7 +9,7 @@ const subjectIsHolderConstraint: InputDescriptorConstraintSubjectConstraint[] =
   [
     {
       field_id: ["subjectId"],
-      directive: InputDescriptorConstraintSubjectConstraintDirective.REQUIRED
+      directive: "required"
     }
   ]
 
