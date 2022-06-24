@@ -1,12 +1,9 @@
 import { Contract } from "@ethersproject/contracts"
 import { Wallet } from "@ethersproject/wallet"
-import {
-  getProvider,
-  registryContractArtifact
-} from "@verite/e2e-demo/lib/eth-fns"
 import { VerificationResultResponse, verificationResult } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
+import { getProvider, registryContractArtifact } from "../../../../lib/eth-fns"
 
 export default apiHandler<VerificationResultResponse>(async (req, res) => {
   requireMethod(req, "POST")

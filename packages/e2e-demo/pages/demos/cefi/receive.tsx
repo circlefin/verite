@@ -1,5 +1,5 @@
 import { NextPage } from "next"
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import React, { useState } from "react"
 
 import Alert from "../../../components/demos/cefi/Alert"
@@ -120,11 +120,7 @@ const Page: NextPage = () => {
             </p>
             <p>{data?.address}</p>
 
-            <QRCode
-              value={data?.address}
-              className="w-48 h-48"
-              renderAs="svg"
-            ></QRCode>
+            <QRCodeSVG value={data?.address} className="w-48 h-48" />
           </div>
         </div>
       </React.StrictMode>

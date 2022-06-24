@@ -1,5 +1,5 @@
 {
-  "name": "@verite/docs",
+  "name": "docs",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -17,24 +17,24 @@
     "setup": "./bin/setup"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-beta.15",
-    "@docusaurus/preset-classic": "2.0.0-beta.15",
-    "@mdx-js/react": "^1.6.21",
+    "@docusaurus/core": "2.0.0-beta.21",
+    "@docusaurus/preset-classic": "2.0.0-beta.21",
+    "@mdx-js/react": "^1.6.22",
     "clsx": "^1.1.1",
     "prism-react-renderer": "^1.2.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "*",
     "@tsconfig/docusaurus": "^1.0.4",
-    "@types/node": "^16.4.5",
+    "@types/node": "^16.11.41",
     "@types/react": "^17.0.19",
     "@types/react-helmet": "^6.1.2",
     "@types/react-router-dom": "^5.1.8",
-    "docusaurus-plugin-typedoc": "^0.15.3",
-    "dotenv-cli": "^4.1.0",
+    "docusaurus-plugin-typedoc": "^0.17.5",
+    "dotenv-cli": "^5.1.0",
     "internal-ip": "^6.2.0",
     "prettier": "^2.3.2",
     "ts-node": "^10.4.0",

@@ -4,7 +4,7 @@ import { ArrowCircleRightIcon } from "@heroicons/react/solid"
 import { GetServerSideProps, NextPage } from "next"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import useSWR from "swr"
 
 import VerifierLayout from "../../../components/demos/verifier/Layout"
@@ -108,10 +108,9 @@ const VerifierPage: NextPage<Props> = ({ verification }) => {
               Using the Verite demo wallet app, scan this QR code to begin the
               verification sequence:
             </p>
-            <QRCode
+            <QRCodeSVG
               value={JSON.stringify(qrCodeData)}
               className="w-48 h-48 mx-auto"
-              renderAs="svg"
             />
             <h2>Behind the Scenes</h2>
             <p>

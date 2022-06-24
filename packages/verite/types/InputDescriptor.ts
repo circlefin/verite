@@ -18,14 +18,9 @@ export type InputDescriptorConstraintStatuses = {
   revoked?: InputDescriptorConstraintStatus
 }
 
-export enum InputDescriptorConstraintSubjectConstraintDirective {
-  REQUIRED = "required",
-  PREFERRED = "preferred"
-}
-
 export type InputDescriptorConstraintSubjectConstraint = {
   field_id: string[]
-  directive: InputDescriptorConstraintSubjectConstraintDirective
+  directive: "required" | "preferred"
 }
 
 export type InputDescriptorConstraintFilter = {

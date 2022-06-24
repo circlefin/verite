@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from "next"
-import { getSession } from "next-auth/client"
+import { getSession } from "next-auth/react"
 
 import SignInForm from "../../components/auth/SignInForm"
 import Layout from "../../components/shared/Layout"

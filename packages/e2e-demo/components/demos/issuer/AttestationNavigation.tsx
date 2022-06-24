@@ -1,4 +1,4 @@
-import { signOut, useSession } from "next-auth/client"
+import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { FC } from "react"
 
@@ -14,7 +14,7 @@ const tabs = [
 ]
 
 const AttestationNavigation: FC<Props> = ({ hideNavigation }) => {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   return (
     <div

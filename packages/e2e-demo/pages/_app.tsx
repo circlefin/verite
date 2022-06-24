@@ -3,7 +3,7 @@ import "tailwindcss/tailwind.css"
 
 import { Web3Provider } from "@ethersproject/providers"
 import { Web3ReactProvider } from "@web3-react/core"
-import { Provider } from "next-auth/client"
+import { SessionProvider } from "next-auth/react"
 import App from "next/app"
 import NextNprogress from "nextjs-progressbar"
 import Cookies from "universal-cookie"
@@ -21,16 +21,19 @@ function getLibrary(provider): Web3Provider {
   return library
 }
 
-function DemoApp({ Component, pageProps }: AppProps): JSX.Element {
+function DemoApp({
+  Component,
+  pageProps: { session, ...pageProps }
+}: AppProps): JSX.Element {
   return (
-    <Provider session={pageProps.session}>
+    <SessionProvider session={session}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <RequirePassword {...pageProps}>
           <NextNprogress color="#3B82F6" options={{ showSpinner: false }} />
           <Component {...pageProps} />
         </RequirePassword>
       </Web3ReactProvider>
-    </Provider>
+    </SessionProvider>
   )
 }
 
