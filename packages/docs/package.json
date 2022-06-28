@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "docusaurus start -p 2999",
+    "start": "docusaurus start",
     "dev": "dotenv docusaurus start -c -- --no-open -h 0.0.0.0 -p 2999",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
