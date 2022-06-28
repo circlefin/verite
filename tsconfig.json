@@ -7,10 +7,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "isolatedModules": true,
-    "paths": {
-      "@verite/*": ["./packages/*"]
-    }
+    "isolatedModules": true
   },
   "exclude": ["node_modules", "dist"]
 }
