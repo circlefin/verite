@@ -3,14 +3,14 @@ import { ethers } from "ethers"
 import { verificationResult } from "../../../lib/verifier/result"
 
 describe("verificationResult", () => {
-  it("creates a Verification Result with a signature", async () => {
-    const subjectAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-    const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
-    const verifierPrivateKey =
-      "0x1da6847600b0ee25e9ad9a52abbd786dd2502fa4005dd5af9310b7cc7a3b25db"
-    const verificationPublicKey = "0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1"
-    const chainId = 1337
+  const subjectAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+  const verifierPrivateKey =
+    "0x1da6847600b0ee25e9ad9a52abbd786dd2502fa4005dd5af9310b7cc7a3b25db"
+  const verificationPublicKey = "0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1"
+  const chainId = 1337
 
+  it("creates a Verification Result with a signature", async () => {
     const result = await verificationResult(
       subjectAddress,
       contractAddress,
@@ -51,5 +51,22 @@ describe("verificationResult", () => {
     )
 
     expect(recoveredAddress).toEqual(verificationPublicKey)
+  })
+
+  it("allows for custom schemas", async () => {
+    const result = await verificationResult(
+      subjectAddress,
+      contractAddress,
+      verifierPrivateKey,
+      chainId,
+      "centre.io/credentials/address"
+    )
+
+    expect(result).toMatchObject({
+      verificationResult: {
+        schema: "centre.io/credentials/address",
+        subject: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      }
+    })
   })
 })
