@@ -1,4 +1,5 @@
 import { randomBytes } from "crypto"
+import nock from "nock"
 import { v4 as uuidv4 } from "uuid"
 
 import { ValidationError } from "../../../lib/errors"
@@ -6,6 +7,7 @@ import { buildCredentialApplication } from "../../../lib/issuer/credential-appli
 import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
+import * as kycSchema from "../../../lib/validators/schemas/KYCAMLAttestation.json"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
@@ -299,6 +301,107 @@ describe("Submission validator", () => {
       submission,
       verificationRequest,
       "Presentation holder is not the subject."
+    )
+  })
+
+  it("fetches external schemas if not found locally", async () => {
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
+    const { manifest, issuer } = await generateManifestAndIssuer()
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
+
+    await validateCredentialApplication(application, manifest)
+
+    const fulfillment = await buildAndSignFulfillment(
+      issuer,
+      application,
+      kycAmlAttestationFixture,
+      { credentialStatus: revocationListFixture }
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const verificationRequest = buildKycVerificationOffer(
+      uuidv4(),
+      verifierDidKey.subject,
+      "https://test.host/verify",
+      "https://other.host/callback",
+      [issuer.did]
+    )
+
+    const submission = await buildPresentationSubmission(
+      clientDidKey,
+      verificationRequest.body.presentation_definition,
+      clientVC
+    )
+
+    // Change the Schema URL, but still return the KYC Schema
+    nock("https://verite.id").get("/DIFFERENT_SCHEMA").reply(200, kycSchema)
+    verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
+      "https://verite.id/DIFFERENT_SCHEMA"
+
+    await expect(
+      validateVerificationSubmission(
+        submission,
+        verificationRequest.body.presentation_definition
+      )
+    ).resolves.not.toThrow()
+  })
+
+  it("returns an error if the external schema if is not found", async () => {
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
+    const { manifest, issuer } = await generateManifestAndIssuer()
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
+
+    await validateCredentialApplication(application, manifest)
+
+    const fulfillment = await buildAndSignFulfillment(
+      issuer,
+      application,
+      kycAmlAttestationFixture,
+      { credentialStatus: revocationListFixture }
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const verificationRequest = buildKycVerificationOffer(
+      uuidv4(),
+      verifierDidKey.subject,
+      "https://test.host/verify",
+      "https://other.host/callback",
+      [issuer.did]
+    )
+
+    const submission = await buildPresentationSubmission(
+      clientDidKey,
+      verificationRequest.body.presentation_definition,
+      clientVC
+    )
+
+    // Change the Schema URL, and return a 404
+    nock("https://verite.id").get("/MISSING_SCHEMA").reply(400)
+    verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
+      "https://verite.id/MISSING_SCHEMA"
+
+    await expectValidationError(
+      submission,
+      verificationRequest,
+      "Unable to load schema: https://verite.id/MISSING_SCHEMA"
     )
   })
 })

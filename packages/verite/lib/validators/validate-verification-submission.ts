@@ -162,30 +162,33 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
   }
 }
 
-function validateCredentialAgainstSchema(
+async function validateCredentialAgainstSchema(
   credentialMap: Map<string, Verifiable<W3CCredential>[]>,
   descriptors?: InputDescriptor[]
-): void {
+): Promise<void> {
   if (!descriptors) {
     // no input descriptors, so there is nothing to validate
     return
   }
 
   // iterate over all input descriptors to find the relevant credentials
-  descriptors.forEach((descriptor) => {
+  for await (const descriptor of descriptors) {
     const credentials = credentialMap.get(descriptor.id)
 
-    const schema = findSchemaById(descriptor.schema[0].uri)
+    const schema = await findSchemaById(descriptor.schema[0].uri)
 
     if (!schema) {
-      throw new ValidationError(`Unknown schema: ${descriptor.schema[0].uri}`)
+      throw new ValidationError(
+        "Unknown Schema",
+        `Unable to load schema: ${descriptor.schema[0].uri}`
+      )
     }
 
     credentials?.forEach((credential) => {
       const type = credential.type[credential.type.length - 1]
       validateAttestationSchema(credential.credentialSubject[type], schema)
     })
-  })
+  }
 }
 
 /**
@@ -300,5 +303,8 @@ export async function validateVerificationSubmission(
   /**
    * Validate that each credential matches the expected schema
    */
-  validateCredentialAgainstSchema(credentialMap, definition.input_descriptors)
+  await validateCredentialAgainstSchema(
+    credentialMap,
+    definition.input_descriptors
+  )
 }
