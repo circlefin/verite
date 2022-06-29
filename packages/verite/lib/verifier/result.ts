@@ -2,11 +2,22 @@ import { ethers, Wallet } from "ethers"
 
 import type { VerificationResultResponse } from "../../types"
 
+/**
+ * Generate a VerificationResult to be use with the on-chain contracts
+ *
+ * @param subject The address of the subject
+ * @param contractAddress The VerificationRegistry contract address
+ * @param signerPrivateKey The signer's private key
+ * @param chainId The chain this verification is intended to be used upon
+ * @param schema The schema that this verification result is for. Defaults to `centre.io/credentials/kyc` for backwards compatability.
+ * @returns an object containing a VerificationResult and a signature
+ */
 export const verificationResult = async (
-  subjectAddress: string,
+  subject: string,
   contractAddress: string,
   signerPrivateKey: string,
-  chainId: number
+  chainId: number,
+  schema = "centre.io/credentials/kyc"
 ): Promise<VerificationResultResponse> => {
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new signer trusted signer when needed.
@@ -42,9 +53,9 @@ export const verificationResult = async (
   // the address in the signed digest so that the contract can confirm it
   // and no other subject can use this signed VerificationInfo
   const verificationResult = {
-    schema: "centre.io/credentials/kyc",
-    subject: subjectAddress,
-    expiration: expiration
+    schema,
+    subject,
+    expiration
   }
 
   // sign the structured result
