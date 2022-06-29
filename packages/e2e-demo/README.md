@@ -78,6 +78,18 @@ npm run db:seed
 npm run prisma studio
 ```
 
+## Troubleshooting
+
+### Demo faucets are not working on the Goerli Testnet
+
+In some cases, the testnet faucets we use have run out of Eth. You should manually fill these faucets
+using a Goerli faucet (such as <https://goerli-faucet.pk910.de/>).
+
+The addresses to fill are:
+
+- `0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1`
+- `0x695f7BC02730E0702bf9c8C102C254F595B24161`
+
 ## Contributors
 
 - [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
