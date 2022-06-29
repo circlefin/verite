@@ -10,7 +10,7 @@ import { ethers, Contract, ContractInterface, BigNumber } from "ethers"
 /**
  * Represents the supported ETH networks. For now, we only
  * want to support `hardhat` which is served from port 8545, and
- * Ropsten. You can change it in the hardhat.config.js config file.
+ * Goerli. You can change it in the hardhat.config.js config file.
  *
  * Here's a list of network ids to use when deploying to other networks.
  * https://docs.metamask.io/guide/ethereum-provider.html#properties
@@ -114,22 +114,18 @@ export function registryContractArtifact(): {
 
 export function getProvider(): Provider {
   const chainId = parseInt(process.env.NEXT_PUBLIC_ETH_NETWORK, 10)
-  let provider: Provider
+
+  // Localhost
   if (chainId === 1337) {
-    // Localhost
-    provider = new ethers.providers.JsonRpcProvider()
-  } else if (chainId === 3) {
-    // For demo purposes we will use an Alchemy-specific provider since we
-    // are only using ropsten and to minimize the number of API tokens we must
-    // manage. However, Ethers recommends using the Default Provider for most
-    // use cases and is more appropriate for production environments.
-    // https://docs.ethers.io/v5/api/providers/
-    provider = new ethers.providers.AlchemyProvider(
-      "ropsten",
-      process.env.ALCHEMY_API_KEY
-    )
-  } else {
-    throw new Error("Unsupported network")
+    return new ethers.providers.JsonRpcProvider()
   }
-  return provider
+
+  // Goerli
+  if (chainId === 5) {
+    return new ethers.providers.JsonRpcProvider(
+      "https://rpc.ankr.com/eth_goerli"
+    )
+  }
+
+  throw new Error("Unsupported network")
 }

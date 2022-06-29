@@ -57,9 +57,9 @@ npx hardhat test --network localhost
 
 When restarting the app locally with a new freshly-run hardhat node, MetaMask can get confused and use the wrong nonce, one based on the previous hardhat run. Enable 'Customize transaction nonce' in MetaMask Settings->Advanced to set the nonce manually to work around this issue. Reset the custom nonce in MetaMask's to '0' when transacting on the first run, and increment it manually from there. Alternatively, you can go to Settings > Advanced and click "Reset Account".
 
-## Deploying to Ropsten Network
+## Deploying to Goerli Test Network
 
-The file `hardhat.config.ts` defines a list of supported networks. For demo purposes, we deployed the contract to the Ropsten network. The current configuration uses Alchemy as a network provider. When the contracts are deployed, the full, fixed supply of tokens are credited to the account that deployed the contract. You can set your Alchemy API key and your Ropsten account's private key in `.env`.
+The file `hardhat.config.ts` defines a list of supported networks. For demo purposes, we deployed the contract to the Goerli network. The current configuration uses Ankr as a free RPC network provider. When the contracts are deployed, the full, fixed supply of tokens are credited to the account that deployed the contract. You can set your Goerli account's private key in `.env`.
 
 Each contract is deployed from the address `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
 
@@ -78,7 +78,7 @@ You can use any Alchemy API key for the deploy, however you can find the one we 
 ### Deploy Contract
 
 ```sh
-[verite/packages/contract] npx hardhat run --network ropsten scripts/deploy.ts
+[verite/packages/contract] npx hardhat run --network goerli scripts/deploy.ts
 Deploying the contracts with the account: 0x695f7BC02730E0702bf9c8C102C254F595B24161
 Account balance: 4425393267715985090
 Registry address: 0xE6592dA6DdeAf19Ba9cE02cB433823CF50ABEd9D
@@ -107,7 +107,7 @@ Be sure the following accounts have ETH:
 - `0x695f7BC02730E0702bf9c8C102C254F595B24161`
 - `0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1`
 
-You can check the addresses using [https://ropsten.etherscan.io/](https://ropsten.etherscan.io/)
+You can check the addresses using [https://goerli.etherscan.io/](https://goerli.etherscan.io/)
 
 ## Adding ETH to the faucet
 
@@ -117,11 +117,10 @@ The hardhat tasks, e.g. deploying, are performed using the first account. Each n
 
 When using the hardhat network, there are 20 built-in accounts each with 1000 ETH. We have never had the need to add funds in hardhat.
 
-Assuming you have configured a Ropsten network, you will need to fund the account you configured. There are several Ropsten faucets available:
+Assuming you have configured a Goerli network, you will need to fund the account you configured. There are several Goerli faucets available:
 
-- <https://faucet.dimensions.network/>
-- <https://faucet.ropsten.be/>
-- <https://faucet.egorfine.com/>
+- <https://goerlifaucet.com/>
+- <https://goerli-faucet.slock.it/>
 
 A few ETH is generally enough.
 
