@@ -18,6 +18,10 @@ import type {
 } from "../../types"
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
+type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
+  knownSchemas?: Record<string, Record<string, unknown>>
+}
+
 const ajv = new Ajv()
 
 /**
@@ -164,7 +168,8 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
 
 async function validateCredentialAgainstSchema(
   credentialMap: Map<string, Verifiable<W3CCredential>[]>,
-  descriptors?: InputDescriptor[]
+  descriptors?: InputDescriptor[],
+  knownSchemas?: Record<string, Record<string, unknown>>
 ): Promise<void> {
   if (!descriptors) {
     // no input descriptors, so there is nothing to validate
@@ -175,7 +180,10 @@ async function validateCredentialAgainstSchema(
   for await (const descriptor of descriptors) {
     const credentials = credentialMap.get(descriptor.id)
 
-    const schema = await findSchemaById(descriptor.schema[0].uri)
+    const schemaUri = descriptor.schema[0].uri
+    const schema = knownSchemas?.[schemaUri]
+      ? knownSchemas?.[schemaUri]
+      : await findSchemaById(schemaUri)
 
     if (!schema) {
       throw new ValidationError(
@@ -262,7 +270,7 @@ async function ensureHolderIsSubject(
 export async function validateVerificationSubmission(
   submission: JWT,
   definition: PresentationDefinition,
-  options?: VerifyPresentationOptions
+  options?: ValidateVerificationSubmissionOptions
 ): Promise<void> {
   const presentation = await decodeVerifiablePresentation(submission, options)
 
@@ -305,6 +313,7 @@ export async function validateVerificationSubmission(
    */
   await validateCredentialAgainstSchema(
     credentialMap,
-    definition.input_descriptors
+    definition.input_descriptors,
+    options?.knownSchemas
   )
 }

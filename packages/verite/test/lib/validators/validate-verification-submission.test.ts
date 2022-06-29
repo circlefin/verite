@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto"
-import nock from "nock"
+import nock, { disableNetConnect, enableNetConnect } from "nock"
 import { v4 as uuidv4 } from "uuid"
 
 import { ValidationError } from "../../../lib/errors"
@@ -403,6 +403,64 @@ describe("Submission validator", () => {
       verificationRequest,
       "Unable to load schema: https://verite.id/MISSING_SCHEMA"
     )
+  })
+
+  it("allows passing in a known schema", async () => {
+    const clientDidKey = randomDidKey(randomBytes)
+    const verifierDidKey = randomDidKey(randomBytes)
+    const { manifest, issuer } = await generateManifestAndIssuer()
+    const encodedApplication = await buildCredentialApplication(
+      clientDidKey,
+      manifest
+    )
+    const application = (await decodeVerifiablePresentation(
+      encodedApplication
+    )) as DecodedCredentialApplication
+
+    await validateCredentialApplication(application, manifest)
+
+    const fulfillment = await buildAndSignFulfillment(
+      issuer,
+      application,
+      kycAmlAttestationFixture,
+      { credentialStatus: revocationListFixture }
+    )
+
+    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const clientVC = fulfillmentVP.verifiableCredential![0]
+
+    const verificationRequest = buildKycVerificationOffer(
+      uuidv4(),
+      verifierDidKey.subject,
+      "https://test.host/verify",
+      "https://other.host/callback",
+      [issuer.did]
+    )
+
+    const submission = await buildPresentationSubmission(
+      clientDidKey,
+      verificationRequest.body.presentation_definition,
+      clientVC
+    )
+
+    disableNetConnect()
+    // Change the Schema URL. We will pass this in directly
+    verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
+      "https://verite.id/KNOWN_SCHEMA"
+
+    await expect(
+      validateVerificationSubmission(
+        submission,
+        verificationRequest.body.presentation_definition,
+        {
+          knownSchemas: {
+            "https://verite.id/KNOWN_SCHEMA": kycSchema
+          }
+        }
+      )
+    ).resolves.not.toThrow()
+
+    enableNetConnect()
   })
 })
 
