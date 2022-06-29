@@ -63,9 +63,9 @@ The file `hardhat.config.ts` defines a list of supported networks. For demo purp
 
 Each contract is deployed from the address `0x695f7BC02730E0702bf9c8C102C254F595B24161`.
 
-- PermissionedToken contract address: `0x1387b6D8d0c33A4A2D8a925ddBc51EDbF6d0157e`.
-- VerificationRegistry contract address: `0xE6592dA6DdeAf19Ba9cE02cB433823CF50ABEd9D`
-- ThresholdToken contract address is `0xa7E42D87e0FB5185a804c67b5b823D0E33A4d895`.
+- PermissionedToken contract address: `0x41eC80139E889d74A16261e569857BaC2D400e5F`.
+- VerificationRegistry contract address: `0xF916ba3c52a3C1015Da0D2CBfE62F00F4C3EcAc9`
+- ThresholdToken contract address is `0xfae60eA8F5bE08C363B4cadF38a97Fd75B895679`.
 
 ### Update Secrets
 
@@ -80,13 +80,15 @@ You can use any Alchemy API key for the deploy, however you can find the one we 
 ```sh
 [verite/packages/contract] npx hardhat run --network goerli scripts/deploy.ts
 Deploying the contracts with the account: 0x695f7BC02730E0702bf9c8C102C254F595B24161
-Account balance: 4425393267715985090
-Registry address: 0xE6592dA6DdeAf19Ba9cE02cB433823CF50ABEd9D
-Permissioned Token Address: 0x1387b6D8d0c33A4A2D8a925ddBc51EDbF6d0157e
-Threshold Token address: 0xa7E42D87e0FB5185a804c67b5b823D0E33A4d895
+Account balance: 640802894464673618
+Registry address: 0xF916ba3c52a3C1015Da0D2CBfE62F00F4C3EcAc9
+Permissioned Token Address: 0x41eC80139E889d74A16261e569857BaC2D400e5F
+Threshold Token address: 0xfae60eA8F5bE08C363B4cadF38a97Fd75B895679
 Added trusted verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
 Added trusted verifier: 0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1
 Registered Verification for address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+Registered Verification for address: 0x695f7BC02730E0702bf9c8C102C254F595B24161, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
+Registered Verification for address: 0x71CB05EE1b1F506fF321Da3dac38f25c0c9ce6E1, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
 Registered Verification for address: 0x70997970c51812dc3a010c7d01b50e0d17dc79c8, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
 Registered Verification for address: 0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
 Registered Verification for address: 0x90f79bf6eb2c4f870365e785982e1f101e93b906, by verifier: 0x695f7BC02730E0702bf9c8C102C254F595B24161
