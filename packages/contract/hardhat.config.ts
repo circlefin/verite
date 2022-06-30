@@ -295,7 +295,7 @@ export default {
     },
     goerli: {
       chainId: 5,
-      url: `https://rpc.ankr.com/eth_goerli`,
+      url: process.env.GOERLI_RPC_URL,
       accounts:
         // quick hack to get around changeme being an invalid private key
         process.env.TESTNET_PRIVATE_KEY !== "changeme"
