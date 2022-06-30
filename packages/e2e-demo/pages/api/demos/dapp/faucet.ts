@@ -48,7 +48,7 @@ export default apiHandler<Response>(async (req, res) => {
   // Send
   const tx2 = await signer.sendTransaction({
     to: address,
-    value: ethers.constants.WeiPerEther.div(10)
+    value: ethers.constants.WeiPerEther.div(100)
   })
   await tx2.wait()
 

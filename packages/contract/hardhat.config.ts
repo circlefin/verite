@@ -293,13 +293,13 @@ export default {
     hardhat: {
       chainId: 1337
     },
-    ropsten: {
-      chainId: 3,
-      url: `https://eth-ropsten.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
+    goerli: {
+      chainId: 5,
+      url: `https://rpc.ankr.com/eth_goerli`,
       accounts:
         // quick hack to get around changeme being an invalid private key
-        process.env.ROPSTEN_PRIVATE_KEY !== "changeme"
-          ? [process.env.ROPSTEN_PRIVATE_KEY]
+        process.env.TESTNET_PRIVATE_KEY !== "changeme"
+          ? [process.env.TESTNET_PRIVATE_KEY]
           : []
     }
   }

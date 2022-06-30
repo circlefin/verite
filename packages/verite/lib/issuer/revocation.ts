@@ -1,5 +1,5 @@
 import { BitBuffer } from "bit-buffers"
-import fetch from "isomorphic-unfetch"
+import fetch from "cross-fetch"
 import { has } from "lodash"
 
 import {

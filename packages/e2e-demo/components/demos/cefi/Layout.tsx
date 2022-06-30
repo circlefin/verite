@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/client"
+import { useSession } from "next-auth/react"
 import { FC } from "react"
 
 import Layout from "../../shared/Layout"
@@ -9,7 +9,7 @@ type Props = {
 }
 
 const IssuerLayout: FC<Props> = ({ children, hideNavigation }) => {
-  const [session] = useSession()
+  const { data: session } = useSession()
 
   const trapezoid = ["alice@test.com", "sean@test.com", "matt@test.com"]
   let bgColor

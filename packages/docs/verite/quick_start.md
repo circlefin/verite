@@ -69,7 +69,7 @@ const presentation = await buildAndSignFulfillment(
 
 //  As with the application, the verifiable presentation (which contains the credential)
 //  is in JWT form and must be decoded by the subject. This can be done in a mobile app
-//  client or a wbe browser.
+//  client or a web browser.
 const decoded = await decodeVerifiablePresentation(presentation)
 //  The verifiable credential is another JWT within the verifiable presentation and
 //  can be extracted like this:

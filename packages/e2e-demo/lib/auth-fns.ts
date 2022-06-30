@@ -3,7 +3,7 @@ import {
   GetServerSidePropsContext,
   NextApiRequest
 } from "next"
-import { getSession } from "next-auth/client"
+import { getSession } from "next-auth/react"
 
 import { findUser, User } from "./database"
 

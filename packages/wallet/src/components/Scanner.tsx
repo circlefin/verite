@@ -5,8 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons"
 
 import { NavigationElement } from "../types"
 
-const Scanner: NavigationElement = ({ navigation, route }) => {
-  const onScan = route.params.onScan
+const Scanner: NavigationElement = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
   const [scanned, setScanned] = useState(false)
 
@@ -19,8 +18,11 @@ const Scanner: NavigationElement = ({ navigation, route }) => {
 
   const handleBarCodeScanned = ({ data }: BarCodeEvent) => {
     setScanned(true)
-    onScan(data)
-    navigation.goBack()
+    navigation.navigate({
+      name: "ScanScreen",
+      params: { scanData: data },
+      merge: true
+    })
   }
 
   if (hasPermission === null) {

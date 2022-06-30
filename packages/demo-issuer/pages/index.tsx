@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 import jwt from "jsonwebtoken"
 import Head from "next/head"
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import { useState } from "react"
 import {
   randomDidKey,
@@ -132,10 +132,9 @@ export default function Home({
               Scan this QR Code with your mobile wallet
             </h3>
             <div className="prose">
-              <QRCode
+              <QRCodeSVG
                 value={JSON.stringify(challenge)}
                 className="w-48 h-48"
-                renderAs="svg"
               />
               <pre>{JSON.stringify(challenge, null, 4)}</pre>
               <button

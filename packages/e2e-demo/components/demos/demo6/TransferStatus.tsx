@@ -1,4 +1,4 @@
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import { FC, useState } from "react"
 
 import { LoadingButton } from "../../shared/LoadingButton"
@@ -29,7 +29,7 @@ const TransferStatus: FC<TransferStatusProps> = ({
             Credential:
           </label>
           <div className="py-4">
-            <QRCode value={JSON.stringify(verification.qrCodeData)} />
+            <QRCodeSVG value={JSON.stringify(verification.qrCodeData)} />
           </div>
         </>
       ) : (

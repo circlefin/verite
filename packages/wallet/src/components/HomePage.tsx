@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Alert,
   View,
@@ -32,7 +32,7 @@ LogBox.ignoreLogs([
  * 1) Issuance
  * 2) Verification
  */
-const HomePage: NavigationElement = ({ navigation }) => {
+const HomePage: NavigationElement = ({ navigation, route }) => {
   const [isScanning, setIsScanning] = useState<boolean>(false)
   const [isRequesting, setIsRequesting] = useState<boolean>(false)
   const [submissionUrl, setSubmissionUrl] = useState<string>()
@@ -91,6 +91,12 @@ const HomePage: NavigationElement = ({ navigation }) => {
       Alert.alert("Error", (e as Error).message)
     }
   }
+
+  useEffect(() => {
+    if (route.params?.scanData) {
+      onScan(route.params.scanData)
+    }
+  }, [route.params?.scanData])
 
   /**
    * Callback when a user cancels the issuance or verification prompt.
@@ -165,7 +171,7 @@ const HomePage: NavigationElement = ({ navigation }) => {
           {!manifest && !verificationOffer ? (
             <Button
               title="Scan QR Code"
-              onPress={() => navigation.navigate("Scanner", { onScan })}
+              onPress={() => navigation.navigate("Scanner")}
             />
           ) : null}
         </>

@@ -114,7 +114,7 @@ async function registerVerifications(registry: Contract, addresses: string[]) {
   }
   // We use a long expiration for these Verifications because we don't want
   // them to expire in the middle of the demo.
-  const expiration = Math.floor(Date.now() / 1000) + 31_536_000 // 1 year
+  const expiration = Math.floor(Date.now() / 1000) + 31_536_000 * 10 // 10 years
 
   for (const address of addresses) {
     const verificationResult = {

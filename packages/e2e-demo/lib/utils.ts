@@ -1,4 +1,4 @@
-import fetch from "isomorphic-unfetch"
+import fetch from "cross-fetch"
 
 /**
  * Perform a fetch and respond with a JSON object

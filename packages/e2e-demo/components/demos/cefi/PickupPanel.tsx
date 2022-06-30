@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/client"
+import { useSession } from "next-auth/react"
 
 import { PendingReceive } from "../../../lib/database"
 import { LoadingButton } from "../../shared/LoadingButton"
@@ -16,7 +16,7 @@ export default function PickupPanel({
   pickupFunction,
   pickupCancelFunction
 }: Props): JSX.Element {
-  const [session] = useSession()
+  const { data: session } = useSession()
   const user = session.user
 
   const amount = row.amount

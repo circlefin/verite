@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react"
 import { ExclamationIcon } from "@heroicons/react/outline"
-import { useSession } from "next-auth/client"
+import { useSession } from "next-auth/react"
 import { Fragment, useRef } from "react"
 
 type Props = {
@@ -19,7 +19,7 @@ export default function Modal({
   open,
   setOpen
 }: Props): JSX.Element {
-  const [session] = useSession()
+  const { data: session } = useSession()
   const cancelButtonRef = useRef(null)
 
   const user = session.user

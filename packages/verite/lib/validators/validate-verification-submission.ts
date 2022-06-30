@@ -18,6 +18,10 @@ import type {
 } from "../../types"
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
+type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
+  knownSchemas?: Record<string, Record<string, unknown>>
+}
+
 const ajv = new Ajv()
 
 /**
@@ -162,30 +166,37 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
   }
 }
 
-function validateCredentialAgainstSchema(
+async function validateCredentialAgainstSchema(
   credentialMap: Map<string, Verifiable<W3CCredential>[]>,
-  descriptors?: InputDescriptor[]
-): void {
+  descriptors?: InputDescriptor[],
+  knownSchemas?: Record<string, Record<string, unknown>>
+): Promise<void> {
   if (!descriptors) {
     // no input descriptors, so there is nothing to validate
     return
   }
 
   // iterate over all input descriptors to find the relevant credentials
-  descriptors.forEach((descriptor) => {
+  for await (const descriptor of descriptors) {
     const credentials = credentialMap.get(descriptor.id)
 
-    const schema = findSchemaById(descriptor.schema[0].uri)
+    const schemaUri = descriptor.schema[0].uri
+    const schema = knownSchemas?.[schemaUri]
+      ? knownSchemas?.[schemaUri]
+      : await findSchemaById(schemaUri)
 
     if (!schema) {
-      throw new ValidationError(`Unknown schema: ${descriptor.schema[0].uri}`)
+      throw new ValidationError(
+        "Unknown Schema",
+        `Unable to load schema: ${descriptor.schema[0].uri}`
+      )
     }
 
     credentials?.forEach((credential) => {
       const type = credential.type[credential.type.length - 1]
       validateAttestationSchema(credential.credentialSubject[type], schema)
     })
-  })
+  }
 }
 
 /**
@@ -259,7 +270,7 @@ async function ensureHolderIsSubject(
 export async function validateVerificationSubmission(
   submission: JWT,
   definition: PresentationDefinition,
-  options?: VerifyPresentationOptions
+  options?: ValidateVerificationSubmissionOptions
 ): Promise<void> {
   const presentation = await decodeVerifiablePresentation(submission, options)
 
@@ -300,5 +311,9 @@ export async function validateVerificationSubmission(
   /**
    * Validate that each credential matches the expected schema
    */
-  validateCredentialAgainstSchema(credentialMap, definition.input_descriptors)
+  await validateCredentialAgainstSchema(
+    credentialMap,
+    definition.input_descriptors,
+    options?.knownSchemas
+  )
 }

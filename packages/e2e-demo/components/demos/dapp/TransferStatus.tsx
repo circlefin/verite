@@ -1,4 +1,4 @@
-import QRCode from "qrcode.react"
+import { QRCodeSVG } from "qrcode.react"
 import { FC } from "react"
 
 import Spinner from "../../shared/Spinner"
@@ -26,7 +26,7 @@ const TransferStatus: FC<TransferStatusProps> = ({
             Credential:
           </label>
           <div className="py-4">
-            <QRCode value={JSON.stringify(verification.qrCodeData)} />
+            <QRCodeSVG value={JSON.stringify(verification.qrCodeData)} />
           </div>
         </>
       ) : (

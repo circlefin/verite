@@ -1,4 +1,4 @@
-import { useSession, signout } from "next-auth/client"
+import { useSession, signOut } from "next-auth/react"
 import Image from "next/image"
 import { FC } from "react"
 
@@ -32,14 +32,14 @@ const logoForSession = (session): JSX.Element => {
 }
 
 const Layout: FC = () => {
-  const [session] = useSession()
+  const { data: session } = useSession()
   const { data, accountBalance } = useBalance()
 
   const logo = logoForSession(session)
 
   return (
     <>
-      <div className="flex flex-col-reverse justify-between mb-6  border-b border-gray-200 sm:flex-row">
+      <div className="flex flex-col-reverse justify-between mb-6 border-b border-gray-200 sm:flex-row">
         <nav
           className="flex justify-center -mb-px space-x-8 sm:w-1/3"
           aria-label="Tabs"
@@ -68,7 +68,7 @@ const Layout: FC = () => {
               {session?.user?.email}
             </span>
             <button
-              onClick={() => signout()}
+              onClick={() => signOut()}
               className="px-1 py-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 whitespace-nowrap"
             >
               Sign Out

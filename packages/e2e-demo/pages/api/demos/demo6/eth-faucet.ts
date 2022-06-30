@@ -26,7 +26,7 @@ export default apiHandler<Response>(async (req, res) => {
   // Send funds
   const tx = await signer.sendTransaction({
     to: address,
-    value: ethers.constants.WeiPerEther.div(10)
+    value: ethers.constants.WeiPerEther.div(100)
   })
 
   // Wait for transaction to be mined
