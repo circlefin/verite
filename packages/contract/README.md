@@ -69,11 +69,9 @@ Each contract is deployed from the address `0x695f7BC02730E0702bf9c8C102C254F595
 
 ### Update Secrets
 
-Update the file `/packages/contract/.env` with your Ethereum secret key and Alchemy API key. The Ethereum secret key will be used to deploy the contract. You should be sure the wallet has sufficient funds to deploy the contract ahead of time.
+Update the file `/packages/contract/.env` with your Ethereum secret key and the Goerli RPC you wish to use. For example, if you want to use a service like Alchemy, change `GOERLI_RPC_URL` to an Alchemy URL including your API Key. The Ethereum secret key will be used to deploy the contract. You should be sure the wallet has sufficient funds to deploy the contract ahead of time.
 
 When deployed, the Threshold and Permissioned tokens mint their total supply to the contract deployer. The dapp uses this same wallet as the faucet. You can find the secret key used in the environment variable named `ETH_FAUCET_PRIVATE_KEY`
-
-You can use any Alchemy API key for the deploy, however you can find the one we use in the environment variable named `ALCHEMY_API_KEY`
 
 ### Deploy Contract
 
