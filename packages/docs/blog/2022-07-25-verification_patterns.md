@@ -4,19 +4,13 @@ description: Exploration of Verite verification patterns, with a focus on off-ch
 slug: verification-patterns-1
 authors:
   - name: Tao Tao
-    title: Software Engineer, Circle
-    url: https://github.com/orgs/centrehq/people/taotao-circle
+    url: https://github.com/taotao-circle
   - name: Daniel Lim
-    title: Senior Software Engineer, Circle
     url: https://github.com/dlim-circle
   - name: Fei Niu
-    title: Software Engineer, Circle
   - name: Juan Caballero
-    title: Standards Coordinator, Centre.io (Verite)
     url: https://github.com/bumblefudge
-    image_url: https://avatars.githubusercontent.com/u/37127325?v=4
   - name: Kim Hamilton Duffy
-    title: Director of Standards and Identity, Centre.io (Verite)
     url: https://github.com/kimdhamilton
 tags: [verification]
 hide_table_of_contents: false
@@ -194,7 +188,7 @@ Since Circle’s architecture is optimized for delivering verification reliably 
 
 In the following post, we’ll describe options for wallets that don’t understand Decentralized Identity protocols to participate in VC exchanges, while conforming to the verification principles above.
 
-The Verite core team is grateful to Circle’s Verite engineers Tao Tao, Kok Peng Lim, and Fei Niu for taking the lead on this exciting work!
+The Verite core team is grateful to Circle’s Verite engineers Tao Tao, Daniel Lim, and Fei Niu for taking the lead on this exciting work!
 
 [^1]: Crucially, this includes not just the usual redirections and tokens but also an artifact called a "Presentation Submission" object which describes the credentials that a given verifier will accept. This enables wallets to “pre-select” appropriate credentials to the end-user, in the case of a full wallet.
 [^2]: An "onchain DID" (decentralized identifier) scheme such as did:ion can be used here if the wallet controls such an identifier– this is basically a user-controlled indirection, which allows user-initiated rotations and even migration to a new wallet. In an end-to-end system, however, this indirection is optional, because the verifier has access to the issuance records, and can simply use a public key in both places since they are opaque to any other audience.
