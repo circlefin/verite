@@ -114,7 +114,7 @@ The subsequent sections discuss these phases and variations. This first post in 
 
 ## Ownership verification
 
-In step 4, when the wallet submits the credential, the wallet wraps the VC with a Verifiable Presentation (VP) and signs it. When the verifier receives the credential, it uses the Decentralized Identifier (DID) – for example, `did:key:&lt;public_key>`[^2] – listed as `holder` in the VP to verify the JWT’s signature (made from the corresponding private key). It also compares this DID in the VP with the DID listed as `credentialSubject.id` in the VC, i.e. the public key that the credential was issued against. Those two checks guarantee the wallet, submitting the credentials, was the same wallet that the issuer intended, and thus rightly owns it.
+In step 4, when the wallet submits the credential, the wallet wraps the VC with a Verifiable Presentation (VP) and signs it. When the verifier receives the credential, it uses the Decentralized Identifier (DID) – for example, `did:key:<public_key>`[^2] – listed as `holder` in the VP to verify the JWT’s signature (made from the corresponding private key). It also compares this DID in the VP with the DID listed as `credentialSubject.id` in the VC, i.e. the public key that the credential was issued against. Those two checks guarantee the wallet, submitting the credentials, was the same wallet that the issuer intended, and thus rightly owns it.
 
 # Phase 2: Validation and use in smart contracts
 
