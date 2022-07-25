@@ -8,6 +8,7 @@ authors:
   - name: Daniel Lim
     url: https://github.com/dlim-circle
   - name: Fei Niu
+    url: https://github.com/fei-niu
   - name: Juan Caballero
     url: https://github.com/bumblefudge
   - name: Kim Hamilton Duffy
