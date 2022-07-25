@@ -52,7 +52,7 @@ At verification time, when a wallet "connects” to a dApp by providing an off-c
 
 Without necessarily even having to parse, validity-check, or introspect the verifiable credentials, any wallet that can store them (whether as JWTs or even as raw text files) can submit them directly to verifiers, as shown below.
 
-![Credential exchange without a DID wallet](img/verifier_bare.png "credential exchange without a DID wallet")
+![Credential exchange without a DID wallet](img/verifier_bare.jpg "credential exchange without a DID wallet")
 
 _Note: while it is recommended that crypto wallets parse verifiable credentials and check their validity or safety, crypto wallets could in theory allow blind passthrough if the user can assume the responsibility for their contents. In the Verite case, there are little security concerns or abuses possible._
 
@@ -74,7 +74,7 @@ You could say that the crypto wallet delegates the encapsulation and signature o
 
 #### Detailed Flow
 
-![Ownership verification with non-DID wallet](img/verifier_cacao.png "Ownership verification with non-DID wallet")
+![Ownership verification with non-DID wallet](img/verifier_cacao.jpg "Ownership verification with non-DID wallet")
 
 1. Wallet initiates DeFi transaction with dApp.
 2. dApp generates a session-specific ephemeral signing key and encoded it in the SIWE message for the wallet to sign. This generated session key will delegate the wallet for future signings, once after wallet vouches it (by signing the CACAO).
