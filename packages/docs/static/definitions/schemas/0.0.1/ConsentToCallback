@@ -22,39 +22,27 @@
       "required": ["type", "chain", "address", "proof"],
       "type": "object"
     },
-    "CreditScore": {
+    "AuthorizationObject": {
       "additionalProperties": false,
       "properties": {
         "type": {
-          "const": "CreditScoreAttestation",
+          "const": "authorizedResources",
+          "type": "object"
+        },
+        "resourceURLs": {
+          "type": "object"
+        },
+        "subjectIdentifier": {
           "type": "string"
         },
-        "AddressOwner": {
-          "items": {
-            "$ref": "#/definitions/AddressOwner"
-          },
-          "type": "array"
+        "fullname": {
+          "type": "boolean"
         },
-        "historyStartDate": {
-          "type": "string"
+        "zipCode": {
+          "type": "boolean"
         },
-        "openAccounts": {
-          "type": "number"
-        },
-        "paymentHistoryPercentage": {
-          "type": "string"
-        },
-        "provider": {
-          "type": "string"
-        },
-        "score": {
-          "type": "number"
-        },
-        "scoreType": {
-          "type": "string"
-        },
-        "utilization": {
-          "type": "number"
+        "zipCode-Country": {
+          "type": "boolean"
         }
       },
       "required": ["type", "score", "scoreType", "provider"],
