@@ -15,9 +15,8 @@
     "Nature of business"
   ],
   "elegibilityChecks": [
-    "Assets",
-    "Income",
-    "Licensing"
+    "EntityAssets",
+    "AllOwnersAccred"
   ],
   "AuthorizedRepresentativeChecks": [
     "Legal name",
