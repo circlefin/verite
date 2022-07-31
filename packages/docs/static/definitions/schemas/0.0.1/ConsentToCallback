@@ -45,7 +45,7 @@
           "type": "boolean"
         }
       },
-      "required": ["type", "score", "scoreType", "provider"],
+      "required": ["type", "resourceURLs"],
       "type": "object"
     }
   }
