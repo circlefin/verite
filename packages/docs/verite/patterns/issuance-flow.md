@@ -15,9 +15,9 @@ Collecting that identifier in a secure and convenient way for the user requires 
 
 In this example, an individual's financial institution offers the ability to request a KYC or credit score credential to be held in the individual's mobile wallet. The flow consists of the exchange of three distinct JSON objects:
 
-1. A Credential Offer published by the Issuer that describes the credential and how to apply for it
-2. A Credential Application submitted by the wallet, and
-3. A Credential Fulfillment returned by the Issuer that contains the final credential.
+1. A Credential Offer object published by the Issuer that describes the credential and how to apply for it
+2. A Credential Application object submitted by the wallet, containing information that, when appropriately validated and/or verified, will form the contents of those credentials, and
+3. A Credential Fulfillment envelope returned by the Issuer that contains the final credential(s) to be stored by the wallet and presented later to unknown future verifiers.
 
 ![Issuing a Credential](/img/docs/sequence_issuance.png "Issuing a Credential")
 
