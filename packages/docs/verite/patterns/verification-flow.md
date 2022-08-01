@@ -33,11 +33,18 @@ The verifier receives the presentation submission, unwraps it, and maps the pres
 
 Verification cannot always occur immediately. In these cases, the presentation request has an optional `status_url` that can be used to check its status.
 
-There is no required output or side-effect of verification. However, we have a pattern for [integrating with Ethereum](/verite/patterns/smart-contract-verite) using an on-chain Verification Registry. A web app, however, might simply update its state and allow the user to continue some action.
+There is no required output or side-effect of verification. However, we have a pattern for [integrating with Ethereum](/verite/patterns/smart-contract-verite) that models how an on-chain Verification Registry can capture verification events in a way that's easy to consume on-chain. A web app that is not constrained by on-chain data availability, however, might simply update its state and allow the user to continue some action.
 
 ## Verification Flow
 
-In this specific example, a user wants to verify using their mobile wallet and have the resulting Verification Record to later register with a on-chain registry.
+Zooming in to break down the verification process into a procedural flow can help implementers understand the process more clearly.  In what follows, we will zoom in one two very different variations on the flow that come from two different architectures: first, we will break down the flow for credentials issued against an "identity wallet", then, we will break down the flow for account-locked credentials (signed over by only a crypto-currency wallet), showing the differences in both procedure and trust model.
+
+### Wallet-Centric Verification Flow
+
+In this example, a user wants to verify credentials issued to, and stored in a mobile app that function as an "identity wallet," i.e., a wallet controlling a DID for identity applications rather than a "cryptocurrency wallet" controlling a keypair for onchain/payment purposes. (*Note, some wallets combine both sets of capabilities, but for simplicity's sake, our sample implementation treats them as distinct and independent applications.*)
+
+Some things to note:
+* The QR code is provided as a way of connecting a browser-based dApp interaction with a mobile-based identity wallet; different architectures (i.e., browser-based identity wallets without the cross-device requirement) can use different mechanisms to bootstrap the wallet-verifier relationship.
 
 ![Exchanging a Credential](/img/docs/sequence_exchange.png "Exchanging a Credential")
 
@@ -47,14 +54,39 @@ In this specific example, a user wants to verify using their mobile wallet and h
 1. Verifier shows QR Code
 1. User scans QR Code with their wallet.
 1. Wallet parses the QR code, which encodes a JSON object with a `challengeTokenUrl` property.
-1. Wallet performs a GET request at that URL to return a Verification Offer, a wrapper around a [Presentation Request](#), with three supplementary properties:
-   - The verifier DID.
-   - A URL for the wallet to submit the [Presentation Submission](#), using the unique JWT generated earlier.
-1. The wallet prompts the user to select credential(s) from the set of matches.
-1. Wallet prepares a [Presentation Submission](#) including
+1. Wallet performs a GET request at that URL to return a Verification Offer, a wrapper around a [Presentation Request][], with three supplementary properties:
+   - A unique identifier (such as a UUID) or other logging metadata.
+   - The verifier's unique identifier, i.e. it's "DID" (including offchain DIDs like `did:pkh`, `did:web` or `did:key`)
+   - A URL for the wallet to submit the [Presentation Submission][], using the unique JWT generated earlier.
+2. The wallet prompts the user to select credential(s) from the set of matches.
+3. Wallet prepares a [Presentation Submission][] including:
+   - The wallet's DID, control of which is proven by a signature on the submission object by that DID's private key. In the Verite examples, the holder's DID must match the `credentialSubject.id`s of the presented VCs, thus verifying both liveness and control of the identifier against which the credentials were issued.
+   - Any Verifiable Credential(s) necessary to complete verification.
+   - A fresh signature over the above (and the challenge/nonce provided by the verifier).
+4. Wallet submits the Presentation Submission to the URL found in the Verification Offer (`reply_url` property).
+5. The Verifier validates all the inputs
+6. Verifiers generates a Verification Record and adds it to the registry or sends it directly to a waiting relying party
+
+### Account-Bound Verification Flow
+
+In this example, a user wants to verify account-bound credentials issued to a blockchain address. Since these credentials simplify the trust model, they only need a fresh, live signature from the [cryptocurrency] wallet's private key to authenticate the session in which those credentials are presented, rather than a signature over the credential themselves.  The credentials do not necessarily need to be stored in an identity wallet or even in a crypto wallet, since the crypto wallet will need to be authenticated to present them and they are already tamper-proofed. 
+
+![Exchanging an Account-Bound Credential](/img/docs/sequence_exchange_2.png "Exchanging an Account-Bound Credential")
+
+1. Verifier prompts user to connect the wallet controlling the Ethereum address that the Verification Record will be bound to.
+1. User signs an offchain transaction, e.g. a Sign-In With Ethereum message (which authorizes a session key to simplify UX).
+1. Relying Party (e.g. Dapp) calls Verifier with wallet address to be verified.
+1. Relying Party redirects wallet/user to Verifier to present credentials
+1. 
+4. Wallet calls uses this url to request [Presentation Request][] of the Verifier, describing the acceptable credentials.
+5. The Wallet checks its storage for one or more matching credentials.  If more than one is present, a user selection step should be triggered; if none, a redirect or informative message displayed.  If exactly one, consent step may be optional, depending on use-case.
+8. Wallet prepares a [Presentation Submission][] including
    - Wallet DID is the holder, proving control over the DID. In the Verite examples, the holder must match the credential subjects, validating the holder and subject are the same.
    - Any Verifiable Credential(s) necessary to complete verification.
    - Wallet is the Presentation Request holder and signs it along with the challenge
-1. Wallet submits the Presentation Submission to the URL found in the Verification Offer.
-1. The Verifier validates all the inputs
-1. Verifiers generates a Verification Record and adds it to the registry
+9.  Wallet submits the Presentation Submission to the URL found in the Verification Offer (`reply_url` property).
+10. The Verifier validates all the inputs
+6. Verifiers generates a Verification Record and adds it to the registry or sends it directly to a waiting relying party
+
+[Presentation Request]: https://identity.foundation/presentation-exchange/#presentation-request
+[Presentation Submission]: https://identity.foundation/presentation-exchange/#presentation-submission
