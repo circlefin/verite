@@ -73,20 +73,23 @@ In this example, a user wants to verify account-bound credentials issued to a bl
 
 ![Exchanging an Account-Bound Credential](/img/docs/sequence_exchange_2.png "Exchanging an Account-Bound Credential")
 
-1. Verifier prompts user to connect the wallet controlling the Ethereum address that the Verification Record will be bound to.
-1. User signs an offchain transaction, e.g. a Sign-In With Ethereum message (which authorizes a session key to simplify UX).
-1. Relying Party (e.g. Dapp) calls Verifier with wallet address to be verified.
+1. Crypto Wallet requests transaction or resource requiring verification.
+1. Relying Party (e.g. Dapp) calls Verifier with wallet address to be verified. Depending on use-case, requested transaction or resource identifier may be sent as well.
 1. Relying Party redirects wallet/user to Verifier to present credentials
-1. 
-4. Wallet calls uses this url to request [Presentation Request][] of the Verifier, describing the acceptable credentials.
-5. The Wallet checks its storage for one or more matching credentials.  If more than one is present, a user selection step should be triggered; if none, a redirect or informative message displayed.  If exactly one, consent step may be optional, depending on use-case.
-8. Wallet prepares a [Presentation Submission][] including
-   - Wallet DID is the holder, proving control over the DID. In the Verite examples, the holder must match the credential subjects, validating the holder and subject are the same.
+1. Verifier prompts user to connect the wallet controlling the blockcain address that the Verification Record will be bound to.
+1. Wallet signs an offchain transaction to authenticate wallet and authorize a web3 session. For interoperability and auditing purposes, we recommend a [EIP-4361][]-conformant "Sign-In With Ethereum" message or a [CAIP-122][]-conformant equivalent.
+2. Verifier sends its [Presentation Request][] to wallet, or equivalent bespoke RPC calls describing the acceptable credentials.
+3. The Wallet checks its storage for one or more matching credentials.  If more than one is present, a user selection step should be triggered; if none, a redirect or informative message displayed.  If exactly one, consent step may be optional, depending on use-case.
+4. Wallet prepares a [Presentation Submission][], or if needed, the Verifier can assemble it on behalf of the wallet; this submission object includes:
    - Any Verifiable Credential(s) necessary to complete verification.
-   - Wallet is the Presentation Request holder and signs it along with the challenge
-9.  Wallet submits the Presentation Submission to the URL found in the Verification Offer (`reply_url` property).
-10. The Verifier validates all the inputs
-6. Verifiers generates a Verification Record and adds it to the registry or sends it directly to a waiting relying party
+   - Wallet key--*or ephemeral session key*--signs presentation submission object (with challenge) to create verifiable and replayable event for logging and audit purposes
+   - If session key rather than wallet key signed the submission, and/or if any additional (on-chain or off-chain) software was involved in the storing, fetching, and passing of the VC(s), then a [CACAO][] receipt of sign-in message needs to be included for the submission to be functionally equivalent to a submission from a monadic DID wallet. Note: a [CACAO][] receipt contains a replayable authorization of a session key and any other resource expressable as a URI.
+5.  Wallet or Verifier submits the Presentation Submission to the URL found in the Verification Offer (`reply_url` property).
+6.  The Verifier validates all the inputs
+7. Verifiers generates a Verification Record and adds it to the registry or sends it directly to the relying party which is awaiting a record for that wallet address (see step 1). Transaction or resource request may be attached as well to process, per use case.
 
 [Presentation Request]: https://identity.foundation/presentation-exchange/#presentation-request
 [Presentation Submission]: https://identity.foundation/presentation-exchange/#presentation-submission
+[EIP-4361]: https://eips.ethereum.org/EIPS/eip-4361#example-message
+[CACAO]: https://github.com/ChainAgnostic/CAIPs/blob/c8d8ee203625ea622bd15c42b2493116712dfaf3/CAIPs/caip-74.md
+[CAIP-122]: https://github.com/ChainAgnostic/CAIPs/blob/571ef8c58195b122207f64d61fedbbb587f986a9/CAIPs/caip-122.md
