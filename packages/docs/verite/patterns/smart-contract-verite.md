@@ -37,7 +37,7 @@ Upon completing successful verification of Verifiable Credentials, verifiers cre
 - The public on-chain address associated with the verified subject, and
 - The expiration time of the result (which may occur sooner than the expiration of the credential)
 
-A Verite `Verification Result` created by a verifier should never be persisted directly to a blockchain.
+A `Verification Result` created by a Verifier is never directly persisted to a blockchain, but it may be (if on-chain persistence is needed by the use case) persisted as a minimized `Verification Record`. Best practices guidance for minimizing privacy risks when persisting these records are forthcoming.
 
 A `Verification Result` and the verifier’s signature are passed as parameters to a Verification Registry contract function for validation. The registry uses the signature and the `Verification Result` to determine whether or not the result corresponds to the public address of a known verifier configured in the registry contract.
 
@@ -88,15 +88,13 @@ The registry contract’s owner is therefore critically important -- the owner m
 
 The registry provides external-scoped accessor methods to obtain VerifierInfo for any configured verifier given a verifier's public chain address. The issuer associated with a particular credential and verification is not persisted or included in either the result or the record, but the verifier associated with a verification is persisted and is publicly visible. Verifiers may be contacted out of band by authorities in order to provide further data associated with a particular verification which they may persist privately.
 
-## Verifier Submission Pattern
+## Verifier Submission Patterns: Live or On-Chain
 
-Either a verifier or a subject may submit a Verification Result to a dapp directly for validation. Which pattern is appropriate depends upon the use case in question.
+A verifier backend may submit a `Verification Result` or subset of its contents directly to a dapp or other relying smart contract, expressed as a transaction in the appropriate VM in principle, which the relying smart contract could verify without executing. This transaction could even be custodied and submitted by the wallet itself, if there were reason to justify the added UX complexity.
 
-In the verifier submission pattern, a verifier executes the off-chain verification of a credential and then registers verification success with a registry smart contract. A relying decentralized application or other client never accesses the credential or the Verification Result.
+Another verifier-submission pattern involves an additional actor, an onchain-registry, which one or more smart contracts read asynchronously. In this version, a verifier executes the off-chain verification of a credential and then registers a risk-minimized subset of the `Verification Result` object called a `Verification Record` in some form of on-chain registry. A relying decentralized application or other client never accesses the credential or the `Verification Result` directly, instead relying on a trusted intermediary to translate verbose results to opaque `Verification Records` and maintain them on-chain. While this adds another indirection and on-chain risks and costs, its persistence on-chain simplifies on-going or multi-audience querying, as one or more smart contracts can execute a view (no cost) function on the registry contract over time (e.g. at each additional transaction, to check non-revocation).
 
-After verification and registration, wallets, dapps, apps, and smart contracts can determine whether a given address has an active verification by executing a view (no cost) function on the registry contract containing the registration.
-
-This pattern supports granular "whitelisted account" and “addresses with attestations” approaches. It is available to web apps, dapps, and other smart contracts. It also integrates seamlessly with ERC-20 and similar standards since no custom functions are necessary.
+This latter pattern supports granular "whitelisted account" and “addresses with attestations” approaches. It is available to web apps, dapps, and other smart contracts. It also integrates seamlessly with ERC-20 and similar standards since no custom functions are necessary.
 
 ![image2](/img/docs/smart-contract-patterns/image2.png)
 
