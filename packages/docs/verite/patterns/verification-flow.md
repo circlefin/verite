@@ -98,4 +98,4 @@ In this example, a user wants to verify address-bound credentials issued to a bl
 [Presentation Submission]: https://identity.foundation/presentation-exchange/#presentation-submission
 [EIP-4361]: https://eips.ethereum.org/EIPS/eip-4361#example-message
 [CACAO]: https://github.com/ChainAgnostic/CAIPs/blob/c8d8ee203625ea622bd15c42b2493116712dfaf3/CAIPs/caip-74.md
-[CAIP-122]: https://github.com/ChainAgnostic/CAIPs/blob/571ef8c58195b122207f64d61fedbbb587f986a9/CAIPs/caip-122.md
+[CAIP-122]: https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-122.md
