@@ -8,6 +8,7 @@ authors:
   - name: Daniel Lim
     url: https://github.com/dlim-circle
   - name: Fei Niu
+    url: https://github.com/fei-niu
   - name: Juan Caballero
     url: https://github.com/bumblefudge
   - name: Kim Hamilton Duffy
@@ -31,10 +32,10 @@ This greatly simplifies the ownership question, by relying on native mechanisms 
 Instead of defining the subject of the VC as a chain-agnostic DID provided by the wallet, the issuer will deterministically generate a DID from the blockchain address controlled by the connected wallet. Multiple DID methods allow this possibility; we’ll describe two of them, assuming a wallet with an Ethereum address (referred to as `ETH_ADDRESS`).
 
 - **did:key method - issue against a crypto wallet’s public key**: If the issuer has the wallet address `ETH_ADDRESS` and any signature over a known message, the corresponding public key can be recovered using the `ecrecover` mechanism ported over from Bitcoin in the early days of Ethereum. In this way. the issuer can deterministically obtain a[ did:key](https://w3c-ccg.github.io/did-method-key/) DID that will be used as the value of `credentialSubject.id`. This is the method Circle will begin with, for ease of implementation by participants.
-  - In this case, the mapping is:` did:key:&lt;ecrecover(ETH_ADDRESS, signature)>`
+  - In this case, the mapping is:` did:key:<ecrecover(ETH_ADDRESS, signature)>`
   - For blockchains that do not use a Bitcoin-style pay2hash address system, like Solana and Polkadot, no recovery from a signature is necessary because the base form of the address is already a public key supported by <code>[multibase](https://datatracker.ietf.org/doc/html/draft-multiformats-multibase) </code>and thus by <code>[did:key](https://w3c-ccg.github.io/did-method-key/#introduction)</code>.
 - <strong>did:pkh method - issue against a crypto wallet’s public address</strong>: Other DID methods, like [did:pkh](https://github.com/w3c-ccg/did-pkh/blob/main/did-pkh-method-draft.md), allow DIDs to be defined directly based on blockchain addresses in their commonly-used, public-facing forms. Long term, this is the preferred method. Among other advantages, the implementation across chains is more apparent.
-  - In this case, the mapping is: <code>did:pkh:eip155:1:&lt;ETH_ADDRESS> ; eip155 </code>here refers to the EVM namespace (defined in EIP155), while 1 refers to the ethereum mainnet according to EIP155.
+  - In this case, the mapping is: <code>did:pkh:eip155:1:&lt;ETH_ADDRESS&gt;</code>. eip155 here refers to the EVM namespace (defined in EIP155), while 1 refers to the ethereum mainnet according to EIP155.
   - Just as the did:key URI scheme relies on the <code>[multibase](https://datatracker.ietf.org/doc/html/draft-multiformats-multibase)</code> registry, so does the did:pkh URI scheme rely on the ChainAgnostic Standards Alliance’s [namespace registry](https://github.com/ChainAgnostic/namespaces) to add non-EVM namespaces.
   - In cases where human-readability is important, end-users can introspect the VC and see their familiar address, as opposed to a public key that in pay2hash systems like BTC or ETH, they might never have seen or know they control
 
@@ -52,7 +53,7 @@ At verification time, when a wallet "connects” to a dApp by providing an off-c
 
 Without necessarily even having to parse, validity-check, or introspect the verifiable credentials, any wallet that can store them (whether as JWTs or even as raw text files) can submit them directly to verifiers, as shown below.
 
-![Credential exchange without a DID wallet](img/verifier_bare.png "credential exchange without a DID wallet")
+![Credential exchange without a DID wallet](img/verifier_bare.jpg "credential exchange without a DID wallet")
 
 _Note: while it is recommended that crypto wallets parse verifiable credentials and check their validity or safety, crypto wallets could in theory allow blind passthrough if the user can assume the responsibility for their contents. In the Verite case, there are little security concerns or abuses possible._
 
@@ -70,11 +71,11 @@ Once the user has "connected” their wallet by signing this SIWE message, a CAC
 
 #### Ownership Verification
 
-You could say that the crypto wallet delegates the encapsulation and signature of a VP to the dApp, which creates a short-lived key with which to sign the VP, which is a kind of standardized logging object for a presentation event. This allows the verifier to **confirm **that the dApp is interacting on behalf of the wallet. Since the Verifier has confirmed control of the wallet address with a SIWE message, and the VC is issued to the address directly, there is no ownership verification needed as with a decentralized wallet; thanks to the CACAO, future auditors can replay these interactions and re-check signatures and tamper-proof objects to confirm all of these transactions trustlessly.
+You could say that the crypto wallet delegates the encapsulation and signature of a VP to the dApp, which creates a short-lived key with which to sign the VP, which is a kind of standardized logging object for a presentation event. This allows the verifier to **confirm** that the dApp is interacting on behalf of the wallet. Since the Verifier has confirmed control of the wallet address with a SIWE message, and the VC is issued to the address directly, there is no ownership verification needed as with a decentralized wallet; thanks to the CACAO, future auditors can replay these interactions and re-check signatures and tamper-proof objects to confirm all of these transactions trustlessly.
 
 #### Detailed Flow
 
-![Ownership verification with non-DID wallet](img/verifier_cacao.png "Ownership verification with non-DID wallet")
+![Ownership verification with non-DID wallet](img/verifier_cacao.jpg "Ownership verification with non-DID wallet")
 
 1. Wallet initiates DeFi transaction with dApp.
 2. dApp generates a session-specific ephemeral signing key and encoded it in the SIWE message for the wallet to sign. This generated session key will delegate the wallet for future signings, once after wallet vouches it (by signing the CACAO).

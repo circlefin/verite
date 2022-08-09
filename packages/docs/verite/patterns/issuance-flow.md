@@ -13,11 +13,23 @@ Collecting that identifier in a secure and convenient way for the user requires 
 
 ## Issuance Flow
 
-In this example, an individual's financial institution offers the ability to request a KYC or credit score credential to be held in the individual's mobile wallet. The flow consists of the exchange of three distinct JSON objects:
+In this example, an individual's financial institution offers the ability to request a KYC or credit score credential to be held in the individual's mobile identity wallet. The flow consists of the exchange of three distinct JSON objects:
 
-1. A Credential Offer published by the Issuer that describes the credential and how to apply for it
-2. A Credential Application submitted by the wallet, and
-3. A Credential Fulfillment returned by the Issuer that contains the final credential.
+1. A Credential Offer object published by the Issuer that describes the credential and how to apply for it
+2. A Credential Application object submitted by the wallet, containing information that, when appropriately validated and/or verified, will form the contents of those credentials, and
+3. A Credential Fulfillment envelope returned by the Issuer that contains the final credential(s) to be stored by the wallet and presented later to unknown future verifiers.
+
+
+### Sample JSON objects
+
+- [Credential Offer](/verite/appendix/messages#credential-offer)
+- [Credential Manifest](/verite/appendix/messages#credential-manifest)
+- [Credential Application](/verite/appendix/messages#credential-application)
+- [Credential Fulfillment](/verite/appendix/messages#credential-fulfillment)
+
+### Wallet-Bound Credential Issuance
+
+In more detail, here is a flow for issuing a DID-bound (i.e., identity wallet-bound) credential to an identity wallet:
 
 ![Issuing a Credential](/img/docs/sequence_issuance.png "Issuing a Credential")
 
@@ -39,9 +51,17 @@ In this example, an individual's financial institution offers the ability to req
 1. The Issuer creates a Verifiable Credential and returns it to the wallet as a [Credential Fulfillment](https://identity.foundation/credential-manifest/#credential-fulfillment).
 1. Wallet persists the credential.
 
-### Sample JSON objects
+### Address-Bound Credential Issuance
 
-- [Credential Offer](/verite/appendix/messages#credential-offer)
-- [Credential Manifest](/verite/appendix/messages#credential-manifest)
-- [Credential Application](/verite/appendix/messages#credential-application)
-- [Credential Fulfillment](/verite/appendix/messages#credential-fulfillment)
+In the case of credentials bound to a blockchain address, issuance is necessarily bespoke to a given wallet implementation, as few cryptocurrency wallets have standardized verification credential capabilities or even standardized secure storage.   In many use-cases, address-bound credentials are only recommended for addresses that are securely limited to a trusted wallet (whether hardware-secured, multi-signature, or EOA) whose signing control cannot be transfered or exfiltrated. 
+
+As wallet standards emerge, guidance and potentially even full interface specifications will be forthcoming for how wallets can receive VCs, store them, and sign over them in live presentations.
+
+For now, Verite recommends creating verifiable and replayable receipts of all off-chain wallet interactions (including issuance and delegated signing/presentation operations).  The Sign-In With Ethereum specification ([EIP-4361][]) is one such way of harmonizing on off-chain behavior, an approach being extended to other VMs in the [CASA][] by [CAIP-122][]. Receipts of these events can be logged as [CACAO][]s, for uniform verifiability.
+
+[Presentation Request]: https://identity.foundation/presentation-exchange/#presentation-request
+[Presentation Submission]: https://identity.foundation/presentation-exchange/#presentation-submission
+[EIP-4361]: https://eips.ethereum.org/EIPS/eip-4361#example-message
+[CACAO]: https://github.com/ChainAgnostic/CAIPs/blob/c8d8ee203625ea622bd15c42b2493116712dfaf3/CAIPs/caip-74.md
+[CAIP-122]: https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-122.md
+[CASA]: https://github.com/chainAgnostic/CASA
