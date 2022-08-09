@@ -3,26 +3,8 @@
   "country": "USA",
   "subjectType": "Legal entity",
   "version": "0.0.1",
-  "basicChecks": [
-    "Legal Entity Name",
-    "Doing Business As Name",
-    "Legal Entity Address",
-    "Legal Entity State",
-    "Legal Entity Nation",
-    "Date of Formation",
-    "Tax ID/Registration Number",
-    "Existence Verified",
-    "Nature of business"
-  ],
   "elegibilityChecks": [
     "EntityAssets",
     "AllOwnersAccred"
-  ],
-  "AuthorizedRepresentativeChecks": [
-    "Legal name",
-    "Email address",
-    "Phone number",
-    "Title",
-    "Sanctions"
   ]
 }
