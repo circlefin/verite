@@ -17,7 +17,7 @@ The entire Verite library is housed in a single monorepo called `verite`. To ins
 
 `npm i verite`
 
-or
+or 
 
 `yarn add verite`
 
