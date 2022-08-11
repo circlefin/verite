@@ -1,7 +1,7 @@
 {
-  "processName": "Accredited Investor",
+  "processName": "AccreditedInvestor",
   "country": "USA",
-  "subjectType": "Legal entity",
+  "subjectType": "IncorporatedEntity",
   "version": "0.0.1",
   "elegibilityChecks": [
     "EntityAssets",
