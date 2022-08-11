@@ -60,7 +60,7 @@ describe("buildPresentationSubmission", () => {
       },
       verifiableCredential: [
         {
-          type: ["VerifiableCredential", "KYCAMLAttestation"],
+          type: ["VerifiableCredential", "KYCAMLCredential"],
           credentialSubject: {
             id: didKey.subject,
             KYCAMLAttestation: {
@@ -97,7 +97,7 @@ describe("buildPresentationSubmission", () => {
 
     // It will match the KYC credential that is required
     expect(query[0]).toMatchObject({
-      type: ["VerifiableCredential", "KYCAMLAttestation"],
+      type: ["VerifiableCredential", "KYCAMLCredential"],
       credentialSubject: {
         id: didKey.subject,
         KYCAMLAttestation: {

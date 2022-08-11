@@ -21,6 +21,15 @@ import type {
   CreatePresentationOptions
 } from "did-jwt-vc/src/types"
 
+
+const typeMap = new Map<string, string>([
+  ["KYCAMLAttestation", "KYCAMLCredential"],
+  ["KYBPAMLAttestation", "KYBPAMLCredential"],
+  ["CreditScoreAttestation", "CreditScoreCredential"],
+  ["AddressOwner", "AddressOwnerCredential"],
+  ["CounterpartyAccountHolder", "CounterpartyAccountHolderCredential"]
+])
+
 /**
  * Build a VerifiableCredential containing an attestation for the given holder.
  */
@@ -31,7 +40,8 @@ export async function buildAndSignVerifiableCredential(
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
-  const type = attestation["type"]
+  const type = attestation["type"].toString()
+  const credentialType = typeMap.get(type)
   const subjectId = isString(subject) ? subject : subject.subject
 
   const vcPayload: CredentialPayload = Object.assign(
@@ -40,7 +50,7 @@ export async function buildAndSignVerifiableCredential(
         "https://www.w3.org/2018/credentials/v1",
         { "@vocab": "https://verite.id/identity/" }
       ],
-      type: ["VerifiableCredential", type],
+      type: ["VerifiableCredential", credentialType],
       credentialSubject: {
         id: subjectId,
         [type]: attestation
@@ -50,6 +60,8 @@ export async function buildAndSignVerifiableCredential(
     },
     payload
   )
+
+  console.log(JSON.stringify(vcPayload))
 
   return encodeVerifiableCredential(vcPayload, signer, options)
 }

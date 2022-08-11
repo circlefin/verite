@@ -7,7 +7,7 @@ import { didFixture } from "./dids"
 export const manifestFixture = (value = 0): CredentialManifest => {
   const issuer = didFixture(value)
   return {
-    id: "KYCAMLAttestation",
+    id: "KYCAMLManifest",
     version: "0.1.0",
     issuer: {
       id: issuer.subject, // default is "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp"

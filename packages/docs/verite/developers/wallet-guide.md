@@ -252,7 +252,7 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
     "https://www.w3.org/2018/credentials/v1",
     { "@vocab": "https://verite.id/identity/" }
   ],
-  "type": ["VerifiableCredential", "KYCAMLAttestation"],
+  "type": ["VerifiableCredential", "KYCAMLCredential"],
   "credentialSubject": {
     "KYCAMLAttestation": {
       "type": "KYCAMLAttestation",
@@ -341,7 +341,7 @@ Note: In the Presentation Object that follows (a signed VP in JWT form), the `ve
         "https://www.w3.org/2018/credentials/v1",
         "https://centre.io/contexts/identity.jsonld"
       ],
-      "type": ["VerifiableCredential", "KYCAMLAttestation"],
+      "type": ["VerifiableCredential", "KYCAMLCredential"],
       "credentialSubject": {
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {

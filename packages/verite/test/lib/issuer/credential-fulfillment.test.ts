@@ -54,7 +54,7 @@ describe("buildAndSignVerifiableCredential", () => {
         id: subjectDid.subject
       },
       issuer: { id: issuerDid.subject },
-      type: ["VerifiableCredential", "KYCAMLAttestation"],
+      type: ["VerifiableCredential", "KYCAMLCredential"],
       issuanceDate: "2021-10-26T16:17:13.000Z",
       "@context": [
         "https://www.w3.org/2018/credentials/v1",
@@ -159,7 +159,7 @@ describe("buildAndSignFulfillment", () => {
           issuer: {
             id: issuer.did
           },
-          type: ["VerifiableCredential", "KYCAMLAttestation"],
+          type: ["VerifiableCredential", "KYCAMLCredential"],
           "@context": [
             "https://www.w3.org/2018/credentials/v1",
             { "@vocab": "https://verite.id/identity/" }

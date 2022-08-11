@@ -23,7 +23,7 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
   "issuer": {
     "id": "did:web:verite.id"
   },
-  "type": ["VerifiableCredential", "KYCAMLAttestation"],
+  "type": ["VerifiableCredential", "KYCAMLCredential"],
   "@context": [
     "https://www.w3.org/2018/credentials/v1",
     { "@vocab": "https://verite.id/identity/" }
@@ -49,7 +49,7 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
   "issuer": {
     "id": "did:web:verite.id"
   },
-  "type": ["VerifiableCredential", "KYCAMLAttestation"],
+  "type": ["VerifiableCredential", "KYCAMLCredential"],
   "credentialStatus": {
     "id": "http://example.com/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91#94372",
     "type": "RevocationList2021Status",
@@ -296,7 +296,7 @@ Details:
   },
   "verifiableCredential": [
     {
-      "type": ["VerifiableCredential", "KYCAMLAttestation"],
+      "type": ["VerifiableCredential", "KYCAMLCredential"],
       "credentialSubject": {
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {

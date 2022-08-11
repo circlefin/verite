@@ -66,7 +66,7 @@ describe("issuance", () => {
       (verifiableCredential: RevocableCredential) => {
         expect(verifiableCredential.type).toEqual([
           "VerifiableCredential",
-          "KYCAMLAttestation"
+          "KYCAMLCredential"
         ])
         expect(verifiableCredential.proof).toBeDefined()
 
@@ -160,7 +160,7 @@ describe("issuance", () => {
       (verifiableCredential: RevocableCredential) => {
         expect(verifiableCredential.type).toEqual([
           "VerifiableCredential",
-          "KYCAMLAttestation"
+          "KYCAMLCredential"
         ])
         expect(verifiableCredential.proof).toBeDefined()
 

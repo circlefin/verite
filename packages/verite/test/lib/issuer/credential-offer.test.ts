@@ -24,7 +24,7 @@ describe("buildCredentialOffer", () => {
       body: {
         // challenge: "b68f2c74-8965-4281-8623-4836567b8258",
         manifest: {
-          id: "KYCAMLAttestation",
+          id: "KYCAMLManifest",
           version: "0.1.0",
           issuer: {
             id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
