@@ -21,6 +21,8 @@ Credential issuance protocols allow subjects and issuers to reach agreement on w
 
 Issuers of ZKP credentials may include a higher amount of sensitive attributes in a single credential (because it expects the wallet to handle reducing disclosure), but a non-ZKP credential should minimize attributes, per the [VC Data Model privacy recommendations](https://www.w3.org/TR/did-core/#privacy-considerations). ZKPs impose tooling requirements on wallets to manage, which may be feasible in a closed system where one vendor supplies all the pieces, but difficult otherwise.
 
+One alternative to ZKP-enabled selective disclosure of PII-containing credentials is supplemental VCs for authorization of remote query (e.g. API-based or oracle-based) to trusted intermediaries.
+
 ### Ensure credential status registries, such as revocation lists, do not leak additional information
 
 The VC Data Model’s guidance on credential status registries can be difficult to reconcile: it mentions that revocation should not reveal additional information (about the subject, holder, the VC, or verifier) but also states that the issuers can disclose revocation reason, and that they should distinguish between revocation for cryptographic integrity vs a revocation status change.
@@ -31,13 +33,13 @@ In practice, it tends to be clearest for implementers (and safest for users) to 
 
 Similar to how some use different crypto addresses to avoid correlation, some users may prefer to use different DIDs for different credentials. In fact, use of a new DID for every credential is generally considered best practice. This doesn’t manifest as a usability issue for subjects because their wallet software can manage this for them, both on the issuance and exchange (if proof of control is required) side.
 
-In case the subject needs the credential to be issued to a different DID (key compromise or other concern), it’s recommended to use the refreshService property to allow a subject’s wallet to easily discover a way to request a new one. The issuer should revoke the previous and re-issue in response.
+In case the subject needs the credential to be issued to a different DID (key compromise or other concern), it’s recommended to use the `refreshService` property to allow a subject’s wallet to easily discover a way to request a new one. The issuer should revoke the previous and re-issue in response.
 
 ## Recommendations
 
 The following are recommendations for safe practices while making minimal assumptions.
 
-### Reduce attributes required of the credential subject through fit-for-purpose
+### Reduce attributes required of the credential subject through fit-for-purpose criteria
 
 The Verifiable Credentials Data Model provides general guidance on the [principle of data minimization](https://www.w3.org/TR/vc-data-model/#the-principle-of-data-minimization), involving reducing the amount of personal information revealed to verifiers, either through issuance of multiple single-attribute credentials or through data minimizing signature suites such as ZKPs. Lack of library availability, or concerns about maturity, may discourage some implementers from relying on the latter. At the same time, it can be difficult for issuers to envision how to property atomize credentials into single-attribute credentials: not all attributes are meant to be mixed and matched in different combinations.
 

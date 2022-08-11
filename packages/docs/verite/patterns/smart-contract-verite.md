@@ -7,15 +7,17 @@ sidebar_position: 5
 
 ## Overview
 
-Smart contracts can require successful verification of Verifiable Credentials in order to safely and securely assess proofs of identity, credit and risk scoring, insurance, accredited investor status and other identity-related claims.
+A core functionality of Verite is that it enables smart contracts to require successful verification of Verifiable Credentials in order to safely and securely assess proofs of identity, credit and risk scoring, insurance, accredited investor status and other identity-related claims. 
 
-However, smart contracts on most chains (such as ethereum) are not technically capable and/or economically practical at executing the verification operations themselves, and they cannot call upon external verification or other network services beyond the constraints of their own chains. Verification in contract would also require transmitting credentials on-chain which may leak sensitive personal information and violate the first principle of 'Privacy by Design.'
+Today, smart contracts on most chains (such as ethereum) are not technically capable and/or economically practical at executing the verification operations themselves, and they cannot call upon external verification or other network services beyond the constraints of their own chains. Verification in-contract would also require transmitting credentials on-chain, which may leak sensitive personal information and violate the first principle of 'Privacy by Design.'
 
-Therefore, smart contracts follow a pattern in which verification -- including credential exchanges between verifiers and subjects, revocation and validation checks, and verifiable credential signature verifications -- are executed off-chain and then cryptographically validated by on-chain smart contracts that associate verification records with on-chain addresses. A Verification Registry can annotate public chain addresses with a series of relevant verification results in a lightweight, privacy-preserving manner.
+Instead, verification can be done by a web-based "front-end", or outsourced to a verifier service that communicates to the dApp directly (via offchain transactions delivered to the smart contract along with the transactions it authorizes) or indirectly (via on-chain registries, oracles, or other mechanisms).
+
+All of these architectures have in common a pattern in which verifications -- including credential exchanges between verifiers and subjects, revocation and validation checks, and verifiable credential signature verifications -- are executed "off-chain" and then cryptographically validated by on-chain smart contracts that associate `Verification Record`s with on-chain addresses. These can live in a Verification Registry on-chain if the registry observes a few lightweight, privacy-preserving best practices. (*Note: detailed guidance on this is forthcoming, care of the Verite On-Chain Best Practices Working Group*)
 
 This document describes the architecture of this design, illustrates two primary options for implementation and two options for storage, and references example source and tests. The reference implementations are scoped to [Solidity](https://docs.soliditylang.org/en/v0.8.10/), but are intended to illustrate patterns applicable to other chains with similar smart contract programming capability.
 
-## Architecture
+## Registry-Based Architecture
 
 Smart contracts follow a verification pattern in which verifications are performed off-chain and then confirmed on-chain. An off-chain verifier handles Verifiable Credential exchange in the usual manner and, upon successful verification, the verifier creates a lightweight privacy-preserving **Verification Result** object (represented in JSON).
 
@@ -35,11 +37,11 @@ Upon completing successful verification of Verifiable Credentials, verifiers cre
 - The public on-chain address associated with the verified subject, and
 - The expiration time of the result (which may occur sooner than the expiration of the credential)
 
-A Verification Result created by a verifier is never persisted to a blockchain.
+A `Verification Result` created by a Verifier is never directly persisted to a blockchain, but it may be (if on-chain persistence is needed by the use case) persisted as a minimized `Verification Record`. Best practices guidance for minimizing privacy risks when persisting these records are forthcoming.
 
-A Verification Result and the verifier’s signature are passed as parameters to a Verification Registry contract function for validation. The registry uses the signature and the Verification Result to determine whether or not the result corresponds to the public address of a known verifier configured in the registry contract.
+A `Verification Result` and the verifier’s signature are passed as parameters to a Verification Registry contract function for validation. The registry uses the signature and the `Verification Result` to determine whether or not the result corresponds to the public address of a known verifier configured in the registry contract.
 
-A Verification Registry executes this confirmation by accepting the Verification Result and signature as input parameters, checking any relevant contract logic against data in the Verification Result, and then re-hashing the Verification Result and using the hash and the submitted signature to confirm that the signature was generated by the private signing key of a corresponding public address of a known verifier configured in the contract. To prevent replay attacks, the Verification Registry also ensures that the calling address is the verifier (for verifier submissions), or that the calling address is the same as the subject of the VerificationResult (for subject submissions).
+A Verification Registry executes this confirmation by accepting the `Verification Result` and signature as input parameters, checking any relevant contract logic against data in the Verification Result, and then re-hashing the Verification Result and using the hash and the submitted signature to confirm that the signature was generated by the private signing key of a corresponding public address of a known verifier configured in the contract. To prevent replay attacks, the Verification Registry also ensures that the calling address is the verifier (for verifier submissions), or that the calling address is the same as the subject of the VerificationResult (for subject submissions).
 
 In order to safeguard against potential issues with hashing, signatures, and key recovery in Ethereum, the reference implementations utilize [EIP-712](https://eips.ethereum.org/EIPS/eip-712) as the preferred hashing and signing approach when evaluating Verification Results. Specifically, the examples employ the [OpenZeppelin EIP-712 implementation](https://docs.openzeppelin.com/contracts/3.x/api/drafts#EIP712). The reference implementations also leverage OpenZeppelin’s [Ownable](https://docs.openzeppelin.com/contracts/2.x/api/ownership#Ownable) and [ERC20](https://docs.openzeppelin.com/contracts/2.x/api/token/erc20) implementations.
 
@@ -51,10 +53,10 @@ Upon successful confirmation, the Verification Registry smart contract generates
 
 A Verification Record contains:
 
-- A UUID associated with the verification
+- A UUID associated with the verification qua event (*Note: we also recommend logging events by the same UUID for cleaner auditing and forensics of verification functions*)
 - Verifier's and subject's public chain addresses
 - The time of verification confirmation in the contract
-- The expiration time of the verification (which is not necessarily the same as the credential), and
+- The expiration time of the verification (which is not necessarily the same as that of the credential), and
 - A boolean flag to denote whether the record is revoked (verifiers can revoke records they create).
 
 If the registry is persistent, then this is information that is recorded on-chain about a successful verification. If the registry is not persistent, then the data in a Verification Record is still emitted as an event upon successful validation. No additional information about the underlying credential, issuer, subject, or verifier is contained in the Verification Record.
@@ -86,15 +88,13 @@ The registry contract’s owner is therefore critically important -- the owner m
 
 The registry provides external-scoped accessor methods to obtain VerifierInfo for any configured verifier given a verifier's public chain address. The issuer associated with a particular credential and verification is not persisted or included in either the result or the record, but the verifier associated with a verification is persisted and is publicly visible. Verifiers may be contacted out of band by authorities in order to provide further data associated with a particular verification which they may persist privately.
 
-## Verifier Submission Pattern
+## Verifier Submission Patterns: Live or On-Chain
 
-Either a verifier or a subject may submit a Verification Result for validation. Which pattern is appropriate depends upon the use case in question.
+A verifier backend may submit a `Verification Result` or subset of its contents directly to a dapp or other relying smart contract, expressed as a transaction in the appropriate VM in principle, which the relying smart contract could verify without executing. This transaction could even be custodied and submitted by the wallet itself, if there were reason to justify the added UX complexity.
 
-In the verifier submission pattern, a verifier executes the off-chain verification of a credential and then registers verification success with a registry smart contract. A relying decentralized application or other client never accesses the credential or the Verification Result.
+Another verifier-submission pattern involves an additional actor, an onchain-registry, which one or more smart contracts read asynchronously. In this version, a verifier executes the off-chain verification of a credential and then registers a risk-minimized subset of the `Verification Result` object called a `Verification Record` in some form of on-chain registry. A relying decentralized application or other client never accesses the credential or the `Verification Result` directly, instead relying on a trusted intermediary to translate verbose results to opaque `Verification Records` and maintain them on-chain. While this adds another indirection and on-chain risks and costs, its persistence on-chain simplifies on-going or multi-audience querying, as one or more smart contracts can execute a view (no cost) function on the registry contract over time (e.g. at each additional transaction, to check non-revocation).
 
-After verification and registration, wallets, dapps, apps, and smart contracts can determine whether a given address has an active verification by executing a view (no cost) function on the registry contract containing the registration.
-
-This pattern supports granular "whitelisted account" and “addresses with attestations” approaches. It is available to web apps, dapps, and other smart contracts. It also integrates seamlessly with ERC-20 and similar standards since no custom functions are necessary.
+This latter pattern supports granular "whitelisted account" and “addresses with attestations” approaches. It is available to web apps, dapps, and other smart contracts. It also integrates seamlessly with ERC-20 and similar standards since no custom functions are necessary.
 
 ![image2](/img/docs/smart-contract-patterns/image2.png)
 

@@ -1,0 +1,11 @@
+{
+    "processName": "AccreditedInvestor",
+    "regulatoryJurisdiction": "US",
+    "subjectType": "Individual",
+    "version": "0.0.1",
+    "elegibilityChecks": [
+      "NetWorth",
+      "Income",
+      "Licensing"
+    ]
+  }
