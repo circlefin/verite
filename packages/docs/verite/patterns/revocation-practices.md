@@ -28,3 +28,12 @@ The status list is a base 64 encoded, zlib compressed bitstring. That is, each b
 For comparison, note that a simpler approach might be a single URL that returns the status of a single credential. However, each time a verifier checked the URL, it would leak activity back about the individual credential holder to the issuer. In contrast, the approach described here can contain the status for about 16KB worth, or 131,072 credentials. The verifier performs a request that compactly encodes the status for the batch, and the verifier selects the specific index they want to check. This means the issuer doesn't learn which specific credential the verifier was checking, allowing herd privacy for users.
 
 You can read more about Verite's implementation in the [Revoking a Credential](/verite/developers/revoke-a-credential) tutorial.
+
+## Latency and Freshness Considerations
+
+Verifiable Credentials from the Verite system should not be accepted or assumed to remain indefinitely valid; we recommend checking them at each relying transaction:
+1. activation, i.e., issuance date is in the past and not the future, meaning it is currently in force), 
+2. non-expiration, i.e., its expiration date is in the future, and
+3. active status, i.e., its status has not been set to "revoked" or "suspended" by the issuer.
+
+That third check, since it is expressed in each credential as a URL, can be re-checked even if the underlying VC is unknown to the verifier, has not been retained, etc. Since non-sanctions or non-PEP status is an ongoing state monitored by most issuers of KYC/KYB credentials, issuers should choose carefully how frequently to update the status lists for their credentials, and verifiers/relying parties should understand precisely how to check these, as many usecases will require them to re-check them often.

@@ -33,10 +33,10 @@ A process goal is to maintain transparency and openness in the iteration of the 
 
 ## Non-Goals
 
-- Verite standards do not require use of a specific chain, token, consensus algorithm, wallet, storage system, p2p library, or other fundamental infrastructure.
+- Verite standards do not require use of a specific chain, token, consensus algorithm, wallet, storage system, p2p library, or other fundamental infrastructure. 
 
 - Verite aims to specify definitions for claims that can be supported by any identity solution, and to specify protocols that can be implemented by any service, wallet, or application.
 
-- Verite does not require use of a specific Decentralized Identifier (DID) method or new attestation format.
+- Verite does not require use of any specific Decentralized Identifier (DID) method or new attestation format.
 
 - Verite is not intended as a competing decentralized identity standard; it aims to leverage and contribute to existing (and emerging) decentralized identity standards.
