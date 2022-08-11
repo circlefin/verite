@@ -11,7 +11,8 @@ import {
   decodeVerifiablePresentation,
   getManifestIdFromCredentialApplication,
   requiresRevocableCredentials,
-  validateCredentialApplication
+  validateCredentialApplication,
+  CREDIT_SCORE_ATTESTATION_MANIFEST_ID
 } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
@@ -65,7 +66,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   // If this is a Credit Score attestation, set the expiration to be
   // one minute for the sake of a demo
   const expirationDate =
-    manifest.id === "CreditScoreAttestation"
+    manifest.id === CREDIT_SCORE_ATTESTATION_MANIFEST_ID
       ? new Date(Date.now() + oneMinute)
       : new Date(Date.now() + twoMonths)
 

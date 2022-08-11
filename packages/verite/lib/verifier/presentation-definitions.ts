@@ -63,7 +63,7 @@ export function kycPresentationDefinition(
         purpose: "Please provide a valid credential from a KYC/AML issuer",
         schema: [
           {
-            uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation",
+            uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
             required: true
           }
         ],
@@ -141,7 +141,7 @@ export function creditScorePresentationDefinition(
         purpose: "Please provide a valid credential from a Credit Score issuer",
         schema: [
           {
-            uri: "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation",
+            uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
             required: true
           }
         ],
