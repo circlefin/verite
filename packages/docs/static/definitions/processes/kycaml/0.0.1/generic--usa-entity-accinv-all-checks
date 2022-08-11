@@ -1,0 +1,10 @@
+{
+  "processName": "AccreditedInvestor",
+  "regulatoryJurisdiction": "US",
+  "subjectType": "IncorporatedEntity",
+  "version": "0.0.1",
+  "elegibilityChecks": [
+    "EntityAssets",
+    "AllOwnersAccred"
+  ]
+}
