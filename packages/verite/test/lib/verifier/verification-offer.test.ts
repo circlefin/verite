@@ -96,7 +96,7 @@ describe("verification offer", () => {
               schema: [
                 {
                   required: true,
-                  uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
+                  uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
                 }
               ]
             }

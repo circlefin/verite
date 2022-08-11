@@ -36,7 +36,7 @@ function buildManifest(
           "A Verifiable Presentation establishing proof of identifier control over the DID.",
         schema: [
           {
-            uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
+            uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
           }
         ]
       }
@@ -86,7 +86,7 @@ export function buildKycAmlManifest(
       id: "kycAttestationOutput",
       schema: [
         {
-          uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
+          uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
         }
       ],
       name: `Proof of KYC from ${issuer.name}`,
@@ -138,7 +138,7 @@ export function buildCreditScoreManifest(
       id: "creditScoreAttestationOutput",
       schema: [
         {
-          uri: "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation"
+          uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation"
         }
       ],
       name: `Proof of Credit Score from ${issuer.name}`,

@@ -31,6 +31,7 @@ type PostResponse = { status: string; result?: VerificationResultResponse }
  */
 export default apiHandler<PostResponse>(async (req, res) => {
   requireMethod(req, "POST")
+  console.log(req)
 
   const submission: EncodedPresentationSubmission = req.body
   const verificationRequest = await findVerificationOffer(

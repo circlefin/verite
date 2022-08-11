@@ -4,8 +4,8 @@ import * as creditScoreSchema from "./CreditScoreAttestation.json"
 import * as kycSchema from "./KYCAMLAttestation.json"
 
 const schemaCache: Record<string, Record<string, unknown>> = {
-  "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation": kycSchema,
-  "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation":
+  "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation": kycSchema,
+  "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation":
     creditScoreSchema
 }
 

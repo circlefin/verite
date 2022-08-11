@@ -47,7 +47,8 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   if (!user) {
     throw new NotFoundError()
   }
-
+  console.log(req.body)
+  console.log(req)
   // Decode the Verifiable Presentation and check the signature
   const credentialApplication = await decodeCredentialApplication(req.body)
 
