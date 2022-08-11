@@ -1,6 +1,6 @@
 {
     "processName": "AccreditedInvestor",
-    "regulatoryJurisdiction": "USA",
+    "regulatoryJurisdiction": "US",
     "subjectType": "Individual",
     "version": "0.0.1",
     "elegibilityChecks": [
