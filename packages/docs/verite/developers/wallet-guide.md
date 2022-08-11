@@ -194,7 +194,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
   "@context": ["https://www.w3.org/2018/credentials/v1"],
   "credential_application": {
     "id": "2ce196be-fcda-4054-9eeb-8e4c5ef771e5",
-    "manifest_id": "KYCAMLAttestation",
+    "manifest_id": "KYCAMLManifest",
     "format": {
       "jwt_vp": {
         "alg": ["EdDSA"]
@@ -214,7 +214,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
   },
   "verifiableCredential": [],
   "holder": "did:key:z6MkjFFeDnzyKL7Q39aNs1piGo27b12upMf1MmSDQcABJmmn",
-  "type": ["VerifiablePresentation", "CredentialApplication"],
+  "type": ["VerifiablePresentation", "CredentialApplication"]
 }
 ```
 
@@ -229,7 +229,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
   "holder": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
   "credential_fulfillment": {
     "id": "5f22f1ea-0441-4041-916b-2504a2a4075c",
-    "manifest_id": "KYCAMLAttestation",
+    "manifest_id": "KYCAMLManifest",
     "descriptor_map": [
       {
         "id": "proofOfIdentifierControlVP",
@@ -238,13 +238,13 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
       }
     ]
   },
-  "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
+  "verifiableCredential": [] // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
 }
 ```
 
 #### Decoded Credential
 
-The following represents the intermediate form of a JWT-encoded verifiable credential *post-verification* and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token):
+The following represents the intermediate form of a JWT-encoded verifiable credential _post-verification_ and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token):
 
 ```json
 {
@@ -270,11 +270,9 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
     "statusListIndex": "94372",
     "statusListCredential": "http://192.168.1.16:3000/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91"
   },
-  "issuanceDate": "2021-09-14T02:00:07.000Z",
+  "issuanceDate": "2021-09-14T02:00:07.000Z"
 }
 ```
-
-
 
 ### Presentation Exchange
 
@@ -355,7 +353,7 @@ Note: In the Presentation Object that follows (a signed VP in JWT form), the `ve
       "issuer": {
         "id": "did:web:verite.id"
       },
-      "proof": {...} 
+      "proof": {...}
     }
 
   ]

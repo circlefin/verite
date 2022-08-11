@@ -14,7 +14,7 @@ Object {
       ],
     },
   },
-  "id": "KYCAMLAttestation",
+  "id": "KYCAMLManifest",
   "issuer": Object {
     "id": "did:web:demos.verite.id",
     "name": "Verite",

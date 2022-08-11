@@ -14,7 +14,7 @@ Object {
       ],
     },
   },
-  "id": "CreditScoreAttestation",
+  "id": "CreditScoreManifest",
   "issuer": Object {
     "id": "did:web:demos.verite.id",
     "name": "Verite",

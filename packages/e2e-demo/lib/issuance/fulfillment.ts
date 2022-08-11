@@ -14,7 +14,7 @@ export function buildAttestationForUser(
   if (manifest.id === KYCAML_ATTESTATION_MANIFEST_ID) {
     return {
       type: "KYCAMLAttestation",
-      process: "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
+      process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
       approvalDate: new Date().toJSON()
     }
   } else if (manifest.id === CREDIT_SCORE_ATTESTATION_MANIFEST_ID) {

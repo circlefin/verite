@@ -8,7 +8,7 @@ sidebar_position: 2
 
 ### Verifiable Credential
 
-The following represents the intermediate form of a JWT-encoded verifiable credential *post-verification* and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token):
+The following represents the intermediate form of a JWT-encoded verifiable credential _post-verification_ and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token):
 
 ```json
 {
@@ -28,13 +28,13 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
     "https://www.w3.org/2018/credentials/v1",
     { "@vocab": "https://verite.id/identity/" }
   ],
-  "issuanceDate": "2021-09-14T02:00:07.000Z",
+  "issuanceDate": "2021-09-14T02:00:07.000Z"
 }
 ```
 
 ### Verifiable Credential with status
 
-The following represents the intermediate form of a JWT-encoded verifiable credential *post-verification* and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token). Note that the credential status has not been dereferenced (i.e., "fetched" as a bitstring and validated), which some systems might want to do before processing and/or storing the credential.
+The following represents the intermediate form of a JWT-encoded verifiable credential _post-verification_ and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token). Note that the credential status has not been dereferenced (i.e., "fetched" as a bitstring and validated), which some systems might want to do before processing and/or storing the credential.
 
 ```json
 {
@@ -60,7 +60,7 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
     "https://www.w3.org/2018/credentials/v1",
     { "@vocab": "https://verite.id/identity/" }
   ],
-  "issuanceDate": "2021-09-14T02:00:07.000Z",
+  "issuanceDate": "2021-09-14T02:00:07.000Z"
 }
 ```
 
@@ -98,7 +98,7 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
 
 ```json
 {
-  "id": "KYCAMLAttestation",
+  "id": "KYCAMLManifest",
   "version": "0.1.0",
   "issuer": {
     "id": "did:web:example.com",
@@ -199,7 +199,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
   "@context": ["https://www.w3.org/2018/credentials/v1"],
   "credential_application": {
     "id": "2ce196be-fcda-4054-9eeb-8e4c5ef771e5",
-    "manifest_id": "KYCAMLAttestation",
+    "manifest_id": "KYCAMLManifest",
     "format": {
       "jwt_vp": {
         "alg": ["EdDSA"]
@@ -219,7 +219,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
   },
   "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
   "holder": "did:key:z6MkjFFeDnzyKL7Q39aNs1piGo27b12upMf1MmSDQcABJmmn",
-  "type": ["VerifiablePresentation", "CredentialApplication"],
+  "type": ["VerifiablePresentation", "CredentialApplication"]
 }
 ```
 
@@ -234,7 +234,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
   "holder": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
   "credential_fulfillment": {
     "id": "5f22f1ea-0441-4041-916b-2504a2a4075c",
-    "manifest_id": "KYCAMLAttestation",
+    "manifest_id": "KYCAMLManifest",
     "descriptor_map": [
       {
         "id": "proofOfIdentifierControlVP",
@@ -243,7 +243,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
       }
     ]
   },
-  "verifiableCredential": [], // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
+  "verifiableCredential": [] // Credential would be found here, as a JWT, i.e. ["eyJhbG..."]
 }
 ```
 

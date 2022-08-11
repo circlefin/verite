@@ -6,8 +6,8 @@ import type {
   PresentationDefinition
 } from "../../types"
 
-export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreAttestation"
-export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"
+export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreManifest"
+export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLManifest"
 // Note: tracking issue in PEx spec saying it must be UUID
 export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
   "ProofOfControlPresentationDefinition"

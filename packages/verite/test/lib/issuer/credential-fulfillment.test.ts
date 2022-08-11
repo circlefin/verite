@@ -48,7 +48,7 @@ describe("buildAndSignVerifiableCredential", () => {
         KYCAMLAttestation: {
           type: "KYCAMLAttestation",
           process:
-            "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
+            "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
           approvalDate: attestation.approvalDate
         },
         id: subjectDid.subject
@@ -136,7 +136,7 @@ describe("buildAndSignFulfillment", () => {
       sub: issuer.did,
       credential_fulfillment: {
         // id: "5f22f1ea-0441-4041-916b-2504a2a4075c",
-        manifest_id: "KYCAMLAttestation",
+        manifest_id: "KYCAMLManifest",
         descriptor_map: [
           {
             id: "proofOfIdentifierControlVP",
@@ -151,7 +151,7 @@ describe("buildAndSignFulfillment", () => {
             KYCAMLAttestation: {
               type: "KYCAMLAttestation",
               process:
-                "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa"
+                "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
               // approvalDate: "2021-11-12T18:56:16.508Z",
             },
             id: subjectDid.subject

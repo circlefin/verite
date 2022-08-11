@@ -43,7 +43,7 @@ describe("buildKycAmlManifest", () => {
     const manifest = buildKycAmlManifest(issuer)
 
     const expected = {
-      id: "KYCAMLAttestation",
+      id: "KYCAMLManifest",
       version: "0.1.0",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
@@ -128,7 +128,7 @@ describe("buildCreditScoreManifest", () => {
     const manifest = buildCreditScoreManifest(issuer)
 
     const expected = {
-      id: "CreditScoreAttestation",
+      id: "CreditScoreManifest",
       version: "0.1.0",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",

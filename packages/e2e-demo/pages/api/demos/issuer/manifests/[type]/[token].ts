@@ -17,14 +17,11 @@ export default apiHandler<CredentialOffer>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  const co = buildCredentialOffer(
-    uuidv4(),
-    manifest,
-    fullURL(`/api/demos/issuer/${token}`)
-  )
-  console.log(JSON.stringify(co))
   res.json(
-    co
+    buildCredentialOffer(
+      uuidv4(),
+      manifest,
+      fullURL(`/api/demos/issuer/${token}`)
+    )
   )
-
 })
