@@ -3,7 +3,7 @@ import jsonpath from "jsonpath"
 
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, credentialTypeToAttestations, decodeVerifiablePresentation, isExpired } from "../utils"
+import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
 import { findSchemaById, validateAttestationSchema } from "./validate-schema"
 
 import type {

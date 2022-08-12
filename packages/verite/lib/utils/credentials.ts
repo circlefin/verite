@@ -70,6 +70,15 @@ export async function decodeVerifiableCredential(
 > {
   try {
     const res = await verifyCredential(vcJwt, didResolver)
+    // eslint-disable-next-line no-prototype-builtins
+    if (res.verifiableCredential.credentialSubject.hasOwnProperty(0)) {
+      const newCs = Object.entries(res.verifiableCredential.credentialSubject).map(([key, value]) => {
+        return value
+       })
+       const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
+       clone.credentialSubject = newCs
+       return clone
+    }
     return res.verifiableCredential
   } catch (err) {
     throw new VerificationError(

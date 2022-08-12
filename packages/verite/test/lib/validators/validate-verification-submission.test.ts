@@ -21,7 +21,7 @@ import {
 } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import {
-  credentiaScoreCredentialTypeName,
+  creditScoreCredentialTypeName,
   kycAmlCredentialTypeName
 } from "../../fixtures/types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
@@ -98,7 +98,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       creditScoreAttestationFixture,
-      credentiaScoreCredentialTypeName
+      creditScoreCredentialTypeName
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -191,7 +191,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       creditScoreAttestationFixture,
-      credentiaScoreCredentialTypeName
+      creditScoreCredentialTypeName
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1

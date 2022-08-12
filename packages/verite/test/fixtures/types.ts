@@ -1,2 +1,2 @@
 export const kycAmlCredentialTypeName = "KYCAMLCredential"
-export const credentiaScoreCredentialTypeName = "CreditScoreCredential"
+export const creditScoreCredentialTypeName = "CreditScoreCredential"

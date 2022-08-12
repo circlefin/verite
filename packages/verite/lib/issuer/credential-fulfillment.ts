@@ -78,7 +78,9 @@ export async function buildAndSignVerifiableCredential(
 }
 
 /**
- * Build a VerifiablePresentation containing a list of attestations (VerifiableCredentials)
+ * Build a VerifiablePresentation containing a list of attestations.
+ * 
+ * Creates a single Verifiable Credential.
  */
 export async function buildAndSignFulfillment(
   signer: Issuer,
@@ -96,6 +98,43 @@ export async function buildAndSignFulfillment(
     payload,
     options
   )
+
+  const encodedPresentation = await encodeVerifiablePresentation(
+    signer.did,
+    encodedCredentials,
+    signer,
+    options,
+    ["VerifiablePresentation", "CredentialFulfillment"],
+    {
+      credential_fulfillment: {
+        id: uuidv4(),
+        manifest_id: application.credential_application.manifest_id,
+        descriptor_map:
+          application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
+            (d, i) => {
+              return {
+                id: d.id,
+                format: "jwt_vc",
+                path: `$.presentation.credential[${i}]`
+              }
+            }
+          ) ?? []
+      }
+    }
+  )
+
+  return encodedPresentation as unknown as EncodedCredentialFulfillment
+}
+
+/**
+ * Build a VerifiablePresentation from a list of signed Verifiable Credentials.
+ */
+export async function buildAndSignMultiVcFulfillment(
+  signer: Issuer,
+  application: DecodedCredentialApplication,
+  encodedCredentials: string[],
+  options?: CreatePresentationOptions
+): Promise<EncodedCredentialFulfillment> {
 
   const encodedPresentation = await encodeVerifiablePresentation(
     signer.did,

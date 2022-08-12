@@ -6,6 +6,7 @@ import {
 } from "../../../lib/issuer/credential-application"
 import {
   buildAndSignFulfillment,
+  buildAndSignMultiVcFulfillment,
   buildAndSignVerifiableCredential
 } from "../../../lib/issuer/credential-fulfillment"
 import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
@@ -16,8 +17,8 @@ import {
   randomDidKey
 } from "../../../lib/utils"
 import { RevocationList2021Status } from "../../../types"
-import { kycAmlAttestationFixture } from "../../fixtures/attestations"
-import { kycAmlCredentialTypeName } from "../../fixtures/types"
+import { creditScoreAttestationFixture, kycAmlAttestationFixture } from "../../fixtures/attestations"
+import { creditScoreCredentialTypeName, kycAmlCredentialTypeName } from "../../fixtures/types"
 
 describe("buildAndSignVerifiableCredential", () => {
   it("builds a valid credential application", async () => {
@@ -185,3 +186,196 @@ describe("buildAndSignFulfillment", () => {
     })
   })
 })
+
+describe("buildAndSignMultipleCredentials", () => {
+  it("works", async () => {
+    const issuerDid = randomDidKey(randomBytes)
+    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
+    const subjectDid = randomDidKey(randomBytes)
+    const attestations = [kycAmlAttestationFixture, creditScoreAttestationFixture]
+
+    const encodedVC = await buildAndSignVerifiableCredential(
+      issuer,
+      subjectDid,
+      attestations,
+      "HybridCredential"
+    )
+
+    const fulfillment = await decodeVerifiableCredential(encodedVC)
+
+    expect(fulfillment).toMatchObject({
+      credentialSubject: [
+         {
+          id: subjectDid.subject,
+          KYCAMLAttestation:{
+               type: "KYCAMLAttestation",
+               process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+               approvalDate: kycAmlAttestationFixture.approvalDate
+            }
+         },
+         {
+            id: subjectDid.subject,
+            CreditScoreAttestation:{ 
+               type: "CreditScoreAttestation",
+               score: 700,
+               scoreType: "Credit Score",
+               provider: "Experian"
+            },
+         }
+      ],
+      issuer: { id: issuer.did },
+      type: [ "VerifiableCredential", "HybridCredential"],
+      "@context": [
+         "https://www.w3.org/2018/credentials/v1",
+         {
+            "@vocab": "https://verite.id/identity/"
+         }
+      ]
+   })
+  })
+})
+
+describe("buildAndSignMultipleVCFulfillment", () => {
+  it("works", async () => {
+    // We need an Issuer, Credential Application, the credential claims or attestations
+    // Map Issuer DID to Issuer for signing
+    const issuerDid = randomDidKey(randomBytes)
+    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
+
+    const credentialIssuer = { id: issuer.did, name: "Verite" }
+    const manifest = buildKycAmlManifest(credentialIssuer)
+
+    const subjectDid = randomDidKey(randomBytes)
+    const options = {}
+
+
+    const attestation1 = kycAmlAttestationFixture
+    const attestation2 = creditScoreAttestationFixture
+
+    // Builds a signed Verifiable Credential
+    const vc1 = await buildAndSignVerifiableCredential(
+      issuer,
+      subjectDid,
+      attestation1,
+      kycAmlCredentialTypeName,
+      // issuanceDate defaults to now, but for testing we will stub it out
+      // Note that the did-jwt-vc library will strip out any milliseconds as
+      // the JWT exp and iat properties must be in seconds.
+      { issuanceDate: "2021-10-26T16:17:13.000Z" }
+    )
+
+    const vc2 = await buildAndSignVerifiableCredential(
+      issuer,
+      subjectDid,
+      attestation2,
+      creditScoreCredentialTypeName,
+      // issuanceDate defaults to now, but for testing we will stub it out
+      // Note that the did-jwt-vc library will strip out any milliseconds as
+      // the JWT exp and iat properties must be in seconds.
+      { issuanceDate: "2021-10-26T16:17:13.000Z" }
+    )
+
+    const creds = [vc1, vc2]
+
+    const encodedApplication = await buildCredentialApplication(
+      subjectDid,
+      manifest,
+      options
+    )
+    const application = await decodeCredentialApplication(encodedApplication)
+
+    const encodedFulfillment = await buildAndSignMultiVcFulfillment(
+      issuer,
+      application,
+      creds
+    )
+
+    // The client can then decode the presentation
+    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
+   // expect(fulfillment).toMatchObject()
+   expect(fulfillment).toMatchObject({
+    "vp":{
+       "holder": issuer.did
+    },
+    "sub": issuer.did,
+    "credential_fulfillment":{
+       "manifest_id":"KYCAMLManifest",
+       "descriptor_map":[
+          {
+             "id":"proofOfIdentifierControlVP",
+             "format":"jwt_vc",
+             "path":"$.presentation.credential[0]"
+          }
+       ]
+    },
+    "verifiableCredential":[
+       {
+          "vc":{
+             "issuer":{
+                "id": issuer.did
+             }
+          },
+          "credentialSubject":{
+             "id": subjectDid.subject,
+             "KYCAMLAttestation":{
+                "type":"KYCAMLAttestation",
+                "process":"https://verite.id/definitions/processes/kycaml/0.0.1/usa"
+             }
+          },
+          "issuer":{
+             "id": issuer.did
+          },
+          "type":[
+             "VerifiableCredential",
+             "KYCAMLCredential"
+          ],
+          "@context":[
+             "https://www.w3.org/2018/credentials/v1",
+             {
+                "@vocab":"https://verite.id/identity/"
+             }
+          ]
+       },
+       {
+          "vc":{
+             "issuer":{
+                "id": issuer.did
+             }
+          },
+          "credentialSubject":{
+             "id": subjectDid.subject,
+             "CreditScoreAttestation":{
+                "type":"CreditScoreAttestation",
+                "score":700,
+                "scoreType":"Credit Score",
+                "provider":"Experian"
+             }
+          },
+          "issuer":{
+             "id": issuer.did
+          },
+          "type":[
+             "VerifiableCredential",
+             "CreditScoreCredential"
+          ],
+          "@context":[
+             "https://www.w3.org/2018/credentials/v1",
+             {
+                "@vocab":"https://verite.id/identity/"
+             }
+          ]
+       }
+    ],
+    "holder": issuer.did,
+    "type":[
+       "VerifiablePresentation",
+       "CredentialFulfillment"
+    ],
+    "@context":[
+       "https://www.w3.org/2018/credentials/v1"
+    ]
+ })
+    })
+
+})
+
