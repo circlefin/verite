@@ -9,6 +9,7 @@ import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
+import { kycAmlCredentialTypeName } from "../fixtures/types"
 
 import type {
   DecodedCredentialApplication,
@@ -55,6 +56,7 @@ describe("issuance", () => {
       issuer,
       credentialApplication,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 
@@ -149,6 +151,7 @@ describe("issuance", () => {
       issuer,
       credentialApplication,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 

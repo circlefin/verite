@@ -11,6 +11,7 @@ import {
 import { kycPresentationDefinition } from "../../../lib/verifier/presentation-definitions"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
+import { kycAmlCredentialTypeName } from "../../fixtures/types"
 
 describe("buildPresentationSubmission", () => {
   it("builds a Presentation Submission", async () => {
@@ -25,7 +26,8 @@ describe("buildPresentationSubmission", () => {
     const encodedCredential = await buildAndSignVerifiableCredential(
       issuer,
       didKey,
-      kycAmlAttestationFixture
+      kycAmlAttestationFixture,
+      kycAmlCredentialTypeName
     )
     const credential = await decodeVerifiableCredential(encodedCredential)
 

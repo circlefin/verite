@@ -1,9 +1,10 @@
 import {
   CreditScoreAttestation,
-  KYCAMLAttestation
+  ProcessApprovalAttestation
 } from "../../types/Attestations"
 
-export const kycAmlAttestationFixture: KYCAMLAttestation = {
+//TODO
+export const kycAmlAttestationFixture: ProcessApprovalAttestation = {
   type: "KYCAMLAttestation",
   process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
   approvalDate: new Date().toJSON()

@@ -20,6 +20,10 @@ import {
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
+import {
+  credentiaScoreCredentialTypeName,
+  kycAmlCredentialTypeName
+} from "../../fixtures/types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 import type {
@@ -47,6 +51,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 
@@ -92,7 +97,8 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       application,
-      creditScoreAttestationFixture
+      creditScoreAttestationFixture,
+      credentiaScoreCredentialTypeName
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -139,6 +145,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 
@@ -183,7 +190,8 @@ describe("Submission validator", () => {
     const fulfillment = await buildAndSignFulfillment(
       issuer,
       application,
-      creditScoreAttestationFixture
+      creditScoreAttestationFixture,
+      credentiaScoreCredentialTypeName
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1
@@ -230,6 +238,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 
@@ -276,6 +285,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 
@@ -322,6 +332,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 
@@ -373,6 +384,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 
@@ -423,6 +435,7 @@ describe("Submission validator", () => {
       issuer,
       application,
       kycAmlAttestationFixture,
+      kycAmlCredentialTypeName,
       { credentialStatus: revocationListFixture }
     )
 

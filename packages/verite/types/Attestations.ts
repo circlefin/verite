@@ -4,20 +4,13 @@ import type { PostalAddress } from "schema-dts"
  * This is a union type for the possible types of attestations.
  */
 export type Attestation =
-  | KYCAMLAttestation
-  | KYBPAMLAttestation
+  | ProcessApprovalAttestation
   | CreditScoreAttestation
   | AddressOwner
   | CounterpartyAccountHolder
 
-export type KYCAMLAttestation = {
-  type: "KYCAMLAttestation"
-  process: string
-  approvalDate: string
-}
-
-export type KYBPAMLAttestation = {
-  type: "KYBPAMLAttestation"
+export type ProcessApprovalAttestation = {
+  type: string
   process: string
   approvalDate: string
 }
@@ -30,14 +23,14 @@ export type CreditScoreAttestation = {
 }
 
 export type AddressOwner = {
-  type: "AddressOwner"
+  type: "AddressOwnerAttestation"
   chain: string
   address: string
   proof: string
 }
 
 export type CounterpartyAccountHolder = {
-  type: "CounterpartyAccountHolder"
+  type: "CounterpartyAccountHolderAttestation"
   legalName: string
   address: Omit<PostalAddress, "@type"> & { type: "PostalAddress" }
   accountNumber: string

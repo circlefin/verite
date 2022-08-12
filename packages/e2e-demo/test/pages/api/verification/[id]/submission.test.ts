@@ -9,7 +9,8 @@ import {
   randomDidKey,
   decodeCredentialApplication,
   buildKycVerificationOffer,
-  buildCreditScoreVerificationOffer
+  buildCreditScoreVerificationOffer,
+  attestationToCredentialType
 } from "verite"
 
 import {
@@ -162,10 +163,12 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
 
   const decodedApplication = await decodeCredentialApplication(application)
 
+  const userAttestation = buildAttestationForUser(user, manifest)
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     decodedApplication,
-    buildAttestationForUser(user, manifest)
+    userAttestation,
+    attestationToCredentialType(userAttestation.type),
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)

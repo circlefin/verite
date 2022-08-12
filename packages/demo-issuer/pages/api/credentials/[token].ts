@@ -69,7 +69,8 @@ export default async function credentials(
   const presentation = await buildAndSignFulfillment(
     issuer,
     application,
-    attestation
+    attestation,
+    "KYCAMLCredential" // TODO
   )
 
   // Response

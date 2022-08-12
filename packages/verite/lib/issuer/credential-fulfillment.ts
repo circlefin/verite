@@ -21,47 +21,58 @@ import type {
   CreatePresentationOptions
 } from "did-jwt-vc/src/types"
 
+const VERIFIABLE_CREDENTIAL_TYPE = "VerifiableCredential"
 
-const typeMap = new Map<string, string>([
-  ["KYCAMLAttestation", "KYCAMLCredential"],
-  ["KYBPAMLAttestation", "KYBPAMLCredential"],
-  ["CreditScoreAttestation", "CreditScoreCredential"],
-  ["AddressOwner", "AddressOwnerCredential"],
-  ["CounterpartyAccountHolder", "CounterpartyAccountHolderCredential"]
-])
-
+const DEFAULT_CONTEXT = [
+  "https://www.w3.org/2018/credentials/v1",
+  { "@vocab": "https://verite.id/identity/" }
+]
 /**
  * Build a VerifiableCredential containing an attestation for the given holder.
  */
 export async function buildAndSignVerifiableCredential(
   signer: Issuer,
   subject: string | DidKey,
-  attestation: Attestation,
+  attestation: Attestation | Attestation[],
+  credentialType: string | string[],
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
-  const type = attestation["type"].toString()
-  const credentialType = typeMap.get(type)
-  const subjectId = isString(subject) ? subject : subject.subject
 
-  const vcPayload: CredentialPayload = Object.assign(
-    {
-      "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        { "@vocab": "https://verite.id/identity/" }
-      ],
-      type: ["VerifiableCredential", credentialType],
-      credentialSubject: {
+  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL_TYPE]
+  const subjectId = isString(subject) ? subject : subject.subject
+  if (Array.isArray(credentialType)) {
+    const newTypes = credentialType.filter(c => c !== VERIFIABLE_CREDENTIAL_TYPE)
+    finalCredentialTypes.push(...newTypes)
+  } else {
+    if (credentialType !== VERIFIABLE_CREDENTIAL_TYPE) {
+      finalCredentialTypes.push(credentialType)
+    }
+  }
+  let attsns: any[] | any
+  if (Array.isArray(attestation)) {
+    attsns = attestation.map((att) => {
+      return {
         id: subjectId,
-        [type]: attestation
-      },
+        [att["type"].toString()]: att
+      }
+    })
+  } else {
+    attsns = {
+      id: subjectId,
+      [attestation["type"].toString()]: attestation
+    }
+  }
+  const vcPayload = Object.assign(
+    {
+      "@context": DEFAULT_CONTEXT,
+      type: finalCredentialTypes,
+      credentialSubject: attsns,
       issuanceDate: new Date(),
       issuer: { id: signer.did }
     },
     payload
   )
-
-  console.log(JSON.stringify(vcPayload))
 
   return encodeVerifiableCredential(vcPayload, signer, options)
 }
@@ -72,7 +83,8 @@ export async function buildAndSignVerifiableCredential(
 export async function buildAndSignFulfillment(
   signer: Issuer,
   application: DecodedCredentialApplication,
-  attestation: Attestation,
+  attestation: Attestation | Attestation[],
+  credentialType: string | string[],
   payload: Partial<CredentialPayload> = {},
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
@@ -80,7 +92,9 @@ export async function buildAndSignFulfillment(
     signer,
     application.holder,
     attestation,
-    payload
+    credentialType,
+    payload,
+    options
   )
 
   const encodedPresentation = await encodeVerifiablePresentation(

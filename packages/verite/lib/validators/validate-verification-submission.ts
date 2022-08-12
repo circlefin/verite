@@ -166,7 +166,7 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
   }
 }
 
-async function validateCredentialAgainstSchema(
+async function validateCredentialAgainstSchema(// TODO
   credentialMap: Map<string, Verifiable<W3CCredential>[]>,
   descriptors?: InputDescriptor[],
   knownSchemas?: Record<string, Record<string, unknown>>
@@ -192,6 +192,7 @@ async function validateCredentialAgainstSchema(
       )
     }
 
+    // TODO: if multiple attestations per credential, modify here
     credentials?.forEach((credential) => {
       const type = credential.type[credential.type.length - 1]
       validateAttestationSchema(credential.credentialSubject[type], schema)
@@ -311,9 +312,9 @@ export async function validateVerificationSubmission(
   /**
    * Validate that each credential matches the expected schema
    */
-  await validateCredentialAgainstSchema(
+  /*await validateCredentialAgainstSchema(
     credentialMap,
     definition.input_descriptors,
     options?.knownSchemas
-  )
+  )*/
 }

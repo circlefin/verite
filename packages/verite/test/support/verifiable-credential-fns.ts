@@ -6,6 +6,9 @@ import {
   decodeVerifiableCredential,
   randomDidKey
 } from "../../lib/utils"
+import {
+  attestationToCredentialType
+} from "../../lib/utils/attestation-registry"
 import { creditScoreAttestationFixture } from "../fixtures/attestations"
 
 import type { Verifiable, W3CCredential } from "../../types/DidJwt"
@@ -18,8 +21,11 @@ export async function generateVerifiableCredential(): Promise<
   const jwt = await buildAndSignVerifiableCredential(
     signer,
     signer.did,
-    creditScoreAttestationFixture
+    creditScoreAttestationFixture,
+    attestationToCredentialType(creditScoreAttestationFixture.type)
   )
 
   return decodeVerifiableCredential(jwt)
 }
+
+

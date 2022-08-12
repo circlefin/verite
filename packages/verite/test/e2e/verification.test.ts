@@ -16,6 +16,7 @@ import {
 } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
+import { kycAmlCredentialTypeName } from "../fixtures/types"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
 
 describe("verification", () => {
@@ -77,6 +78,7 @@ async function getClientVerifiableCredential(
     issuer,
     application,
     kycAmlAttestationFixture,
+    kycAmlCredentialTypeName,
     { credentialStatus: revocationListFixture }
   )
 

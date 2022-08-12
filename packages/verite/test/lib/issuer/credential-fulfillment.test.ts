@@ -17,6 +17,7 @@ import {
 } from "../../../lib/utils"
 import { RevocationList2021Status } from "../../../types"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
+import { kycAmlCredentialTypeName } from "../../fixtures/types"
 
 describe("buildAndSignVerifiableCredential", () => {
   it("builds a valid credential application", async () => {
@@ -35,6 +36,7 @@ describe("buildAndSignVerifiableCredential", () => {
       issuer,
       subjectDid,
       attestation,
+      kycAmlCredentialTypeName,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
@@ -85,6 +87,7 @@ describe("buildAndSignVerifiableCredential", () => {
       issuer,
       subjectDid,
       attestation,
+      kycAmlCredentialTypeName,
       { credentialStatus }
     )
 
@@ -122,7 +125,8 @@ describe("buildAndSignFulfillment", () => {
     const encodedFulfillment = await buildAndSignFulfillment(
       issuer,
       application,
-      attestation
+      attestation,
+      kycAmlCredentialTypeName
     )
 
     // The client can then decode the presentation

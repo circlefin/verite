@@ -67,7 +67,6 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
     `${process.env.NEXT_PUBLIC_BASEURL}/api/callback`, // statusUrl
     [process.env.NEXT_PUBLIC_ISSUER_DID] // trusted authorities
   )
-  console.log(JSON.stringify(presentationRequest))
   return res.status(200).json(presentationRequest)
 }
 
