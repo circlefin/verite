@@ -9,7 +9,7 @@ sidebar_position: 0
 
 Verite presents an open, shared, interoperable architecture for identity and trust in the global crypto financial ecosystem. It unites several identity standards to enable scalable, reliable, privacy-preserving ways to leverage identity and to ensure regulatory compliance when engaging in blockchain and smart contract activity.
 
-Technical barriers have challenged progress on identity protocols throughout the history of the internet, but these barriers have diminished through technical advancements in cryptography and blockchains which deliver new trust and transaction architectures. Verite's collection of decentralized identity protocols have become possible and practical.
+Technical barriers have challenged progress on identity protocols throughout the history of the internet, but these barriers have diminished through technical advancements in cryptography and blockchains which deliver new trust and transaction architectures. Verite's collection of decentralized identity protocols have become possible and practical. 
 
 Misaligned incentives and entrenched business models have also hindered progress on identity standards. But now strong economic incentives exist: powerful new markets built on blockchains enable everyone around the world to connect, transact, invest, and generally engage in a shared global economy. But unlike the internet of content, global finance is heavily regulated to protect consumers and prevent financial crime, and any identity model must also enable individuals and institutions to comply accordingly.
 
