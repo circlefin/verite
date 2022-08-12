@@ -9,7 +9,7 @@ import {
   buildAndSignMultiVcFulfillment,
   buildAndSignVerifiableCredential
 } from "../../../lib/issuer/credential-fulfillment"
-import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
+import { buildCreditScoreManifest, buildKycAmlManifest, buildManifest } from "../../../lib/issuer/credential-manifest"
 import {
   buildIssuer,
   decodeVerifiableCredential,
@@ -19,9 +19,10 @@ import {
 import { RevocationList2021Status } from "../../../types"
 import { creditScoreAttestationFixture, kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { creditScoreCredentialTypeName, kycAmlCredentialTypeName } from "../../fixtures/types"
+import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("buildAndSignVerifiableCredential", () => {
-  it("builds a valid credential application", async () => {
+  it("builds and signs a verifiable credential", async () => {
     // Map Issuer DID to Issuer for signing
     const issuerDid = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
@@ -101,17 +102,57 @@ describe("buildAndSignVerifiableCredential", () => {
       statusListCredential: "https://example.com/credentials/status/3"
     })
   })
+
+  it("builds and signs a verifiable credential with multiple attestations", async () => {
+    const issuerDid = randomDidKey(randomBytes)
+    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
+    const subjectDid = randomDidKey(randomBytes)
+    const attestations = [kycAmlAttestationFixture, creditScoreAttestationFixture]
+
+    const encodedVC = await buildAndSignVerifiableCredential(
+      issuer,
+      subjectDid,
+      attestations,
+      "HybridCredential"
+    )
+
+    const fulfillment = await decodeVerifiableCredential(encodedVC)
+
+    expect(fulfillment).toMatchObject({
+      credentialSubject: [
+         {
+          id: subjectDid.subject,
+          KYCAMLAttestation:{
+               type: "KYCAMLAttestation",
+               process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+               approvalDate: kycAmlAttestationFixture.approvalDate
+            }
+         },
+         {
+            id: subjectDid.subject,
+            CreditScoreAttestation:{ 
+               type: "CreditScoreAttestation",
+               score: 700,
+               scoreType: "Credit Score",
+               provider: "Experian"
+            },
+         }
+      ],
+      issuer: { id: issuer.did },
+      type: [ "VerifiableCredential", "HybridCredential"],
+      "@context": [
+         "https://www.w3.org/2018/credentials/v1",
+         {
+            "@vocab": "https://verite.id/identity/"
+         }
+      ]
+   })
+  })
 })
 
 describe("buildAndSignFulfillment", () => {
   it("works", async () => {
-    // We need an Issuer, Credential Application, the credential claims or attestations
-    // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
-
-    const credentialIssuer = { id: issuer.did, name: "Verite" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
+    const { manifest, issuer } = await generateManifestAndIssuer("kyc")
 
     const subjectDid = randomDidKey(randomBytes)
     const options = {}
@@ -185,69 +226,15 @@ describe("buildAndSignFulfillment", () => {
       }
     })
   })
-})
 
-describe("buildAndSignMultipleCredentials", () => {
-  it("works", async () => {
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
-    const subjectDid = randomDidKey(randomBytes)
-    const attestations = [kycAmlAttestationFixture, creditScoreAttestationFixture]
-
-    const encodedVC = await buildAndSignVerifiableCredential(
-      issuer,
-      subjectDid,
-      attestations,
-      "HybridCredential"
-    )
-
-    const fulfillment = await decodeVerifiableCredential(encodedVC)
-
-    expect(fulfillment).toMatchObject({
-      credentialSubject: [
-         {
-          id: subjectDid.subject,
-          KYCAMLAttestation:{
-               type: "KYCAMLAttestation",
-               process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-               approvalDate: kycAmlAttestationFixture.approvalDate
-            }
-         },
-         {
-            id: subjectDid.subject,
-            CreditScoreAttestation:{ 
-               type: "CreditScoreAttestation",
-               score: 700,
-               scoreType: "Credit Score",
-               provider: "Experian"
-            },
-         }
-      ],
-      issuer: { id: issuer.did },
-      type: [ "VerifiableCredential", "HybridCredential"],
-      "@context": [
-         "https://www.w3.org/2018/credentials/v1",
-         {
-            "@vocab": "https://verite.id/identity/"
-         }
-      ]
-   })
-  })
-})
-
-describe("buildAndSignMultipleVCFulfillment", () => {
-  it("works", async () => {
+  it("builds and signs fulfillment with multiple VCs", async () => {
     // We need an Issuer, Credential Application, the credential claims or attestations
     // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
-    const credentialIssuer = { id: issuer.did, name: "Verite" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
 
     const subjectDid = randomDidKey(randomBytes)
     const options = {}
-
+    const { manifest, issuer } = await generateManifestAndIssuer("hybrid")
 
     const attestation1 = kycAmlAttestationFixture
     const attestation2 = creditScoreAttestationFixture
@@ -299,7 +286,7 @@ describe("buildAndSignMultipleVCFulfillment", () => {
     },
     "sub": issuer.did,
     "credential_fulfillment":{
-       "manifest_id":"KYCAMLManifest",
+       "manifest_id":"HybridManifest",
        "descriptor_map":[
           {
              "id":"proofOfIdentifierControlVP",
@@ -375,7 +362,7 @@ describe("buildAndSignMultipleVCFulfillment", () => {
        "https://www.w3.org/2018/credentials/v1"
     ]
  })
-    })
-
+  })
 })
+
 

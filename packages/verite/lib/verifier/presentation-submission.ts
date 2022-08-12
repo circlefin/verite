@@ -23,11 +23,11 @@ export async function buildPresentationSubmission(
     id: uuidv4(),
     definition_id: presentationDefinition.id,
     descriptor_map: presentationDefinition.input_descriptors.map<DescriptorMap>(
-      (d) => {
+      (d, i) => {
         return {
           id: d.id,
           format: "jwt_vc",
-          path: `$.verifiableCredential[0]`
+          path: `$.verifiableCredential[${i}]`
         }
       }
     )

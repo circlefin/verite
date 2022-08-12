@@ -15,9 +15,6 @@ import type {
   PresentationDefinition,
 } from "../../types"
 
-
-
-
 // Note: tracking issue in PEx spec saying it must be UUID
 export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
   "ProofOfControlPresentationDefinition"
@@ -26,7 +23,7 @@ export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
  * Helper function for common properties between both KYC and Credit Score
  * Manifests.
  */
-function buildManifest(
+export function buildManifest(
   manifestId: string,
   issuer: CredentialIssuer,
   outputDescriptors: OutputDescriptor[]
