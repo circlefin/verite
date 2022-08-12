@@ -1,5 +1,10 @@
 import { ValidationError } from "../errors"
 
+export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreManifest"
+export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLManifest"
+export const CREDIT_SCORE_CREDENTIAL = "CreditScoreCredential"
+export const KYCAML_ATTESTATION_CREDENTIAL = "KYCAMLCredential"
+
 function instantiate1(attestationName: string): KnownAttestationInfo {
   return {     
     type: `${attestationName}`,
@@ -68,7 +73,6 @@ export function credentialTypeToAttestations(credentialType: string): KnownAttes
   const attrs = (!Array.isArray(attestationType)) ? [attestationType] : attestationType
   return attrs.map((a) => getAttestionInformation(a))
 }
-
 
 const typeMap = new Map<string, string>([
   ["KYCAMLAttestation", "KYCAMLCredential"],

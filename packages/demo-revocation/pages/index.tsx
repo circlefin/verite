@@ -9,6 +9,7 @@ import {
   decodeVerifiableCredential,
   generateRevocationList,
   isRevoked,
+  KYCAML_ATTESTATION_CREDENTIAL,
   randomDidKey,
   RevocableCredential,
   RevocationListCredential,
@@ -59,12 +60,9 @@ const issueCredential = async (
   const subject = randomDidKey(randomBytes)
 
   // Stubbed out credential data
-  const attestation: KYCAMLAttestation = {
-    type: "KYCAMLAttestation",
-    process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-    approvalDate: new Date().toISOString()
-  }
+  const attestation: KYCAMLAttestation = getSampleKycAmlAttestation()
 
+  const credentialType = KYCAML_ATTESTATION_CREDENTIAL
   /**
    * Note that the `statusListCredential` should be a URL that resolves to the
    * Revocation List Credential.
@@ -81,6 +79,7 @@ const issueCredential = async (
     issuer,
     subject,
     attestation,
+    credentialType,
     { credentialStatus }
   )
 
@@ -278,4 +277,7 @@ export default function Home(): JSX.Element {
       </main>
     </div>
   )
+}
+function getSampleKycAmlAttestation(): import("verite").ProcessApprovalAttestation {
+  throw new Error("Function not implemented.")
 }

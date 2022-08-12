@@ -6,7 +6,10 @@ import {
   Attestation,
   buildIssuer,
   CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
-  KYCAML_ATTESTATION_MANIFEST_ID
+  KYCAML_ATTESTATION_MANIFEST_ID,
+  getSampleKycAmlAttestation,
+  getSampleCreditScoreAttestation,
+  KYCAML_ATTESTATION_CREDENTIAL
 } from "verite"
 
 export default async function credentials(
@@ -47,18 +50,9 @@ export default async function credentials(
   const manifestId = application.credential_application.manifest_id
   let attestation: Attestation
   if (manifestId === KYCAML_ATTESTATION_MANIFEST_ID) {
-    attestation = {
-      type: "KYCAMLAttestation",
-      process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-      approvalDate: new Date().toISOString()
-    }
+    attestation = getSampleKycAmlAttestation()
   } else if (manifestId === CREDIT_SCORE_ATTESTATION_MANIFEST_ID) {
-    attestation = {
-      type: "CreditScoreAttestation",
-      score: 90,
-      scoreType: "Credit Score",
-      provider: "Experian"
-    }
+    attestation = getSampleCreditScoreAttestation(90)
   } else {
     // Unsupported Credential Manifest
     res.status(500)
@@ -70,7 +64,7 @@ export default async function credentials(
     issuer,
     application,
     attestation,
-    "KYCAMLCredential" // TODO
+    KYCAML_ATTESTATION_CREDENTIAL
   )
 
   // Response

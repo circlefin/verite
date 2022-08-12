@@ -405,6 +405,7 @@ describe("Submission validator", () => {
       clientVC
     )
 
+    // TODO!!!
     // Change the Schema URL, and return a 404
     nock("https://verite.id").get("/MISSING_SCHEMA").reply(400)
     verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =

@@ -2,13 +2,13 @@ import Ajv from "ajv"
 
 import { ValidationError } from "../errors"
 
-import type { Attestation } from "../../types"
+import type { Attestation, Verifiable, W3CCredential } from "../../types"
 export { findSchemaById } from "./schemas"
 
 const ajv = new Ajv()
 
 export function validateAttestationSchema(
-  attestation: Attestation,
+  attestation: Attestation | Verifiable<W3CCredential>,
   schema: Record<string, unknown>
 ): void {
   if (!attestation) {

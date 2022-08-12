@@ -1,16 +1,5 @@
 import type { PostalAddress } from "schema-dts"
 
-/*
-enum AttestationNames {
-  "KYCAMLAttestation",
-  "KYBPAMLAttestation",
-  "EntityAccInvAttestation",
-  "IndivAccInvAttestation",
-  "CreditScoreAttestation",
-  "AddressOwnerAttestation",
-  "CounterpartyAccountHolderAttestation"
-}*/
-
  /**
   * This is a union type for the possible types of attestations.
   */
@@ -29,7 +18,6 @@ export type ProcessApprovalAttestation = {
   approvalDate: string
 }
 
-// TODO
 export type KYCAMLAttestation = ProcessApprovalAttestation
 
 export type KYBPAMLAttestation = ProcessApprovalAttestation

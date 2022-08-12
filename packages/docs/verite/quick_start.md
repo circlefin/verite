@@ -17,7 +17,7 @@ The entire Verite library is housed in a single monorepo called `verite`. To ins
 
 `npm i verite`
 
-or 
+or
 
 `yarn add verite`
 
@@ -58,13 +58,15 @@ const attestation = {
   process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
   approvalDate: new Date().toISOString()
 }
+const credentialType = "KYCAMLCredential"
 
 //  The issuer is created from the issuer key, and the credential is issued
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 const presentation = await buildAndSignFulfillment(
   issuer,
   decodedApplication,
-  attestation
+  attestation,
+  credentialType
 )
 
 //  As with the application, the verifiable presentation (which contains the credential)

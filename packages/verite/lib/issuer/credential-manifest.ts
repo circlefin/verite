@@ -1,3 +1,10 @@
+import {
+  CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
+  KYCAML_ATTESTATION_MANIFEST_ID,
+  CREDIT_SCORE_CREDENTIAL,
+  KYCAML_ATTESTATION_CREDENTIAL,
+} from "verite"
+
 import { credentialTypeToAttestations } from "../utils"
 
 import type {
@@ -5,14 +12,12 @@ import type {
   CredentialManifest,
   EntityStyle,
   OutputDescriptor,
-  PresentationDefinition
+  PresentationDefinition,
 } from "../../types"
 
 
-export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreManifest"
-export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLManifest"
-export const CREDIT_SCORE_CREDENTIAL = "CreditScoreCredential"
-export const KYCAML_ATTESTATION_CREDENTIAL = "KYCAMLCredential"
+
+
 // Note: tracking issue in PEx spec saying it must be UUID
 export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
   "ProofOfControlPresentationDefinition"

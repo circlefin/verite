@@ -3,7 +3,7 @@ import jsonpath from "jsonpath"
 
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, credentialTypeToAttestations, decodeVerifiablePresentation, getAttestionInformation, isExpired } from "../utils"
+import { asyncSome, credentialTypeToAttestations, decodeVerifiablePresentation, isExpired } from "../utils"
 import { findSchemaById, validateAttestationSchema } from "./validate-schema"
 
 import type {
@@ -180,15 +180,9 @@ async function validateCredentialAgainstSchema(
   for await (const descriptor of descriptors) {
     const credentials = credentialMap.get(descriptor.id)
 
-    credentials?.forEach((credential) => {
-      const type = credential.type[credential.type.length - 1]
-      const attestationInfos = credentialTypeToAttestations(type)
-      attestationInfos.forEach(async (a) => {
-        const attType = a.type
-        const attSchema = a.schema
-        const theSchema = await findSchema(knownSchemas, attSchema)
-        validateAttestationSchema(credential.credentialSubject[attType], theSchema)
-      })
+    credentials?.forEach(async (credential) => {
+        const theSchema = await findSchema(knownSchemas, descriptor.schema[0].uri)
+        validateAttestationSchema(credential, theSchema)
     })
   }
 }

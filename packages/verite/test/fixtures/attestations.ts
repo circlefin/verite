@@ -1,20 +1,9 @@
-import { getAttestionInformation } from "../../lib/utils/attestation-registry"
+import { getSampleKycAmlAttestation, getSampleCreditScoreAttestation } from "../../lib/utils"
 import {
   CreditScoreAttestation,
-  ProcessApprovalAttestation
+  KYCAMLAttestation
 } from "../../types/Attestations"
 
-const kycInfo = getAttestionInformation("KYCAMLAttestation") //TODO
-export const kycAmlAttestationFixture: ProcessApprovalAttestation = {
-  type: kycInfo.type,
-  process: kycInfo.process!,
-  approvalDate: new Date().toJSON()
-}
+export const kycAmlAttestationFixture: KYCAMLAttestation = getSampleKycAmlAttestation()
 
-const creditScopeInfo = getAttestionInformation("CreditScoreAttestation") // TODO
-export const creditScoreAttestationFixture: CreditScoreAttestation = {
-  type: creditScopeInfo.type,
-  score: 700,
-  scoreType: "Credit Rating",
-  provider: "Experian"
-}
+export const creditScoreAttestationFixture: CreditScoreAttestation = getSampleCreditScoreAttestation(700)
