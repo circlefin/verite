@@ -18,6 +18,8 @@ import type {
 } from "../../types"
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
+const DEFINITION_PREFIX = '#/definitions/'
+
 type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
   knownSchemas?: Record<string, Record<string, unknown>>
 }
@@ -179,12 +181,40 @@ async function validateCredentialAgainstSchema(
   // iterate over all input descriptors to find the relevant credentials
   for await (const descriptor of descriptors) {
     const credentials = credentialMap.get(descriptor.id)
-
-    credentials?.forEach(async (credential) => {
-        const theSchema = await findSchema(knownSchemas, descriptor.schema[0].uri)
-        validateAttestationSchema(credential, theSchema)
+    const theSchema = await findSchema(knownSchemas, descriptor.schema[0].uri)
+    credentials?.forEach((credential) => {
+      const atts = credential.credentialSubject
+      const attestations = (!Array.isArray(atts)) ? [atts] : atts
+      const attributeName = parseAttributeName(theSchema)
+      const matchingAttestations = attestations.filter((a) => {
+        return attributeName in a
+      }).map((attr) => {
+        return attr[attributeName]
+      })
+      matchingAttestations.forEach((a) => {
+        validateAttestationSchema(a, theSchema)
+      }) 
     })
   }
+}
+
+function parseAttributeName(theSchema: Record<string, unknown>) : string {
+  let attrName
+  // eslint-disable-next-line no-prototype-builtins
+  if (theSchema.hasOwnProperty('default')) {
+    const defaultProp = theSchema['default'] as any
+    // eslint-disable-next-line no-prototype-builtins
+    if (defaultProp.hasOwnProperty('$ref')) {
+      const expectedAttr = defaultProp['$ref'] as string
+      if (expectedAttr.startsWith(DEFINITION_PREFIX)) {
+        attrName = expectedAttr.slice(DEFINITION_PREFIX.length)
+      }
+    }
+  }
+  if (!attrName) {
+    throw new ValidationError('Unexpected schema format')
+  }
+  return attrName
 }
 
 async function findSchema(knownSchemas: Record<string, Record<string, unknown>> | undefined, schemaUri: string): Promise<Record<string, unknown>> {
