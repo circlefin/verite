@@ -1,3 +1,5 @@
+import { credentialTypeToAttestations } from "../utils"
+
 import type {
   CredentialIssuer,
   CredentialManifest,
@@ -6,8 +8,11 @@ import type {
   PresentationDefinition
 } from "../../types"
 
+
 export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreManifest"
 export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLManifest"
+export const CREDIT_SCORE_CREDENTIAL = "CreditScoreCredential"
+export const KYCAML_ATTESTATION_CREDENTIAL = "KYCAMLCredential"
 // Note: tracking issue in PEx spec saying it must be UUID
 export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
   "ProofOfControlPresentationDefinition"
@@ -81,12 +86,13 @@ export function buildKycAmlManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
+  const attestationInfo = credentialTypeToAttestations(KYCAML_ATTESTATION_CREDENTIAL)[0]
   const outputDescriptors: OutputDescriptor[] = [
     {
       id: "kycAttestationOutput",
       schema: [
         {
-          uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+          uri: attestationInfo.schema
         }
       ],
       name: `Proof of KYC from ${issuer.name}`,
@@ -133,12 +139,13 @@ export function buildCreditScoreManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
+  const attestationInfo = credentialTypeToAttestations(CREDIT_SCORE_CREDENTIAL)[0]
   const outputDescriptors: OutputDescriptor[] = [
     {
       id: "creditScoreAttestationOutput",
       schema: [
         {
-          uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation"
+          uri: attestationInfo.schema
         }
       ],
       name: `Proof of Credit Score from ${issuer.name}`,

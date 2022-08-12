@@ -3,7 +3,7 @@ import jsonpath from "jsonpath"
 
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
+import { asyncSome, credentialTypeToAttestations, decodeVerifiablePresentation, getAttestionInformation, isExpired } from "../utils"
 import { findSchemaById, validateAttestationSchema } from "./validate-schema"
 
 import type {
@@ -166,7 +166,7 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
   }
 }
 
-async function validateCredentialAgainstSchema(// TODO
+async function validateCredentialAgainstSchema(
   credentialMap: Map<string, Verifiable<W3CCredential>[]>,
   descriptors?: InputDescriptor[],
   knownSchemas?: Record<string, Record<string, unknown>>
@@ -180,24 +180,31 @@ async function validateCredentialAgainstSchema(// TODO
   for await (const descriptor of descriptors) {
     const credentials = credentialMap.get(descriptor.id)
 
-    const schemaUri = descriptor.schema[0].uri
-    const schema = knownSchemas?.[schemaUri]
-      ? knownSchemas?.[schemaUri]
-      : await findSchemaById(schemaUri)
-
-    if (!schema) {
-      throw new ValidationError(
-        "Unknown Schema",
-        `Unable to load schema: ${descriptor.schema[0].uri}`
-      )
-    }
-
-    // TODO: if multiple attestations per credential, modify here
     credentials?.forEach((credential) => {
       const type = credential.type[credential.type.length - 1]
-      validateAttestationSchema(credential.credentialSubject[type], schema)
+      const attestationInfos = credentialTypeToAttestations(type)
+      attestationInfos.forEach(async (a) => {
+        const attType = a.type
+        const attSchema = a.schema
+        const theSchema = await findSchema(knownSchemas, attSchema)
+        validateAttestationSchema(credential.credentialSubject[attType], theSchema)
+      })
     })
   }
+}
+
+async function findSchema(knownSchemas: Record<string, Record<string, unknown>> | undefined, schemaUri: string): Promise<Record<string, unknown>> {
+  const schema = knownSchemas?.[schemaUri]
+    ? knownSchemas?.[schemaUri]
+    : await findSchemaById(schemaUri)
+
+  if (!schema) {
+    throw new ValidationError(
+      "Unknown Schema",
+      `Unable to load schema: ${schemaUri}`
+    )
+  }
+  return schema
 }
 
 /**
@@ -312,9 +319,9 @@ export async function validateVerificationSubmission(
   /**
    * Validate that each credential matches the expected schema
    */
-  /*await validateCredentialAgainstSchema(
+  await validateCredentialAgainstSchema(
     credentialMap,
     definition.input_descriptors,
     options?.knownSchemas
-  )*/
+  )
 }
