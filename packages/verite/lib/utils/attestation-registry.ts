@@ -1,22 +1,23 @@
 import { ValidationError } from "../errors"
 
-export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreManifest"
-export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLManifest"
-export const CREDIT_SCORE_CREDENTIAL = "CreditScoreCredential"
-export const KYCAML_ATTESTATION_CREDENTIAL = "KYCAMLCredential"
+export const KYCAML_ATTESTATION = "KYCAMLAttestation"
+export const KYBPAML_ATTESTATION = "KYBPAMLAttestation"
+export const CREDIT_SCORE_ATTESTATION = "CreditScoreAttestation"
+export const ENTITY_ACC_INV_ATTESTATION = "EntityAccInvAttestation"
+export const INDIV_ACC_INV_ATTESTATION = "IndivAccInvAttestation"
+export const ADDRESS_OWNER_ATTESTATION = "AddressOwnerAttestation"
+export const COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION = "CounterpartyAccountHolder"
 
-function instantiate1(attestationName: string): KnownAttestationInfo {
+export const VERIFIABLE_CREDENTIAL = "VerifiableCredential"
+
+export const VERITE_SCHEMAS_PREFIX = "https://verite.id/definitions/schemas/0.0.1"
+export const VERITE_PROCESSES_PREFIX = "https://verite.id/definitions/processes"
+
+function instantiate(attestationName: string, process?: string): KnownAttestationInfo {
   return {     
     type: `${attestationName}`,
-    schema: `https://verite.id/definitions/schemas/0.0.1/${attestationName}`,
-  }
-}
-
-function instantiate(attestationName: string, process: string): KnownAttestationInfo {
-  return {     
-    type: `${attestationName}`,
-    schema: `https://verite.id/definitions/schemas/0.0.1/${attestationName}`,
-    process: process
+    schema: `${VERITE_SCHEMAS_PREFIX}/${attestationName}`,
+      ...(process && {process: process})
   }
 }
 
@@ -27,18 +28,13 @@ export type KnownAttestationInfo = {
 }
 
 const allAttestations = new Map<string, KnownAttestationInfo>([
-  ["KYCAMLAttestation", instantiate("KYCAMLAttestation", "https://verite.id/definitions/processes/kycaml/0.0.1/usa")],
-  ["EntityAccInvAttestation", instantiate("EntityAccInvAttestation", "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-accinv-all-checks")],
-  ["IndivAccInvAttestation", instantiate("IndivAccInvAttestation", "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-indiv-accinv-all-checks")],
-  ["CreditScoreAttestation", instantiate1("CreditScoreAttestation")],
-  ["AddressOwnerAttestation", instantiate1("AddressOwnerAttestation")],
-  ["CounterpartyAccountHolder", instantiate1("CounterpartyAccountHolder")],
+  [KYCAML_ATTESTATION, instantiate(KYCAML_ATTESTATION, `${VERITE_PROCESSES_PREFIX}/kycaml/0.0.1/usa`)],
+  [ENTITY_ACC_INV_ATTESTATION, instantiate(ENTITY_ACC_INV_ATTESTATION, `${VERITE_PROCESSES_PREFIX}/kycaml/0.0.1/generic--usa-entity-accinv-all-checks`)],
+  [INDIV_ACC_INV_ATTESTATION, instantiate(INDIV_ACC_INV_ATTESTATION, `${VERITE_PROCESSES_PREFIX}}/kycaml/0.0.1/generic--usa-indiv-accinv-all-checks`)],
+  [CREDIT_SCORE_ATTESTATION, instantiate(CREDIT_SCORE_ATTESTATION)],
+  [ADDRESS_OWNER_ATTESTATION, instantiate(ADDRESS_OWNER_ATTESTATION)],
+  [COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION, instantiate(COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION)],
 ])
-
-
-export function getKnownProcessApprovalAttestations(): Map<string, KnownAttestationInfo> {
-  return allAttestations
-}
 
 export function getAttestionInformation(attestationName: string): KnownAttestationInfo {
   const attestationInfo = allAttestations.get(attestationName)
@@ -50,42 +46,3 @@ export function getAttestionInformation(attestationName: string): KnownAttestati
   }
   return attestationInfo
 }
-
-// TODO: non-normative
-export function attestationToCredentialType(attestationType: string): string[] {
-  const types = ["VerifiableCredential"]
-  const result = typeMap.get(attestationType)
-  if (result) {
-    types.push(result)
-  }
-  return types
-}
-
-// TODO: non-normative
-export function credentialTypeToAttestations(credentialType: string): KnownAttestationInfo[] {
-  const attestationType = credentialToAttestationMap.get(credentialType)
-  if (!attestationType) {
-    throw new ValidationError(
-      "Unknown Credential Type",
-      `Unknown Credential Type: ${credentialType}`
-    )
-  }
-  const attrs = (!Array.isArray(attestationType)) ? [attestationType] : attestationType
-  return attrs.map((a) => getAttestionInformation(a))
-}
-
-const typeMap = new Map<string, string>([
-  ["KYCAMLAttestation", "KYCAMLCredential"],
-  ["KYBPAMLAttestation", "KYBPAMLCredential"],
-  ["CreditScoreAttestation", "CreditScoreCredential"],
-  ["AddressOwnerAttestation", "AddressOwnerCredential"],
-  ["CounterpartyAccountHolderAttestation", "CounterpartyAccountHolderCredential"]
-])
-
-const credentialToAttestationMap = new Map<string, string | string[]>([
-  ["KYCAMLCredential", "KYCAMLAttestation"],
-  ["KYBPAMLCredential", "KYBPAMLAttestation"],
-  ["CreditScoreCredential", "CreditScoreAttestation"],
-  ["AddressOwnerCredential", "AddressOwnerAttestation"],
-  ["CounterpartyAccountHolderCredential", "CounterpartyAccountHolderAttestation"]
-])

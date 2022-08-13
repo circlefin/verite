@@ -1,6 +1,7 @@
 import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 
+import { VERIFIABLE_CREDENTIAL } from "../utils/attestation-registry"
 import {
   encodeVerifiableCredential,
   encodeVerifiablePresentation
@@ -21,7 +22,6 @@ import type {
   CreatePresentationOptions
 } from "did-jwt-vc/src/types"
 
-const VERIFIABLE_CREDENTIAL_TYPE = "VerifiableCredential"
 
 const DEFAULT_CONTEXT = [
   "https://www.w3.org/2018/credentials/v1",
@@ -39,13 +39,13 @@ export async function buildAndSignVerifiableCredential(
   options?: CreateCredentialOptions
 ): Promise<JWT> {
 
-  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL_TYPE]
+  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL]
   const subjectId = isString(subject) ? subject : subject.subject
   if (Array.isArray(credentialType)) {
-    const newTypes = credentialType.filter(c => c !== VERIFIABLE_CREDENTIAL_TYPE)
+    const newTypes = credentialType.filter(c => c !== VERIFIABLE_CREDENTIAL)
     finalCredentialTypes.push(...newTypes)
   } else {
-    if (credentialType !== VERIFIABLE_CREDENTIAL_TYPE) {
+    if (credentialType !== VERIFIABLE_CREDENTIAL) {
       finalCredentialTypes.push(credentialType)
     }
   }

@@ -2,13 +2,11 @@ import { randomBytes } from "crypto"
 
 import { buildAndSignVerifiableCredential } from "../../lib/issuer/credential-fulfillment"
 import {
+  attestationToCredentialType,
   buildIssuer,
   decodeVerifiableCredential,
   randomDidKey
 } from "../../lib/utils"
-import {
-  attestationToCredentialType
-} from "../../lib/utils/attestation-registry"
 import { creditScoreAttestationFixture } from "../fixtures/attestations"
 
 import type { Verifiable, W3CCredential } from "../../types/DidJwt"

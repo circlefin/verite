@@ -1,11 +1,4 @@
-import {
-  CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
-  KYCAML_ATTESTATION_MANIFEST_ID,
-  CREDIT_SCORE_CREDENTIAL,
-  KYCAML_ATTESTATION_CREDENTIAL,
-} from "verite"
-
-import { credentialTypeToAttestations } from "../utils"
+import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_ATTESTATION_MANIFEST_ID, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_ATTESTATION_MANIFEST_ID } from "../utils"
 
 import type {
   CredentialIssuer,
@@ -88,7 +81,8 @@ export function buildKycAmlManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
-  const attestationInfo = credentialTypeToAttestations(KYCAML_ATTESTATION_CREDENTIAL)[0]
+
+  const attestationInfo = getAttestionInformation(KYCAML_ATTESTATION)
   const outputDescriptors: OutputDescriptor[] = [
     {
       id: "kycAttestationOutput",
@@ -141,7 +135,7 @@ export function buildCreditScoreManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
-  const attestationInfo = credentialTypeToAttestations(CREDIT_SCORE_CREDENTIAL)[0]
+  const attestationInfo = getAttestionInformation(CREDIT_SCORE_ATTESTATION)
   const outputDescriptors: OutputDescriptor[] = [
     {
       id: "creditScoreAttestationOutput",
