@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Wallet Implementation Guide"
+sidebar_label: "Identity Wallet Implementation Guide"
 sidebar_position: 8
 ---
 
@@ -7,7 +7,7 @@ sidebar_position: 8
 
 **Contact**: [verite-dev@centre.io](mailto:verite-dev@centre.io)
 
-This guide is written for developers seeking to integrate Verite into custodial or non-custodial wallets.
+This guide is written for developers seeking to integrate the "wallet-bound" Verite flows and data models into custodial or non-custodial wallets.  What follows is best understood as a checklist for adding "identity wallet" capabilities (handling Verifiable Credentials natively and as flexible as built-for-purpose identity wallets do) to an existing mobile wallet, whether non-custodial, custodial, or semi-custodial (MPC, multi-sig, etc). 
 
 ## Minimal Wallet Requirements - Summary
 
@@ -19,15 +19,15 @@ This guide is written for developers seeking to integrate Verite into custodial 
 
 ## Architectural Foundations
 
-Verite uses a decentralized identity architecture, in which the individual (subject/holder) directly requests and receives credentials from an issuer, storing them in a digital wallet. In this model, individuals decide when and with whom they want to share their credentials, referred to as verifiers, or more generally, relying parties.
+Verite uses a decentralized identity architecture, in which the individual (subject/holder) directly requests and receives credentials from an issuer, storing them in a wallet that governs a unique and long-lasting DID. In this model, individuals decide when and with whom they want to share their credentials, referred to as verifiers, or more generally, relying parties. In some architectures and use-cases, these counterparties may know the wallet and its user *only* by a DID, or by a DID and the contents of credentials managed by the wallet.
 
 ![Identity relationship between issuer, subject, verifier, and registry](/img/design-overview/identity-relationships.png)
 
-The relying party verifies the credential, without necessarily needing to contact the issuer, through an extensible mechanism enabled by the VC spec. The verification process is designed to be privacy-respecting and cryptographically secure.
+The relying party verifies the credential, without necessarily needing to contact the issuer, through an extensible mechanism enabled by the VC specification. The verification process is designed to be maximally privacy-respecting and cryptographically secure.
 
 ### Concepts Overview
 
-Verite's basis is the [W3C Verifiable Credentials (VCs) Data Model](https://www.w3.org/TR/vc-data-model). A credential is a claim made by an issuer about an individual (subject), and a verifiable credential is a cryptographically secure wrapper around the credential.
+Verite's basis is the [W3C Verifiable Credentials (VCs) Data Model](https://www.w3.org/TR/vc-data-model). A credential is a claim made by an issuer about an individual (subject), and a verifiable credential is a cryptographically secure wrapper around that credential enabling verification and handling by common, standards-based libraries such as JWT tooling.
 
 Following is a list of concepts used in Verite.
 
@@ -44,7 +44,7 @@ See the [list of specifications and spec-conforming libraries](/verite/appendix/
 
 ## Credential Flows
 
-The credential flows demonstrate use of a non-custodial credential and identifier wallet, but are easily adapted to hosted wallets and different flows.
+The credential flows demonstrate use of a non-custodial credential and identifier wallet, but are easily adapted to hosted wallets, combination crypto+identity wallets, and various variations on the described flow. See the wallet-bound variants of the [issuance](https://verite.id/verite/patterns/issuance-flow#issuance-flow) and [verification](https://verite.id/verite/patterns/verification-flow#verification-flow) flow sections elsewhere in the docs for context. 
 
 ### Issuance Flow
 
@@ -53,7 +53,7 @@ The credential flows demonstrate use of a non-custodial credential and identifie
 This flow enables a subject to send prerequisite information to the issuer before credential issuance. Prerequisites include:
 
 - subject-controlled identifier (e.g. decentralized identifier) the credential should be issued to, along with a proof of control of the identifier
-- other input credentials requested by the issuer (optional -- not used in initial verite flows)
+- optionally, an issuer may request input, in verifiable credential form or otherwise (not currently represented in the verite sample implementation or documentation)
 
 The process is initiated by the wallet holder scanning a QR code, which allows the wallet to determine the input requirements, asking for consent before sending (typically including cryptographically signed proof). The issuer validates the request, issues a credential to the identifier specified by the subject, and returns the credential
 
