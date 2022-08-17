@@ -1,5 +1,5 @@
 ---
-sidebar_label: "Identity Wallet Implementation Guide"
+sidebar_label: "Implementing a full-featured Verite Identity Wallet"
 sidebar_position: 8
 ---
 
@@ -12,7 +12,7 @@ This guide is written for developers seeking to integrate the "wallet-bound" Ver
 ## Minimal Wallet Requirements - Summary
 
 - Generate (or supply) and manage decentralized identifiers for credential subject
-  - did:key recommended for initial versions
+  - did:key (offchain, local-only) is recommended for staging/test-net development
 - Generate VC/VP-JWT signatures
 - Support credential storage and retrieval
 - Support credential issuance and exchange flows described in this document
