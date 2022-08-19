@@ -123,6 +123,9 @@ Verite mandates a unique identifier for each credential to facilitate cross-orga
 ```
     "credentialSubject": {
       "id": "did:pkh:eip155:1:0xb9ff5450db13a154d3cc40eb57a619e59bb7d8b9",
+```
+Note that an explanatory prefix before the address, specified in the cross-chain [did:pkh](https://github.com/w3c-ccg/did-pkh/blob/main/did-pkh-method-draft.md#examples) specification based on the [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md#test-cases) address URN scheme, shows this to be an Ethereum (`eip155`) Mainnet (`1`) address. This same convention is used for CACAO receipts of offchain signature-based authentication event, i.e. "web3 wallet connections".  
+```
       "EntityAccInvAttestation": {
         "approvalDate": "2022-08-18T21:25:57.285Z",
         "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-accinv-all-checks",
