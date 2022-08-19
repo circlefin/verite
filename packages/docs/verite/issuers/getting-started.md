@@ -51,7 +51,6 @@ Take a minute to ask yourself some difficult strategic questions:
 * Retail wallets tend to have long, slow upgrade cycles and governance processes.  Conversely, many companies contract out to wallet firms to provide highly-customized "provisioned wallets" to their employees for managing company funds. As Verite capabilities are standardized and rolled out as common APIs, these may be a better match for "testing the waters"
 * Depending on which exact credentials you issue and your risk tolerance, you might have different requirements for identity-assurance, sybil-resistance/uniqueness, deduplication, or liveness/biometric binding.  I.e., if your use-case requires you to be certain that the authorized employee is authorizing each transaction of a company wallet, you may want to limit your support to wallets with built-in per-transaction or per-session biometrics, etc.
 
-
 Over time, we will be updating and detailing this guidance, but in the meantime, feel free to reach out to [the Verite team at Centre.io](mailto:verite@centre.io) for guidance on where to start and which wallets are already supporting these interfaces.
 
 ## Architectural options

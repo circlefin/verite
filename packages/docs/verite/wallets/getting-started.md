@@ -13,8 +13,7 @@ So where do verifiable credentials fit in? What is the reasonable engineering pa
 Some key questions to ask yourself:
 1. What use-cases do you want to start with? [Overview of use-cases](#Use-cases)
 1. Do your users (or a reliably-gated subset of them) have ways to verifiably prove exclusive control? [Identity Assurance](#Identity-assurance) 
-1. What is your users' and user-cases' tolerance for extending the wallet? [Extensability and User Trust](#extensability-and-user-trust)
-1. What kind of logging/record-keeping can your wallet support? [Liability and Auditing Considerations](#liability-and-auditing-considerations)
+1. What is your users' and user-cases' tolerance for extending the wallet? [Extensability and User Trust](#extensaband-auditing-considerations)
 1. Where does Verite sit in your more exotic or complex wallet configurations? [Architectural options](#architectural-options)
 1. Are you interested in supporting general-purpose Verifiable Credentials, and a Verite profile within that, or would you rather start small with ONLY Verite credentials? [Supporting Verite versus Supporting All Verifiable Credentials](#Verite-Support-versus-VC-Support) 
 1. Interested in starting even smaller? Some Verite products facilitate [Easy Integration Paths](#Easy-Integration-Paths), with full SDKs coming soon.
@@ -42,11 +41,6 @@ Different use-cases have different requirements and risk tolerances for "identit
 
 Finding the simplest engineering path to meet the required non-technical requirements is often complicated by user experience, and specifically user tolerance for extending their software or altering their user experience.  If your users are comfortable opting into an "experimental" branch of software, or using a "private build" of a provisioned/custom wallet, this is a lesser consideration; if they have to apply browser extensions or wallet plug-ins, this can drastically change the business calculus. For this reason, Verite is working on multiple form-factors and integration points in parallel, to give wallets multiple options.
 
-
-## Liability and Auditing Considerations
-
-TBD
-
 ## Architectural Options
 
 In today's crypto space, wallets are not homogeneous; the division of concerns between cryptography, [confidential per-user] storage, multi-device sync, and key custody can lead to complex arrangements of outsourcing and white-labeling.  A solution that only works for monadic wallets would not have legs in 2022, let alone 2025.
@@ -63,10 +57,22 @@ Similarly, we have worked hard to keep direct access to keys optional to allow t
 
 ## Verite-Support-versus-VC-Support 
 
-TBD
+Verite could be the first you're hearing about Verifiable Credentials, or Verite could be one use-case in a broader Verifiable Credential strategy you've already been researching.  Verite implementers to date have fallen at various points on the spectrum between these two poles, so we try to stay honest about the complexity of incrementalizing these efforts.
+
+For implementers interested primarily or exclusively in Verite, we generally advise a "minimum viable complexity" approach: if you are targeting one or two use cases as an end unto itself, you can greatly simplify the implementation by thinking of Verifiable Credentials as a JWT you get from one domain and send to another with user consent. Much of the complexity of filtering and handling VCs differently by type can be hard-coded; much of the complexity of validating issuers can be outsourced to commercial or public verifiers, which allow this to parameterized and rely on registries of trusted issuers.
+
+At the other end of the spectrum, it could be argued that implementing VCs today requires something like a "choice of stack".  Verifiable Credential tooling is still in a somewhat early phase of its adoption; while there are ways to cross-verify and translate between different "flavors" of Verifiable Credentials, most open-source implementations and tools available today have one or two "native" verifiable credential encoding forms and secondary support for others. That said, Verite is built to what we believe to be the more promising and backwards-compatible stacks, all of which is open-source and most of which is governed and iterated through the [Decentralized Identity Foundation](https://identity.foundation/). Wallets that handle JWT Verifiable Credentials with JSON Schema semantics get access to many emerging ecosystems and open platforms like Microsoft's Entra credentialing platform, the "Web5" efforts led by Block, employment credentials from Workday and Affinidi, etc.  Open-source tooling from Spruce Systems, TBD, Transmute, and ConsenSys are good places to start if you are interested in general-purpose Verifiable Credential tooling that can be easily configured to handle Verite Credentials and turnkey revocation/status publication infrastructure.
 
 ## Easy Integration Paths
 
 At present, the two main options to consider are whether you want to attest to the controller of an *blockchain address* or to the controller of a specific *wallet*, which may control multiple addresses in addition to a DID (wallet identifier).  For more information, read the [identifier scheme considerations](https://verite.id/verite/patterns/identifier#wallet-based-versus-address-based-holder-identification-schemes) and compare the [address-bound credential exchange flow](https://verite.id/verite/patterns/verification-flow#address-bound-verification-flow) and the [wallet-bound credential exchange flow](https://verite.id/verite/patterns/verification-flow#wallet-bound-verification-flow).
 
 To make this more concrete, we have provided examples of simple and compound address-bound credentials. Click here for an example of wallet-bound credential, meant to be issued to and "presented" verifiably by a DID-capable wallet.
+
+## Liability and Auditing Considerations
+
+Wallets do not hold outsized responsibility in Verite, thanks to the tamper-proofing inherent in Verifiable Credentials (integrity checks can be performed at issuance and again at presentation using standard JWT tooling, since Verite VCs are simply garden-variety JWT tokens). 
+
+Few Verifiable Credentials use-cases necessitate logging of VC events. Depending on the credential-type, though, composite wallets (i.e., wallet integrating both crypto capabilities and identity/credential-management features) may want to log issuance events, particularly for credentials with a short shelf-life that need to be periodically reissued; more generally, they may want to filter verifiable credentials and handle them differently by type and/or by issuer.
+
+Composite wallets, on the other hand, may well need more involved logging to vouchsafe their internal separation of concerns. For example, if a crypto wallet delegates identity functions or signing rights to a dapp, both dapp and wallet should log the delegation event in a replayable compact form (our lightweight implementation models this in the form of CACAO receipts). Similarly, if verifiable credentials are stored anywhere outside the controlling wallet proper, this delegation (and storage events and perhaps even retrieval events over which the wallet has signed) should be logged.
