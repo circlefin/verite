@@ -57,7 +57,7 @@ describe("buildPresentationSubmission", () => {
         descriptor_map: [
           {
             format: "jwt_vc",
-            id: "kycaml_input",
+            id: "KYCAMLCredential",
             path: "$.verifiableCredential[0]"
           }
         ]
@@ -84,15 +84,15 @@ describe("buildPresentationSubmission", () => {
     // presentation request requirements.
 
     // Notice that the presentation definition has an input with the
-    // id "kycaml_input". The submission will satisfy it with the value at the
+    // id "KYCAMLCredential". The submission will satisfy it with the value at the
     // given path.
     expect(presentationDefinition.input_descriptors[0].id).toEqual(
-      "kycaml_input"
+      "KYCAMLCredential"
     )
 
     // The submission has a matching identifier
     expect(submission.presentation_submission.descriptor_map[0].id).toEqual(
-      "kycaml_input"
+      "KYCAMLCredential"
     )
     // The submission defines the path to find it
     const path = submission.presentation_submission.descriptor_map[0].path

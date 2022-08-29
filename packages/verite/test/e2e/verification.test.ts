@@ -46,7 +46,7 @@ describe("verification", () => {
 
     expect(submission.presentation_submission!.descriptor_map).toEqual([
       {
-        id: "kycaml_input",
+        id: "KYCAMLCredential",
         format: "jwt_vc",
         path: "$.verifiableCredential[0]"
       }

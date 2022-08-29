@@ -24,6 +24,7 @@ import {
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getCredentialsWithManifests } from "../lib/manifestRegistry"
 import { saveRevocationStatus } from "../lib/storage"
+import { getValueOrLastArrayEntry } from "../lib/utils"
 import { CredentialAndManifest, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 
@@ -36,20 +37,25 @@ const isEnabled = (
   inputDescriptor: InputDescriptor,
   revoked: boolean
 ): boolean => {
-  // Check schemas match
-  const credentialSchema = manifest.output_descriptors[0].schema[0].uri
-  const inputSchema = inputDescriptor.schema[0].uri
+  // for now, we are assuming the credential type is the same as the input
+  // descriptor id. This assumption may need to change in the future.
+  const credentialType = getValueOrLastArrayEntry(credential.type)
+  const inputDescriptorId = inputDescriptor.id
+  console.log(
+    `credential type = ${credentialType}, input descriptor id = ${inputDescriptorId}`
+  )
 
-  if (credentialSchema !== inputSchema) {
+  if (credentialType !== inputDescriptorId) {
     return false
   }
-
+  console.log("checkpt1")
   /**
    * If we know the credential is revoked, it should not be selectable.
    */
   if (revoked) {
     return false
   }
+  console.log("checkpt2")
 
   /**
    * If the credential is expired, do not enable it in the list
@@ -57,6 +63,7 @@ const isEnabled = (
   if (isExpired(credential)) {
     return false
   }
+  console.log("checkpt3")
 
   // Check issuer constraint
   const fields: InputDescriptorConstraintField[] =
@@ -64,13 +71,16 @@ const isEnabled = (
   const patterns: string[] = compact(
     fields.map((f) => get(f, "filter.pattern"))
   )
+  console.log("checkpt4")
 
   if (!patterns.length) {
     return false
   }
+  console.log("checkpt5")
 
   return patterns.some((pattern) => {
     const re = new RegExp(pattern)
+    console.log("checkpt6")
     return re.test(credential.issuer.id)
   })
 }
@@ -112,9 +122,14 @@ const CredentialPicker: NavigationElement = ({ navigation, route }) => {
   }
 
   const renderItem = ({ item }: { item: CredentialAndManifest }) => {
+    console.log("hi1")
     const manifest = item.manifest
     const credential = item.credential
+    console.log("hi2")
+
     const revoked = item.revoked
+    console.log("hi3")
+
     const expired = isExpired(credential)
     const { title, subtitle } = getDisplayProperties(manifest, credential)
 

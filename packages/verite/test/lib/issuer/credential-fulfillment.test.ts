@@ -174,7 +174,7 @@ describe("buildAndSignFulfillment", () => {
           manifest_id: "KYCAMLManifest",
           descriptor_map: [
             {
-              id: "kycAttestationOutput",
+              id: "KYCAMLCredential",
               format: "jwt_vc",
               path: "$.verifiableCredential[0]"
             }
@@ -271,12 +271,12 @@ describe("buildAndSignFulfillment", () => {
        "manifest_id":"HybridManifest",
        "descriptor_map":[
           {
-             "id":"kycAttestationOutput",
+             "id":"KYCAMLCredential",
              "format":"jwt_vc",
              "path":"$.verifiableCredential[0]"
           },
           {
-            "id":"creditScoreAttestationOutput",
+            "id":"CreditScoreCredential",
             "format":"jwt_vc",
             "path":"$.verifiableCredential[1]"
          },

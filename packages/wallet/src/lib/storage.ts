@@ -37,26 +37,16 @@ export const getCredentials = async (): Promise<
 export const saveCredential = async (
   credential: Verifiable<W3CCredential>
 ): Promise<void> => {
-  try {
-  console.log("verite.storage.saveCredential 0")
   const value = await AsyncStorage.getItem("credentials")
-  console.log("verite.storage.saveCredential 1")
   let credentials
   if (value) {
-    console.log("verite.storage.saveCredential 2")
     credentials = JSON.parse(value)
   } else {
-    console.log("verite.storage.saveCredential 3")
     credentials = []
   }
-  console.log("verite.storage.saveCredential 4")
   credentials.push(credential)
-  console.log("verite.storage.saveCredential 5")
 
   return AsyncStorage.setItem("credentials", JSON.stringify(credentials))
-} catch (err) {
-  console.error("verite.storage.saveCredential Erro2")
-}
 }
 
 export const deleteCredential = async (
@@ -98,17 +88,12 @@ export const saveItemInList = async <T>(
   value: T,
   valueKey: string
 ): Promise<void> => {
-  console.log(`saveItemInList 1: key: ${key}, valueKey: ${valueKey}`)
   const rawValue = await AsyncStorage.getItem(key)
-  console.log(`saveItemInList2`)
   let list: Record<string, unknown> = {}
   if (rawValue) {
-    console.log(`saveItemInList 2`)
     list = JSON.parse(rawValue)
   }
-  console.log(`saveItemInList 3`)
   list[valueKey] = value
-  console.log(`saveItemInList4 ${value}`)
   await AsyncStorage.setItem(key, JSON.stringify(list))
 }
 
@@ -119,15 +104,12 @@ export const getItemInList = async <T>(
   key: string,
   valueKey: string
 ): Promise<T | undefined> => {
-  console.log(`verite.storage.getItemInList 0: ${key}, ${valueKey}`)
   const rawValue = await AsyncStorage.getItem(key)
-  console.log("verite.storage.getItemInList 2")
   if (rawValue) {
-    console.log("verite.storage.getItemInList 3")
     const list = JSON.parse(rawValue)
     return list[valueKey]
   } else {
-    console.log("verite.storage.getItemInList 4")
-    console.log(AsyncStorage.getAllKeys)
+    // this may not be an error, as in the case with checking revoked status on credentials
+    console.trace(`Couldn't find value for key ${key} => ${valueKey}`)
   }
 }

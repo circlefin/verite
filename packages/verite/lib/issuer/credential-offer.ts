@@ -1,4 +1,5 @@
 import { buildRequestCommon } from "../submission-requests"
+import { CREDENTIAL_OFFER } from "../utils"
 
 import type { CredentialManifest, CredentialOffer } from "../../types"
 
@@ -14,7 +15,7 @@ export function buildCredentialOffer(
 ): CredentialOffer {
   const request = buildRequestCommon(
     id,
-    "CredentialOffer",
+    CREDENTIAL_OFFER,
     manifest.issuer.id,
     replyUrl
   )

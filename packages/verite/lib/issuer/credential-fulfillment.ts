@@ -13,8 +13,7 @@ import {
   ClaimFormat,
   CredentialSchema
 } from "../../types"
-import { parseClaimFormat } from "../utils"
-import { VERIFIABLE_CREDENTIAL } from "../utils/attestation-registry"
+import { CREDENTIAL_FULFILLMENT, parseClaimFormat, VC_CONTEXT, VERIFIABLE_CREDENTIAL, VERIFIABLE_PRESENTATION, VERITE_VOCAB } from "../utils"
 import {
   encodeVerifiableCredential,
   encodeVerifiablePresentation
@@ -26,10 +25,9 @@ import type {
 } from "did-jwt-vc/src/types"
 
 
-
 const DEFAULT_CONTEXT = [
-  "https://www.w3.org/2018/credentials/v1",
-  { "@vocab": "https://verite.id/identity/" }
+  VC_CONTEXT,
+  { "@vocab": VERITE_VOCAB }
 ]
 /**
  * Build a VerifiableCredential containing an attestation for the given holder.
@@ -122,7 +120,7 @@ export async function buildAndSignFulfillment(
     encodedCredentials,
     signer,
     options,
-    ["VerifiablePresentation", "CredentialFulfillment"],
+    [VERIFIABLE_PRESENTATION, CREDENTIAL_FULFILLMENT],
     {
       credential_fulfillment: {
         id: uuidv4(),
@@ -158,7 +156,7 @@ export async function buildAndSignMultiVcFulfillment(
     encodedCredentials,
     signer,
     options,
-    ["VerifiablePresentation", "CredentialFulfillment"],
+    [VERIFIABLE_PRESENTATION, CREDENTIAL_FULFILLMENT],
     {
       credential_fulfillment: {
         id: uuidv4(),

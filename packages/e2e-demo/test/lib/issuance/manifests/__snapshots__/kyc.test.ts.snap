@@ -59,7 +59,7 @@ Object {
           "text": "Verite KYC Attestation",
         },
       },
-      "id": "kycAttestationOutput",
+      "id": "KYCAMLCredential",
       "name": "Proof of KYC from Verite",
       "schema": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
       "styles": Object {

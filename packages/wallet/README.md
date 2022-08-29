@@ -31,6 +31,16 @@ On Android, you can launch Expo Go and scan the QR code from within Expo Go.
 
 Once you've scanned the code once, you can launch Expo Go and the app will be listed in the "Recently Opened" list.
 
+## Design Notes
+
+The Verite wallet is a sample implementation of core Verite flows, but it makes some simplifications in its initial implementation. PRs to address these limitations are welcome.
+
+1. Manifest input/output descriptor to credential mapping
+   - The wallet assumes manifest input/output descriptor IDs have a 1-1 mapping to Verifiable Credential types. It uses this assumption to look up manifests / credentials for purposes of display and exchange.
+2. Assumes only 1 VC at a time is issued
+
+- The wallet assumes only 1 VC at a time is issued, but note that the main Verite libraries can support issuance/exchange of more than one VC at a time.
+
 ## Contributors
 
 - [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))

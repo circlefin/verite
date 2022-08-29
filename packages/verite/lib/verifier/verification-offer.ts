@@ -1,4 +1,5 @@
 import { buildRequestCommon } from "../submission-requests"
+import { VERIFICATION_REQUEST } from "../utils"
 import {
   creditScorePresentationDefinition,
   kycPresentationDefinition
@@ -16,7 +17,7 @@ export function buildKycVerificationOffer(
   const definition = kycPresentationDefinition(trustedAuthorities)
   const request = buildRequestCommon(
     id,
-    "VerificationRequest",
+    VERIFICATION_REQUEST,
     from,
     replyUrl,
     statusUrl
@@ -46,7 +47,7 @@ export function buildCreditScoreVerificationOffer(
 
   const request = buildRequestCommon(
     id,
-    "VerificationRequest",
+    VERIFICATION_REQUEST,
     from,
     replyUrl,
     statusUrl

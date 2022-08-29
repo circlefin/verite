@@ -52,7 +52,7 @@ describe("buildKycAmlManifest", () => {
       format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
       output_descriptors: [
         {
-          id: "kycAttestationOutput",
+          id: "KYCAMLCredential",
           schema: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
           name: "Proof of KYC from Issuer Inc.",
           description:
@@ -117,7 +117,7 @@ describe("buildCreditScoreManifest", () => {
       format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
       output_descriptors: [
         {
-          id: "creditScoreAttestationOutput",
+          id: "CreditScoreCredential",
           schema: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
           name: "Proof of Credit Score from Issuer Inc.",
           description:

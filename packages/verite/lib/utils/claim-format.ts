@@ -1,8 +1,5 @@
 import { ClaimFormat, ClaimFormatDesignation, InputDescriptorConstraintField, InputDescriptorConstraintSubjectConstraint, PresentationDefinition } from "../../types"
-
-// Note: tracking issue in PEx spec saying it must be UUID
-export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
-  "ProofOfControlPresentationDefinition"
+import { CREDENTIAL_SCHEMA, CREDENTIAL_SUBJECT, EDDSA, HOLDER, ID, PROOF_OF_CONTROL_PRESENTATION_DEF_ID } from "./constants"
 
 
 export function parseClaimFormat(d: ClaimFormatDesignation): ClaimFormat {
@@ -20,9 +17,10 @@ export function parseClaimFormat(d: ClaimFormatDesignation): ClaimFormat {
 }
 
 export function schemaConstraint(schema: string) : InputDescriptorConstraintField {
+
   return {
-    id: "credentialSchema",
-    path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
+    id: CREDENTIAL_SCHEMA,
+    path: [`$.${CREDENTIAL_SCHEMA}.${ID}`, `$.vc.${CREDENTIAL_SCHEMA}.${ID}`],
     filter: {
       type: "string",
       pattern: schema
@@ -40,9 +38,10 @@ export const subjectIsHolderConstraint: InputDescriptorConstraintSubjectConstrai
     }
   ]
 
+
 export const subjectIsHolderField: InputDescriptorConstraintField = {
   id: "subjectId",
-  path: ["$.credentialSubject.id", "$.vc.credentialSubject.id", "$.id"],
+  path: [`$.${CREDENTIAL_SUBJECT}.${ID}`, `$.vc.${CREDENTIAL_SUBJECT}.${ID}`, `$.${ID}`],
   purpose:
     "We need to ensure the holder and the subject have the same identifier"
 }
@@ -53,7 +52,7 @@ export function proofOfControlPresentationDefinition() : PresentationDefinition 
     // which algorithms the Verifier supports for the input.
     format: {
       jwt_vp: {
-        alg: ["EdDSA"]
+        alg: [EDDSA]
       }
     },
     input_descriptors: [
@@ -64,8 +63,8 @@ export function proofOfControlPresentationDefinition() : PresentationDefinition 
           "A VP establishing proof of identifier control over the DID.",
         constraints: {
           fields: [{
-            id: "holder",
-            path: ["$.holder"],
+            id: HOLDER,
+            path: [`$.${HOLDER}`],
             purpose:
               "The VP should contain a DID in the holder, which is the same DID that signs the VP. This DID will be used as the subject of the issued VC"
           }]

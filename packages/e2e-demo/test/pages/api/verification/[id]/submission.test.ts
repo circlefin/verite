@@ -142,7 +142,7 @@ describe("POST /verification/[id]/submission", () => {
       errors: [
         {
           message:
-            "Credential failed to meet criteria specified by input descriptor creditScore_input",
+            "Credential failed to meet criteria specified by input descriptor CreditScoreCredential",
           details:
             "Credential did not match constraint: The Credit Score Attestation requires the field: 'score'."
         }

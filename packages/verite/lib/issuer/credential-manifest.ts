@@ -1,4 +1,4 @@
-import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_ATTESTATION_MANIFEST_ID, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_ATTESTATION_MANIFEST_ID, proofOfControlPresentationDefinition, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
+import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL, CREDIT_SCORE_MANIFEST_ID, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL, KYCAML_MANIFEST_ID, proofOfControlPresentationDefinition, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
 
 import type {
   CredentialIssuer,
@@ -23,10 +23,10 @@ export function buildManifest(
     issuer,
     format: {
       jwt_vc: {
-        alg: ["EdDSA"]
+        alg: [EDDSA]
       },
       jwt_vp: {
-        alg: ["EdDSA"]
+        alg: [EDDSA]
       }
     },
     output_descriptors: outputDescriptors,
@@ -40,7 +40,7 @@ export function buildManifest(
 export function requiresRevocableCredentials(
   manifest: CredentialManifest
 ): boolean {
-  return manifest.id === KYCAML_ATTESTATION_MANIFEST_ID
+  return manifest.id === KYCAML_MANIFEST_ID
 }
 
 /**
@@ -59,7 +59,7 @@ export function buildKycAmlManifest(
   const attestationInfo = getAttestionInformation(KYCAML_ATTESTATION)
   const outputDescriptors: OutputDescriptor[] = [
     {
-      id: "kycAttestationOutput",
+      id: `${KYCAML_CREDENTIAL}`,
       schema: attestationInfo.schema,
       name: `Proof of KYC from ${issuer.name}`,
       description: `Attestation that ${issuer.name} has completed KYC/AML verification for this subject`,
@@ -77,12 +77,12 @@ export function buildKycAmlManifest(
         properties: [
           {
             label: "Process",
-            path: ["$.KYCAMLAttestation.process"],
+            path: [`$.${KYCAML_ATTESTATION}.process`],
             schema: { type: "string" }
           },
           {
             label: "Approved At",
-            path: ["$.KYCAMLAttestation.approvalDate"],
+            path: [`$.${KYCAML_ATTESTATION}.approvalDate`],
             schema: {
               type: "string",
               format: "date-time"
@@ -95,7 +95,7 @@ export function buildKycAmlManifest(
   ]
 
   return buildManifest(
-    KYCAML_ATTESTATION_MANIFEST_ID,
+    KYCAML_MANIFEST_ID,
     issuer,
     outputDescriptors
   )
@@ -108,7 +108,7 @@ export function buildCreditScoreManifest(
   const attestationInfo = getAttestionInformation(CREDIT_SCORE_ATTESTATION)
   const outputDescriptors: OutputDescriptor[] = [
     {
-      id: "creditScoreAttestationOutput",
+      id: CREDIT_SCORE_CREDENTIAL,
       schema: attestationInfo.schema,
       name: `Proof of Credit Score from ${issuer.name}`,
       description: `Attestation that ${issuer.name} has performed a Credit Score check for this subject`,
@@ -117,7 +117,7 @@ export function buildCreditScoreManifest(
           text: `${issuer.name} Risk Score`
         },
         subtitle: {
-          path: ["$.CreditScoreAttestation.scoreType"],
+          path: [`$.${CREDIT_SCORE_ATTESTATION}.scoreType`],
           fallback: "Includes credit score"
         },
         description: {
@@ -126,21 +126,21 @@ export function buildCreditScoreManifest(
         properties: [
           {
             label: "Score",
-            path: ["$.CreditScoreAttestation.score"],
+            path: [`$.${CREDIT_SCORE_ATTESTATION}.score`],
             schema: {
               type: "number"
             }
           },
           {
             label: "Score Type",
-            path: ["$.CreditScoreAttestation.scoreType"],
+            path: [`$.${CREDIT_SCORE_ATTESTATION}.scoreType`],
             schema: {
               type: "string"
             }
           },
           {
             label: "Provider",
-            path: ["$.CreditScoreAttestation.provider"],
+            path: [`$.${CREDIT_SCORE_ATTESTATION}.provider`],
             schema: {
               type: "string"
             }
@@ -152,7 +152,7 @@ export function buildCreditScoreManifest(
   ]
 
   return buildManifest(
-    CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
+    CREDIT_SCORE_MANIFEST_ID,
     issuer,
     outputDescriptors
   )

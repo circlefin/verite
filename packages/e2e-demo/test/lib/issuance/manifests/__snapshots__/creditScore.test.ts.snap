@@ -66,7 +66,7 @@ Object {
           "text": "Verite Risk Score",
         },
       },
-      "id": "creditScoreAttestationOutput",
+      "id": "CreditScoreCredential",
       "name": "Proof of Credit Score from Verite",
       "schema": "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
       "styles": Object {

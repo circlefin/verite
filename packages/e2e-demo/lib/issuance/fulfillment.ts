@@ -1,6 +1,6 @@
 import {
-  CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
-  KYCAML_ATTESTATION_MANIFEST_ID,
+  CREDIT_SCORE_MANIFEST_ID,
+  KYCAML_MANIFEST_ID,
   CredentialManifest,
   Attestation,
   getSampleKycAmlAttestation,
@@ -13,9 +13,9 @@ export function buildAttestationForUser(
   user: User,
   manifest: CredentialManifest
 ): Attestation {
-  if (manifest.id === KYCAML_ATTESTATION_MANIFEST_ID) {
+  if (manifest.id === KYCAML_MANIFEST_ID) {
     return getSampleKycAmlAttestation()
-  } else if (manifest.id === CREDIT_SCORE_ATTESTATION_MANIFEST_ID) {
+  } else if (manifest.id === CREDIT_SCORE_MANIFEST_ID) {
     return getSampleCreditScoreAttestation(user.creditScore)
   }
 }

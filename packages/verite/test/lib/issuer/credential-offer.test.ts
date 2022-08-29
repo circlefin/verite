@@ -34,7 +34,7 @@ describe("buildCredentialOffer", () => {
           format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
           output_descriptors: [
             {
-              id: "kycAttestationOutput",
+              id: "kyc_vc",
               schema: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
               name: "Proof of KYC from Issuer Inc.",
               description:

@@ -96,7 +96,7 @@ describe("verification offer", () => {
                   }
                 }
               },
-              id: "kycaml_input",
+              id: "KYCAMLCredential",
               name: "Proof of KYC",
               purpose:
                 "Please provide a valid credential from a KYC/AML issuer"

@@ -18,7 +18,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
     format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
     output_descriptors: [
       {
-        id: "kycAttestationOutput",
+        id: "kyc_vc",
         schema: KYC_ATTESTATION_SCHEMA,
         name: "Proof of KYC from Issuer Inc.",
         description:

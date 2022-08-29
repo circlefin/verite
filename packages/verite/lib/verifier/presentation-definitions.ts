@@ -3,9 +3,7 @@ import {
   InputDescriptorConstraintStatusDirective
 } from "../../types/InputDescriptor"
 import { PresentationDefinition } from "../../types/PresentationDefinition"
-import { schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
-
-
+import { CREDENTIAL_SUBJECT, CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL, CREDIT_SCORE_PRESENTATION_DEFINITION, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL, KYCAML_PRESENTATION_DEFINITION, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
 
 /**
  * Build a Presentation Definition requesting a KYC/AML Attestation
@@ -23,9 +21,9 @@ export function kycPresentationDefinition(
   ).map((key) => {
     return {
       path: [
-        `$.credentialSubject.KYCAMLAttestation.${key}`,
-        `$.vc.credentialSubject.KYCAMLAttestation.${key}`,
-        `$.KYCAMLAttestation.${key}`
+        `$.${CREDENTIAL_SUBJECT}.${KYCAML_ATTESTATION}.${key}`,
+        `$.vc.${CREDENTIAL_SUBJECT}.${KYCAML_ATTESTATION}.${key}`,
+        `$.${KYCAML_ATTESTATION}.${key}`
       ],
       purpose: `The KYC/AML Attestation requires the field: '${key}'.`,
       predicate: "required",
@@ -36,8 +34,10 @@ export function kycPresentationDefinition(
   })
 
   fields.push(subjectIsHolderField)
-
-  const schema = schemaConstraint("https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation")
+  
+  
+  const attestationInfo = getAttestionInformation(KYCAML_ATTESTATION)
+  const schema = schemaConstraint(attestationInfo.schema)
   fields.push(schema)
 
   if (trustedAuthorities.length > 0) {
@@ -45,10 +45,10 @@ export function kycPresentationDefinition(
   }
 
   return {
-    id: "KYCAMLPresentationDefinition",
+    id: KYCAML_PRESENTATION_DEFINITION,
     input_descriptors: [
       {
-        id: "kycaml_input",
+        id: KYCAML_CREDENTIAL,
         name: "Proof of KYC",
         purpose: "Please provide a valid credential from a KYC/AML issuer",
         constraints: {
@@ -62,10 +62,10 @@ export function kycPresentationDefinition(
         },
         format: {
           jwt_vp: {
-            alg: ["EdDSA"]
+            alg: [EDDSA]
           },
           jwt_vc: {
-            alg: ["EdDSA"]
+            alg: [EDDSA]
           }
         }
       }
@@ -91,9 +91,9 @@ export function creditScorePresentationDefinition(
   ).map((key) => {
     return {
       path: [
-        `$.credentialSubject.CreditScoreAttestation.${key}`,
-        `$.vc.credentialSubject.CreditScoreAttestation.${key}`,
-        `$.CreditScoreAttestation.${key}`
+        `$.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.${key}`,
+        `$.vc.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.${key}`,
+        `$.${CREDIT_SCORE_ATTESTATION}.${key}`
       ],
       purpose: `The Credit Score Attestation requires the field: '${key}'.`,
       predicate: "required",
@@ -105,7 +105,8 @@ export function creditScorePresentationDefinition(
 
   fields.push(subjectIsHolderField)
 
-  const schema = schemaConstraint("https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation")
+  const attestationInfo = getAttestionInformation(CREDIT_SCORE_ATTESTATION)
+  const schema = schemaConstraint(attestationInfo.schema)
   fields.push(schema)
 
   if (trustedAuthorities.length > 0) {
@@ -115,9 +116,9 @@ export function creditScorePresentationDefinition(
   if (minimumCreditScore) {
     fields.push({
       path: [
-        "$.credentialSubject.CreditScoreAttestation.score",
-        "$.vc.credentialSubject.CreditScoreAttestation.score",
-        "$.CreditScoreAttestation.score"
+        `$.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.score`,
+        `$.vc.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.score`,
+        `$.${CREDIT_SCORE_ATTESTATION}.score`
       ],
       purpose: `We can only verify Credit Score credentials that are above ${minimumCreditScore}.`,
       filter: {
@@ -128,10 +129,10 @@ export function creditScorePresentationDefinition(
   }
 
   return {
-    id: "CreditScorePresentationDefinition",
+    id: CREDIT_SCORE_PRESENTATION_DEFINITION,
     input_descriptors: [
       {
-        id: "creditScore_input",
+        id: CREDIT_SCORE_CREDENTIAL,
         name: "Proof of Credit Score",
         purpose: "Please provide a valid credential from a Credit Score issuer",
         constraints: {
@@ -145,10 +146,10 @@ export function creditScorePresentationDefinition(
         },
         format: {
           jwt_vp: {
-            alg: ["EdDSA"]
+            alg: [EDDSA]
           },
           jwt_vc: {
-            alg: ["EdDSA"]
+            alg: [EDDSA]
           }
         }
       }

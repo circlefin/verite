@@ -115,12 +115,8 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
   },
   "output_descriptors": [
     {
-      "id": "kycAttestationOutput",
-      "schema": [
-        {
-          "uri": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-        }
-      ],
+      "id": "kyc_vc",
+      "schema": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
       "name": "Proof of KYC from Verite",
       "description": "Attestation that Verite has completed KYC/AML verification for this subject",
       "display": {
@@ -288,7 +284,7 @@ Details:
     "definition_id": "KYCAMLPresentationDefinition",
     "descriptor_map": [
       {
-        "id": "kycaml_input",
+        "id": "kycaml_vc",
         "format": "jwt_vc",
         "path": "$.presentation.verifiableCredential[0]"
       }

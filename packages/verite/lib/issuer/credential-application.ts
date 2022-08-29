@@ -14,8 +14,11 @@ import {
 } from "../../types"
 import {
   buildIssuer,
+  CREDENTIAL_APPLICATION,
   decodeVerifiablePresentation,
-  encodeVerifiablePresentation
+  encodeVerifiablePresentation,
+  HOLDER,
+  VERIFIABLE_PRESENTATION
 } from "../utils"
 
 
@@ -42,7 +45,7 @@ export async function buildCredentialApplication(
             return {
               id: d.id,
               format: ClaimFormat.JwtVp,
-              path: `$.holder`
+              path: `$.${HOLDER}`
             }
           }
         )
@@ -65,7 +68,7 @@ export async function buildCredentialApplication(
     undefined,
     client,
     options,
-    ["VerifiablePresentation", "CredentialApplication"],
+    [VERIFIABLE_PRESENTATION, CREDENTIAL_APPLICATION],
     {
       credential_application: credentialApplication
     }

@@ -329,7 +329,7 @@ Note: In the Presentation Object that follows (a signed VP in JWT form), the `ve
     "definition_id": "KYCAMLPresentationDefinition",
     "descriptor_map": [
       {
-        "id": "kycaml_input",
+        "id": "kycaml_vc",
         "format": "jwt_vc",
         "path": "$.presentation.verifiableCredential[0]"
       }

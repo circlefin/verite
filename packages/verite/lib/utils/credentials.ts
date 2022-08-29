@@ -6,6 +6,7 @@ import {
 } from "did-jwt-vc"
 
 import { VerificationError } from "../errors"
+import { VC_CONTEXT, VERIFIABLE_PRESENTATION } from "./constants"
 import { didResolver } from "./did-fns"
 
 import type {
@@ -78,6 +79,11 @@ export async function decodeVerifiableCredential(
        })
        const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
        clone.credentialSubject = newCs
+       if (clone.vc) {
+        // delete vc property if it wasn't cleaned up by did-jwt-vc
+        delete clone.vc
+       }
+
        return clone
     }
     return res.verifiableCredential
@@ -104,8 +110,8 @@ export async function encodeVerifiablePresentation(
   const payload = Object.assign(
     {
       vp: {
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
-        type: type ?? ["VerifiablePresentation"],
+        "@context": [VC_CONTEXT],
+        type: type ?? [VERIFIABLE_PRESENTATION],
         verifiableCredential: vcJwtPayload,
         ...extra
       }

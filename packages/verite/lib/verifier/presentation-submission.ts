@@ -8,7 +8,7 @@ import {
   Verifiable,
   W3CCredential
 } from "../../types"
-import { buildIssuer, encodeVerifiablePresentation } from "../utils"
+import { buildIssuer, encodeVerifiablePresentation, PRESENTAION_SUBMISSION, VERIFIABLE_PRESENTATION } from "../utils"
 
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
@@ -39,7 +39,7 @@ export async function buildPresentationSubmission(
     verifiableCredential,
     client,
     options,
-    ["VerifiablePresentation", "PresentationSubmission"],
+    [VERIFIABLE_PRESENTATION, PRESENTAION_SUBMISSION],
     { presentation_submission: presentationSubmission }
   )
 

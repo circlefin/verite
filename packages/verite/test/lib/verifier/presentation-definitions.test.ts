@@ -68,7 +68,7 @@ describe("kycPresentationDefinition", () => {
               }
             }
           },
-          id: "kycaml_input",
+          id: "KYCAMLCredential",
           name: "Proof of KYC",
           purpose: "Please provide a valid credential from a KYC/AML issuer",
           format: {
@@ -165,7 +165,7 @@ describe("kycPresentationDefinition", () => {
               }
             }
           },
-          id: "kycaml_input",
+          id: "KYCAMLCredential",
           name: "Proof of KYC",
           purpose: "Please provide a valid credential from a KYC/AML issuer",
           format: {
