@@ -100,7 +100,7 @@ describe("buildAndSignVerifiableCredential", () => {
       statusListCredential: "https://example.com/credentials/status/3"
     })
   })
-/*
+
   it("builds and signs a verifiable credential with multiple attestations", async () => {
     const issuerDid = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
@@ -144,7 +144,7 @@ describe("buildAndSignVerifiableCredential", () => {
          }
       ]
    })
-  })*/
+  })
 })
 
 describe("buildAndSignFulfillment", () => {

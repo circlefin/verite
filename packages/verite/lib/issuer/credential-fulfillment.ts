@@ -39,7 +39,7 @@ export async function buildAndSignVerifiableCredential(
   subject: string | DidKey,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
-  credentialSchema: CredentialSchema,
+  credentialSchema?: CredentialSchema,
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
@@ -72,13 +72,15 @@ export async function buildAndSignVerifiableCredential(
     {
       "@context": DEFAULT_CONTEXT,
       type: finalCredentialTypes,
-      credentialSchema: credentialSchema,
       credentialSubject: attsns,
       issuanceDate: new Date(),
       issuer: { id: signer.did }
     },
     payload
   )
+  if (credentialSchema) {
+    vcPayload.credentialSchema = credentialSchema
+  }
 
   return encodeVerifiableCredential(vcPayload, signer, options)
 }
