@@ -114,7 +114,7 @@ function validateInputDescriptors(
  * credentials from the submission.
  */
 function mapInputsToDescriptors(
-  submission: DecodedPresentationSubmission | DecodedCredentialApplication,
+  submission: DecodedPresentationSubmission,
   definition?: PresentationDefinition
 ): Map<string, Verifiable<W3CCredential>[]> {
   const descriptorMap = submission.presentation_submission?.descriptor_map ?? []
@@ -181,19 +181,21 @@ async function validateCredentialAgainstSchema(
   // iterate over all input descriptors to find the relevant credentials
   for await (const descriptor of descriptors) {
     const credentials = credentialMap.get(descriptor.id)
-    const theSchema = await findSchema(knownSchemas, descriptor.schema[0].uri)
+    // TODO
+    // const theSchema = await findSchema(knownSchemas, descriptor.schema[0].uri)
     credentials?.forEach((credential) => {
+      //const schema = credential.credentialSchema
       const atts = credential.credentialSubject
       const attestations = (!Array.isArray(atts)) ? [atts] : atts
-      const attributeName = parseAttributeName(theSchema)
-      const matchingAttestations = attestations.filter((a) => {
+      //const attributeName = parseAttributeName(theSchema)
+      /*const matchingAttestations = attestations.filter((a) => {
         return attributeName in a
       }).map((attr) => {
         return attr[attributeName]
       })
       matchingAttestations.forEach((a) => {
         validateAttestationSchema(a, theSchema)
-      }) 
+      }) */
     })
   }
 }

@@ -102,14 +102,20 @@ Object {
     "id": "ProofOfControlPresentationDefinition",
     "input_descriptors": Array [
       Object {
+        "constraints": Object {
+          "fields": Array [
+            Object {
+              "id": "holder",
+              "path": Array [
+                "$.holder",
+              ],
+              "purpose": "We need a signed VP establishing control over the DID in the holder field",
+            },
+          ],
+        },
         "id": "proofOfIdentifierControlVP",
         "name": "Proof of Control Verifiable Presentation",
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
-        "schema": Array [
-          Object {
-            "uri": "https://verite.id/definitions/schemas/0.0.1/ProofOfControl",
-          },
-        ],
       },
     ],
   },
@@ -212,14 +218,20 @@ Object {
     "id": "ProofOfControlPresentationDefinition",
     "input_descriptors": Array [
       Object {
+        "constraints": Object {
+          "fields": Array [
+            Object {
+              "id": "holder",
+              "path": Array [
+                "$.holder",
+              ],
+              "purpose": "We need a signed VP establishing control over the DID in the holder field",
+            },
+          ],
+        },
         "id": "proofOfIdentifierControlVP",
         "name": "Proof of Control Verifiable Presentation",
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
-        "schema": Array [
-          Object {
-            "uri": "https://verite.id/definitions/schemas/0.0.1/ProofOfControl",
-          },
-        ],
       },
     ],
   },

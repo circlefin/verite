@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 
 import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
+import { proofOfControlPresentationDefinition } from "../../../lib/utils"
 import { manifestFixture } from "../../fixtures/manifests"
 describe("buildCredentialOffer", () => {
   it("returns a Credential Offer", () => {
@@ -69,23 +70,7 @@ describe("buildCredentialOffer", () => {
               styles: {}
             }
           ],
-          presentation_definition: {
-            id: "ProofOfControlPresentationDefinition",
-            format: { jwt_vp: { alg: ["EdDSA"] } },
-            input_descriptors: [
-              {
-                id: "proofOfIdentifierControlVP",
-                name: "Proof of Control Verifiable Presentation",
-                purpose:
-                  "A Verifiable Presentation establishing proof of identifier control over the DID.",
-                schema: [
-                  {
-                    uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-                  }
-                ]
-              }
-            ]
-          }
+          presentation_definition: proofOfControlPresentationDefinition()
         }
       }
     }

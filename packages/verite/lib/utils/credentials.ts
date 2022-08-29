@@ -99,17 +99,16 @@ export async function encodeVerifiablePresentation(
   type?: string[],
   extra: Record<string, unknown> = {}
 ): Promise<JWT> {
+  const vcJwtPayload = Array.isArray(vcJwt) ? vcJwt : [vcJwt]
   const payload = Object.assign(
     {
-      sub: subject,
       vp: {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
         type: type ?? ["VerifiablePresentation"],
-        holder: subject,
-        verifiableCredential: [vcJwt].flat()
+        verifiableCredential: vcJwtPayload,
+        ...extra
       }
-    },
-    extra
+    }
   )
   return createVerifiablePresentationJwt(payload, signer, options)
 }
@@ -123,6 +122,17 @@ export async function decodeVerifiablePresentation(
 ): Promise<Verifiable<W3CPresentation> | RevocablePresentation> {
   try {
     const res = await verifyPresentation(vpJwt, didResolver, options)
+    if (res.verifiablePresentation.vp) {
+      // did-jwt-vc leaves properties it doesn't recognize in vp; move them
+      const vpFields = res.verifiablePresentation.vp
+      res.verifiablePresentation = {
+        ...res.verifiablePresentation,
+        ...vpFields
+      }
+      const clone = JSON.parse(JSON.stringify(res.verifiablePresentation))
+      delete clone.vp
+      return clone
+    }
     return res.verifiablePresentation
   } catch (err) {
     throw new VerificationError(

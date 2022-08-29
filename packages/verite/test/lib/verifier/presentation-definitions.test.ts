@@ -45,6 +45,13 @@ describe("kycPresentationDefinition", () => {
                 ],
                 purpose:
                   "We need to ensure the holder and the subject have the same identifier"
+              },
+              {
+                path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
+                filter: {
+                  type: "string",
+                  pattern: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+                }
               }
             ],
             is_holder: [
@@ -62,12 +69,14 @@ describe("kycPresentationDefinition", () => {
           id: "kycaml_input",
           name: "Proof of KYC",
           purpose: "Please provide a valid credential from a KYC/AML issuer",
-          schema: [
-            {
-              required: true,
-              uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+          format: {
+            jwt_vp: {
+              alg: ["EdDSA"]
+            },
+            jwt_vc: {
+              alg: ["EdDSA"]
             }
-          ]
+          }
         }
       ]
     })
@@ -124,6 +133,13 @@ describe("kycPresentationDefinition", () => {
                   "We need to ensure the holder and the subject have the same identifier"
               },
               {
+                path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
+                filter: {
+                  type: "string",
+                  pattern: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+                }
+              },
+              {
                 filter: {
                   pattern: "^did:web:centre.io$|^did:web:example.com$",
                   type: "string"
@@ -148,12 +164,14 @@ describe("kycPresentationDefinition", () => {
           id: "kycaml_input",
           name: "Proof of KYC",
           purpose: "Please provide a valid credential from a KYC/AML issuer",
-          schema: [
-            {
-              required: true,
-              uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+          format: {
+            jwt_vp: {
+              alg: ["EdDSA"]
+            },
+            jwt_vc: {
+              alg: ["EdDSA"]
             }
-          ]
+          }
         }
       ]
     })

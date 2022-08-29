@@ -5,18 +5,19 @@ import {
 import { v4 as uuidv4 } from "uuid"
 
 import {
-  buildIssuer,
-  decodeVerifiablePresentation,
-  encodeVerifiablePresentation
-} from "../utils"
-
-import type {
+  ClaimFormat,
   CredentialManifest,
   DecodedCredentialApplication,
   DescriptorMap,
   DidKey,
   EncodedCredentialApplication
 } from "../../types"
+import {
+  buildIssuer,
+  decodeVerifiablePresentation,
+  encodeVerifiablePresentation
+} from "../utils"
+
 
 /**
  * Generates a Credential Application as response to a Credential Manifest
@@ -30,14 +31,6 @@ export async function buildCredentialApplication(
 ): Promise<EncodedCredentialApplication> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
 
-  const credentialApplication = {
-    id: uuidv4(),
-    manifest_id: manifest.id,
-    format: {
-      jwt_vp: manifest.presentation_definition?.format?.jwt_vp
-    }
-  }
-
   let presentationSubmission
   if (manifest.presentation_definition) {
     presentationSubmission = {
@@ -48,13 +41,24 @@ export async function buildCredentialApplication(
           (d) => {
             return {
               id: d.id,
-              format: "jwt_vp",
-              path: `$.presentation`
+              format: ClaimFormat.JwtVp,
+              path: `$.holder`
             }
           }
         )
     }
   }
+
+  const credentialApplication = {
+    id: uuidv4(),
+    manifest_id: manifest.id,
+    format: { 
+      jwt_vp: manifest.presentation_definition?.format?.jwt_vp
+    },
+    presentation_submission: presentationSubmission
+  }
+
+
 
   const vp = await encodeVerifiablePresentation(
     client.did,
@@ -63,8 +67,7 @@ export async function buildCredentialApplication(
     options,
     ["VerifiablePresentation", "CredentialApplication"],
     {
-      credential_application: credentialApplication,
-      presentation_submission: presentationSubmission
+      credential_application: credentialApplication
     }
   )
 

@@ -28,16 +28,21 @@ export const requestIssuance = async (
 
     try {
       // Decode the VP
+      console.log("verite.issuance.requestIssuance 0")
       const verifiablePresentation = await decodeVerifiablePresentation(text)
 
       // Extract the issued VC
       const credentials = verifiablePresentation.verifiableCredential ?? []
 
-      // Persist the credential
-      saveCredential(credentials[0])
+      console.log("verite.issuance.requestIssuance 1")
 
+      // Persist the credential
+      // TODO
+      saveCredential(credentials[0])
+      console.log("verite.issuance.requestIssuance 2")
       return credentials[0]
     } catch (e) {
+      console.error("verite.issuance.requestIssuance error!!!")
       console.error((e as VerificationError).cause)
     }
   } else {

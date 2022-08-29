@@ -1,6 +1,6 @@
 // https://identity.foundation/presentation-exchange/#input-descriptor-object
 
-import type { Schema } from "./Schema"
+import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
 
 export enum InputDescriptorConstraintStatusDirective {
   REQUIRED = "required",
@@ -57,9 +57,9 @@ export type InputDescriptorConstraints = {
 
 export type InputDescriptor = {
   id: string
-  schema: Schema[]
   group?: string
   name?: string
-  purpose?: string
-  constraints?: InputDescriptorConstraints
+  purpose?: string,
+  constraints?: InputDescriptorConstraints,
+  format?: ClaimFormatDesignation 
 }

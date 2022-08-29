@@ -1,7 +1,7 @@
-import { createMocks } from "../../../../support/mocks"
 import { temporaryAuthToken } from "../../../../../lib/database"
 import handler from "../../../../../pages/api/demos/issuer/manifests/[type]/[token]"
 import { userFactory } from "../../../../factories"
+import { createMocks } from "../../../../support/mocks"
 
 describe("GET /api/demos/issuer/manifests/[type]/[token]", () => {
   it("returns the KYC/AML manifest", async () => {
@@ -22,6 +22,7 @@ describe("GET /api/demos/issuer/manifests/[type]/[token]", () => {
     expect(res.statusCode).toBe(200)
     expect(json.reply_url).toBeDefined()
     expect(manifest.id).toEqual("KYCAMLManifest")
+    console.log(JSON.stringify(manifest))
     expect(manifest).toMatchSnapshot()
   })
 
@@ -42,6 +43,7 @@ describe("GET /api/demos/issuer/manifests/[type]/[token]", () => {
     expect(res.statusCode).toBe(200)
     expect(json.reply_url).toBeDefined()
     expect(manifest.id).toEqual("CreditScoreManifest")
+    console.log(JSON.stringify(manifest))
     expect(manifest).toMatchSnapshot()
   })
 

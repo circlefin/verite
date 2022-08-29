@@ -1,6 +1,19 @@
 import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 
+import {
+  DescriptorMap,
+  EncodedCredentialFulfillment,
+  Issuer,
+  CredentialPayload,
+  DidKey,
+  JWT,
+  Attestation,
+  CredentialManifest,
+  ClaimFormat,
+  CredentialSchema
+} from "../../types"
+import { parseClaimFormat } from "../utils"
 import { VERIFIABLE_CREDENTIAL } from "../utils/attestation-registry"
 import {
   encodeVerifiableCredential,
@@ -8,19 +21,10 @@ import {
 } from "../utils/credentials"
 
 import type {
-  DescriptorMap,
-  EncodedCredentialFulfillment,
-  Issuer,
-  DecodedCredentialApplication,
-  CredentialPayload,
-  DidKey,
-  JWT,
-  Attestation
-} from "../../types"
-import type {
   CreateCredentialOptions,
   CreatePresentationOptions
 } from "did-jwt-vc/src/types"
+
 
 
 const DEFAULT_CONTEXT = [
@@ -35,12 +39,13 @@ export async function buildAndSignVerifiableCredential(
   subject: string | DidKey,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
+  credentialSchema: CredentialSchema,
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
 
   const finalCredentialTypes = [VERIFIABLE_CREDENTIAL]
-  const subjectId = isString(subject) ? subject : subject.subject
+  const subjectId = parseSubjectId(subject)
   if (Array.isArray(credentialType)) {
     const newTypes = credentialType.filter(c => c !== VERIFIABLE_CREDENTIAL)
     finalCredentialTypes.push(...newTypes)
@@ -67,6 +72,7 @@ export async function buildAndSignVerifiableCredential(
     {
       "@context": DEFAULT_CONTEXT,
       type: finalCredentialTypes,
+      credentialSchema: credentialSchema,
       credentialSubject: attsns,
       issuanceDate: new Date(),
       issuer: { id: signer.did }
@@ -77,6 +83,10 @@ export async function buildAndSignVerifiableCredential(
   return encodeVerifiableCredential(vcPayload, signer, options)
 }
 
+function parseSubjectId(subject: string | DidKey) {
+  return isString(subject) ? subject : subject.subject
+}
+
 /**
  * Build a VerifiablePresentation containing a list of attestations.
  * 
@@ -84,20 +94,26 @@ export async function buildAndSignVerifiableCredential(
  */
 export async function buildAndSignFulfillment(
   signer: Issuer,
-  application: DecodedCredentialApplication,
+  subject: string | DidKey,
+  manifest: CredentialManifest,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
+  credentialSchema: CredentialSchema,
   payload: Partial<CredentialPayload> = {},
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
+  const subjectId = parseSubjectId(subject)
   const encodedCredentials = await buildAndSignVerifiableCredential(
     signer,
-    application.holder,
+    subjectId,
     attestation,
     credentialType,
+    credentialSchema,
     payload,
     options
   )
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const format = parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc 
 
   const encodedPresentation = await encodeVerifiablePresentation(
     signer.did,
@@ -108,14 +124,13 @@ export async function buildAndSignFulfillment(
     {
       credential_fulfillment: {
         id: uuidv4(),
-        manifest_id: application.credential_application.manifest_id,
-        descriptor_map:
-          application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
+        manifest_id: manifest.id,
+        descriptor_map: manifest.output_descriptors.map<DescriptorMap>(
             (d, i) => {
               return {
                 id: d.id,
-                format: "jwt_vc",
-                path: `$.presentation.credential[${i}]`
+                format: format,
+                path: `$.verifiableCredential[${i}]`
               }
             }
           ) ?? []
@@ -131,7 +146,7 @@ export async function buildAndSignFulfillment(
  */
 export async function buildAndSignMultiVcFulfillment(
   signer: Issuer,
-  application: DecodedCredentialApplication,
+  manifest: CredentialManifest,
   encodedCredentials: string[],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
@@ -145,17 +160,17 @@ export async function buildAndSignMultiVcFulfillment(
     {
       credential_fulfillment: {
         id: uuidv4(),
-        manifest_id: application.credential_application.manifest_id,
-        descriptor_map:
-          application.presentation_submission?.descriptor_map?.map<DescriptorMap>(
-            (d, i) => {
-              return {
-                id: d.id,
-                format: "jwt_vc",
-                path: `$.presentation.credential[${i}]`
-              }
+        manifest_id: manifest.id,
+        descriptor_map: manifest.output_descriptors.map<DescriptorMap>(
+          (d, i) => {
+            return {
+              id: d.id,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              format: parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc ,
+              path: `$.verifiableCredential[${i}]`
             }
-          ) ?? []
+          }
+        ) ?? []
       }
     }
   )

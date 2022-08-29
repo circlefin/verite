@@ -1,16 +1,11 @@
-import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_ATTESTATION_MANIFEST_ID, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_ATTESTATION_MANIFEST_ID } from "../utils"
+import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_ATTESTATION_MANIFEST_ID, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_ATTESTATION_MANIFEST_ID, proofOfControlPresentationDefinition, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
 
 import type {
   CredentialIssuer,
   CredentialManifest,
   EntityStyle,
-  OutputDescriptor,
-  PresentationDefinition,
+  OutputDescriptor
 } from "../../types"
-
-// Note: tracking issue in PEx spec saying it must be UUID
-export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
-  "ProofOfControlPresentationDefinition"
 
 /**
  * Helper function for common properties between both KYC and Credit Score
@@ -20,28 +15,7 @@ export function buildManifest(
   manifestId: string,
   issuer: CredentialIssuer,
   outputDescriptors: OutputDescriptor[]
-): CredentialManifest {
-  const presentationDefinition: PresentationDefinition = {
-    id: PROOF_OF_CONTROL_PRESENTATION_DEF_ID,
-    format: {
-      jwt_vp: {
-        alg: ["EdDSA"]
-      }
-    },
-    input_descriptors: [
-      {
-        id: "proofOfIdentifierControlVP",
-        name: "Proof of Control Verifiable Presentation",
-        purpose:
-          "A Verifiable Presentation establishing proof of identifier control over the DID.",
-        schema: [
-          {
-            uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-          }
-        ]
-      }
-    ]
-  }
+): CredentialManifest { 
 
   return {
     id: manifestId,
@@ -56,7 +30,7 @@ export function buildManifest(
       }
     },
     output_descriptors: outputDescriptors,
-    presentation_definition: presentationDefinition
+    presentation_definition: proofOfControlPresentationDefinition()
   }
 }
 

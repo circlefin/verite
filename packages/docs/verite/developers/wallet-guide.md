@@ -234,7 +234,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
       {
         "id": "proofOfIdentifierControlVP",
         "format": "jwt_vc",
-        "path": "$.presentation.credential[0]"
+        "path": "$.verifiableCredential[0]"
       }
     ]
   },

@@ -24,14 +24,18 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
   >()
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
+      console.log("main 0")
       const creds = await getCredentialsWithManifests()
+      console.log("main 1")
       setCredentials(creds)
-
+      console.log("main 2")
       // Check revocation status, but don't block on it.
       for (const cred of creds) {
+        console.log("main i")
         const r = await isRevoked(cred.credential)
         await saveRevocationStatus(cred.credential, r)
       }
+      console.log("main 4")
     })
 
     return unsubscribe
@@ -61,7 +65,7 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
     const revoked = item.revoked
     const expired = isExpired(credential)
     const { title, subtitle } = getDisplayProperties(manifest, credential)
-
+    console.log("main 8")
     const thumbnail = manifest.output_descriptors[0].styles?.thumbnail?.uri
 
     return (

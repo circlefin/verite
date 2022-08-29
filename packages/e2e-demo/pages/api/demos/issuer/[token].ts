@@ -75,7 +75,8 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   // Generate new credentials for the user
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    credentialApplication,
+    credentialApplication.holder,
+    manifest,
     userAttestation,
     attestationToCredentialType(userAttestation.type),
     { credentialStatus: revocationList, expirationDate }

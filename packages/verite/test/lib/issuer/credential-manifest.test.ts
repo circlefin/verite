@@ -7,7 +7,7 @@ import {
   buildKycAmlManifest,
   requiresRevocableCredentials
 } from "../../../lib/issuer/credential-manifest"
-import { randomDidKey } from "../../../lib/utils"
+import { proofOfControlPresentationDefinition, randomDidKey } from "../../../lib/utils"
 import { CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures/dids"
 
@@ -88,23 +88,7 @@ describe("buildKycAmlManifest", () => {
           styles: {}
         }
       ],
-      presentation_definition: {
-        id: "ProofOfControlPresentationDefinition",
-        format: { jwt_vp: { alg: ["EdDSA"] } },
-        input_descriptors: [
-          {
-            id: "proofOfIdentifierControlVP",
-            name: "Proof of Control Verifiable Presentation",
-            purpose:
-              "A Verifiable Presentation establishing proof of identifier control over the DID.",
-            schema: [
-              {
-                uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-              }
-            ]
-          }
-        ]
-      }
+      presentation_definition: proofOfControlPresentationDefinition()
     }
 
     expect(manifest).toEqual(expected)
@@ -176,23 +160,7 @@ describe("buildCreditScoreManifest", () => {
           styles: {}
         }
       ],
-      presentation_definition: {
-        id: "ProofOfControlPresentationDefinition",
-        format: { jwt_vp: { alg: ["EdDSA"] } },
-        input_descriptors: [
-          {
-            id: "proofOfIdentifierControlVP",
-            name: "Proof of Control Verifiable Presentation",
-            purpose:
-              "A Verifiable Presentation establishing proof of identifier control over the DID.",
-            schema: [
-              {
-                uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-              }
-            ]
-          }
-        ]
-      }
+      presentation_definition: proofOfControlPresentationDefinition()
     }
 
     expect(manifest).toEqual(expected)

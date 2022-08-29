@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from "uuid"
 
-import { buildIssuer, encodeVerifiablePresentation } from "../utils"
-
-import type {
+import {
+  ClaimFormat,
   DescriptorMap,
   DidKey,
   PresentationDefinition,
   Verifiable,
   W3CCredential
 } from "../../types"
+import { buildIssuer, encodeVerifiablePresentation } from "../utils"
+
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
 export async function buildPresentationSubmission(
@@ -26,7 +27,7 @@ export async function buildPresentationSubmission(
       (d, i) => {
         return {
           id: d.id,
-          format: "jwt_vc",
+          format: ClaimFormat.JwtVc,
           path: `$.verifiableCredential[${i}]`
         }
       }

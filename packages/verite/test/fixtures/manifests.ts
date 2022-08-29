@@ -1,5 +1,7 @@
+import { proofOfControlPresentationDefinition } from "../../lib/utils"
 import { CredentialManifest } from "../../types"
 import { didFixture } from "./dids"
+import { KYC_ATTESTATION_SCHEMA } from "./schemas"
 
 /**
  * Helper function to generate a Credential Manifest with a known issuer
@@ -19,7 +21,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
         id: "kycAttestationOutput",
         schema: [
           {
-            uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+            uri: KYC_ATTESTATION_SCHEMA
           }
         ],
         name: "Proof of KYC from Issuer Inc.",
@@ -52,22 +54,6 @@ export const manifestFixture = (value = 0): CredentialManifest => {
         styles: {}
       }
     ],
-    presentation_definition: {
-      id: "ProofOfControlPresentationDefinition",
-      format: { jwt_vp: { alg: ["EdDSA"] } },
-      input_descriptors: [
-        {
-          id: "proofOfIdentifierControlVP",
-          name: "Proof of Control Verifiable Presentation",
-          purpose:
-            "A Verifiable Presentation establishing proof of identifier control over the DID.",
-          schema: [
-            {
-              uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-            }
-          ]
-        }
-      ]
-    }
+    presentation_definition: proofOfControlPresentationDefinition()
   }
 }

@@ -30,8 +30,7 @@ export async function validateCredentialApplication(
   // Ensure the application has the correct paths
   if (
     !hasPaths(application, [
-      "credential_application",
-      "presentation_submission"
+      "credential_application"
     ])
   ) {
     throw new ValidationError(

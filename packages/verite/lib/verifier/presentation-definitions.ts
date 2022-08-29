@@ -1,24 +1,11 @@
 import {
   InputDescriptorConstraintField,
-  InputDescriptorConstraintStatusDirective,
-  InputDescriptorConstraintSubjectConstraint
+  InputDescriptorConstraintStatusDirective
 } from "../../types/InputDescriptor"
 import { PresentationDefinition } from "../../types/PresentationDefinition"
+import { schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
 
-const subjectIsHolderConstraint: InputDescriptorConstraintSubjectConstraint[] =
-  [
-    {
-      field_id: ["subjectId"],
-      directive: "required"
-    }
-  ]
 
-const subjectIsHolderField: InputDescriptorConstraintField = {
-  id: "subjectId",
-  path: ["$.credentialSubject.id", "$.vc.credentialSubject.id", "$.id"],
-  purpose:
-    "We need to ensure the holder and the subject have the same identifier"
-}
 
 /**
  * Build a Presentation Definition requesting a KYC/AML Attestation
@@ -50,6 +37,9 @@ export function kycPresentationDefinition(
 
   fields.push(subjectIsHolderField)
 
+  const schema = schemaConstraint("https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation")
+  fields.push(schema)
+
   if (trustedAuthorities.length > 0) {
     fields.push(trustedAuthorityConstraint(trustedAuthorities))
   }
@@ -61,12 +51,6 @@ export function kycPresentationDefinition(
         id: "kycaml_input",
         name: "Proof of KYC",
         purpose: "Please provide a valid credential from a KYC/AML issuer",
-        schema: [
-          {
-            uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
-            required: true
-          }
-        ],
         constraints: {
           statuses: {
             active: {
@@ -75,6 +59,14 @@ export function kycPresentationDefinition(
           },
           is_holder: subjectIsHolderConstraint,
           fields
+        },
+        format: {
+          jwt_vp: {
+            alg: ["EdDSA"]
+          },
+          jwt_vc: {
+            alg: ["EdDSA"]
+          }
         }
       }
     ]
@@ -113,6 +105,9 @@ export function creditScorePresentationDefinition(
 
   fields.push(subjectIsHolderField)
 
+  const schema = schemaConstraint("https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation")
+  fields.push(schema)
+
   if (trustedAuthorities.length > 0) {
     fields.push(trustedAuthorityConstraint(trustedAuthorities))
   }
@@ -139,12 +134,6 @@ export function creditScorePresentationDefinition(
         id: "creditScore_input",
         name: "Proof of Credit Score",
         purpose: "Please provide a valid credential from a Credit Score issuer",
-        schema: [
-          {
-            uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
-            required: true
-          }
-        ],
         constraints: {
           statuses: {
             active: {
@@ -153,6 +142,14 @@ export function creditScorePresentationDefinition(
           },
           is_holder: subjectIsHolderConstraint,
           fields
+        },
+        format: {
+          jwt_vp: {
+            alg: ["EdDSA"]
+          },
+          jwt_vc: {
+            alg: ["EdDSA"]
+          }
         }
       }
     ]

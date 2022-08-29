@@ -3,11 +3,9 @@ import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
   buildAndSignFulfillment,
-  buildCredentialApplication,
   buildPresentationSubmission,
   decodeVerifiablePresentation,
   randomDidKey,
-  decodeCredentialApplication,
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer,
   attestationToCredentialType
@@ -23,6 +21,7 @@ import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/demos/verifier/[id]/submission"
 import { userFactory } from "../../../../factories"
 import { createMocks } from "../../../../support/mocks"
+import { kycAttestationSchema } from "../../../../support/schemas"
 
 import type { DidKey } from "verite"
 
@@ -159,16 +158,14 @@ describe("POST /verification/[id]/submission", () => {
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLManifest")
   const user = await userFactory()
-  const application = await buildCredentialApplication(clientDidKey, manifest)
-
-  const decodedApplication = await decodeCredentialApplication(application)
-
   const userAttestation = buildAttestationForUser(user, manifest)
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    decodedApplication,
+    clientDidKey.subject,
+    manifest,
     userAttestation,
     attestationToCredentialType(userAttestation.type),
+    kycAttestationSchema
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)

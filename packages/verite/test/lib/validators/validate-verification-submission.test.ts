@@ -21,6 +21,7 @@ import {
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
+import { creditScoreSchema, kycAttestationSchema } from "../../fixtures/schemas"
 import {
   creditScoreCredentialTypeName,
   kycAmlCredentialTypeName
@@ -51,9 +52,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -98,9 +101,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       creditScoreAttestationFixture,
-      creditScoreCredentialTypeName
+      creditScoreCredentialTypeName,
+      creditScoreSchema
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -153,6 +158,7 @@ describe("Submission validator", () => {
       clientDidKey,
       attestation1,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
@@ -164,6 +170,7 @@ describe("Submission validator", () => {
       clientDidKey,
       attestation2,
       creditScoreCredentialTypeName,
+      creditScoreSchema,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
@@ -174,7 +181,7 @@ describe("Submission validator", () => {
 
     const encodedFulfillment = await buildAndSignMultiVcFulfillment(
       issuer,
-      application,
+      manifest,
       creds
     )
 
@@ -222,9 +229,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -268,9 +277,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       creditScoreAttestationFixture,
-      creditScoreCredentialTypeName
+      creditScoreCredentialTypeName,
+      creditScoreSchema
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1
@@ -315,9 +326,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -362,9 +375,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -409,9 +424,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -434,8 +451,8 @@ describe("Submission validator", () => {
 
     // Change the Schema URL, but still return the KYC Schema
     nock("https://verite.id").get("/DIFFERENT_SCHEMA").reply(200, kycSchema)
-    verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
-      "https://verite.id/DIFFERENT_SCHEMA"
+    // TODO verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
+    //  "https://verite.id/DIFFERENT_SCHEMA"
 
     await expect(
       validateVerificationSubmission(
@@ -461,9 +478,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -487,8 +506,8 @@ describe("Submission validator", () => {
     // TODO!!!
     // Change the Schema URL, and return a 404
     nock("https://verite.id").get("/MISSING_SCHEMA").reply(400)
-    verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
-      "https://verite.id/MISSING_SCHEMA"
+   // TODO verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
+   //   "https://verite.id/MISSING_SCHEMA"
 
     await expectValidationError(
       submission,
@@ -513,9 +532,11 @@ describe("Submission validator", () => {
 
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      application,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -538,8 +559,8 @@ describe("Submission validator", () => {
 
     disableNetConnect()
     // Change the Schema URL. We will pass this in directly
-    verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
-      "https://verite.id/KNOWN_SCHEMA"
+    // TODO verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
+    //   "https://verite.id/KNOWN_SCHEMA"
 
     await expect(
       validateVerificationSubmission(

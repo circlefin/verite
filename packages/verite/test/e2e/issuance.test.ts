@@ -9,6 +9,7 @@ import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
+import { kycAttestationSchema } from "../fixtures/schemas"
 import { kycAmlCredentialTypeName } from "../fixtures/types"
 
 import type {
@@ -54,9 +55,11 @@ describe("issuance", () => {
      */
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      credentialApplication,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -149,9 +152,11 @@ describe("issuance", () => {
      */
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      credentialApplication,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 

@@ -1,15 +1,12 @@
 import { randomBytes } from "crypto"
 
-import {
-  buildCredentialApplication,
-  decodeCredentialApplication
-} from "../../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
 import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
 import { decodeVerifiablePresentation } from "../../../lib/utils"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
+import { kycAttestationSchema } from "../../fixtures/schemas"
 import { kycAmlCredentialTypeName } from "../../fixtures/types"
 
 describe("buildAndSignKycAmlFulfillment", () => {
@@ -19,19 +16,14 @@ describe("buildAndSignKycAmlFulfillment", () => {
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
-    const credentialApplication = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
-    const decodedApplication = await decodeCredentialApplication(
-      credentialApplication
-    )
 
     const encodedFulfillment = await buildAndSignFulfillment(
       issuer,
-      decodedApplication,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
+      kycAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
     const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
