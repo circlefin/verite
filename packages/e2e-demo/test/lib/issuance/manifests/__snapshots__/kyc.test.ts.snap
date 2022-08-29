@@ -61,11 +61,7 @@ Object {
       },
       "id": "kycAttestationOutput",
       "name": "Proof of KYC from Verite",
-      "schema": Array [
-        Object {
-          "uri": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
-        },
-      ],
+      "schema": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
       "styles": Object {
         "background": Object {
           "color": "#EC4899",

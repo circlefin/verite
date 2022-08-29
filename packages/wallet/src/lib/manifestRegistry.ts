@@ -20,7 +20,7 @@ export const saveManifest = async (
   manifest: CredentialManifest
 ): Promise<void> => {
   console.log(`saveManifest ${manifest.id}`)
-  return saveItemInList("manifests", manifest, manifest.id)
+  return saveItemInList("manifests", manifest, manifest.output_descriptors[0].schema)
 }
 
 export const findManifestForCredential = async (

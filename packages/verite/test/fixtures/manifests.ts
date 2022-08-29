@@ -19,11 +19,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
     output_descriptors: [
       {
         id: "kycAttestationOutput",
-        schema: [
-          {
-            uri: KYC_ATTESTATION_SCHEMA
-          }
-        ],
+        schema: KYC_ATTESTATION_SCHEMA,
         name: "Proof of KYC from Issuer Inc.",
         description:
           "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",

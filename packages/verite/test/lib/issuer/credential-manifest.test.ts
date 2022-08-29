@@ -53,11 +53,7 @@ describe("buildKycAmlManifest", () => {
       output_descriptors: [
         {
           id: "kycAttestationOutput",
-          schema: [
-            {
-              uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-            }
-          ],
+          schema: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
           name: "Proof of KYC from Issuer Inc.",
           description:
             "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",
@@ -122,11 +118,7 @@ describe("buildCreditScoreManifest", () => {
       output_descriptors: [
         {
           id: "creditScoreAttestationOutput",
-          schema: [
-            {
-              uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation"
-            }
-          ],
+          schema: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
           name: "Proof of Credit Score from Issuer Inc.",
           description:
             "Attestation that Issuer Inc. has performed a Credit Score check for this subject",

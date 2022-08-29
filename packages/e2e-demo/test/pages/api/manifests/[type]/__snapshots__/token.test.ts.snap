@@ -68,11 +68,7 @@ Object {
       },
       "id": "creditScoreAttestationOutput",
       "name": "Proof of Credit Score from Verite",
-      "schema": Array [
-        Object {
-          "uri": "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
-        },
-      ],
+      "schema": "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
       "styles": Object {
         "background": Object {
           "color": "#8B5CF6",
@@ -184,11 +180,7 @@ Object {
       },
       "id": "kycAttestationOutput",
       "name": "Proof of KYC from Verite",
-      "schema": Array [
-        Object {
-          "uri": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
-        },
-      ],
+      "schema": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
       "styles": Object {
         "background": Object {
           "color": "#EC4899",

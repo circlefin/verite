@@ -60,11 +60,7 @@ export function buildKycAmlManifest(
   const outputDescriptors: OutputDescriptor[] = [
     {
       id: "kycAttestationOutput",
-      schema: [
-        {
-          uri: attestationInfo.schema
-        }
-      ],
+      schema: attestationInfo.schema,
       name: `Proof of KYC from ${issuer.name}`,
       description: `Attestation that ${issuer.name} has completed KYC/AML verification for this subject`,
       display: {
@@ -113,11 +109,7 @@ export function buildCreditScoreManifest(
   const outputDescriptors: OutputDescriptor[] = [
     {
       id: "creditScoreAttestationOutput",
-      schema: [
-        {
-          uri: attestationInfo.schema
-        }
-      ],
+      schema: attestationInfo.schema,
       name: `Proof of Credit Score from ${issuer.name}`,
       description: `Attestation that ${issuer.name} has performed a Credit Score check for this subject`,
       display: {
