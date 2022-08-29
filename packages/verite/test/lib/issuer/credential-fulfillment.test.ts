@@ -13,7 +13,7 @@ import {
 } from "../../../lib/utils"
 import { RevocationList2021Status } from "../../../types"
 import { creditScoreAttestationFixture, kycAmlAttestationFixture } from "../../fixtures/attestations"
-import { creditScoreSchema, kycAttestationSchema } from "../../fixtures/schemas"
+import { creditScoreAttestationSchema, kycAttestationSchema } from "../../fixtures/schemas"
 import { creditScoreCredentialTypeName, kycAmlCredentialTypeName } from "../../fixtures/types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
@@ -241,7 +241,7 @@ describe("buildAndSignFulfillment", () => {
       subjectDid,
       attestation2,
       creditScoreCredentialTypeName,
-      creditScoreSchema,
+      creditScoreAttestationSchema,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.

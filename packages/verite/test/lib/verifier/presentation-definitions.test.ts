@@ -47,11 +47,13 @@ describe("kycPresentationDefinition", () => {
                   "We need to ensure the holder and the subject have the same identifier"
               },
               {
+                id: "credentialSchema",
                 path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
                 filter: {
                   type: "string",
                   pattern: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-                }
+                },
+                purpose: "We need to ensure the credential conforms to the expected schema",
               }
             ],
             is_holder: [
@@ -133,11 +135,13 @@ describe("kycPresentationDefinition", () => {
                   "We need to ensure the holder and the subject have the same identifier"
               },
               {
+                id: "credentialSchema",
                 path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
                 filter: {
                   type: "string",
                   pattern: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-                }
+                },
+                purpose: "We need to ensure the credential conforms to the expected schema",
               },
               {
                 filter: {

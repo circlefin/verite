@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto"
-import nock, { disableNetConnect, enableNetConnect } from "nock"
+import  nock from "nock"
 import { v4 as uuidv4 } from "uuid"
 
 import { ValidationError } from "../../../lib/errors"
@@ -7,7 +7,6 @@ import { buildCredentialApplication } from "../../../lib/issuer/credential-appli
 import { buildAndSignFulfillment, buildAndSignMultiVcFulfillment, buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
-import * as kycSchema from "../../../lib/validators/schemas/KYCAMLAttestation.json"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
 import { creditScorePresentationDefinition } from "../../../lib/verifier/presentation-definitions"
@@ -21,7 +20,7 @@ import {
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
-import { creditScoreSchema, kycAttestationSchema } from "../../fixtures/schemas"
+import { creditScoreAttestationSchema, kycAttestationSchema, unrecognizedAttestationSchema } from "../../fixtures/schemas"
 import {
   creditScoreCredentialTypeName,
   kycAmlCredentialTypeName
@@ -105,7 +104,7 @@ describe("Submission validator", () => {
       manifest,
       creditScoreAttestationFixture,
       creditScoreCredentialTypeName,
-      creditScoreSchema
+      creditScoreAttestationSchema
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -170,7 +169,7 @@ describe("Submission validator", () => {
       clientDidKey,
       attestation2,
       creditScoreCredentialTypeName,
-      creditScoreSchema,
+      creditScoreAttestationSchema,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
@@ -281,7 +280,7 @@ describe("Submission validator", () => {
       manifest,
       creditScoreAttestationFixture,
       creditScoreCredentialTypeName,
-      creditScoreSchema
+      creditScoreAttestationSchema
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1
@@ -408,7 +407,7 @@ describe("Submission validator", () => {
     )
   })
 
-  it("fetches external schemas if not found locally", async () => {
+  it("returns an error if the credential schema doesn't match the expected value", async () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
@@ -428,7 +427,7 @@ describe("Submission validator", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
+      unrecognizedAttestationSchema,
       { credentialStatus: revocationListFixture }
     )
 
@@ -449,132 +448,14 @@ describe("Submission validator", () => {
       clientVC
     )
 
-    // Change the Schema URL, but still return the KYC Schema
-    nock("https://verite.id").get("/DIFFERENT_SCHEMA").reply(200, kycSchema)
-    // TODO verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
-    //  "https://verite.id/DIFFERENT_SCHEMA"
-
-    await expect(
-      validateVerificationSubmission(
-        submission,
-        verificationRequest.body.presentation_definition
-      )
-    ).resolves.not.toThrow()
-  })
-
-  it("returns an error if the external schema if is not found", async () => {
-    const clientDidKey = randomDidKey(randomBytes)
-    const verifierDidKey = randomDidKey(randomBytes)
-    const { manifest, issuer } = await generateManifestAndIssuer()
-    const encodedApplication = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
-    const application = (await decodeVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
-    await validateCredentialApplication(application, manifest)
-
-    const fulfillment = await buildAndSignFulfillment(
-      issuer,
-      clientDidKey.subject,
-      manifest,
-      kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
-    )
-
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
-    const clientVC = fulfillmentVP.verifiableCredential![0]
-
-    const verificationRequest = buildKycVerificationOffer(
-      uuidv4(),
-      verifierDidKey.subject,
-      "https://test.host/verify",
-      "https://other.host/callback",
-      [issuer.did]
-    )
-
-    const submission = await buildPresentationSubmission(
-      clientDidKey,
-      verificationRequest.body.presentation_definition,
-      clientVC
-    )
-
-    // TODO!!!
     // Change the Schema URL, and return a 404
     nock("https://verite.id").get("/MISSING_SCHEMA").reply(400)
-   // TODO verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
-   //   "https://verite.id/MISSING_SCHEMA"
 
     await expectValidationError(
       submission,
       verificationRequest,
-      "Unable to load schema: https://verite.id/MISSING_SCHEMA"
+      "Credential did not match constraint: We need to ensure the credential conforms to the expected schema"
     )
-  })
-
-  it("allows passing in a known schema", async () => {
-    const clientDidKey = randomDidKey(randomBytes)
-    const verifierDidKey = randomDidKey(randomBytes)
-    const { manifest, issuer } = await generateManifestAndIssuer()
-    const encodedApplication = await buildCredentialApplication(
-      clientDidKey,
-      manifest
-    )
-    const application = (await decodeVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
-    await validateCredentialApplication(application, manifest)
-
-    const fulfillment = await buildAndSignFulfillment(
-      issuer,
-      clientDidKey.subject,
-      manifest,
-      kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
-    )
-
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
-    const clientVC = fulfillmentVP.verifiableCredential![0]
-
-    const verificationRequest = buildKycVerificationOffer(
-      uuidv4(),
-      verifierDidKey.subject,
-      "https://test.host/verify",
-      "https://other.host/callback",
-      [issuer.did]
-    )
-
-    const submission = await buildPresentationSubmission(
-      clientDidKey,
-      verificationRequest.body.presentation_definition,
-      clientVC
-    )
-
-    disableNetConnect()
-    // Change the Schema URL. We will pass this in directly
-    // TODO verificationRequest.body.presentation_definition.input_descriptors[0].schema[0].uri =
-    //   "https://verite.id/KNOWN_SCHEMA"
-
-    await expect(
-      validateVerificationSubmission(
-        submission,
-        verificationRequest.body.presentation_definition,
-        {
-          knownSchemas: {
-            "https://verite.id/KNOWN_SCHEMA": kycSchema
-          }
-        }
-      )
-    ).resolves.not.toThrow()
-
-    enableNetConnect()
   })
 })
 

@@ -8,7 +8,12 @@ export const kycAttestationSchema: CredentialSchema = {
   type: "KYCAMLAttestation"
 }
 
-export const creditScoreSchema: CredentialSchema = {
+export const creditScoreAttestationSchema: CredentialSchema = {
   id: CREDIT_SCORE_ATTESTATION_SCHEMA,
   type: "CreditScoreAttestation"
+}
+
+export const unrecognizedAttestationSchema: CredentialSchema = {
+  id: "https://verite.id/definitions/schemas/0.0.1/UnrecognizedSchema",
+  type: "SomeUnknownAttestation"
 }

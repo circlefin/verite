@@ -3,14 +3,6 @@ export type Schema = {
   required?: boolean
 }
 
-export type CredentialSchemaConstraint = {
-  path: string[],
-  filter: {
-    type: "string"
-    pattern: string
-  }
-}
-
 export type CredentialSchema = {
   id: string,
   type: string

@@ -1,4 +1,4 @@
-import { ClaimFormat, ClaimFormatDesignation, CredentialSchemaConstraint, InputDescriptorConstraintField, InputDescriptorConstraintSubjectConstraint, PresentationDefinition } from "../../types"
+import { ClaimFormat, ClaimFormatDesignation, InputDescriptorConstraintField, InputDescriptorConstraintSubjectConstraint, PresentationDefinition } from "../../types"
 
 // Note: tracking issue in PEx spec saying it must be UUID
 export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
@@ -19,13 +19,16 @@ export function parseClaimFormat(d: ClaimFormatDesignation): ClaimFormat {
   }
 }
 
-export function schemaConstraint(schema: string) : CredentialSchemaConstraint {
+export function schemaConstraint(schema: string) : InputDescriptorConstraintField {
   return {
+    id: "credentialSchema",
     path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
     filter: {
       type: "string",
       pattern: schema
-    }
+    },
+    purpose:
+    "We need to ensure the credential conforms to the expected schema"
   }
 }
 
@@ -58,13 +61,13 @@ export function proofOfControlPresentationDefinition() : PresentationDefinition 
         id: "proofOfIdentifierControlVP",
         name: "Proof of Control Verifiable Presentation",
         purpose:
-          "A Verifiable Presentation establishing proof of identifier control over the DID.",
+          "A VP establishing proof of identifier control over the DID.",
         constraints: {
           fields: [{
             id: "holder",
             path: ["$.holder"],
             purpose:
-              "The holder field should contain the expected DID"
+              "The VP should contain a DID in the holder, which is the same DID that signs the VP. This DID will be used as the subject of the issued VC"
           }]
         }
       }

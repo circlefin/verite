@@ -22,7 +22,6 @@ describe("GET /api/demos/issuer/manifests/[type]/[token]", () => {
     expect(res.statusCode).toBe(200)
     expect(json.reply_url).toBeDefined()
     expect(manifest.id).toEqual("KYCAMLManifest")
-    console.log(JSON.stringify(manifest))
     expect(manifest).toMatchSnapshot()
   })
 
@@ -43,7 +42,6 @@ describe("GET /api/demos/issuer/manifests/[type]/[token]", () => {
     expect(res.statusCode).toBe(200)
     expect(json.reply_url).toBeDefined()
     expect(manifest.id).toEqual("CreditScoreManifest")
-    console.log(JSON.stringify(manifest))
     expect(manifest).toMatchSnapshot()
   })
 

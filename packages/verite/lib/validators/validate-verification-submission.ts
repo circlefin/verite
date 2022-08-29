@@ -4,21 +4,18 @@ import jsonpath from "jsonpath"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
 import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
-import { findSchemaById, validateAttestationSchema } from "./validate-schema"
+import { findSchemaById } from "./validate-schema"
 
 import type {
   DecodedPresentationSubmission,
   InputDescriptor,
   PresentationDefinition,
-  DecodedCredentialApplication,
   W3CCredential,
   W3CPresentation,
   Verifiable,
   InputDescriptorConstraintField
 } from "../../types"
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
-
-const DEFINITION_PREFIX = '#/definitions/'
 
 type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
   knownSchemas?: Record<string, Record<string, unknown>>
@@ -168,56 +165,6 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
   }
 }
 
-async function validateCredentialAgainstSchema(
-  credentialMap: Map<string, Verifiable<W3CCredential>[]>,
-  descriptors?: InputDescriptor[],
-  knownSchemas?: Record<string, Record<string, unknown>>
-): Promise<void> {
-  if (!descriptors) {
-    // no input descriptors, so there is nothing to validate
-    return
-  }
-
-  // iterate over all input descriptors to find the relevant credentials
-  for await (const descriptor of descriptors) {
-    const credentials = credentialMap.get(descriptor.id)
-    // TODO
-    // const theSchema = await findSchema(knownSchemas, descriptor.schema[0].uri)
-    credentials?.forEach((credential) => {
-      //const schema = credential.credentialSchema
-      const atts = credential.credentialSubject
-      const attestations = (!Array.isArray(atts)) ? [atts] : atts
-      //const attributeName = parseAttributeName(theSchema)
-      /*const matchingAttestations = attestations.filter((a) => {
-        return attributeName in a
-      }).map((attr) => {
-        return attr[attributeName]
-      })
-      matchingAttestations.forEach((a) => {
-        validateAttestationSchema(a, theSchema)
-      }) */
-    })
-  }
-}
-
-function parseAttributeName(theSchema: Record<string, unknown>) : string {
-  let attrName
-  // eslint-disable-next-line no-prototype-builtins
-  if (theSchema.hasOwnProperty('default')) {
-    const defaultProp = theSchema['default'] as any
-    // eslint-disable-next-line no-prototype-builtins
-    if (defaultProp.hasOwnProperty('$ref')) {
-      const expectedAttr = defaultProp['$ref'] as string
-      if (expectedAttr.startsWith(DEFINITION_PREFIX)) {
-        attrName = expectedAttr.slice(DEFINITION_PREFIX.length)
-      }
-    }
-  }
-  if (!attrName) {
-    throw new ValidationError('Unexpected schema format')
-  }
-  return attrName
-}
 
 async function findSchema(knownSchemas: Record<string, Record<string, unknown>> | undefined, schemaUri: string): Promise<Record<string, unknown>> {
   const schema = knownSchemas?.[schemaUri]
@@ -341,13 +288,4 @@ export async function validateVerificationSubmission(
    * requirements set forth in the request (e.g. minimum credit score).
    */
   validateInputDescriptors(credentialMap, definition.input_descriptors)
-
-  /**
-   * Validate that each credential matches the expected schema
-   */
-  await validateCredentialAgainstSchema(
-    credentialMap,
-    definition.input_descriptors,
-    options?.knownSchemas
-  )
 }
