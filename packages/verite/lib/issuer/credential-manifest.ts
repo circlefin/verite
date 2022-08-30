@@ -1,4 +1,4 @@
-import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_MANIFEST_ID, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, KYCAML_MANIFEST_ID, proofOfControlPresentationDefinition, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
+import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_MANIFEST_ID, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, KYCAML_MANIFEST_ID, proofOfControlPresentationDefinition } from "../utils"
 
 import type {
   CredentialIssuer,

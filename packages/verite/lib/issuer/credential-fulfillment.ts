@@ -48,6 +48,7 @@ export async function buildAndSignVerifiableCredential(
     credentialType !== VERIFIABLE_CREDENTIAL_TYPE_NAME ? [ credentialType ] : []))
 
   // For attestations, preserve the array or object structure
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let attsns: any[] | any
   if (Array.isArray(attestation)) {
     attsns = attestation.map((att) => {

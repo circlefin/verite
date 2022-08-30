@@ -4,7 +4,6 @@ import jsonpath from "jsonpath"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
 import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
-import { findSchemaById } from "./validate-schema"
 
 import type {
   DecodedPresentationSubmission,
@@ -165,7 +164,7 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
   }
 }
 
-
+/*
 async function findSchema(knownSchemas: Record<string, Record<string, unknown>> | undefined, schemaUri: string): Promise<Record<string, unknown>> {
   const schema = knownSchemas?.[schemaUri]
     ? knownSchemas?.[schemaUri]
@@ -178,7 +177,7 @@ async function findSchema(knownSchemas: Record<string, Record<string, unknown>> 
     )
   }
   return schema
-}
+}*/
 
 /**
  * The Presentation Exchange spec includes an `is_holder` constraint.

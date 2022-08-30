@@ -76,7 +76,7 @@ export async function decodeVerifiableCredential(
     // eslint-disable-next-line no-prototype-builtins
     if (res.verifiableCredential.credentialSubject.hasOwnProperty(0)) {
       // did-jwt-vc turns these arrays into maps; convert back
-      const newCs = Object.entries(res.verifiableCredential.credentialSubject).map(([key, value]) => {
+      const newCs = Object.entries(res.verifiableCredential.credentialSubject).map(([_, value]) => {
         // need this addtional cleanup for did-jwt-vc adding string-y payload
         // args to the decoded representation
         if (typeof value !== 'string') {
