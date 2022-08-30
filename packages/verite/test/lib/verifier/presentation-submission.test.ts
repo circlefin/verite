@@ -107,8 +107,7 @@ describe("buildPresentationSubmission", () => {
         id: didKey.subject,
         KYCAMLAttestation: {
           type: "KYCAMLAttestation",
-          process:
-            "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
+          process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
           // approvalDate: attestation.approvalDate,
         }
       },

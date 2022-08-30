@@ -56,7 +56,9 @@ export async function encodeVerifiableCredential(
   }
   if (vcPayload.credentialSubject) {
     // assumes the same subject for all attestations
-    const sub = Array.isArray(vcPayload.credentialSubject) ? vcPayload.credentialSubject[0].id : vcPayload.credentialSubject.id
+    const sub = Array.isArray(vcPayload.credentialSubject)
+      ? vcPayload.credentialSubject[0].id
+      : vcPayload.credentialSubject.id
     payload.sub = sub
   }
 
@@ -76,26 +78,28 @@ export async function decodeVerifiableCredential(
     // eslint-disable-next-line no-prototype-builtins
     if (res.verifiableCredential.credentialSubject.hasOwnProperty(0)) {
       // did-jwt-vc turns these arrays into maps; convert back
-      const newCs = Object.entries(res.verifiableCredential.credentialSubject).map(([_, value]) => {
+      const newCs = Object.entries(
+        res.verifiableCredential.credentialSubject
+      ).map(([_, value]) => {
         // need this addtional cleanup for did-jwt-vc adding string-y payload
         // args to the decoded representation
-        if (typeof value !== 'string') {
+        if (typeof value !== "string") {
           return value
         }
       })
-       const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
-       clone.credentialSubject = newCs
-       if (clone.vc) {
+      const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
+      clone.credentialSubject = newCs
+      if (clone.vc) {
         // delete vc property if it wasn't cleaned up by did-jwt-vc
         delete clone.vc
-       }
+      }
 
-       return clone
+      return clone
     } else {
       const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
       if (clone.vc) {
-       // delete vc property if it wasn't cleaned up by did-jwt-vc
-       delete clone.vc
+        // delete vc property if it wasn't cleaned up by did-jwt-vc
+        delete clone.vc
       }
       return clone
     }
@@ -119,16 +123,14 @@ export async function encodeVerifiablePresentation(
   extra: Record<string, unknown> = {}
 ): Promise<JWT> {
   const vcJwtPayload = Array.isArray(vcJwt) ? vcJwt : [vcJwt]
-  const payload = Object.assign(
-    {
-      vp: {
-        "@context": [VC_CONTEXT_URI],
-        type: type ?? [VERIFIABLE_PRESENTATION_TYPE_NAME],
-        verifiableCredential: vcJwtPayload,
-        ...extra
-      }
+  const payload = Object.assign({
+    vp: {
+      "@context": [VC_CONTEXT_URI],
+      type: type ?? [VERIFIABLE_PRESENTATION_TYPE_NAME],
+      verifiableCredential: vcJwtPayload,
+      ...extra
     }
-  )
+  })
   return createVerifiablePresentationJwt(payload, signer, options)
 }
 

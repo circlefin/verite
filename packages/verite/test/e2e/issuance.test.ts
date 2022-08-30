@@ -59,7 +59,7 @@ describe("issuance", () => {
       manifest,
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
-      { 
+      {
         credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus: revocationListFixture
       }
@@ -158,7 +158,7 @@ describe("issuance", () => {
       manifest,
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
-      { 
+      {
         credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus: revocationListFixture
       }

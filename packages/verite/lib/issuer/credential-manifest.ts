@@ -1,4 +1,14 @@
-import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_MANIFEST_ID, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, KYCAML_MANIFEST_ID, proofOfControlPresentationDefinition } from "../utils"
+import {
+  CREDIT_SCORE_ATTESTATION,
+  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+  CREDIT_SCORE_MANIFEST_ID,
+  EDDSA,
+  getAttestionInformation,
+  KYCAML_ATTESTATION,
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  KYCAML_MANIFEST_ID,
+  proofOfControlPresentationDefinition
+} from "../utils"
 
 import type {
   CredentialIssuer,
@@ -15,8 +25,7 @@ export function buildManifest(
   manifestId: string,
   issuer: CredentialIssuer,
   outputDescriptors: OutputDescriptor[]
-): CredentialManifest { 
-
+): CredentialManifest {
   return {
     id: manifestId,
     version: "0.1.0",
@@ -55,7 +64,6 @@ export function buildKycAmlManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
-
   const attestationInfo = getAttestionInformation(KYCAML_ATTESTATION)
   const outputDescriptors: OutputDescriptor[] = [
     {
@@ -94,11 +102,7 @@ export function buildKycAmlManifest(
     }
   ]
 
-  return buildManifest(
-    KYCAML_MANIFEST_ID,
-    issuer,
-    outputDescriptors
-  )
+  return buildManifest(KYCAML_MANIFEST_ID, issuer, outputDescriptors)
 }
 
 export function buildCreditScoreManifest(
@@ -151,9 +155,5 @@ export function buildCreditScoreManifest(
     }
   ]
 
-  return buildManifest(
-    CREDIT_SCORE_MANIFEST_ID,
-    issuer,
-    outputDescriptors
-  )
+  return buildManifest(CREDIT_SCORE_MANIFEST_ID, issuer, outputDescriptors)
 }

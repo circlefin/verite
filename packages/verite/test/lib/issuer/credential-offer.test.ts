@@ -35,7 +35,8 @@ describe("buildCredentialOffer", () => {
           output_descriptors: [
             {
               id: "kyc_vc",
-              schema: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
+              schema:
+                "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
               name: "Proof of KYC from Issuer Inc.",
               description:
                 "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",

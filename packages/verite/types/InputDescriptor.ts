@@ -59,7 +59,7 @@ export type InputDescriptor = {
   id: string
   group?: string
   name?: string
-  purpose?: string,
-  constraints?: InputDescriptorConstraints,
-  format?: ClaimFormatDesignation 
+  purpose?: string
+  constraints?: InputDescriptorConstraints
+  format?: ClaimFormatDesignation
 }

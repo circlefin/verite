@@ -28,11 +28,7 @@ export async function validateCredentialApplication(
   }
 
   // Ensure the application has the correct paths
-  if (
-    !hasPaths(application, [
-      "credential_application"
-    ])
-  ) {
+  if (!hasPaths(application, ["credential_application"])) {
     throw new ValidationError(
       "Missing required paths in Credential Application",
       "Input doesn't have the required format for a Credential Application"

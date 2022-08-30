@@ -12,4 +12,3 @@ export type {
   W3CCredential,
   W3CPresentation
 } from "did-jwt-vc"
-

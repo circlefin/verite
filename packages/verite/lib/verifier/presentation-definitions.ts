@@ -3,7 +3,20 @@ import {
   InputDescriptorConstraintStatusDirective
 } from "../../types/InputDescriptor"
 import { PresentationDefinition } from "../../types/PresentationDefinition"
-import { CREDENTIAL_SUBJECT_PROPERTY_NAME, CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, KYCAML_PRESENTATION_DEFINITION_TYPE_NAME, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
+import {
+  CREDENTIAL_SUBJECT_PROPERTY_NAME,
+  CREDIT_SCORE_ATTESTATION,
+  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+  CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME,
+  EDDSA,
+  getAttestionInformation,
+  KYCAML_ATTESTATION,
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  KYCAML_PRESENTATION_DEFINITION_TYPE_NAME,
+  schemaConstraint,
+  subjectIsHolderConstraint,
+  subjectIsHolderField
+} from "../utils"
 
 /**
  * Build a Presentation Definition requesting a KYC/AML Attestation
@@ -34,8 +47,7 @@ export function kycPresentationDefinition(
   })
 
   fields.push(subjectIsHolderField)
-  
-  
+
   const attestationInfo = getAttestionInformation(KYCAML_ATTESTATION)
   const schema = schemaConstraint(attestationInfo.schema)
   fields.push(schema)

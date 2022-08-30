@@ -2,7 +2,11 @@ import { randomBytes } from "crypto"
 
 import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
 import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
-import { decodeVerifiablePresentation, KYCAML_CREDENTIAL_TYPE_NAME, KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../../lib/utils"
+import {
+  decodeVerifiablePresentation,
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  KYC_ATTESTATION_SCHEMA_VC_OBJ
+} from "../../../lib/utils"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
@@ -21,9 +25,9 @@ describe("buildAndSignKycAmlFulfillment", () => {
       manifest,
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
-      { 
+      {
         credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        credentialStatus: revocationListFixture 
+        credentialStatus: revocationListFixture
       }
     )
     const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)

@@ -61,7 +61,7 @@ export function randomDidKey(randomBytes: RandomBytesMethod): DidKey {
 }
 
 export function parseKey(input: string | Uint8Array): Uint8Array {
-  if (typeof input === 'string') {
+  if (typeof input === "string") {
     if (hexMatcher.test(input)) {
       return hexToBytes(input)
     } else if (base58Matcher.test(input)) {
@@ -69,12 +69,12 @@ export function parseKey(input: string | Uint8Array): Uint8Array {
     } else if (base64Matcher.test(input)) {
       return base64ToBytes(input)
     } else {
-      throw TypeError('bad_key: Invalid private key format')
+      throw TypeError("bad_key: Invalid private key format")
     }
   } else if (input instanceof Uint8Array) {
     return input
   } else {
-    throw TypeError('bad_key: Invalid private key format')
+    throw TypeError("bad_key: Invalid private key format")
   }
 }
 

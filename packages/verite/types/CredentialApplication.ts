@@ -10,7 +10,7 @@ type NarrowCredentialApplication = {
 export type CredentialApplicationHeader = {
   id: string
   manifest_id: string
-  format: ClaimFormatDesignation,
+  format: ClaimFormatDesignation
   presentation_submission?: PresentationSubmission
 }
 

@@ -4,7 +4,7 @@ import {
   CredentialManifest,
   Attestation,
   getSampleKycAmlAttestation,
-  getSampleCreditScoreAttestation,
+  getSampleCreditScoreAttestation
 } from "verite"
 
 import type { User } from "../database"

@@ -21,7 +21,6 @@ import {
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
 
-
 /**
  * Generates a Credential Application as response to a Credential Manifest
  *
@@ -55,13 +54,11 @@ export async function buildCredentialApplication(
   const credentialApplication = {
     id: uuidv4(),
     manifest_id: manifest.id,
-    format: { 
+    format: {
       jwt_vp: manifest.presentation_definition?.format?.jwt_vp
     },
     presentation_submission: presentationSubmission
   }
-
-
 
   const vp = await encodeVerifiablePresentation(
     client.did,

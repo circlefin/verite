@@ -4,6 +4,6 @@ export type Schema = {
 }
 
 export type CredentialSchema = {
-  id: string,
+  id: string
   type: string
 }

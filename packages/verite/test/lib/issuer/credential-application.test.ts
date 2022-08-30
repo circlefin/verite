@@ -10,7 +10,6 @@ import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { ClaimFormat } from "../../../types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
-
 describe("buildCredentialApplication", () => {
   it("builds a valid credential application", async () => {
     const issuerDidKey = await randomDidKey(randomBytes)
@@ -31,10 +30,12 @@ describe("buildCredentialApplication", () => {
     expect(application.credential_application.manifest_id).toEqual(
       "KYCAMLManifest"
     )
-    expect(application.credential_application.presentation_submission).toBeDefined()
-    expect(application.credential_application.presentation_submission?.definition_id).toEqual(
-      kycManifest.presentation_definition?.id
-    )
+    expect(
+      application.credential_application.presentation_submission
+    ).toBeDefined()
+    expect(
+      application.credential_application.presentation_submission?.definition_id
+    ).toEqual(kycManifest.presentation_definition?.id)
   })
 })
 
@@ -62,7 +63,7 @@ describe("decodeCredentialApplication", () => {
               path: "$.holder"
             }
           ]
-        },
+        }
       },
       verifiableCredential: [],
       holder: clientDidKey.subject,

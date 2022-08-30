@@ -7,7 +7,10 @@ import {
   buildKycAmlManifest,
   requiresRevocableCredentials
 } from "../../../lib/issuer/credential-manifest"
-import { proofOfControlPresentationDefinition, randomDidKey } from "../../../lib/utils"
+import {
+  proofOfControlPresentationDefinition,
+  randomDidKey
+} from "../../../lib/utils"
 import { CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures/dids"
 
@@ -53,7 +56,8 @@ describe("buildKycAmlManifest", () => {
       output_descriptors: [
         {
           id: "KYCAMLCredential",
-          schema: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
+          schema:
+            "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
           name: "Proof of KYC from Issuer Inc.",
           description:
             "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",
@@ -118,7 +122,8 @@ describe("buildCreditScoreManifest", () => {
       output_descriptors: [
         {
           id: "CreditScoreCredential",
-          schema: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
+          schema:
+            "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
           name: "Proof of Credit Score from Issuer Inc.",
           description:
             "Attestation that Issuer Inc. has performed a Credit Score check for this subject",

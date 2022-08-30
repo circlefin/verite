@@ -81,10 +81,11 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     manifest,
     userAttestation,
     attestationToCredentialType(userAttestation.type),
-    { 
+    {
       credentialSchema: getCredentialSchemaAsVCObject(userAttestation.type),
-      credentialStatus: revocationList, expirationDate
-     }
+      credentialStatus: revocationList,
+      expirationDate
+    }
   )
 
   // Save the credentials to the database

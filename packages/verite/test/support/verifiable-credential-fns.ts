@@ -27,5 +27,3 @@ export async function generateVerifiableCredential(): Promise<
 
   return decodeVerifiableCredential(jwt)
 }
-
-

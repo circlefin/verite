@@ -14,7 +14,7 @@ type GenerateManifestAndIssuer = {
   issuer: Issuer
 }
 
-function buildHybridManifest(): CredentialManifest  {
+function buildHybridManifest(): CredentialManifest {
   const issuerDid = randomDidKey(randomBytes)
   const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
@@ -23,11 +23,7 @@ function buildHybridManifest(): CredentialManifest  {
   const manifest2 = buildCreditScoreManifest(credentialIssuer)
   const ods = manifest1.output_descriptors.concat(manifest2.output_descriptors)
 
-  const manifest = buildManifest(
-    "HybridManifest",
-    credentialIssuer,
-    ods
-  )
+  const manifest = buildManifest("HybridManifest", credentialIssuer, ods)
   return manifest
 }
 

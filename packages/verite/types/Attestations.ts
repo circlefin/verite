@@ -1,9 +1,9 @@
 import type { PostalAddress } from "schema-dts"
 
- /**
-  * This is a union type for the possible types of attestations.
-  */
-export type Attestation = 
+/**
+ * This is a union type for the possible types of attestations.
+ */
+export type Attestation =
   | KYCAMLAttestation
   | KYBPAMLAttestation
   | EntityAccInvAttestation

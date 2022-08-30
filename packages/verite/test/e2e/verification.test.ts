@@ -58,7 +58,6 @@ describe("verification", () => {
       kycRequest.body.presentation_definition
     )
   })
-
 })
 
 async function getClientVerifiableCredential(
@@ -82,7 +81,7 @@ async function getClientVerifiableCredential(
     manifest,
     kycAmlAttestationFixture,
     KYCAML_CREDENTIAL_TYPE_NAME,
-    { 
+    {
       credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
       credentialStatus: revocationListFixture
     }

@@ -12,7 +12,14 @@ import {
   CredentialManifest,
   ClaimFormat
 } from "../../types"
-import { CREDENTIAL_FULFILLMENT_TYPE_NAME, parseClaimFormat, VC_CONTEXT_URI, VERIFIABLE_CREDENTIAL_TYPE_NAME, VERIFIABLE_PRESENTATION_TYPE_NAME, VERITE_VOCAB_URI } from "../utils"
+import {
+  CREDENTIAL_FULFILLMENT_TYPE_NAME,
+  parseClaimFormat,
+  VC_CONTEXT_URI,
+  VERIFIABLE_CREDENTIAL_TYPE_NAME,
+  VERIFIABLE_PRESENTATION_TYPE_NAME,
+  VERITE_VOCAB_URI
+} from "../utils"
 import {
   encodeVerifiableCredential,
   encodeVerifiablePresentation
@@ -23,11 +30,7 @@ import type {
   CreatePresentationOptions
 } from "did-jwt-vc/src/types"
 
-
-const DEFAULT_CONTEXT = [
-  VC_CONTEXT_URI,
-  { "@vocab": VERITE_VOCAB_URI }
-]
+const DEFAULT_CONTEXT = [VC_CONTEXT_URI, { "@vocab": VERITE_VOCAB_URI }]
 /**
  * Build a VerifiableCredential containing an attestation for the given holder.
  */
@@ -39,13 +42,16 @@ export async function buildAndSignVerifiableCredential(
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
-
   const subjectId = parseSubjectId(subject)
 
   // append all types other than "Verifiable Credential", which is already there
-  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL_TYPE_NAME].concat((Array.isArray(credentialType) ? 
-    credentialType.filter(c => c !== VERIFIABLE_CREDENTIAL_TYPE_NAME) : 
-    credentialType !== VERIFIABLE_CREDENTIAL_TYPE_NAME ? [ credentialType ] : []))
+  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL_TYPE_NAME].concat(
+    Array.isArray(credentialType)
+      ? credentialType.filter((c) => c !== VERIFIABLE_CREDENTIAL_TYPE_NAME)
+      : credentialType !== VERIFIABLE_CREDENTIAL_TYPE_NAME
+      ? [credentialType]
+      : []
+  )
 
   // For attestations, preserve the array or object structure
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,7 +88,7 @@ function parseSubjectId(subject: string | DidKey) {
 
 /**
  * Build a VerifiablePresentation containing a list of attestations.
- * 
+ *
  * Creates a single Verifiable Credential.
  */
 export async function buildAndSignFulfillment(
@@ -104,7 +110,7 @@ export async function buildAndSignFulfillment(
     options
   )
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const format = parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc 
+  const format = parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc
 
   const encodedPresentation = await encodeVerifiablePresentation(
     signer.did,
@@ -116,15 +122,14 @@ export async function buildAndSignFulfillment(
       credential_fulfillment: {
         id: uuidv4(),
         manifest_id: manifest.id,
-        descriptor_map: manifest.output_descriptors.map<DescriptorMap>(
-            (d, i) => {
-              return {
-                id: d.id,
-                format: format,
-                path: `$.verifiableCredential[${i}]`
-              }
+        descriptor_map:
+          manifest.output_descriptors.map<DescriptorMap>((d, i) => {
+            return {
+              id: d.id,
+              format: format,
+              path: `$.verifiableCredential[${i}]`
             }
-          ) ?? []
+          }) ?? []
       }
     }
   )
@@ -141,7 +146,6 @@ export async function buildAndSignMultiVcFulfillment(
   encodedCredentials: string[],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-
   const encodedPresentation = await encodeVerifiablePresentation(
     signer.did,
     encodedCredentials,
@@ -152,16 +156,15 @@ export async function buildAndSignMultiVcFulfillment(
       credential_fulfillment: {
         id: uuidv4(),
         manifest_id: manifest.id,
-        descriptor_map: manifest.output_descriptors.map<DescriptorMap>(
-          (d, i) => {
+        descriptor_map:
+          manifest.output_descriptors.map<DescriptorMap>((d, i) => {
             return {
               id: d.id,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              format: parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc ,
+              format: parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc,
               path: `$.verifiableCredential[${i}]`
             }
-          }
-        ) ?? []
+          }) ?? []
       }
     }
   )

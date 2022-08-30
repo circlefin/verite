@@ -71,7 +71,8 @@ describe("verification offer", () => {
                     path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
                     filter: {
                       type: "string",
-                      pattern: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+                      pattern:
+                        "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
                     }
                   },
                   {
@@ -98,8 +99,7 @@ describe("verification offer", () => {
               },
               id: "KYCAMLCredential",
               name: "Proof of KYC",
-              purpose:
-                "Please provide a valid credential from a KYC/AML issuer"
+              purpose: "Please provide a valid credential from a KYC/AML issuer"
             }
           ]
         }

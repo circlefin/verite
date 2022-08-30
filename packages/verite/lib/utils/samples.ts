@@ -1,8 +1,14 @@
 import { CreditScoreAttestation, KYCAMLAttestation } from "../../types"
 import { getAttestionInformation } from "./attestation-registry"
-import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, VERIFIABLE_CREDENTIAL_TYPE_NAME } from "./constants"
+import {
+  CREDIT_SCORE_ATTESTATION,
+  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+  KYCAML_ATTESTATION,
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  VERIFIABLE_CREDENTIAL_TYPE_NAME
+} from "./constants"
 
-export function getSampleKycAmlAttestation() : KYCAMLAttestation {
+export function getSampleKycAmlAttestation(): KYCAMLAttestation {
   const kycInfo = getAttestionInformation(KYCAML_ATTESTATION)
   return {
     type: kycInfo.type,
@@ -12,7 +18,9 @@ export function getSampleKycAmlAttestation() : KYCAMLAttestation {
   }
 }
 
-export function getSampleCreditScoreAttestation(score: number) : CreditScoreAttestation {
+export function getSampleCreditScoreAttestation(
+  score: number
+): CreditScoreAttestation {
   return {
     type: CREDIT_SCORE_ATTESTATION,
     score: score,

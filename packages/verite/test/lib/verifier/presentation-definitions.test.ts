@@ -51,9 +51,11 @@ describe("kycPresentationDefinition", () => {
                 path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
                 filter: {
                   type: "string",
-                  pattern: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+                  pattern:
+                    "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
                 },
-                purpose: "We need to ensure the credential conforms to the expected schema",
+                purpose:
+                  "We need to ensure the credential conforms to the expected schema"
               }
             ],
             is_holder: [
@@ -139,9 +141,11 @@ describe("kycPresentationDefinition", () => {
                 path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
                 filter: {
                   type: "string",
-                  pattern: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+                  pattern:
+                    "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
                 },
-                purpose: "We need to ensure the credential conforms to the expected schema",
+                purpose:
+                  "We need to ensure the credential conforms to the expected schema"
               },
               {
                 filter: {
