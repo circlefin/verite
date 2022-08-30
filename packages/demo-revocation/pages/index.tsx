@@ -8,6 +8,7 @@ import {
   buildIssuer,
   decodeVerifiableCredential,
   generateRevocationList,
+  getSampleKycAmlAttestation,
   isRevoked,
   KYCAML_CREDENTIAL_TYPE_NAME,
   randomDidKey,
@@ -277,7 +278,4 @@ export default function Home(): JSX.Element {
       </main>
     </div>
   )
-}
-function getSampleKycAmlAttestation(): import("verite").ProcessApprovalAttestation {
-  throw new Error("Function not implemented.")
 }
