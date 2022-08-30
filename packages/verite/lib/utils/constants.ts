@@ -24,7 +24,7 @@ export const CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME =
 
 // Common CM/PE
 export const CREDENTIAL_APPLICATION_TYPE_NAME = "CredentialApplication"
-export const CREDENTIAL_FULFILLMENT_TYPE_NAME = "CredentialFulfillment"
+export const CREDENTIAL_RESPONSE_TYPE_NAME = "CredentialResponse"
 export const PRESENTAION_SUBMISSION_TYPE_NAME = "PresentationSubmission"
 
 // Other Credential Issuance / Exchange

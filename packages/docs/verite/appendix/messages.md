@@ -239,7 +239,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
 ```json
 {
   "@context": ["https://www.w3.org/2018/credentials/v1"],
-  "type": ["VerifiablePresentation", "CredentialFulfillment"],
+  "type": ["VerifiablePresentation", "CredentialResponse"],
   "holder": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
   "credential_fulfillment": {
     "id": "5f22f1ea-0441-4041-916b-2504a2a4075c",

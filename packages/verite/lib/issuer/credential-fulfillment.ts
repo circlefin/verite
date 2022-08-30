@@ -13,7 +13,7 @@ import {
   ClaimFormat
 } from "../../types"
 import {
-  CREDENTIAL_FULFILLMENT_TYPE_NAME,
+  CREDENTIAL_RESPONSE_TYPE_NAME,
   parseClaimFormat,
   VC_CONTEXT_URI,
   VERIFIABLE_CREDENTIAL_TYPE_NAME,
@@ -117,7 +117,7 @@ export async function buildAndSignFulfillment(
     encodedCredentials,
     signer,
     options,
-    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_FULFILLMENT_TYPE_NAME],
+    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
     {
       credential_fulfillment: {
         id: uuidv4(),
@@ -151,7 +151,7 @@ export async function buildAndSignMultiVcFulfillment(
     encodedCredentials,
     signer,
     options,
-    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_FULFILLMENT_TYPE_NAME],
+    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
     {
       credential_fulfillment: {
         id: uuidv4(),
