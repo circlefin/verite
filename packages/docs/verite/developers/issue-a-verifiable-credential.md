@@ -106,6 +106,14 @@ const attestation: KYCAMLAttestation = {
 const credentialType = "KYCAMLCredential"
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 
+issuer,
+  clientDidKey.subject,
+  manifest,
+  kycAmlAttestationFixture,
+  kycAmlCredentialTypeName,
+  kycAttestationSchema,
+  { credentialStatus: revocationListFixture }
+
 const presentation = await buildAndSignFulfillment(
   issuer,
   decodedApplication,

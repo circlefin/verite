@@ -81,8 +81,10 @@ async function getClientVerifiableCredential(
     manifest,
     kycAmlAttestationFixture,
     kycAmlCredentialTypeName,
-    kycAttestationSchema,
-    { credentialStatus: revocationListFixture }
+    { 
+      credentialSchema: kycAttestationSchema,
+      credentialStatus: revocationListFixture
+    }
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)

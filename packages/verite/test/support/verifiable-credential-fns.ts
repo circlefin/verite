@@ -22,7 +22,7 @@ export async function generateVerifiableCredential(): Promise<
     signer.did,
     creditScoreAttestationFixture,
     attestationToCredentialType(creditScoreAttestationFixture.type),
-    creditScoreAttestationSchema
+    { credentialSchema: creditScoreAttestationSchema }
   )
 
   return decodeVerifiableCredential(jwt)

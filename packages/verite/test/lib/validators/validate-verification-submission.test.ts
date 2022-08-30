@@ -55,8 +55,10 @@ describe("Submission validator", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      { 
+        credentialSchema: kycAttestationSchema,
+        credentialStatus: revocationListFixture 
+      }
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -104,7 +106,7 @@ describe("Submission validator", () => {
       manifest,
       creditScoreAttestationFixture,
       creditScoreCredentialTypeName,
-      creditScoreAttestationSchema
+      { credentialSchema: creditScoreAttestationSchema }
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -157,11 +159,13 @@ describe("Submission validator", () => {
       clientDidKey,
       attestation1,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
-      { issuanceDate: "2021-10-26T16:17:13.000Z" }
+      { 
+        credentialSchema: kycAttestationSchema,
+        issuanceDate: "2021-10-26T16:17:13.000Z"
+      }
     )
 
     const vc2 = await buildAndSignVerifiableCredential(
@@ -169,11 +173,13 @@ describe("Submission validator", () => {
       clientDidKey,
       attestation2,
       creditScoreCredentialTypeName,
-      creditScoreAttestationSchema,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
-      { issuanceDate: "2021-10-26T16:17:13.000Z" }
+      { 
+        credentialSchema: creditScoreAttestationSchema,
+        issuanceDate: "2021-10-26T16:17:13.000Z" 
+      }
     )
 
     const creds = [vc1, vc2]
@@ -232,8 +238,10 @@ describe("Submission validator", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      {
+        credentialSchema: kycAttestationSchema,
+        credentialStatus: revocationListFixture 
+      }
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -280,7 +288,7 @@ describe("Submission validator", () => {
       manifest,
       creditScoreAttestationFixture,
       creditScoreCredentialTypeName,
-      creditScoreAttestationSchema
+      { credentialSchema: creditScoreAttestationSchema }
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1
@@ -329,8 +337,10 @@ describe("Submission validator", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      { 
+        credentialSchema: kycAttestationSchema,
+        credentialStatus: revocationListFixture 
+      }
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -378,8 +388,10 @@ describe("Submission validator", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      { 
+        credentialSchema: kycAttestationSchema,
+        credentialStatus: revocationListFixture
+      }
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -427,8 +439,10 @@ describe("Submission validator", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      unrecognizedAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      { 
+        credentialSchema: unrecognizedAttestationSchema,
+        credentialStatus: revocationListFixture
+      }
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)

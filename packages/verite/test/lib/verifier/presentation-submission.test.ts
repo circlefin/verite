@@ -29,7 +29,7 @@ describe("buildPresentationSubmission", () => {
       didKey,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema
+      { credentialSchema: kycAttestationSchema }
     )
     const credential = await decodeVerifiableCredential(encodedCredential)
 

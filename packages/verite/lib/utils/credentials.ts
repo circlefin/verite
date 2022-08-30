@@ -85,8 +85,14 @@ export async function decodeVerifiableCredential(
        }
 
        return clone
+    } else {
+      const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
+      if (clone.vc) {
+       // delete vc property if it wasn't cleaned up by did-jwt-vc
+       delete clone.vc
+      }
+      return clone
     }
-    return res.verifiableCredential
   } catch (err) {
     throw new VerificationError(
       "Input wasn't a valid Verifiable Credential",

@@ -9,7 +9,7 @@ import {
   decodeVerifiableCredential,
   generateRevocationList,
   isRevoked,
-  KYCAML_ATTESTATION_CREDENTIAL,
+  KYCAML_CREDENTIAL,
   randomDidKey,
   RevocableCredential,
   RevocationListCredential,
@@ -62,7 +62,7 @@ const issueCredential = async (
   // Stubbed out credential data
   const attestation: KYCAMLAttestation = getSampleKycAmlAttestation()
 
-  const credentialType = KYCAML_ATTESTATION_CREDENTIAL
+  const credentialType = KYCAML_CREDENTIAL
   /**
    * Note that the `statusListCredential` should be a URL that resolves to the
    * Revocation List Credential.

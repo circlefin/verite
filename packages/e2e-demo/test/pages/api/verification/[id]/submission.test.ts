@@ -165,7 +165,7 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
     manifest,
     userAttestation,
     attestationToCredentialType(userAttestation.type),
-    kycAttestationSchema
+    { credentialSchema: kycAttestationSchema }
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)

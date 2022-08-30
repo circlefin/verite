@@ -35,15 +35,13 @@ describe("buildAndSignVerifiableCredential", () => {
       subjectDid,
       attestation,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      // issuanceDate defaults to now, but for testing we will stub it out
-      // Note that the did-jwt-vc library will strip out any milliseconds as
-      // the JWT exp and iat properties must be in seconds.
-      { issuanceDate: "2021-10-26T16:17:13.000Z" }
+      { 
+        credentialSchema: kycAttestationSchema,
+        issuanceDate: "2021-10-26T16:17:13.000Z"
+      }
     )
 
     const decoded = await decodeVerifiableCredential(vc)
-
     expect(decoded).toMatchObject({
       credentialSubject: {
         KYCAMLAttestation: {
@@ -87,8 +85,10 @@ describe("buildAndSignVerifiableCredential", () => {
       subjectDid,
       attestation,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus }
+      { 
+        credentialSchema: kycAttestationSchema,
+        credentialStatus 
+      }
     )
 
     const decoded = await decodeVerifiableCredential(vc)
@@ -158,7 +158,7 @@ describe("buildAndSignFulfillment", () => {
       manifest,
       attestation,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
+      { credentialSchema: kycAttestationSchema }
     )
 
     // The client can then decode the presentation
@@ -229,11 +229,13 @@ describe("buildAndSignFulfillment", () => {
       subjectDid,
       attestation1,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
-      { issuanceDate: "2021-10-26T16:17:13.000Z" }
+      { 
+        credentialSchema: kycAttestationSchema,
+        issuanceDate: "2021-10-26T16:17:13.000Z" 
+      }
     )
 
     const vc2 = await buildAndSignVerifiableCredential(
@@ -241,13 +243,16 @@ describe("buildAndSignFulfillment", () => {
       subjectDid,
       attestation2,
       creditScoreCredentialTypeName,
-      creditScoreAttestationSchema,
+    
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
-      { issuanceDate: "2021-10-26T16:17:13.000Z" }
+      { 
+        credentialSchema: creditScoreAttestationSchema,
+        issuanceDate: "2021-10-26T16:17:13.000Z" 
+      }
     )
-
+    
     const creds = [vc1, vc2]
 
     const encodedFulfillment = await buildAndSignMultiVcFulfillment(

@@ -15,7 +15,7 @@ import {
   buildPresentationSubmission,
   VerificationOffer,
   ChallengeTokenUrlWrapper,
-  KYCAML_ATTESTATION_CREDENTIAL
+  KYCAML_CREDENTIAL
 } from "verite"
 
 import type { Verifiable } from "verite"
@@ -40,7 +40,7 @@ const issueCredential = async () => {
 
   const attestation: KYCAMLAttestation = getSampleKycAmlAttestation()
 
-  const credentialType = KYCAML_ATTESTATION_CREDENTIAL
+  const credentialType = KYCAML_CREDENTIAL
 
   // Generate the signed, encoded credential
   const encoded = await buildAndSignVerifiableCredential(

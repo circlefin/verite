@@ -5,11 +5,12 @@ import {
   decodeCredentialApplication,
   Attestation,
   buildIssuer,
-  CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
-  KYCAML_ATTESTATION_MANIFEST_ID,
+  CREDIT_SCORE_MANIFEST_ID,
+  KYCAML_MANIFEST_ID,
   getSampleKycAmlAttestation,
   getSampleCreditScoreAttestation,
-  KYCAML_ATTESTATION_CREDENTIAL
+  KYCAML_CREDENTIAL,
+  findManifestById
 } from "verite"
 
 export default async function credentials(
@@ -48,10 +49,12 @@ export default async function credentials(
    * Generate the attestation.
    */
   const manifestId = application.credential_application.manifest_id
+  
+  const manifest = await findManifestById(manifestId)
   let attestation: Attestation
-  if (manifestId === KYCAML_ATTESTATION_MANIFEST_ID) {
+  if (manifestId === KYCAML_MANIFEST_ID) {
     attestation = getSampleKycAmlAttestation()
-  } else if (manifestId === CREDIT_SCORE_ATTESTATION_MANIFEST_ID) {
+  } else if (manifestId === CREDIT_SCORE_MANIFEST_ID) {
     attestation = getSampleCreditScoreAttestation(90)
   } else {
     // Unsupported Credential Manifest
@@ -62,9 +65,10 @@ export default async function credentials(
   // Generate the Verifiable Presentation
   const presentation = await buildAndSignFulfillment(
     issuer,
-    application,
+    application.holder,
+    manifest,
     attestation,
-    KYCAML_ATTESTATION_CREDENTIAL
+    KYCAML_CREDENTIAL
   )
 
   // Response

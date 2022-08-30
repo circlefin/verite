@@ -10,8 +10,7 @@ import {
   JWT,
   Attestation,
   CredentialManifest,
-  ClaimFormat,
-  CredentialSchema
+  ClaimFormat
 } from "../../types"
 import { CREDENTIAL_FULFILLMENT, parseClaimFormat, VC_CONTEXT, VERIFIABLE_CREDENTIAL, VERIFIABLE_PRESENTATION, VERITE_VOCAB } from "../utils"
 import {
@@ -37,7 +36,6 @@ export async function buildAndSignVerifiableCredential(
   subject: string | DidKey,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
-  credentialSchema?: CredentialSchema,
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
@@ -76,9 +74,6 @@ export async function buildAndSignVerifiableCredential(
     },
     payload
   )
-  if (credentialSchema) {
-    vcPayload.credentialSchema = credentialSchema
-  }
 
   return encodeVerifiableCredential(vcPayload, signer, options)
 }
@@ -98,7 +93,6 @@ export async function buildAndSignFulfillment(
   manifest: CredentialManifest,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
-  credentialSchema: CredentialSchema,
   payload: Partial<CredentialPayload> = {},
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
@@ -108,7 +102,6 @@ export async function buildAndSignFulfillment(
     subjectId,
     attestation,
     credentialType,
-    credentialSchema,
     payload,
     options
   )

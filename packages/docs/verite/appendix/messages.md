@@ -8,59 +8,73 @@ sidebar_position: 2
 
 ### Verifiable Credential
 
-The following represents the intermediate form of a JWT-encoded verifiable credential _post-verification_ and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token):
+The following represents the intermediate did-jwt-vc decoded form of a JWT-encoded verifiable credential:
 
 ```json
 {
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    {
+      "@vocab": "https://verite.id/identity/"
+    }
+  ],
+  "type": ["VerifiableCredential", "KYCAMLCredential"],
+  "issuer": {
+    "id": "did:key:z6Mkr3ENcbaQTaQ97V7FahjYwC6iYM821846m57oHaFSnxQx"
+  },
   "credentialSubject": {
+    "id": "did:key:z6MkpVasvTGxhLwMycLWWBa7WaYZTpvc3PstVdKaie5phPut",
     "KYCAMLAttestation": {
       "type": "KYCAMLAttestation",
       "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-      "approvalDate": "2021-09-14T02:00:07.540Z"
-    },
-    "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
+      "approvalDate": "2022-08-29T23:30:49.291Z"
+    }
   },
-  "issuer": {
-    "id": "did:web:verite.id"
-  },
-  "type": ["VerifiableCredential", "KYCAMLCredential"],
-  "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    { "@vocab": "https://verite.id/identity/" }
-  ],
-  "issuanceDate": "2021-09-14T02:00:07.000Z"
+  "expirationDate": "2022-10-28T23:30:49.291Z",
+  "issuanceDate": "2022-08-29T23:30:49.000Z",
+  "proof": {
+    "type": "JwtProof2020",
+    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...<SNIP>...crQDg"
+  }
 }
 ```
 
 ### Verifiable Credential with status
 
-The following represents the intermediate form of a JWT-encoded verifiable credential _post-verification_ and post-decoding to restore the "credential" (i.e., combining fields from both the payload and the protected headers of the JWT token). Note that the credential status has not been dereferenced (i.e., "fetched" as a bitstring and validated), which some systems might want to do before processing and/or storing the credential.
+This extends the above to add credential status. Note that the credential status has not been dereferenced (i.e., "fetched" as a bitstring and validated), which some systems might want to do before processing and/or storing the credential.
 
 ```json
 {
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    {
+      "@vocab": "https://verite.id/identity/"
+    }
+  ],
+  "type": ["VerifiableCredential", "KYCAMLCredential"],
+  "issuer": {
+    "id": "did:key:z6Mkr3ENcbaQTaQ97V7FahjYwC6iYM821846m57oHaFSnxQx"
+  },
   "credentialSubject": {
+    "id": "did:key:z6MkpVasvTGxhLwMycLWWBa7WaYZTpvc3PstVdKaie5phPut",
     "KYCAMLAttestation": {
       "type": "KYCAMLAttestation",
       "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-      "approvalDate": "2021-09-14T02:00:07.540Z"
-    },
-    "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN"
+      "approvalDate": "2022-08-29T23:30:49.291Z"
+    }
   },
-  "issuer": {
-    "id": "did:web:verite.id"
-  },
-  "type": ["VerifiableCredential", "KYCAMLCredential"],
   "credentialStatus": {
-    "id": "http://example.com/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91#94372",
+    "id": "http://192.168.2.3:3000/api/demos/revocation/e434beeb-d745-447c-b3d7-5e82a95ccb27#50305",
     "type": "RevocationList2021Status",
-    "statusListIndex": "94372",
-    "statusListCredential": "http://example.com/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91"
+    "statusListIndex": "50305",
+    "statusListCredential": "http://192.168.2.3:3000/api/demos/revocation/e434beeb-d745-447c-b3d7-5e82a95ccb27"
   },
-  "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    { "@vocab": "https://verite.id/identity/" }
-  ],
-  "issuanceDate": "2021-09-14T02:00:07.000Z"
+  "expirationDate": "2022-10-28T23:30:49.291Z",
+  "issuanceDate": "2022-08-29T23:30:49.000Z",
+  "proof": {
+    "type": "JwtProof2020",
+    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIseyJAdm9jYWIiOiJodHRwczovL3Zlcml0ZS5pZC9pZGVudGl0eS8ifV0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJLWUNBTUxDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmtleTp6Nk1rcFZhc3ZUR3hoTHdNeWNMV1dCYTdXYVlaVHB2YzNQc3RWZEthaWU1cGhQdXQiLCJLWUNBTUxBdHRlc3RhdGlvbiI6eyJ0eXBlIjoiS1lDQU1MQXR0ZXN0YXRpb24iLCJwcm9jZXNzIjoiaHR0cHM6Ly92ZXJpdGUuaWQvZGVmaW5pdGlvbnMvcHJvY2Vzc2VzL2t5Y2FtbC8wLjAuMS91c2EiLCJhcHByb3ZhbERhdGUiOiIyMDIyLTA4LTI5VDIzOjMwOjQ5LjI5MVoifX0sImlzc3VhbmNlRGF0ZSI6IjIwMjItMDgtMjlUMjM6MzA6NDkuMjkyWiIsImlzc3VlciI6eyJpZCI6ImRpZDprZXk6ejZNa3IzRU5jYmFRVGFROTdWN0ZhaGpZd0M2aVlNODIxODQ2bTU3b0hhRlNueFF4In0sImNyZWRlbnRpYWxTY2hlbWEiOnsiY3JlZGVudGlhbFN0YXR1cyI6eyJpZCI6Imh0dHA6Ly8xOTIuMTY4LjIuMzozMDAwL2FwaS9kZW1vcy9yZXZvY2F0aW9uL2U0MzRiZWViLWQ3NDUtNDQ3Yy1iM2Q3LTVlODJhOTVjY2IyNyM1MDMwNSIsInR5cGUiOiJSZXZvY2F0aW9uTGlzdDIwMjFTdGF0dXMiLCJzdGF0dXNMaXN0SW5kZXgiOiI1MDMwNSIsInN0YXR1c0xpc3RDcmVkZW50aWFsIjoiaHR0cDovLzE5Mi4xNjguMi4zOjMwMDAvYXBpL2RlbW9zL3Jldm9jYXRpb24vZTQzNGJlZWItZDc0NS00NDdjLWIzZDctNWU4MmE5NWNjYjI3In0sImV4cGlyYXRpb25EYXRlIjoiMjAyMi0xMC0yOFQyMzozMDo0OS4yOTFaIn19LCJuYmYiOjE2NjE4MTU4NDksImlzcyI6ImRpZDprZXk6ejZNa3IzRU5jYmFRVGFROTdWN0ZhaGpZd0M2aVlNODIxODQ2bTU3b0hhRlNueFF4Iiwic3ViIjoiZGlkOmtleTp6Nk1rcFZhc3ZUR3hoTHdNeWNMV1dCYTdXYVlaVHB2YzNQc3RWZEthaWU1cGhQdXQifQ.2QqOPxJU6bQE771O-q9lJTu-pEgs3BJnfwjPbqx88qk-_YK8bk_V9RLajEwiOtdWdK_ktTrLaB1IzDe8NcrQDg"
+  }
 }
 ```
 
@@ -101,8 +115,8 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
   "id": "KYCAMLManifest",
   "version": "0.1.0",
   "issuer": {
-    "id": "did:web:example.com",
-    "name": "Example Inc.",
+    "id": "did:web:demos.verite.id",
+    "name": "Verite",
     "styles": {}
   },
   "format": {
@@ -115,11 +129,14 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
   },
   "output_descriptors": [
     {
-      "id": "kyc_vc",
+      "id": "KYCAMLCredential",
       "schema": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
       "name": "Proof of KYC from Verite",
       "description": "Attestation that Verite has completed KYC/AML verification for this subject",
       "display": {
+        "title": {
+          "text": "Verite KYC Attestation"
+        },
         "subtitle": {
           "path": ["$.approvalDate", "$.vc.approvalDate"],
           "fallback": "Includes date of approval"
@@ -147,11 +164,11 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       },
       "styles": {
         "thumbnail": {
-          "uri": "http://example.com/img/kyc-aml-thumbnail.png",
+          "uri": "http://192.168.2.3:3000/img/kyc-aml-thumbnail.png",
           "alt": "Verite Logo"
         },
         "hero": {
-          "uri": "http://example.com/img/kyc-aml-hero.png",
+          "uri": "http://192.168.2.3:3000/img/kyc-aml-hero.png",
           "alt": "KYC+AML Visual"
         },
         "background": {
@@ -174,12 +191,16 @@ Example DIF Credential Manifest for a KYCAMLAttestation issued by a fictional is
       {
         "id": "proofOfIdentifierControlVP",
         "name": "Proof of Control Verifiable Presentation",
-        "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
-        "schema": [
-          {
-            "uri": "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-          }
-        ]
+        "purpose": "A VP establishing proof of identifier control over the DID.",
+        "constraints": {
+          "fields": [
+            {
+              "id": "holder",
+              "path": ["$.holder"],
+              "purpose": "The VP should contain a DID in the holder, which is the same DID that signs the VP. This DID will be used as the subject of the issued VC"
+            }
+          ]
+        }
       }
     ]
   }

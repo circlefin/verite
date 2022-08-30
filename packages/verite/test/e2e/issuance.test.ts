@@ -59,8 +59,10 @@ describe("issuance", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      { 
+        credentialSchema: kycAttestationSchema,
+        credentialStatus: revocationListFixture
+      }
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
@@ -156,8 +158,10 @@ describe("issuance", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      { 
+        credentialSchema: kycAttestationSchema,
+        credentialStatus: revocationListFixture
+      }
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(

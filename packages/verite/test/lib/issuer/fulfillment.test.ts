@@ -23,8 +23,10 @@ describe("buildAndSignKycAmlFulfillment", () => {
       manifest,
       kycAmlAttestationFixture,
       kycAmlCredentialTypeName,
-      kycAttestationSchema,
-      { credentialStatus: revocationListFixture }
+      { 
+        credentialSchema: kycAttestationSchema,
+        credentialStatus: revocationListFixture 
+      }
     )
     const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
     expect(fulfillment.credential_fulfillment).toBeDefined()
