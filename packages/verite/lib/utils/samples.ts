@@ -1,6 +1,6 @@
 import { CreditScoreAttestation, KYCAMLAttestation } from "../../types"
 import { getAttestionInformation } from "./attestation-registry"
-import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL, KYCAML_ATTESTATION, KYCAML_CREDENTIAL, VERIFIABLE_CREDENTIAL } from "./constants"
+import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, VERIFIABLE_CREDENTIAL_TYPE_NAME } from "./constants"
 
 export function getSampleKycAmlAttestation() : KYCAMLAttestation {
   const kycInfo = getAttestionInformation(KYCAML_ATTESTATION)
@@ -22,7 +22,7 @@ export function getSampleCreditScoreAttestation(score: number) : CreditScoreAtte
 }
 
 export function attestationToCredentialType(attestationType: string): string[] {
-  const types = [VERIFIABLE_CREDENTIAL]
+  const types = [VERIFIABLE_CREDENTIAL_TYPE_NAME]
   const result = typeMap.get(attestationType)
   if (result) {
     types.push(result)
@@ -31,6 +31,6 @@ export function attestationToCredentialType(attestationType: string): string[] {
 }
 
 const typeMap = new Map<string, string>([
-  [KYCAML_ATTESTATION, KYCAML_CREDENTIAL],
-  [CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL]
+  [KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME],
+  [CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME]
 ])

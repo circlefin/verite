@@ -1,4 +1,4 @@
-import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL, CREDIT_SCORE_MANIFEST_ID, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL, KYCAML_MANIFEST_ID, proofOfControlPresentationDefinition, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
+import { CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_MANIFEST_ID, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, KYCAML_MANIFEST_ID, proofOfControlPresentationDefinition, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
 
 import type {
   CredentialIssuer,
@@ -59,7 +59,7 @@ export function buildKycAmlManifest(
   const attestationInfo = getAttestionInformation(KYCAML_ATTESTATION)
   const outputDescriptors: OutputDescriptor[] = [
     {
-      id: `${KYCAML_CREDENTIAL}`,
+      id: `${KYCAML_CREDENTIAL_TYPE_NAME}`,
       schema: attestationInfo.schema,
       name: `Proof of KYC from ${issuer.name}`,
       description: `Attestation that ${issuer.name} has completed KYC/AML verification for this subject`,
@@ -108,7 +108,7 @@ export function buildCreditScoreManifest(
   const attestationInfo = getAttestionInformation(CREDIT_SCORE_ATTESTATION)
   const outputDescriptors: OutputDescriptor[] = [
     {
-      id: CREDIT_SCORE_CREDENTIAL,
+      id: CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
       schema: attestationInfo.schema,
       name: `Proof of Credit Score from ${issuer.name}`,
       description: `Attestation that ${issuer.name} has performed a Credit Score check for this subject`,

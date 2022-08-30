@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from "uuid"
 import { ValidationError } from "../../../lib/errors"
 import { buildCredentialApplication } from "../../../lib/issuer/credential-application"
 import { buildAndSignFulfillment, buildAndSignMultiVcFulfillment, buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
+import { CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ, KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../../lib/utils/attestation-registry"
+import { CREDIT_SCORE_CREDENTIAL_TYPE_NAME, KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/utils/constants"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
@@ -20,18 +22,19 @@ import {
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
-import { creditScoreAttestationSchema, kycAttestationSchema, unrecognizedAttestationSchema } from "../../fixtures/schemas"
-import {
-  creditScoreCredentialTypeName,
-  kycAmlCredentialTypeName
-} from "../../fixtures/types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 import type {
+  CredentialSchema,
   DecodedCredentialApplication,
   EncodedPresentationSubmission,
   VerificationOffer
 } from "../../../types"
+
+const unrecognizedAttestationSchema: CredentialSchema = {
+  id: "https://verite.id/definitions/schemas/0.0.1/UnrecognizedSchema",
+  type: "SomeUnknownAttestation"
+}
 
 
 describe("Submission validator", () => {
@@ -54,9 +57,9 @@ describe("Submission validator", () => {
       clientDidKey.subject,
       manifest,
       kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus: revocationListFixture 
       }
     )
@@ -105,8 +108,8 @@ describe("Submission validator", () => {
       clientDidKey.subject,
       manifest,
       creditScoreAttestationFixture,
-      creditScoreCredentialTypeName,
-      { credentialSchema: creditScoreAttestationSchema }
+      CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+      { credentialSchema: CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ }
     )
 
     const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
@@ -158,12 +161,12 @@ describe("Submission validator", () => {
       issuer,
       clientDidKey,
       attestation1,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         issuanceDate: "2021-10-26T16:17:13.000Z"
       }
     )
@@ -172,12 +175,12 @@ describe("Submission validator", () => {
       issuer,
       clientDidKey,
       attestation2,
-      creditScoreCredentialTypeName,
+      CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
       { 
-        credentialSchema: creditScoreAttestationSchema,
+        credentialSchema: CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ,
         issuanceDate: "2021-10-26T16:17:13.000Z" 
       }
     )
@@ -237,9 +240,9 @@ describe("Submission validator", () => {
       clientDidKey.subject,
       manifest,
       kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       {
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus: revocationListFixture 
       }
     )
@@ -287,8 +290,8 @@ describe("Submission validator", () => {
       clientDidKey.subject,
       manifest,
       creditScoreAttestationFixture,
-      creditScoreCredentialTypeName,
-      { credentialSchema: creditScoreAttestationSchema }
+      CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+      { credentialSchema: CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ }
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1
@@ -336,9 +339,9 @@ describe("Submission validator", () => {
       clientDidKey.subject,
       manifest,
       kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus: revocationListFixture 
       }
     )
@@ -387,9 +390,9 @@ describe("Submission validator", () => {
       clientDidKey.subject,
       manifest,
       kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus: revocationListFixture
       }
     )
@@ -438,7 +441,7 @@ describe("Submission validator", () => {
       clientDidKey.subject,
       manifest,
       kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       { 
         credentialSchema: unrecognizedAttestationSchema,
         credentialStatus: revocationListFixture

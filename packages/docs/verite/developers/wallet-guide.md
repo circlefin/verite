@@ -208,7 +208,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
       {
         "id": "proofOfIdentifierControlVP",
         "format": "jwt_vp",
-        "path": "$.presentation"
+        "path": "$.holder"
       }
     ]
   },
@@ -232,7 +232,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
     "manifest_id": "KYCAMLManifest",
     "descriptor_map": [
       {
-        "id": "proofOfIdentifierControlVP",
+        "id": "KYCAMLCredential",
         "format": "jwt_vc",
         "path": "$.verifiableCredential[0]"
       }
@@ -329,7 +329,7 @@ Note: In the Presentation Object that follows (a signed VP in JWT form), the `ve
     "definition_id": "KYCAMLPresentationDefinition",
     "descriptor_map": [
       {
-        "id": "kycaml_vc",
+        "id": "KYCAMLCredential",
         "format": "jwt_vc",
         "path": "$.presentation.verifiableCredential[0]"
       }

@@ -3,7 +3,7 @@ import {
   InputDescriptorConstraintStatusDirective
 } from "../../types/InputDescriptor"
 import { PresentationDefinition } from "../../types/PresentationDefinition"
-import { CREDENTIAL_SUBJECT, CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL, CREDIT_SCORE_PRESENTATION_DEFINITION, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL, KYCAML_PRESENTATION_DEFINITION, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
+import { CREDENTIAL_SUBJECT_PROPERTY_NAME, CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME, EDDSA, getAttestionInformation, KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME, KYCAML_PRESENTATION_DEFINITION_TYPE_NAME, schemaConstraint, subjectIsHolderConstraint, subjectIsHolderField } from "../utils"
 
 /**
  * Build a Presentation Definition requesting a KYC/AML Attestation
@@ -21,8 +21,8 @@ export function kycPresentationDefinition(
   ).map((key) => {
     return {
       path: [
-        `$.${CREDENTIAL_SUBJECT}.${KYCAML_ATTESTATION}.${key}`,
-        `$.vc.${CREDENTIAL_SUBJECT}.${KYCAML_ATTESTATION}.${key}`,
+        `$.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${KYCAML_ATTESTATION}.${key}`,
+        `$.vc.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${KYCAML_ATTESTATION}.${key}`,
         `$.${KYCAML_ATTESTATION}.${key}`
       ],
       purpose: `The KYC/AML Attestation requires the field: '${key}'.`,
@@ -45,10 +45,10 @@ export function kycPresentationDefinition(
   }
 
   return {
-    id: KYCAML_PRESENTATION_DEFINITION,
+    id: KYCAML_PRESENTATION_DEFINITION_TYPE_NAME,
     input_descriptors: [
       {
-        id: KYCAML_CREDENTIAL,
+        id: KYCAML_CREDENTIAL_TYPE_NAME,
         name: "Proof of KYC",
         purpose: "Please provide a valid credential from a KYC/AML issuer",
         constraints: {
@@ -91,8 +91,8 @@ export function creditScorePresentationDefinition(
   ).map((key) => {
     return {
       path: [
-        `$.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.${key}`,
-        `$.vc.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.${key}`,
+        `$.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${CREDIT_SCORE_ATTESTATION}.${key}`,
+        `$.vc.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${CREDIT_SCORE_ATTESTATION}.${key}`,
         `$.${CREDIT_SCORE_ATTESTATION}.${key}`
       ],
       purpose: `The Credit Score Attestation requires the field: '${key}'.`,
@@ -116,8 +116,8 @@ export function creditScorePresentationDefinition(
   if (minimumCreditScore) {
     fields.push({
       path: [
-        `$.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.score`,
-        `$.vc.${CREDENTIAL_SUBJECT}.${CREDIT_SCORE_ATTESTATION}.score`,
+        `$.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${CREDIT_SCORE_ATTESTATION}.score`,
+        `$.vc.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${CREDIT_SCORE_ATTESTATION}.score`,
         `$.${CREDIT_SCORE_ATTESTATION}.score`
       ],
       purpose: `We can only verify Credit Score credentials that are above ${minimumCreditScore}.`,
@@ -129,10 +129,10 @@ export function creditScorePresentationDefinition(
   }
 
   return {
-    id: CREDIT_SCORE_PRESENTATION_DEFINITION,
+    id: CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME,
     input_descriptors: [
       {
-        id: CREDIT_SCORE_CREDENTIAL,
+        id: CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
         name: "Proof of Credit Score",
         purpose: "Please provide a valid credential from a Credit Score issuer",
         constraints: {

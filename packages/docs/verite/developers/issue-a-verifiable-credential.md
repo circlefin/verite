@@ -82,9 +82,15 @@ const application = await buildCredentialApplication(subject, manifest)
 
 Once the subject has requested a VC and submitted their DID (as part of their credential application), the Issuer can create a VC.
 
-For our example, we're building a VC containing a KYC/AML Attestation. This attestation is quite simple in Verite. It defines an authority which has performed proper KYC/AML checks on the subject (in this example the authority is Verite, with the DID of `did:web:verite.id`).
+For our example, we're building a VC containing a KYC/AML Attestation. This attestation is quite simple in Verite. It defines an authority which has performed proper KYC/AML checks on the subject (in this example the authority is Verite, with the DID of `did:web:verite.id`), so that will used in the issuer field.
 
-We transport Verifiable Credentials using a Verifiable Presentation. The presentation is just a way of transferring credentials, with the benefit that the presentation creator does not need to be the credential issuer or subject.
+From the Credential Application, the issuer also confirms:
+
+- Who to issue the VC to -- the subject identifier is the `holder` field from the VP in the Credential Application
+  - That the subject actually controls the identifier by signing a proof (along with the challenge)
+- Any other inputs requested by the manifest (if specified)
+
+We transport Verifiable Credentials using a Verifiable Presentation. The presentation allows the issuer to bundle the credentials before sending to the subject, along with signed proof.
 
 Putting this together, we can do the following:
 
@@ -106,17 +112,10 @@ const attestation: KYCAMLAttestation = {
 const credentialType = "KYCAMLCredential"
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 
-issuer,
-  clientDidKey.subject,
-  manifest,
-  kycAmlAttestationFixture,
-  kycAmlCredentialTypeName,
-  kycAttestationSchema,
-  { credentialStatus: revocationListFixture }
-
 const presentation = await buildAndSignFulfillment(
   issuer,
-  decodedApplication,
+  decodedApplication.holder,
+  manifest,
   attestation,
   credentialType
 )

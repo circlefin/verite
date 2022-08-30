@@ -5,10 +5,10 @@ import {
   attestationToCredentialType,
   buildIssuer,
   decodeVerifiableCredential,
+  KYC_ATTESTATION_SCHEMA_VC_OBJ,
   randomDidKey
 } from "../../lib/utils"
 import { creditScoreAttestationFixture } from "../fixtures/attestations"
-import { creditScoreAttestationSchema } from "../fixtures/schemas"
 
 import type { Verifiable, W3CCredential } from "../../types/DidJwt"
 
@@ -22,7 +22,7 @@ export async function generateVerifiableCredential(): Promise<
     signer.did,
     creditScoreAttestationFixture,
     attestationToCredentialType(creditScoreAttestationFixture.type),
-    { credentialSchema: creditScoreAttestationSchema }
+    { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
   )
 
   return decodeVerifiableCredential(jwt)

@@ -12,7 +12,7 @@ import {
   CredentialManifest,
   ClaimFormat
 } from "../../types"
-import { CREDENTIAL_FULFILLMENT, parseClaimFormat, VC_CONTEXT, VERIFIABLE_CREDENTIAL, VERIFIABLE_PRESENTATION, VERITE_VOCAB } from "../utils"
+import { CREDENTIAL_FULFILLMENT_TYPE_NAME, parseClaimFormat, VC_CONTEXT_URI, VERIFIABLE_CREDENTIAL_TYPE_NAME, VERIFIABLE_PRESENTATION_TYPE_NAME, VERITE_VOCAB_URI } from "../utils"
 import {
   encodeVerifiableCredential,
   encodeVerifiablePresentation
@@ -25,8 +25,8 @@ import type {
 
 
 const DEFAULT_CONTEXT = [
-  VC_CONTEXT,
-  { "@vocab": VERITE_VOCAB }
+  VC_CONTEXT_URI,
+  { "@vocab": VERITE_VOCAB_URI }
 ]
 /**
  * Build a VerifiableCredential containing an attestation for the given holder.
@@ -40,16 +40,14 @@ export async function buildAndSignVerifiableCredential(
   options?: CreateCredentialOptions
 ): Promise<JWT> {
 
-  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL]
   const subjectId = parseSubjectId(subject)
-  if (Array.isArray(credentialType)) {
-    const newTypes = credentialType.filter(c => c !== VERIFIABLE_CREDENTIAL)
-    finalCredentialTypes.push(...newTypes)
-  } else {
-    if (credentialType !== VERIFIABLE_CREDENTIAL) {
-      finalCredentialTypes.push(credentialType)
-    }
-  }
+
+  // append all types other than "Verifiable Credential", which is already there
+  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL_TYPE_NAME].concat((Array.isArray(credentialType) ? 
+    credentialType.filter(c => c !== VERIFIABLE_CREDENTIAL_TYPE_NAME) : 
+    credentialType !== VERIFIABLE_CREDENTIAL_TYPE_NAME ? [ credentialType ] : []))
+
+  // For attestations, preserve the array or object structure
   let attsns: any[] | any
   if (Array.isArray(attestation)) {
     attsns = attestation.map((att) => {
@@ -74,7 +72,6 @@ export async function buildAndSignVerifiableCredential(
     },
     payload
   )
-
   return encodeVerifiableCredential(vcPayload, signer, options)
 }
 
@@ -113,7 +110,7 @@ export async function buildAndSignFulfillment(
     encodedCredentials,
     signer,
     options,
-    [VERIFIABLE_PRESENTATION, CREDENTIAL_FULFILLMENT],
+    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_FULFILLMENT_TYPE_NAME],
     {
       credential_fulfillment: {
         id: uuidv4(),
@@ -149,7 +146,7 @@ export async function buildAndSignMultiVcFulfillment(
     encodedCredentials,
     signer,
     options,
-    [VERIFIABLE_PRESENTATION, CREDENTIAL_FULFILLMENT],
+    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_FULFILLMENT_TYPE_NAME],
     {
       credential_fulfillment: {
         id: uuidv4(),

@@ -7,14 +7,15 @@ import {
 } from "../../../lib/issuer/credential-fulfillment"
 import {
   buildIssuer,
+  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  KYC_ATTESTATION_SCHEMA_VC_OBJ,
   randomDidKey
 } from "../../../lib/utils"
 import { RevocationList2021Status } from "../../../types"
 import { creditScoreAttestationFixture, kycAmlAttestationFixture } from "../../fixtures/attestations"
-import { creditScoreAttestationSchema, kycAttestationSchema } from "../../fixtures/schemas"
-import { creditScoreCredentialTypeName, kycAmlCredentialTypeName } from "../../fixtures/types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("buildAndSignVerifiableCredential", () => {
@@ -34,9 +35,9 @@ describe("buildAndSignVerifiableCredential", () => {
       issuer,
       subjectDid,
       attestation,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         issuanceDate: "2021-10-26T16:17:13.000Z"
       }
     )
@@ -84,9 +85,9 @@ describe("buildAndSignVerifiableCredential", () => {
       issuer,
       subjectDid,
       attestation,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus 
       }
     )
@@ -157,8 +158,8 @@ describe("buildAndSignFulfillment", () => {
       subjectDid.subject,
       manifest,
       attestation,
-      kycAmlCredentialTypeName,
-      { credentialSchema: kycAttestationSchema }
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
     )
 
     // The client can then decode the presentation
@@ -228,12 +229,12 @@ describe("buildAndSignFulfillment", () => {
       issuer,
       subjectDid,
       attestation1,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         issuanceDate: "2021-10-26T16:17:13.000Z" 
       }
     )
@@ -242,13 +243,13 @@ describe("buildAndSignFulfillment", () => {
       issuer,
       subjectDid,
       attestation2,
-      creditScoreCredentialTypeName,
+      CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
     
       // issuanceDate defaults to now, but for testing we will stub it out
       // Note that the did-jwt-vc library will strip out any milliseconds as
       // the JWT exp and iat properties must be in seconds.
       { 
-        credentialSchema: creditScoreAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         issuanceDate: "2021-10-26T16:17:13.000Z" 
       }
     )

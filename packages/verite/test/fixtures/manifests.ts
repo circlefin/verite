@@ -1,7 +1,6 @@
-import { proofOfControlPresentationDefinition } from "../../lib/utils"
+import { KYC_ATTESTATION_SCHEMA_URI, proofOfControlPresentationDefinition } from "../../lib/utils"
 import { CredentialManifest } from "../../types"
 import { didFixture } from "./dids"
-import { KYC_ATTESTATION_SCHEMA } from "./schemas"
 
 /**
  * Helper function to generate a Credential Manifest with a known issuer
@@ -19,7 +18,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
     output_descriptors: [
       {
         id: "kyc_vc",
-        schema: KYC_ATTESTATION_SCHEMA,
+        schema: KYC_ATTESTATION_SCHEMA_URI,
         name: "Proof of KYC from Issuer Inc.",
         description:
           "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",

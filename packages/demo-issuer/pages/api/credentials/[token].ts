@@ -9,9 +9,11 @@ import {
   KYCAML_MANIFEST_ID,
   getSampleKycAmlAttestation,
   getSampleCreditScoreAttestation,
-  KYCAML_CREDENTIAL,
-  findManifestById
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  getCredentialSchemaAsVCObject
 } from "verite"
+
+import { ManifestMap } from "../manifests"
 
 export default async function credentials(
   req: NextApiRequest,
@@ -50,7 +52,7 @@ export default async function credentials(
    */
   const manifestId = application.credential_application.manifest_id
   
-  const manifest = await findManifestById(manifestId)
+  const manifest = ManifestMap[manifestId]
   let attestation: Attestation
   if (manifestId === KYCAML_MANIFEST_ID) {
     attestation = getSampleKycAmlAttestation()
@@ -68,7 +70,10 @@ export default async function credentials(
     application.holder,
     manifest,
     attestation,
-    KYCAML_CREDENTIAL
+    KYCAML_CREDENTIAL_TYPE_NAME,
+    { 
+      credentialSchema: getCredentialSchemaAsVCObject(KYCAML_CREDENTIAL_TYPE_NAME),
+     }
   )
 
   // Response

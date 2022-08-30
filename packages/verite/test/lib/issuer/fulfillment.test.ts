@@ -2,12 +2,10 @@ import { randomBytes } from "crypto"
 
 import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
 import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
-import { decodeVerifiablePresentation } from "../../../lib/utils"
+import { decodeVerifiablePresentation, KYCAML_CREDENTIAL_TYPE_NAME, KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../../lib/utils"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { revocationListFixture } from "../../fixtures/revocation-list"
-import { kycAttestationSchema } from "../../fixtures/schemas"
-import { kycAmlCredentialTypeName } from "../../fixtures/types"
 
 describe("buildAndSignKycAmlFulfillment", () => {
   it("builds and signs a kyc/aml fulfillment", async () => {
@@ -22,9 +20,9 @@ describe("buildAndSignKycAmlFulfillment", () => {
       clientDidKey.subject,
       manifest,
       kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
+      KYCAML_CREDENTIAL_TYPE_NAME,
       { 
-        credentialSchema: kycAttestationSchema,
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
         credentialStatus: revocationListFixture 
       }
     )

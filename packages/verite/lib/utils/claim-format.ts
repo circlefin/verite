@@ -1,5 +1,5 @@
 import { ClaimFormat, ClaimFormatDesignation, InputDescriptorConstraintField, InputDescriptorConstraintSubjectConstraint, PresentationDefinition } from "../../types"
-import { CREDENTIAL_SCHEMA, CREDENTIAL_SUBJECT, EDDSA, HOLDER, ID, PROOF_OF_CONTROL_PRESENTATION_DEF_ID } from "./constants"
+import { CREDENTIAL_SCHEMA_PROPERTY_NAME, CREDENTIAL_SUBJECT_PROPERTY_NAME, EDDSA, HOLDER_PROPERTY_NAME, ID_PROPERTY_NAME, PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME } from "./constants"
 
 
 export function parseClaimFormat(d: ClaimFormatDesignation): ClaimFormat {
@@ -19,8 +19,8 @@ export function parseClaimFormat(d: ClaimFormatDesignation): ClaimFormat {
 export function schemaConstraint(schema: string) : InputDescriptorConstraintField {
 
   return {
-    id: CREDENTIAL_SCHEMA,
-    path: [`$.${CREDENTIAL_SCHEMA}.${ID}`, `$.vc.${CREDENTIAL_SCHEMA}.${ID}`],
+    id: CREDENTIAL_SCHEMA_PROPERTY_NAME,
+    path: [`$.${CREDENTIAL_SCHEMA_PROPERTY_NAME}.${ID_PROPERTY_NAME}`, `$.vc.${CREDENTIAL_SCHEMA_PROPERTY_NAME}.${ID_PROPERTY_NAME}`],
     filter: {
       type: "string",
       pattern: schema
@@ -38,17 +38,16 @@ export const subjectIsHolderConstraint: InputDescriptorConstraintSubjectConstrai
     }
   ]
 
-
 export const subjectIsHolderField: InputDescriptorConstraintField = {
   id: "subjectId",
-  path: [`$.${CREDENTIAL_SUBJECT}.${ID}`, `$.vc.${CREDENTIAL_SUBJECT}.${ID}`, `$.${ID}`],
+  path: [`$.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${ID_PROPERTY_NAME}`, `$.vc.${CREDENTIAL_SUBJECT_PROPERTY_NAME}.${ID_PROPERTY_NAME}`, `$.${ID_PROPERTY_NAME}`],
   purpose:
     "We need to ensure the holder and the subject have the same identifier"
 }
 
 export function proofOfControlPresentationDefinition() : PresentationDefinition {
   return {
-    id: PROOF_OF_CONTROL_PRESENTATION_DEF_ID,
+    id: PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME,
     // which algorithms the Verifier supports for the input.
     format: {
       jwt_vp: {
@@ -63,8 +62,8 @@ export function proofOfControlPresentationDefinition() : PresentationDefinition 
           "A VP establishing proof of identifier control over the DID.",
         constraints: {
           fields: [{
-            id: HOLDER,
-            path: [`$.${HOLDER}`],
+            id: HOLDER_PROPERTY_NAME,
+            path: [`$.${HOLDER_PROPERTY_NAME}`],
             purpose:
               "The VP should contain a DID in the holder, which is the same DID that signs the VP. This DID will be used as the subject of the issued VC"
           }]

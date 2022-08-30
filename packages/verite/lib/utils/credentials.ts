@@ -6,7 +6,7 @@ import {
 } from "did-jwt-vc"
 
 import { VerificationError } from "../errors"
-import { VC_CONTEXT, VERIFIABLE_PRESENTATION } from "./constants"
+import { VC_CONTEXT_URI, VERIFIABLE_PRESENTATION_TYPE_NAME } from "./constants"
 import { didResolver } from "./did-fns"
 
 import type {
@@ -54,8 +54,10 @@ export async function encodeVerifiableCredential(
         ? vcPayload.issuer
         : vcPayload.issuer.id
   }
-  if (vcPayload.credentialSubject && vcPayload.credentialSubject.id) {
-    payload.sub = vcPayload.credentialSubject.id
+  if (vcPayload.credentialSubject) {
+    // assumes the same subject for all attestations
+    const sub = Array.isArray(vcPayload.credentialSubject) ? vcPayload.credentialSubject[0].id : vcPayload.credentialSubject.id
+    payload.sub = sub
   }
 
   return createVerifiableCredentialJwt(payload, signer, options)
@@ -75,8 +77,12 @@ export async function decodeVerifiableCredential(
     if (res.verifiableCredential.credentialSubject.hasOwnProperty(0)) {
       // did-jwt-vc turns these arrays into maps; convert back
       const newCs = Object.entries(res.verifiableCredential.credentialSubject).map(([key, value]) => {
-        return value
-       })
+        // need this addtional cleanup for did-jwt-vc adding string-y payload
+        // args to the decoded representation
+        if (typeof value !== 'string') {
+          return value
+        }
+      })
        const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
        clone.credentialSubject = newCs
        if (clone.vc) {
@@ -116,8 +122,8 @@ export async function encodeVerifiablePresentation(
   const payload = Object.assign(
     {
       vp: {
-        "@context": [VC_CONTEXT],
-        type: type ?? [VERIFIABLE_PRESENTATION],
+        "@context": [VC_CONTEXT_URI],
+        type: type ?? [VERIFIABLE_PRESENTATION_TYPE_NAME],
         verifiableCredential: vcJwtPayload,
         ...extra
       }

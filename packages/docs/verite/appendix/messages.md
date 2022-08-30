@@ -20,22 +20,18 @@ The following represents the intermediate did-jwt-vc decoded form of a JWT-encod
   ],
   "type": ["VerifiableCredential", "KYCAMLCredential"],
   "issuer": {
-    "id": "did:key:z6Mkr3ENcbaQTaQ97V7FahjYwC6iYM821846m57oHaFSnxQx"
+    "id": "did:key:z6MkwMmraBRtV4ZyJsTQY7NW52YACpHm6ErKAaicZFuTxcHN"
   },
   "credentialSubject": {
     "id": "did:key:z6MkpVasvTGxhLwMycLWWBa7WaYZTpvc3PstVdKaie5phPut",
     "KYCAMLAttestation": {
       "type": "KYCAMLAttestation",
       "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-      "approvalDate": "2022-08-29T23:30:49.291Z"
+      "approvalDate": "2022-08-30T03:12:23.865Z"
     }
   },
-  "expirationDate": "2022-10-28T23:30:49.291Z",
-  "issuanceDate": "2022-08-29T23:30:49.000Z",
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...<SNIP>...crQDg"
-  }
+  "issuanceDate": "2022-08-30T03:12:23.000Z",
+  "expirationDate": "2022-10-29T03:12:23.000Z"
 }
 ```
 
@@ -53,28 +49,24 @@ This extends the above to add credential status. Note that the credential status
   ],
   "type": ["VerifiableCredential", "KYCAMLCredential"],
   "issuer": {
-    "id": "did:key:z6Mkr3ENcbaQTaQ97V7FahjYwC6iYM821846m57oHaFSnxQx"
+    "id": "did:key:z6MkwMmraBRtV4ZyJsTQY7NW52YACpHm6ErKAaicZFuTxcHN"
   },
   "credentialSubject": {
     "id": "did:key:z6MkpVasvTGxhLwMycLWWBa7WaYZTpvc3PstVdKaie5phPut",
     "KYCAMLAttestation": {
       "type": "KYCAMLAttestation",
       "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-      "approvalDate": "2022-08-29T23:30:49.291Z"
+      "approvalDate": "2022-08-30T03:12:23.865Z"
     }
   },
   "credentialStatus": {
-    "id": "http://192.168.2.3:3000/api/demos/revocation/e434beeb-d745-447c-b3d7-5e82a95ccb27#50305",
+    "id": "http://192.168.1.11:3000/api/demos/revocation/25321352-ba2f-4a0d-aa72-8d7516992a45#94416",
     "type": "RevocationList2021Status",
-    "statusListIndex": "50305",
-    "statusListCredential": "http://192.168.2.3:3000/api/demos/revocation/e434beeb-d745-447c-b3d7-5e82a95ccb27"
+    "statusListIndex": "94416",
+    "statusListCredential": "http://192.168.1.11:3000/api/demos/revocation/25321352-ba2f-4a0d-aa72-8d7516992a45"
   },
-  "expirationDate": "2022-10-28T23:30:49.291Z",
-  "issuanceDate": "2022-08-29T23:30:49.000Z",
-  "proof": {
-    "type": "JwtProof2020",
-    "jwt": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSIseyJAdm9jYWIiOiJodHRwczovL3Zlcml0ZS5pZC9pZGVudGl0eS8ifV0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJLWUNBTUxDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmtleTp6Nk1rcFZhc3ZUR3hoTHdNeWNMV1dCYTdXYVlaVHB2YzNQc3RWZEthaWU1cGhQdXQiLCJLWUNBTUxBdHRlc3RhdGlvbiI6eyJ0eXBlIjoiS1lDQU1MQXR0ZXN0YXRpb24iLCJwcm9jZXNzIjoiaHR0cHM6Ly92ZXJpdGUuaWQvZGVmaW5pdGlvbnMvcHJvY2Vzc2VzL2t5Y2FtbC8wLjAuMS91c2EiLCJhcHByb3ZhbERhdGUiOiIyMDIyLTA4LTI5VDIzOjMwOjQ5LjI5MVoifX0sImlzc3VhbmNlRGF0ZSI6IjIwMjItMDgtMjlUMjM6MzA6NDkuMjkyWiIsImlzc3VlciI6eyJpZCI6ImRpZDprZXk6ejZNa3IzRU5jYmFRVGFROTdWN0ZhaGpZd0M2aVlNODIxODQ2bTU3b0hhRlNueFF4In0sImNyZWRlbnRpYWxTY2hlbWEiOnsiY3JlZGVudGlhbFN0YXR1cyI6eyJpZCI6Imh0dHA6Ly8xOTIuMTY4LjIuMzozMDAwL2FwaS9kZW1vcy9yZXZvY2F0aW9uL2U0MzRiZWViLWQ3NDUtNDQ3Yy1iM2Q3LTVlODJhOTVjY2IyNyM1MDMwNSIsInR5cGUiOiJSZXZvY2F0aW9uTGlzdDIwMjFTdGF0dXMiLCJzdGF0dXNMaXN0SW5kZXgiOiI1MDMwNSIsInN0YXR1c0xpc3RDcmVkZW50aWFsIjoiaHR0cDovLzE5Mi4xNjguMi4zOjMwMDAvYXBpL2RlbW9zL3Jldm9jYXRpb24vZTQzNGJlZWItZDc0NS00NDdjLWIzZDctNWU4MmE5NWNjYjI3In0sImV4cGlyYXRpb25EYXRlIjoiMjAyMi0xMC0yOFQyMzozMDo0OS4yOTFaIn19LCJuYmYiOjE2NjE4MTU4NDksImlzcyI6ImRpZDprZXk6ejZNa3IzRU5jYmFRVGFROTdWN0ZhaGpZd0M2aVlNODIxODQ2bTU3b0hhRlNueFF4Iiwic3ViIjoiZGlkOmtleTp6Nk1rcFZhc3ZUR3hoTHdNeWNMV1dCYTdXYVlaVHB2YzNQc3RWZEthaWU1cGhQdXQifQ.2QqOPxJU6bQE771O-q9lJTu-pEgs3BJnfwjPbqx88qk-_YK8bk_V9RLajEwiOtdWdK_ktTrLaB1IzDe8NcrQDg"
-  }
+  "issuanceDate": "2022-08-30T03:12:23.000Z",
+  "expirationDate": "2022-10-29T03:12:23.000Z"
 }
 ```
 
@@ -230,7 +222,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
       {
         "id": "proofOfIdentifierControlVP",
         "format": "jwt_vp",
-        "path": "$.presentation"
+        "path": "$.holder"
       }
     ]
   },
@@ -254,7 +246,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
     "manifest_id": "KYCAMLManifest",
     "descriptor_map": [
       {
-        "id": "proofOfIdentifierControlVP",
+        "id": "KYCAMLCredential",
         "format": "jwt_vc",
         "path": "$.verifiableCredential[0]"
       }
@@ -295,6 +287,94 @@ Details:
 - `body.presentation_definition`: this follows the DIF Presentation Definition spec
 - `body.status_url`: url returning verification results when complete
 
+### Presentation Definition
+
+```json
+{
+  "id": "KYCAMLPresentationDefinition",
+  "input_descriptors": [
+    {
+      "id": "KYCAMLCredential",
+      "name": "Proof of KYC",
+      "purpose": "Please provide a valid credential from a KYC/AML issuer",
+      "constraints": {
+        "statuses": {
+          "active": {
+            "directive": "required"
+          }
+        },
+        "is_holder": [
+          {
+            "field_id": ["subjectId"],
+            "directive": "required"
+          }
+        ],
+        "fields": [
+          {
+            "path": [
+              "$.credentialSubject.KYCAMLAttestation.process",
+              "$.vc.credentialSubject.KYCAMLAttestation.process",
+              "$.KYCAMLAttestation.process"
+            ],
+            "purpose": "The KYC/AML Attestation requires the field: 'process'.",
+            "predicate": "required",
+            "filter": {
+              "type": "string"
+            }
+          },
+          {
+            "path": [
+              "$.credentialSubject.KYCAMLAttestation.approvalDate",
+              "$.vc.credentialSubject.KYCAMLAttestation.approvalDate",
+              "$.KYCAMLAttestation.approvalDate"
+            ],
+            "purpose": "The KYC/AML Attestation requires the field: 'approvalDate'.",
+            "predicate": "required",
+            "filter": {
+              "type": "string"
+            }
+          },
+          {
+            "id": "subjectId",
+            "path": [
+              "$.credentialSubject.id",
+              "$.vc.credentialSubject.id",
+              "$.id"
+            ],
+            "purpose": "We need to ensure the holder and the subject have the same identifier"
+          },
+          {
+            "id": "credentialSchema",
+            "path": ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
+            "filter": {
+              "type": "string",
+              "pattern": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+            },
+            "purpose": "We need to ensure the credential conforms to the expected schema"
+          },
+          {
+            "path": ["$.issuer.id", "$.issuer", "$.vc.issuer", "$.iss"],
+            "purpose": "We can only verify credentials attested by a trusted authority.",
+            "filter": {
+              "type": "string",
+              "pattern": "^did:key:z6MkwMmraBRtV4ZyJsTQY7NW52YACpHm6ErKAaicZFuTxcHN$"
+            }
+          }
+        ]
+      },
+      "format": {
+        "jwt_vp": {
+          "alg": ["EdDSA"]
+        },
+        "jwt_vc": {
+          "alg": ["EdDSA"]
+        }
+      }
+    }
+  ]
+}
+```
+
 ### Presentation Submission
 
 ```json
@@ -305,9 +385,9 @@ Details:
     "definition_id": "KYCAMLPresentationDefinition",
     "descriptor_map": [
       {
-        "id": "kycaml_vc",
+        "id": "KYCAMLCredential",
         "format": "jwt_vc",
-        "path": "$.presentation.verifiableCredential[0]"
+        "path": "$.verifiableCredential[0]"
       }
     ]
   },

@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from "uuid"
 
 import { buildCredentialApplication } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../lib/utils/attestation-registry"
+import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../lib/utils/constants"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
@@ -16,8 +18,6 @@ import {
 } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { revocationListFixture } from "../fixtures/revocation-list"
-import { kycAttestationSchema } from "../fixtures/schemas"
-import { kycAmlCredentialTypeName } from "../fixtures/types"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
 
 describe("verification", () => {
@@ -58,6 +58,7 @@ describe("verification", () => {
       kycRequest.body.presentation_definition
     )
   })
+
 })
 
 async function getClientVerifiableCredential(
@@ -80,9 +81,9 @@ async function getClientVerifiableCredential(
     clientDidKey.subject,
     manifest,
     kycAmlAttestationFixture,
-    kycAmlCredentialTypeName,
+    KYCAML_CREDENTIAL_TYPE_NAME,
     { 
-      credentialSchema: kycAttestationSchema,
+      credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
       credentialStatus: revocationListFixture
     }
   )

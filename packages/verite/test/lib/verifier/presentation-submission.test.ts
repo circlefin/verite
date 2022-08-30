@@ -6,13 +6,13 @@ import {
   buildIssuer,
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  KYC_ATTESTATION_SCHEMA_VC_OBJ,
   randomDidKey
 } from "../../../lib/utils"
 import { kycPresentationDefinition } from "../../../lib/verifier/presentation-definitions"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
-import { kycAttestationSchema } from "../../fixtures/schemas"
-import { kycAmlCredentialTypeName } from "../../fixtures/types"
 
 describe("buildPresentationSubmission", () => {
   it("builds a Presentation Submission", async () => {
@@ -28,8 +28,8 @@ describe("buildPresentationSubmission", () => {
       issuer,
       didKey,
       kycAmlAttestationFixture,
-      kycAmlCredentialTypeName,
-      { credentialSchema: kycAttestationSchema }
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
     )
     const credential = await decodeVerifiableCredential(encodedCredential)
 

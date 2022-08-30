@@ -14,6 +14,7 @@ import {
   requiresRevocableCredentials,
   validateCredentialApplication,
   CREDIT_SCORE_MANIFEST_ID,
+  getCredentialSchemaAsVCObject
 } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
@@ -72,6 +73,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
       : new Date(Date.now() + twoMonths)
 
   const userAttestation = buildAttestationForUser(user, manifest)
+
   // Generate new credentials for the user
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
@@ -79,7 +81,10 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     manifest,
     userAttestation,
     attestationToCredentialType(userAttestation.type),
-    { credentialStatus: revocationList, expirationDate }
+    { 
+      credentialSchema: getCredentialSchemaAsVCObject(userAttestation.type),
+      credentialStatus: revocationList, expirationDate
+     }
   )
 
   // Save the credentials to the database

@@ -1,5 +1,4 @@
 import { randomBytes } from "crypto"
-import { Manuscript } from "schema-dts"
 
 import {
   buildCreditScoreManifest,
