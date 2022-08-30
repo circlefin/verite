@@ -53,7 +53,7 @@ The Verite standards strive to remain maximally unopinionated and flexible about
 
 ### Key Custody
 
-Similarly, we have worked hard to keep direct access to keys optional to allow the kinds of custodial arrangements or multi-party wallet architectures that are increasingly central to institutional handling of digital assets.  This means that wallets with supplemental hardware for signing or wallets utilizing multi-signature or multiparty-computation circuits are at no disadvantage.  Over time, we believe the growing complexity abstracted by the concept of a wallet may well be the tailwind needed to standardize on wallet identity at a higher layer, e.g. with Decentralized Identifiers.
+Similarly, we have worked hard to keep direct access to keys optional to allow the kinds of custodial arrangements, including multi-party-computation and multi-signatory wallet architectures that are increasingly central to institutional handling of digital assets and complex custody/key-management flows.  This means that wallets with supplemental hardware for signing or wallets utilizing multi-signature or multiparty-computation circuits are at no disadvantage.  Over time, we believe the growing complexity abstracted by the concept of a wallet may well be the tailwind needed to standardize on wallet identity at a higher layer, e.g. with Decentralized Identifiers.
 
 ## Verite-Support-versus-VC-Support 
 
