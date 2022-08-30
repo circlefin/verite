@@ -31,8 +31,8 @@ describe("buildAndSignKycAmlFulfillment", () => {
       }
     )
     const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
-    expect(fulfillment.credential_fulfillment).toBeDefined()
-    expect(fulfillment.credential_fulfillment.manifest_id).toEqual(
+    expect(fulfillment.credential_response).toBeDefined()
+    expect(fulfillment.credential_response.manifest_id).toEqual(
       "KYCAMLManifest"
     )
   })

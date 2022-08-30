@@ -43,7 +43,7 @@ describe("POST /issuance/[token]", () => {
       response
     )) as DecodedCredentialFulfillment
 
-    expect(presentation.credential_fulfillment.manifest_id).toEqual(
+    expect(presentation.credential_response.manifest_id).toEqual(
       "KYCAMLManifest"
     )
   })
@@ -74,7 +74,7 @@ describe("POST /issuance/[token]", () => {
       response
     )) as DecodedCredentialFulfillment
 
-    expect(presentation.credential_fulfillment.manifest_id).toEqual(
+    expect(presentation.credential_response.manifest_id).toEqual(
       "CreditScoreManifest"
     )
   })

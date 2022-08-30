@@ -175,7 +175,7 @@ describe("buildAndSignFulfillment", () => {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation", "CredentialResponse"],
       holder: issuer.did,
-      credential_fulfillment: {
+      credential_response: {
         // id: "5f22f1ea-0441-4041-916b-2504a2a4075c",
         manifest_id: "KYCAMLManifest",
         descriptor_map: [
@@ -273,7 +273,7 @@ describe("buildAndSignFulfillment", () => {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation", "CredentialResponse"],
       holder: issuer.did,
-      credential_fulfillment: {
+      credential_response: {
         manifest_id: "HybridManifest",
         descriptor_map: [
           {

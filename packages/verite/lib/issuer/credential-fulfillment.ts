@@ -119,7 +119,7 @@ export async function buildAndSignFulfillment(
     options,
     [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
     {
-      credential_fulfillment: {
+      credential_response: {
         id: uuidv4(),
         manifest_id: manifest.id,
         descriptor_map:
@@ -153,7 +153,7 @@ export async function buildAndSignMultiVcFulfillment(
     options,
     [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
     {
-      credential_fulfillment: {
+      credential_response: {
         id: uuidv4(),
         manifest_id: manifest.id,
         descriptor_map:
