@@ -3,14 +3,14 @@ import { omit } from "lodash"
 
 import { hasPaths } from "../../../lib"
 import {
-  buildCreditScoreManifest,
-  buildKycAmlManifest,
-  requiresRevocableCredentials
-} from "../../../lib/issuer/credential-manifest"
-import {
-  proofOfControlPresentationDefinition,
   randomDidKey
 } from "../../../lib/utils"
+import {
+  buildCreditScoreManifest,
+  buildKycAmlManifest,
+  proofOfControlPresentationDefinition,
+  requiresRevocableCredentials
+} from "../../../lib/utils/sample-data/manifests"
 import { CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures/dids"
 
@@ -21,7 +21,7 @@ function validateManifestFormat(
 ): boolean {
   return hasPaths(manifest, [
     "id",
-    "version",
+    "spec_version",
     "issuer.id",
     "output_descriptors[0]",
     "output_descriptors[0].id",
@@ -47,7 +47,7 @@ describe("buildKycAmlManifest", () => {
 
     const expected = {
       id: "KYCAMLManifest",
-      version: "0.1.0",
+      spec_version: "https://identity.foundation/credential-manifest/spec/v1.0.0/",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."
@@ -113,7 +113,7 @@ describe("buildCreditScoreManifest", () => {
 
     const expected = {
       id: "CreditScoreManifest",
-      version: "0.1.0",
+      spec_version: "https://identity.foundation/credential-manifest/spec/v1.0.0/",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."
@@ -205,7 +205,7 @@ describe("validateManifestFormat", () => {
     const issuerDid = await randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
-    const requiredKeys = ["id", "version", "issuer", "output_descriptors"]
+    const requiredKeys = ["id", "spec_version", "issuer", "output_descriptors"]
 
     requiredKeys.forEach((key) => {
       const omitted = omit(manifest, [key])

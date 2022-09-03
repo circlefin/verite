@@ -1,11 +1,12 @@
 import { randomBytes } from "crypto"
 
+import {  proofOfControlPresentationDefinition } from "../../lib"
+import { buildManifest } from "../../lib/builders/manifest-builder"
+import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import {
   buildCreditScoreManifest,
-  buildKycAmlManifest,
-  buildManifest
-} from "../../lib/issuer/credential-manifest"
-import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
+  buildKycAmlManifest
+} from "../../lib/utils/sample-data/manifests"
 import { CredentialManifest } from "../../types/CredentialManifest"
 import { Issuer } from "../../types/DidJwt"
 
@@ -23,7 +24,7 @@ function buildHybridManifest(): CredentialManifest {
   const manifest2 = buildCreditScoreManifest(credentialIssuer)
   const ods = manifest1.output_descriptors.concat(manifest2.output_descriptors)
 
-  const manifest = buildManifest("HybridManifest", credentialIssuer, ods)
+  const manifest = buildManifest("HybridManifest", credentialIssuer, ods, proofOfControlPresentationDefinition())
   return manifest
 }
 

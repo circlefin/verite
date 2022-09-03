@@ -7,7 +7,7 @@ import type { PresentationDefinition } from "./PresentationDefinition"
 
 export type CredentialManifest = {
   id: string
-  version: string
+  spec_version: string
   issuer: CredentialIssuer
   output_descriptors: OutputDescriptor[]
   format?: ClaimFormatDesignation

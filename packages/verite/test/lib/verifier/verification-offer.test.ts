@@ -1,4 +1,4 @@
-import { buildKycVerificationOffer } from "../../../lib/verifier/verification-offer"
+import { buildKycVerificationOffer } from "../../../lib/utils/sample-data/verification-offer"
 
 describe("verification offer", () => {
   it("builds a Verification Offer", () => {
@@ -42,7 +42,7 @@ describe("verification offer", () => {
                     ],
                     predicate: "required",
                     purpose:
-                      "The KYC/AML Attestation requires the field: 'process'."
+                      "The Attestation must contain the field: 'process'."
                   },
                   {
                     filter: {
@@ -55,7 +55,7 @@ describe("verification offer", () => {
                     ],
                     predicate: "required",
                     purpose:
-                      "The KYC/AML Attestation requires the field: 'approvalDate'."
+                      "The Attestation must contain the field: 'approvalDate'."
                   },
                   {
                     id: "subjectId",
@@ -68,12 +68,14 @@ describe("verification offer", () => {
                       "We need to ensure the holder and the subject have the same identifier"
                   },
                   {
+                    id: "credentialSchema",
                     path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
                     filter: {
                       type: "string",
                       pattern:
                         "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-                    }
+                    },
+                    purpose: "We need to ensure the credential conforms to the expected schema"
                   },
                   {
                     filter: {

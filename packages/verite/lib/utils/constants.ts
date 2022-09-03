@@ -1,27 +1,3 @@
-// Known Attestations
-export const KYCAML_ATTESTATION = "KYCAMLAttestation"
-export const KYBPAML_ATTESTATION = "KYBPAMLAttestation"
-export const CREDIT_SCORE_ATTESTATION = "CreditScoreAttestation"
-export const ENTITY_ACC_INV_ATTESTATION = "EntityAccInvAttestation"
-export const INDIV_ACC_INV_ATTESTATION = "IndivAccInvAttestation"
-export const ADDRESS_OWNER_ATTESTATION = "AddressOwnerAttestation"
-export const COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION =
-  "CounterpartyAccountHolder"
-
-// Known Credentials
-export const CREDIT_SCORE_CREDENTIAL_TYPE_NAME = "CreditScoreCredential"
-export const KYCAML_CREDENTIAL_TYPE_NAME = "KYCAMLCredential"
-
-// Known Manifest / Definitions
-export const CREDIT_SCORE_MANIFEST_ID = "CreditScoreManifest"
-export const KYCAML_MANIFEST_ID = "KYCAMLManifest"
-export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME =
-  "ProofOfControlPresentationDefinition"
-export const KYCAML_PRESENTATION_DEFINITION_TYPE_NAME =
-  "KYCAMLPresentationDefinition"
-export const CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME =
-  "CreditScorePresentationDefinition"
-
 // Common CM/PE
 export const CREDENTIAL_APPLICATION_TYPE_NAME = "CredentialApplication"
 export const CREDENTIAL_RESPONSE_TYPE_NAME = "CredentialResponse"
@@ -45,3 +21,5 @@ export const CREDENTIAL_SUBJECT_PROPERTY_NAME = "credentialSubject"
 export const HOLDER_PROPERTY_NAME = "holder"
 export const ID_PROPERTY_NAME = "id"
 export const EDDSA = "EdDSA"
+
+export const CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0 = "https://identity.foundation/credential-manifest/spec/v1.0.0/"

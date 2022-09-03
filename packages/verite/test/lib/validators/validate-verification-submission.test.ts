@@ -9,24 +9,14 @@ import {
   buildAndSignMultiVcFulfillment,
   buildAndSignVerifiableCredential
 } from "../../../lib/issuer/credential-fulfillment"
-import {
-  CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ,
-  KYC_ATTESTATION_SCHEMA_VC_OBJ
-} from "../../../lib/utils/attestation-registry"
-import {
-  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
-  KYCAML_CREDENTIAL_TYPE_NAME
-} from "../../../lib/utils/constants"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
+import { CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, KYCAML_CREDENTIAL_TYPE_NAME, KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../../lib/utils/sample-data"
+import { creditScorePresentationDefinition } from "../../../lib/utils/sample-data/presentation-definitions"
+import { buildCreditScoreVerificationOffer, buildKycVerificationOffer } from "../../../lib/utils/sample-data/verification-offer"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
-import { creditScorePresentationDefinition } from "../../../lib/verifier/presentation-definitions"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
-import {
-  buildCreditScoreVerificationOffer,
-  buildKycVerificationOffer
-} from "../../../lib/verifier/verification-offer"
 import {
   creditScoreAttestationFixture,
   kycAmlAttestationFixture
@@ -328,7 +318,7 @@ describe("Submission validator", () => {
     await expectValidationError(
       submission,
       verificationRequest,
-      `Credential did not match constraint: We can only verify Credit Score credentials that are above ${minimumCreditScore}.`
+      `Credential did not match constraint: We can only accept credentials where the score value is above ${minimumCreditScore}.`
     )
   })
 
@@ -367,7 +357,8 @@ describe("Submission validator", () => {
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuer.did]
+      [issuer.did],
+      800
     )
 
     const submission = await buildPresentationSubmission(
@@ -379,7 +370,7 @@ describe("Submission validator", () => {
     await expectValidationError(
       submission,
       verificationRequest,
-      "Credential did not match constraint: The Credit Score Attestation requires the field: 'score'."
+      "Credential did not match constraint: We can only accept credentials where the score value is above 800."
     )
   })
 

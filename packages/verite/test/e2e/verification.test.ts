@@ -3,14 +3,14 @@ import { v4 as uuidv4 } from "uuid"
 
 import { buildCredentialApplication } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../lib/utils/attestation-registry"
-import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../lib/utils/constants"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../lib/utils/sample-data/attestations"
+import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../lib/utils/sample-data/constants"
+import { buildKycVerificationOffer } from "../../lib/utils/sample-data/verification-offer"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
 import { buildPresentationSubmission } from "../../lib/verifier/presentation-submission"
-import { buildKycVerificationOffer } from "../../lib/verifier/verification-offer"
 import {
   DecodedCredentialApplication,
   DidKey,

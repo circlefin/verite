@@ -19,3 +19,4 @@ export function buildAttestationForUser(
     return getSampleCreditScoreAttestation(user.creditScore)
   }
 }
+

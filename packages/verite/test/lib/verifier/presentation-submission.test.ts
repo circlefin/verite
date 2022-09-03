@@ -6,11 +6,11 @@ import {
   buildIssuer,
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
+  kycAmlPresentationDefinition,
   KYCAML_CREDENTIAL_TYPE_NAME,
   KYC_ATTESTATION_SCHEMA_VC_OBJ,
   randomDidKey
 } from "../../../lib/utils"
-import { kycPresentationDefinition } from "../../../lib/verifier/presentation-definitions"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 
@@ -37,7 +37,7 @@ describe("buildPresentationSubmission", () => {
     // `definition_id` that identifies the set of definitions we are
     // satisfying. A `descriptor_map` must also map the input parameters by id
     // with the corresponding JSON path in the submission.
-    const presentationDefinition = kycPresentationDefinition()
+    const presentationDefinition = kycAmlPresentationDefinition()
 
     // Build Presentation Submission
     const encodedSubmission = await buildPresentationSubmission(

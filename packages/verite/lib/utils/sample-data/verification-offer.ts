@@ -1,11 +1,8 @@
-import { buildRequestCommon } from "../submission-requests"
-import { VERIFICATION_REQUEST_TYPE_NAME } from "../utils"
-import {
-  creditScorePresentationDefinition,
-  kycPresentationDefinition
-} from "./presentation-definitions"
+import { buildRequestCommon } from "../../submission-requests"
+import { VERIFICATION_REQUEST_TYPE_NAME } from "../constants"
+import { creditScorePresentationDefinition, kycAmlPresentationDefinition } from "./presentation-definitions"
 
-import type { VerificationOffer } from "../../types"
+import type { VerificationOffer } from "../../../types"
 
 export function buildKycVerificationOffer(
   id: string,
@@ -14,7 +11,7 @@ export function buildKycVerificationOffer(
   statusUrl?: string,
   trustedAuthorities: string[] = []
 ): VerificationOffer {
-  const definition = kycPresentationDefinition(trustedAuthorities)
+  const definition = kycAmlPresentationDefinition(trustedAuthorities)
   const request = buildRequestCommon(
     id,
     VERIFICATION_REQUEST_TYPE_NAME,

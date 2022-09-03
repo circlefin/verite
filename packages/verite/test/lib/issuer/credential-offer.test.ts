@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 
 import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
-import { proofOfControlPresentationDefinition } from "../../../lib/utils"
+import { proofOfControlPresentationDefinition } from "../../../lib/utils/sample-data/manifests"
 import { manifestFixture } from "../../fixtures/manifests"
 describe("buildCredentialOffer", () => {
   it("returns a Credential Offer", () => {
@@ -26,7 +26,7 @@ describe("buildCredentialOffer", () => {
         // challenge: "b68f2c74-8965-4281-8623-4836567b8258",
         manifest: {
           id: "KYCAMLManifest",
-          version: "0.1.0",
+          spec_version: "https://identity.foundation/credential-manifest/spec/v1.0.0/",
           issuer: {
             id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
             name: "Issuer Inc."

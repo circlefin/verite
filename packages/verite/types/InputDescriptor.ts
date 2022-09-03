@@ -8,6 +8,11 @@ export enum InputDescriptorConstraintStatusDirective {
   DISALLOWED = "disallowed"
 }
 
+export enum InputDescriptorConstraintDirective {
+  REQUIRED = "required",
+  PREFERRED = "preferred"
+}
+
 export type InputDescriptorConstraintStatus = {
   directive: InputDescriptorConstraintStatusDirective
 }
@@ -20,7 +25,7 @@ export type InputDescriptorConstraintStatuses = {
 
 export type InputDescriptorConstraintSubjectConstraint = {
   field_id: string[]
-  directive: "required" | "preferred"
+  directive: InputDescriptorConstraintDirective
 }
 
 export type InputDescriptorConstraintFilter = {
@@ -43,13 +48,13 @@ export type InputDescriptorConstraintField = {
   id?: string
   purpose?: string
   filter?: InputDescriptorConstraintFilter
-  predicate?: "required" | "preferred"
+  predicate?: InputDescriptorConstraintDirective
 }
 
 export type InputDescriptorConstraints = {
-  limit_disclosure?: "required" | "preferred"
+  limit_disclosure?: InputDescriptorConstraintDirective
   statuses?: InputDescriptorConstraintStatuses
-  subject_is_issuer?: "required" | "preferred"
+  subject_is_issuer?: InputDescriptorConstraintDirective
   is_holder?: InputDescriptorConstraintSubjectConstraint[]
   same_subject?: InputDescriptorConstraintSubjectConstraint[]
   fields?: InputDescriptorConstraintField[]

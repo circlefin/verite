@@ -1,6 +1,6 @@
+import { proofOfControlPresentationDefinition } from "../../lib"
 import {
-  KYC_ATTESTATION_SCHEMA_URI,
-  proofOfControlPresentationDefinition
+  KYC_ATTESTATION_SCHEMA_URI
 } from "../../lib/utils"
 import { CredentialManifest } from "../../types"
 import { didFixture } from "./dids"
@@ -12,7 +12,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
   const issuer = didFixture(value)
   return {
     id: "KYCAMLManifest",
-    version: "0.1.0",
+    spec_version: "https://identity.foundation/credential-manifest/spec/v1.0.0/",
     issuer: {
       id: issuer.subject, // default is "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp"
       name: "Issuer Inc."

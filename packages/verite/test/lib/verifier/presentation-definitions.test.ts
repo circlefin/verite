@@ -1,8 +1,8 @@
-import { kycPresentationDefinition } from "../../../lib/verifier/presentation-definitions"
+import { kycAmlPresentationDefinition } from "../../../lib/utils/sample-data/presentation-definitions"
 
 describe("kycPresentationDefinition", () => {
   it("builds the Credential Definitions with no requirement on the issuer", () => {
-    const definitions = kycPresentationDefinition()
+    const definitions = kycAmlPresentationDefinition()
 
     expect(definitions).toEqual({
       id: "KYCAMLPresentationDefinition",
@@ -21,7 +21,7 @@ describe("kycPresentationDefinition", () => {
                 ],
                 predicate: "required",
                 purpose:
-                  "The KYC/AML Attestation requires the field: 'process'."
+                  "The Attestation must contain the field: 'process'."
               },
               {
                 filter: {
@@ -34,7 +34,7 @@ describe("kycPresentationDefinition", () => {
                 ],
                 predicate: "required",
                 purpose:
-                  "The KYC/AML Attestation requires the field: 'approvalDate'."
+                  "The Attestation must contain the field: 'approvalDate'."
               },
               {
                 id: "subjectId",
@@ -89,7 +89,7 @@ describe("kycPresentationDefinition", () => {
   it("allows you to customize the list of trusted issuers", () => {
     // Example where you might only want to accept credentials issued by
     // did:web:centre.io or did:web:example.com
-    const definitions = kycPresentationDefinition([
+    const definitions = kycAmlPresentationDefinition([
       "did:web:centre.io",
       "did:web:example.com"
     ])
@@ -111,7 +111,7 @@ describe("kycPresentationDefinition", () => {
                 ],
                 predicate: "required",
                 purpose:
-                  "The KYC/AML Attestation requires the field: 'process'."
+                  "The Attestation must contain the field: 'process'."
               },
               {
                 filter: {
@@ -124,7 +124,7 @@ describe("kycPresentationDefinition", () => {
                 ],
                 predicate: "required",
                 purpose:
-                  "The KYC/AML Attestation requires the field: 'approvalDate'."
+                  "The Attestation must contain the field: 'approvalDate'."
               },
               {
                 id: "subjectId",
