@@ -1,6 +1,5 @@
 import { CredentialSchema, CreditScoreAttestation, KYCAMLAttestation } from "../../../types"
-import { getCredentialSchemaAsVCObject } from "../../builders"
-import { CREDIT_SCORE_ATTESTATION, getAttestionDefinition, KYCAML_ATTESTATION } from "../attestation-registry"
+import { AttestationDefinition, CREDIT_SCORE_ATTESTATION, getAttestionDefinition, KYCAML_ATTESTATION } from "../attestation-registry"
 import {
   VERIFIABLE_CREDENTIAL_TYPE_NAME
 } from "../constants"
@@ -41,10 +40,11 @@ const typeMap = new Map<string, string>([
   [CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME]
 ])
 
-export const KYC_ATTESTATION_SCHEMA_URI =
-  getAttestionDefinition(KYCAML_ATTESTATION).schema
-
-export const KYC_ATTESTATION_SCHEMA_VC_OBJ: CredentialSchema =
-  getCredentialSchemaAsVCObject(getAttestionDefinition(KYCAML_ATTESTATION))
-export const CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ: CredentialSchema =
-  getCredentialSchemaAsVCObject(getAttestionDefinition(CREDIT_SCORE_ATTESTATION))
+export function getCredentialSchemaAsVCObject(
+  attestationDefinition: AttestationDefinition
+): CredentialSchema {
+  return {
+    id: attestationDefinition.schema,
+    type: attestationDefinition.type
+  }
+}

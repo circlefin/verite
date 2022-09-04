@@ -2,13 +2,13 @@ import { randomBytes } from "crypto"
 
 import { buildAndSignFulfillment } from "../../../lib/issuer/credential-fulfillment"
 import {
-  decodeVerifiablePresentation,
-  KYC_ATTESTATION_SCHEMA_VC_OBJ
+  decodeVerifiablePresentation
 } from "../../../lib/utils"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/utils/sample-data"
 import { buildKycAmlManifest } from "../../../lib/utils/sample-data/manifests"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 
 describe("buildAndSignKycAmlFulfillment", () => {

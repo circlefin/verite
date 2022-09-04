@@ -8,11 +8,11 @@ import {
   decodeVerifiablePresentation,
   kycAmlPresentationDefinition,
   KYCAML_CREDENTIAL_TYPE_NAME,
-  KYC_ATTESTATION_SCHEMA_VC_OBJ,
   randomDidKey
 } from "../../../lib/utils"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 
 describe("buildPresentationSubmission", () => {
   it("builds a Presentation Submission", async () => {

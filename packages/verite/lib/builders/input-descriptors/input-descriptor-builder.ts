@@ -1,4 +1,4 @@
-import { ClaimFormatDesignation, InputDescriptor } from "../../../types"
+import { ClaimFormatDesignation, InputDescriptor, InputDescriptorConstraints } from "../../../types"
 import { Action, JWT_CLAIM_FORMAT_DESIGNATION } from "../common"
 import { InputDescriptorConstraintsBuilder } from "./input-descriptor-constraints-builder"
 
@@ -28,15 +28,19 @@ export class InputDescriptorBuilder {
     return this
   }
 
-  constraints(itemBuilder: Action<InputDescriptorConstraintsBuilder>) {
-    const b = new InputDescriptorConstraintsBuilder()
-    itemBuilder(b)
-    this._builder.constraints = b.build()
-
+  constraints(constraints: InputDescriptorConstraints): InputDescriptorBuilder {
+    this._builder.constraints = constraints
     return this
   }
 
-  format(format: ClaimFormatDesignation) {
+  withConstraints(itemBuilder: Action<InputDescriptorConstraintsBuilder>): InputDescriptorBuilder {
+    const b = new InputDescriptorConstraintsBuilder(this._builder.constraints)
+    itemBuilder(b)
+    this._builder.constraints = b.build()
+    return this
+  }
+
+  format(format: ClaimFormatDesignation): InputDescriptorBuilder {
     this._builder.format = format
     return this
   }

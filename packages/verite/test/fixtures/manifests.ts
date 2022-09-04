@@ -1,8 +1,6 @@
 import { proofOfControlPresentationDefinition } from "../../lib"
-import {
-  KYC_ATTESTATION_SCHEMA_URI
-} from "../../lib/utils"
 import { CredentialManifest } from "../../types"
+import { KYC_ATTESTATION_SCHEMA_URI } from "./attestations"
 import { didFixture } from "./dids"
 
 /**

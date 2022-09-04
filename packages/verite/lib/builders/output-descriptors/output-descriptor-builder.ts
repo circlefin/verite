@@ -3,7 +3,7 @@ import {
   EntityStyle,
   OutputDescriptor
 } from "../../../types"
-import { Action } from "../common"
+import { Action, AsDisplayMapping } from "../common"
 import {  DataDisplayBuilder } from "./data-display-builder"
 
 export class OutputDescriptorBuilder {
@@ -46,8 +46,11 @@ export class OutputDescriptorBuilder {
     return this
   }
 
-  displayBuilder(title: string, action: Action<DataDisplayBuilder>): OutputDescriptorBuilder {
-    const b = new DataDisplayBuilder(title)
+  withDisplay(title: string, action: Action<DataDisplayBuilder>): OutputDescriptorBuilder {
+    const b = new DataDisplayBuilder({
+      ...this._builder.display,
+      title: AsDisplayMapping(title)
+    })
     action(b)
     this._builder.display = b.build()
     return this

@@ -1,12 +1,11 @@
 import {
   DataMappingPath,
   DataMappingSchema, LabeledDisplayMapping
-} from "../../../types";
-import { IsEmpty } from "../../utils/collection-utils";
+} from "../../../types"
 
 
 export class LabeledDisplayMappingBuilder {
-  private readonly _builder: Partial<LabeledDisplayMapping & DataMappingPath>;
+  private readonly _builder: Partial<LabeledDisplayMapping & DataMappingPath>
   constructor(label: string, schema?: DataMappingSchema) {
     this._builder = {
       label: label
@@ -17,22 +16,21 @@ export class LabeledDisplayMappingBuilder {
   }
 
   schema(schema: DataMappingSchema): LabeledDisplayMappingBuilder {
-    this._builder.schema = schema;
-    return this;
+    this._builder.schema = schema
+    return this
   }
 
   path(path: string[]): LabeledDisplayMappingBuilder {
-    if (IsEmpty(path)) return this
-    this._builder.path = path;
-    return this;
+    this._builder.path = path
+    return this
   }
 
   fallback(fallback: string): LabeledDisplayMappingBuilder {
-    this._builder.fallback = fallback;
-    return this;
+    this._builder.fallback = fallback
+    return this
   }
 
   build(): LabeledDisplayMapping {
-    return this._builder as LabeledDisplayMapping;
+    return this._builder as LabeledDisplayMapping
   }
 }

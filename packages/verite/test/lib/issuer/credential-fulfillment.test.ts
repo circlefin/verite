@@ -11,7 +11,6 @@ import {
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
   KYCAML_CREDENTIAL_TYPE_NAME,
-  KYC_ATTESTATION_SCHEMA_VC_OBJ,
   randomDidKey
 } from "../../../lib/utils"
 import { RevocationList2021Status } from "../../../types"
@@ -19,6 +18,7 @@ import {
   creditScoreAttestationFixture,
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("buildAndSignVerifiableCredential", () => {

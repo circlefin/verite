@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto"
 import nock from "nock"
 
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../lib"
 import { buildCredentialApplication } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
@@ -10,6 +9,7 @@ import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../lib/utils/sample-data"
 import { buildKycAmlManifest } from "../../lib/utils/sample-data/manifests"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../fixtures/credentials"
 import { revocationListFixture } from "../fixtures/revocation-list"
 
 import type {
@@ -17,6 +17,7 @@ import type {
   RevocableCredential,
   RevocablePresentation
 } from "../../types"
+
 
 describe("issuance", () => {
   it("issues verified credentails", async () => {

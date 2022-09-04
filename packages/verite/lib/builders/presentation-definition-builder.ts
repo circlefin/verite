@@ -1,16 +1,17 @@
-import { ClaimFormatDesignation, PresentationDefinition } from "../../types"
-import {
-  InputDescriptorBuilder,
-  IsEmpty
-} from "../utils"
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { cloneDeep, isEmpty } from "lodash"
+
+import { ClaimFormatDesignation, InputDescriptor, PresentationDefinition } from "../../types"
 import { Action } from "./common"
+import { InputDescriptorBuilder } from "./input-descriptors"
 
 
 export class PresentationDefinitionBuilder {
   _builder: Partial<PresentationDefinition>
-  constructor(id: string) {
+  constructor(initialValues: Partial<PresentationDefinition>) {
     this._builder = {
-      id: id
+      input_descriptors: [],
+      ...cloneDeep(initialValues)
     }
   }
 
@@ -19,21 +20,25 @@ export class PresentationDefinitionBuilder {
     return this
   }
 
-  withInputDescriptor(id: string, itemBuilder: Action<InputDescriptorBuilder>): PresentationDefinitionBuilder {
-    if (IsEmpty(this._builder.input_descriptors)) {
-      this._builder.input_descriptors = []
-    }
+  input_descriptors(input_descriptors: InputDescriptor[]) {
+    this._builder.input_descriptors = input_descriptors
+    return this
+  }
+
+  addInputDescriptor(id: string, itemBuilder: Action<InputDescriptorBuilder>): PresentationDefinitionBuilder {
     const b = new InputDescriptorBuilder(id)
     itemBuilder(b)
     const result = b.build()
-    if (Object.keys(result).length === 0)
-      return this
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this._builder.input_descriptors!.push(b.build())
+    if (!isEmpty(result)) {
+      this._builder.input_descriptors!.push(result)
+    }
     return this
   }
 
   build(): PresentationDefinition {
+    if (isEmpty(this._builder.input_descriptors)) {
+      delete this._builder.input_descriptors
+    }
     return this._builder as PresentationDefinition
   }
 }

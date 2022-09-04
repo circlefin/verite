@@ -1,5 +1,9 @@
-import { ClaimFormatDesignation, DataMappingSchema } from "../../types";
-import { EDDSA } from "../utils/constants";
+import { isArray, isString } from "lodash"
+
+import { ClaimFormatDesignation, DataMappingSchema, DisplayMapping, InputDescriptorConstraintDirective, InputDescriptorConstraintSubjectConstraint } from "../../types"
+import { EDDSA } from "../utils/constants"
+
+export const CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0 = "https://identity.foundation/credential-manifest/spec/v1.0.0/"
 
 export const JWT_CLAIM_FORMAT_DESIGNATION : ClaimFormatDesignation = {
   jwt_vc: {
@@ -20,3 +24,27 @@ export const DATE_TIME_SCHEMA: DataMappingSchema = {
 }
 
 export const NUMBER_SCHEMA: DataMappingSchema = { type: "number" }
+
+export const AsDisplayMapping = (value: string | string[] | DisplayMapping) : DisplayMapping => {
+  if (isString(value)) {
+    return {
+      text: value
+    }
+  } else if (isArray(value)){
+    return {
+      path: value
+    }
+  }
+  return value
+}
+
+export const AsSubjectConstraint = (subjectConstraint: string[] | InputDescriptorConstraintSubjectConstraint ) : InputDescriptorConstraintSubjectConstraint => {
+  if (isArray(subjectConstraint)) {
+    return {
+      field_id: subjectConstraint,
+      directive: InputDescriptorConstraintDirective.REQUIRED
+    }
+  }
+  return subjectConstraint
+}
+

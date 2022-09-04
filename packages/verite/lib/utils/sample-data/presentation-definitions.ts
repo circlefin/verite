@@ -1,43 +1,47 @@
 import { PresentationDefinition } from "../../../types/PresentationDefinition"
-import { ACTIVE_STATUS_CONSTRAINT, minimumValueConstraint, stringValueConstraint, subjectContraint, schemaConstraint, trustedAuthorityConstraint } from "../../builders"
-import { InputDescriptorBuilder } from "../../builders/input-descriptors/input-descriptor-builder"
+import { ACTIVE_STATUS_CONSTRAINT, minimumValueConstraint, stringValueConstraint, schemaConstraint, trustedAuthorityConstraint, InputDescriptorBuilder, PresentationDefinitionBuilder, InputDescriptorConstraintsBuilder, subjectContraint } from "../../builders"
 import { AttestationDefinition, CREDIT_SCORE_ATTESTATION, getAttestionDefinition, KYCAML_ATTESTATION } from "../attestation-registry"
 import { CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME, KYCAML_CREDENTIAL_TYPE_NAME, KYCAML_PRESENTATION_DEFINITION_TYPE_NAME } from "./constants"
 
 
 export function kycAmlPresentationDefinition(trustedAuthorities: string[] = []) {
-  return createPresentationDefinitionFromProcessAttestation(
+  return createBasicPresentationDefinitionForProcessAttestation(
     KYCAML_PRESENTATION_DEFINITION_TYPE_NAME,
     getAttestionDefinition(KYCAML_ATTESTATION),
     KYCAML_CREDENTIAL_TYPE_NAME,
     trustedAuthorities
     )
 }
-export function createPresentationDefinitionFromProcessAttestation(
+export function createBasicPresentationDefinitionForProcessAttestation(
   definitionId: string,
   attestationDefinition: AttestationDefinition, 
   credentialType: string,
   trustedAuthorities: string[] = []) {
   const pathPrefixConvention = `${attestationDefinition.type}.`
+
+  const constraints = new InputDescriptorConstraintsBuilder()
+    .addField(stringValueConstraint("process", pathPrefixConvention))
+    .addField(stringValueConstraint("approvalDate", pathPrefixConvention))
+
   const inputDescriptor = new InputDescriptorBuilder()
     .id(credentialType)
     .name("Proof of KYC")
     .purpose("Please provide a valid credential from a KYC/AML issuer")
-    .constraints((b) => {
-      b.withFieldConstraint(stringValueConstraint("process", pathPrefixConvention))
-        .withFieldConstraint(stringValueConstraint("approvalDate", pathPrefixConvention))
-        .withFieldConstraint(subjectContraint)
-        .withFieldConstraint(schemaConstraint(attestationDefinition.schema))
-        .withFieldConstraint(trustedAuthorityConstraint(trustedAuthorities))
-        .isHolder(["subjectId"])
-        .statuses(ACTIVE_STATUS_CONSTRAINT)
-    })
+    .constraints(constraints.build())
+    .withConstraints(withDefaults(attestationDefinition.schema, trustedAuthorities))
     .build()
 
-  return {
-    id: definitionId,
-    input_descriptors: [inputDescriptor]
-  }
+    return new PresentationDefinitionBuilder({ id: definitionId })
+    .input_descriptors([inputDescriptor])
+    .build()
+}
+
+export const withDefaults = (schema: string, trustedAuthorities: string[] = []) => (b: InputDescriptorConstraintsBuilder): void => {
+  b.addField(subjectContraint)
+    .addField(schemaConstraint(schema))
+    .addField(trustedAuthorityConstraint(trustedAuthorities))
+    .isHolder(["subjectId"])
+    .statuses(ACTIVE_STATUS_CONSTRAINT)
 }
 
 /**
@@ -50,19 +54,19 @@ export function creditScorePresentationDefinition(
   
   const attestationInfo = getAttestionDefinition(CREDIT_SCORE_ATTESTATION)
   const pathPrefixConvention = `${CREDIT_SCORE_ATTESTATION}.`
+
+  const constraintsBuilder = new InputDescriptorConstraintsBuilder()
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    .addField(minimumValueConstraint("score", minimumCreditScore!, pathPrefixConvention))
+    .addField(stringValueConstraint("scoreType", pathPrefixConvention))
+    .addField(stringValueConstraint("provider", pathPrefixConvention))
+
   const inputDescriptor = new InputDescriptorBuilder()
     .id(CREDIT_SCORE_CREDENTIAL_TYPE_NAME)
     .name("Proof of Credit Score")
     .purpose("Please provide a valid credential from a Credit Score issuer")
-    .constraints((b) => {
-      b.withFieldConstraint(minimumValueConstraint("score", minimumCreditScore!, pathPrefixConvention))
-        .withFieldConstraint(stringValueConstraint("scoreType", pathPrefixConvention))
-        .withFieldConstraint(stringValueConstraint("provider", pathPrefixConvention))
-        .withFieldConstraint(schemaConstraint(attestationInfo.schema))
-        .withFieldConstraint(trustedAuthorityConstraint(trustedAuthorities))
-        .isHolder(["subjectId"])
-        .statuses(ACTIVE_STATUS_CONSTRAINT)
-    })
+    .constraints(constraintsBuilder.build())
+    .withConstraints(withDefaults(attestationInfo.schema, trustedAuthorities))
     .build()
   return {
     id: CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME,

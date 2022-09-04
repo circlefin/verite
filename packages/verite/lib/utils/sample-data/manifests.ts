@@ -1,28 +1,26 @@
 import {
   CREDIT_SCORE_ATTESTATION,
   getAttestionDefinition,
-  KYCAML_ATTESTATION,
-  OutputDescriptorBuilder
+  KYCAML_ATTESTATION
 } from ".."
 import { PresentationDefinition, CredentialIssuer, CredentialManifest, EntityStyle } from "../../../types"
-import { buildManifest } from "../../builders/manifest-builder"
-import { PresentationDefinitionBuilder } from "../../builders/presentation-definition-builder"
+import { buildManifest, OutputDescriptorBuilder, PresentationDefinitionBuilder } from "../../builders"
 import { EDDSA, HOLDER_PROPERTY_NAME } from "../constants"
 import { PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME, KYCAML_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_CREDENTIAL_TYPE_NAME, CREDIT_SCORE_MANIFEST_ID, KYCAML_MANIFEST_ID } from "./constants"
 
 
 export function proofOfControlPresentationDefinition(): PresentationDefinition {
-  const p = new PresentationDefinitionBuilder(PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME)
+  const p = new PresentationDefinitionBuilder({id: PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME })
   .format({
     jwt_vp: {
       alg: [EDDSA]
     }
   })
-  .withInputDescriptor("proofOfIdentifierControlVP", (b) => {
+  .addInputDescriptor("proofOfIdentifierControlVP", (b) => {
     b.name("Proof of Control Verifiable Presentation")
     .purpose("A VP establishing proof of identifier control over the DID.")
-    .constraints((c) => {
-    c.withFieldConstraint((f) => {
+    .withConstraints((c) => {
+    c.addField((f) => {
       f.id(HOLDER_PROPERTY_NAME)
       f.path([`$.${HOLDER_PROPERTY_NAME}`])
       .purpose("The VP should contain a DID in the holder, which is the same DID that signs the VP. This DID will be used as the subject of the issued VC")
@@ -61,12 +59,12 @@ export function buildKycAmlManifest(
     .name(`Proof of KYC from ${issuer.name}`)
     .description(`Attestation that ${issuer.name} has completed KYC/AML verification for this subject`)
     .styles(styles)
-    .displayBuilder(`${issuer.name} KYC Attestation`, (d) => {
+    .withDisplay(`${issuer.name} KYC Attestation`, (d) => {
       d.title(`${issuer.name} KYC Attestation`)
-        .subtitle(["$.approvalDate", "$.vc.approvalDate"], "Includes date of approval" )
+        .subtitle({ path: ["$.approvalDate", "$.vc.approvalDate"], fallback: "Includes date of approval" })
         .description("The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers.")
-        .withStringProperty("Process", (p) => p.path([`$.${KYCAML_ATTESTATION}.process`]))
-        .withDateTimeProperty("Approved At", (p) => p.path([`$.${KYCAML_ATTESTATION}.approvalDate`]))
+        .addStringProperty("Process", (p) => p.path([`$.${KYCAML_ATTESTATION}.process`]))
+        .addDateTimeProperty("Approved At", (p) => p.path([`$.${KYCAML_ATTESTATION}.approvalDate`]))
     })
     .build()
 
@@ -90,12 +88,12 @@ export function buildCreditScoreManifest(
     .name(`Proof of Credit Score from ${issuer.name}`)
     .description(`Attestation that ${issuer.name} has performed a Credit Score check for this subject`)
     .styles(styles)
-    .displayBuilder(`${issuer.name} Risk Score`, (d) => {
-      d.subtitle([`$.${CREDIT_SCORE_ATTESTATION}.scoreType`], "Includes credit score")
+    .withDisplay(`${issuer.name} Risk Score`, (d) => {
+      d.subtitle({path:[`$.${CREDIT_SCORE_ATTESTATION}.scoreType`], fallback: "Includes credit score"})
         .description("The Credit Score authority processes credit worthiness analysis, potentially employing a number of internal and external vendor providers.")
-        .withNumberProperty("Score", (p) => p.path([`$.${CREDIT_SCORE_ATTESTATION}.score`]))
-        .withStringProperty("Score Type", (p) => p.path([`$.${CREDIT_SCORE_ATTESTATION}.scoreType`]))
-        .withStringProperty("Provider", (p) => p.path([`$.${CREDIT_SCORE_ATTESTATION}.provider`]))
+        .addNumberProperty("Score", (p) => p.path([`$.${CREDIT_SCORE_ATTESTATION}.score`]))
+        .addStringProperty("Score Type", (p) => p.path([`$.${CREDIT_SCORE_ATTESTATION}.scoreType`]))
+        .addStringProperty("Provider", (p) => p.path([`$.${CREDIT_SCORE_ATTESTATION}.provider`]))
     })
     .build()
 

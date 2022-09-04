@@ -1,7 +1,7 @@
-import { InputDescriptorConstraintStatusDirective, InputDescriptorConstraintDirective, CredentialSchema } from "../../../types"
-import { AttestationDefinition } from "../../utils"
-import { IsEmpty } from "../../utils/collection-utils"
-import { CREDENTIAL_SCHEMA_PROPERTY_NAME, ID_PROPERTY_NAME, CREDENTIAL_SUBJECT_PROPERTY_NAME } from "../../utils/constants"
+import { isEmpty } from "lodash"
+
+import { InputDescriptorConstraintStatusDirective, InputDescriptorConstraintDirective } from "../../../types"
+import { CREDENTIAL_SCHEMA_PROPERTY_NAME, CREDENTIAL_SUBJECT_PROPERTY_NAME, ID_PROPERTY_NAME } from "../../utils"
 import { STRING_SCHEMA } from "../common"
 import { InputDescriptorConstraintFieldBuilder } from "./input-descriptor-constraints-field"
 
@@ -51,7 +51,7 @@ export const minimumValueConstraint = (property: string, minValue: number, prefi
  * pattern.
  */
 export const trustedAuthorityConstraint = (trustedAuthorities: string[]) => (b: InputDescriptorConstraintFieldBuilder) : void => {
-  if (!IsEmpty(trustedAuthorities)) {
+  if (!isEmpty(trustedAuthorities)) {
   b.path(["$.issuer.id", "$.issuer", "$.vc.issuer", "$.iss"])
     .purpose( "We can only verify credentials attested by a trusted authority.")
     .filter({
@@ -93,13 +93,4 @@ function vcConstraintPaths(path: string): string[] {
     `$.${path}`,
     `$.vc.${path}`,
   ]
-}
-
-export function getCredentialSchemaAsVCObject(
-  attestationDefinition: AttestationDefinition
-): CredentialSchema {
-  return {
-    id: attestationDefinition.schema,
-    type: attestationDefinition.type
-  }
 }

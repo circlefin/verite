@@ -5,7 +5,6 @@ import { buildCredentialApplication } from "../../lib/issuer/credential-applicat
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../lib/utils/sample-data/attestations"
 import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../lib/utils/sample-data/constants"
 import { buildKycVerificationOffer } from "../../lib/utils/sample-data/verification-offer"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
@@ -17,6 +16,7 @@ import {
   RevocableCredential
 } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../fixtures/credentials"
 import { revocationListFixture } from "../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../support/manifest-fns"
 

@@ -1,5 +1,4 @@
 import { InputDescriptorConstraintField, InputDescriptorConstraintFilter, InputDescriptorConstraintDirective } from "../../../types"
-import { IsEmpty } from "../../utils/collection-utils"
 
 export class InputDescriptorConstraintFieldBuilder {
   private readonly _builder: Partial<InputDescriptorConstraintField>
@@ -13,7 +12,6 @@ export class InputDescriptorConstraintFieldBuilder {
   }
 
   path(path: string[]): InputDescriptorConstraintFieldBuilder {
-    if (IsEmpty(path)) return this
     this._builder.path = path
     return this
   }

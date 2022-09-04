@@ -1,84 +1,72 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { cloneDeep, isEmpty } from "lodash"
+
 import {
   DataDisplay,
-  DataMappingSchema
+  DataMappingSchema,
+  DisplayMapping,
+  LabeledDisplayMapping
 } from "../../../types"
-import { IsEmpty } from "../../utils/collection-utils"
-import { Action, DATE_TIME_SCHEMA, NUMBER_SCHEMA, STRING_SCHEMA } from "../common"
+import { Action, DATE_TIME_SCHEMA, NUMBER_SCHEMA, STRING_SCHEMA, AsDisplayMapping } from "../common"
 import { LabeledDisplayMappingBuilder } from "./labeled-display-mapping-builder"
 
 export class DataDisplayBuilder {
   private readonly _builder: Partial<DataDisplay>
-  constructor(title?: string) {
-    this._builder = {}
-    if (title) {
-      this._builder.title = {
-        text: title
-     }
+  constructor(initialValues: Partial<DataDisplay>) {
+    this._builder = {
+      properties: [],
+      ...cloneDeep(initialValues)
     }
   }
 
-  title(title: string): DataDisplayBuilder {
-    this._builder.title = {
-      text: title
-    }
+  title(title: string | DisplayMapping): DataDisplayBuilder {
+    this._builder.title = AsDisplayMapping(title)
     return this
   }
 
-  subtitle(path: string[], fallback?: string): DataDisplayBuilder {
-    this._builder.subtitle = {
-      path: path,
-      fallback: fallback
-    }
+
+  subtitle(path: string[] | DisplayMapping): DataDisplayBuilder {
+    this._builder.subtitle = AsDisplayMapping(path)
     return this
   }
 
-  description(description: string): DataDisplayBuilder {
-    this._builder.description = {
-      text: description
-    }
+  description(description: string | DisplayMapping): DataDisplayBuilder {
+    this._builder.description = AsDisplayMapping(description)
     return this
   }
 
-  withSchemaProperty(label: string, schema: DataMappingSchema, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  properties(properties: LabeledDisplayMapping[]): DataDisplayBuilder {
+    this._builder.properties = properties
+    return this
+  }
+
+  addProperty(label: string, schema: DataMappingSchema, itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
-    if (IsEmpty(this._builder.properties)) {
-      this._builder.properties = []
-    }
     const b = new LabeledDisplayMappingBuilder(label, schema)
     itemBuilder(b)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._builder.properties!.push(b.build())
     return this
   }
 
-  withNumberProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  addNumberProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
-    return this.withSchemaProperty(label, NUMBER_SCHEMA, itemBuilder)
+    return this.addProperty(label, NUMBER_SCHEMA, itemBuilder)
   }
 
-  withDateTimeProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  addDateTimeProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
-    return this.withSchemaProperty(label, DATE_TIME_SCHEMA, itemBuilder)
+    return this.addProperty(label, DATE_TIME_SCHEMA, itemBuilder)
   }
 
-  withStringProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  addStringProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
-    return this.withSchemaProperty(label, STRING_SCHEMA, itemBuilder)
-  }
-
-  withProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
-  ): DataDisplayBuilder {
-    if (IsEmpty(this._builder.properties)) {
-      this._builder.properties = []
-    }
-    const b = new LabeledDisplayMappingBuilder(label)
-    itemBuilder(b)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this._builder.properties!.push(b.build())
-    return this
+    return this.addProperty(label, STRING_SCHEMA, itemBuilder)
   }
 
   build(): DataDisplay {
+    if (isEmpty(this._builder.properties)) {
+      delete this._builder.properties
+    }
     return this._builder as DataDisplay
   }
 }

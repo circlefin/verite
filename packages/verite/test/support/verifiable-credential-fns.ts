@@ -5,10 +5,10 @@ import {
   attestationToCredentialType,
   buildIssuer,
   decodeVerifiableCredential,
-  KYC_ATTESTATION_SCHEMA_VC_OBJ,
   randomDidKey
 } from "../../lib/utils"
 import { creditScoreAttestationFixture } from "../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../fixtures/credentials"
 
 import type { Verifiable, W3CCredential } from "../../types/DidJwt"
 

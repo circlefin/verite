@@ -4,6 +4,7 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
+import { isString } from "lodash"
 
 import { VerificationError } from "../errors"
 import { VC_CONTEXT_URI, VERIFIABLE_PRESENTATION_TYPE_NAME } from "./constants"
@@ -50,7 +51,7 @@ export async function encodeVerifiableCredential(
   }
   if (vcPayload.issuer) {
     payload.iss =
-      typeof vcPayload.issuer === "string"
+      isString(vcPayload.issuer)
         ? vcPayload.issuer
         : vcPayload.issuer.id
   }
@@ -83,7 +84,7 @@ export async function decodeVerifiableCredential(
       ).map(([_, value]) => {
         // need this addtional cleanup for did-jwt-vc adding string-y payload
         // args to the decoded representation
-        if (typeof value !== "string") {
+        if (!isString(value)) {
           return value
         }
       })

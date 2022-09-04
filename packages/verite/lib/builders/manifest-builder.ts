@@ -1,20 +1,18 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { isEmpty } from "lodash"
+
 import { ClaimFormatDesignation, CredentialIssuer, CredentialManifest, OutputDescriptor, PresentationDefinition } from "../../types"
-import {
-  CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
-  IsEmpty,
-  OutputDescriptorBuilder
-} from "../utils"
-import { Action, JWT_CLAIM_FORMAT_DESIGNATION } from "./common"
+import { Action, CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0, JWT_CLAIM_FORMAT_DESIGNATION } from "./common"
+import { OutputDescriptorBuilder } from "./output-descriptors"
 import { PresentationDefinitionBuilder } from "./presentation-definition-builder"
-
-
 
 export class CredentialManifestBuilder {
   _builder: Partial<CredentialManifest>
   constructor(id: string) {
     this._builder = {
       id: id,
-      spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0
+      spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
+      output_descriptors: []
     }
   }
 
@@ -33,17 +31,13 @@ export class CredentialManifestBuilder {
     return this
   }
 
-  withOutputDescriptor(id: string, itemBuilder: Action<OutputDescriptorBuilder>): CredentialManifestBuilder {
-    if (IsEmpty(this._builder.output_descriptors)) {
-      this._builder.output_descriptors = []
-    }
+  addOutputDescriptor(id: string, itemBuilder: Action<OutputDescriptorBuilder>): CredentialManifestBuilder {
     const b = new OutputDescriptorBuilder(id)
     itemBuilder(b)
     const result = b.build()
-    if (Object.keys(result).length === 0)
-      return this
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this._builder.output_descriptors!.push(b.build())
+    if (!isEmpty(result)) {
+      this._builder.output_descriptors!.push(result)
+    }
     return this
   }
 
@@ -53,13 +47,19 @@ export class CredentialManifestBuilder {
   }
 
   withPresentationDefinitionBuilder(id: string, pdBuilder: Action<PresentationDefinitionBuilder>) : CredentialManifestBuilder {
-    const b = new PresentationDefinitionBuilder(id)
+    const b = new PresentationDefinitionBuilder({
+      ...this._builder.presentation_definition,
+      id: id
+    })
     pdBuilder(b)
     this._builder.presentation_definition = b.build()
     return this
   }
 
   build(): CredentialManifest {
+    if (isEmpty(this._builder.output_descriptors)) {
+      delete this._builder.output_descriptors
+    }
     return this._builder as CredentialManifest
   }
 }

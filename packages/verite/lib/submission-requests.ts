@@ -1,4 +1,5 @@
 import fetch from "cross-fetch"
+import { isString } from "lodash"
 import { v4 as uuidv4 } from "uuid"
 
 import type {
@@ -89,7 +90,7 @@ export async function handleScan(
 }
 
 function json(body: string | Record<string, unknown>): Record<string, unknown> {
-  if (typeof body === "string") {
+  if (isString(body)) {
     try {
       return JSON.parse(body)
     } catch (e) {
