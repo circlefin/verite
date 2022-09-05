@@ -21,7 +21,7 @@ describe("POST /issuance/[token]", () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = randomDidKey(randomBytes)
-    const manifest = await findManifestById("KYCAMLAttestation")
+    const manifest = await findManifestById("KYCAMLManifest")
     const credentialApplication = await buildCredentialApplication(
       clientDid,
       manifest
@@ -44,7 +44,7 @@ describe("POST /issuance/[token]", () => {
     )) as DecodedCredentialFulfillment
 
     expect(presentation.credential_fulfillment.manifest_id).toEqual(
-      "KYCAMLAttestation"
+      "KYCAMLManifest"
     )
   })
 
@@ -52,7 +52,7 @@ describe("POST /issuance/[token]", () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
-    const manifest = await findManifestById("CreditScoreAttestation")
+    const manifest = await findManifestById("CreditScoreManifest")
     const credentialApplication = await buildCredentialApplication(
       clientDid,
       manifest
@@ -75,7 +75,7 @@ describe("POST /issuance/[token]", () => {
     )) as DecodedCredentialFulfillment
 
     expect(presentation.credential_fulfillment.manifest_id).toEqual(
-      "CreditScoreAttestation"
+      "CreditScoreManifest"
     )
   })
 
@@ -156,7 +156,7 @@ describe("POST /issuance/[token]", () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
-    const manifest = await findManifestById("KYCAMLAttestation")
+    const manifest = await findManifestById("KYCAMLManifest")
     const credentialApplication = await buildCredentialApplication(
       clientDid,
       manifest

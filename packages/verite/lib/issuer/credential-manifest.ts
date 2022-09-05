@@ -6,8 +6,8 @@ import type {
   PresentationDefinition
 } from "../../types"
 
-export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreAttestation"
-export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLAttestation"
+export const CREDIT_SCORE_ATTESTATION_MANIFEST_ID = "CreditScoreManifest"
+export const KYCAML_ATTESTATION_MANIFEST_ID = "KYCAMLManifest"
 // Note: tracking issue in PEx spec saying it must be UUID
 export const PROOF_OF_CONTROL_PRESENTATION_DEF_ID =
   "ProofOfControlPresentationDefinition"
@@ -36,7 +36,7 @@ function buildManifest(
           "A Verifiable Presentation establishing proof of identifier control over the DID.",
         schema: [
           {
-            uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
+            uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
           }
         ]
       }
@@ -86,7 +86,7 @@ export function buildKycAmlManifest(
       id: "kycAttestationOutput",
       schema: [
         {
-          uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
+          uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
         }
       ],
       name: `Proof of KYC from ${issuer.name}`,
@@ -138,7 +138,7 @@ export function buildCreditScoreManifest(
       id: "creditScoreAttestationOutput",
       schema: [
         {
-          uri: "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation"
+          uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation"
         }
       ],
       name: `Proof of Credit Score from ${issuer.name}`,

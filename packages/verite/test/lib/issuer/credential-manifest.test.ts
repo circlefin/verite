@@ -43,7 +43,7 @@ describe("buildKycAmlManifest", () => {
     const manifest = buildKycAmlManifest(issuer)
 
     const expected = {
-      id: "KYCAMLAttestation",
+      id: "KYCAMLManifest",
       version: "0.1.0",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
@@ -55,7 +55,7 @@ describe("buildKycAmlManifest", () => {
           id: "kycAttestationOutput",
           schema: [
             {
-              uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
+              uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
             }
           ],
           name: "Proof of KYC from Issuer Inc.",
@@ -99,7 +99,7 @@ describe("buildKycAmlManifest", () => {
               "A Verifiable Presentation establishing proof of identifier control over the DID.",
             schema: [
               {
-                uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
+                uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
               }
             ]
           }
@@ -128,7 +128,7 @@ describe("buildCreditScoreManifest", () => {
     const manifest = buildCreditScoreManifest(issuer)
 
     const expected = {
-      id: "CreditScoreAttestation",
+      id: "CreditScoreManifest",
       version: "0.1.0",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
@@ -140,7 +140,7 @@ describe("buildCreditScoreManifest", () => {
           id: "creditScoreAttestationOutput",
           schema: [
             {
-              uri: "https://demos.verite.id/schemas/identity/1.0.0/CreditScoreAttestation"
+              uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation"
             }
           ],
           name: "Proof of Credit Score from Issuer Inc.",
@@ -187,7 +187,7 @@ describe("buildCreditScoreManifest", () => {
               "A Verifiable Presentation establishing proof of identifier control over the DID.",
             schema: [
               {
-                uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
+                uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
               }
             ]
           }

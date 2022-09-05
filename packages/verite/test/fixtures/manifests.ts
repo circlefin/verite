@@ -19,7 +19,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
         id: "kycAttestationOutput",
         schema: [
           {
-            uri: "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation"
+            uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
           }
         ],
         name: "Proof of KYC from Issuer Inc.",
@@ -63,7 +63,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
             "A Verifiable Presentation establishing proof of identifier control over the DID.",
           schema: [
             {
-              uri: "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl"
+              uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
             }
           ]
         }

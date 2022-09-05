@@ -14,7 +14,7 @@ Object {
       ],
     },
   },
-  "id": "KYCAMLAttestation",
+  "id": "KYCAMLManifest",
   "issuer": Object {
     "id": "did:web:demos.verite.id",
     "name": "Verite",
@@ -63,7 +63,7 @@ Object {
       "name": "Proof of KYC from Verite",
       "schema": Array [
         Object {
-          "uri": "https://demos.verite.id/schemas/identity/1.0.0/KYCAMLAttestation",
+          "uri": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
         },
       ],
       "styles": Object {
@@ -100,7 +100,7 @@ Object {
         "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
         "schema": Array [
           Object {
-            "uri": "https://demos.verite.id/schemas/identity/1.0.0/ProofOfControl",
+            "uri": "https://verite.id/definitions/schemas/0.0.1/ProofOfControl",
           },
         ],
       },

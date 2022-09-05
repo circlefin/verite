@@ -4,7 +4,9 @@ import {
   buildAndSignFulfillment,
   decodeCredentialApplication,
   Attestation,
-  buildIssuer
+  buildIssuer,
+  CREDIT_SCORE_ATTESTATION_MANIFEST_ID,
+  KYCAML_ATTESTATION_MANIFEST_ID
 } from "verite"
 
 export default async function credentials(
@@ -44,13 +46,13 @@ export default async function credentials(
    */
   const manifestId = application.credential_application.manifest_id
   let attestation: Attestation
-  if (manifestId === "KYCAMLAttestation") {
+  if (manifestId === KYCAML_ATTESTATION_MANIFEST_ID) {
     attestation = {
       type: "KYCAMLAttestation",
-      process: "https://demos.verite.id/schemas/definitions/1.0.0/kycaml/usa",
+      process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
       approvalDate: new Date().toISOString()
     }
-  } else if (manifestId === "CreditScoreAttestation") {
+  } else if (manifestId === CREDIT_SCORE_ATTESTATION_MANIFEST_ID) {
     attestation = {
       type: "CreditScoreAttestation",
       score: 90,

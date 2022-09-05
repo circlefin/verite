@@ -1,0 +1,23 @@
+{
+  "$ref": "#/definitions/IndivAccInvAttestation",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "IndivAccInvAttestation": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "IndivAccInvAttestation",
+          "type": "string"
+        },
+        "process": {
+          "type": "string"
+        },
+        "approvalDate": {
+          "type": "string"
+        }
+      },
+      "required": ["type", "process", "approvalDate"],
+      "type": "object"
+    }
+  }
+}

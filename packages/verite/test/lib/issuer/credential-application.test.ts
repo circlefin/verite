@@ -27,7 +27,7 @@ describe("buildCredentialApplication", () => {
     const application = await decodeCredentialApplication(credentialApplication)
 
     expect(application.credential_application.manifest_id).toEqual(
-      "KYCAMLAttestation"
+      "KYCAMLManifest"
     )
     expect(application.presentation_submission).toBeDefined()
     expect(application.presentation_submission?.definition_id).toEqual(
@@ -48,7 +48,7 @@ describe("decodeCredentialApplication", () => {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       credential_application: {
         // id: 'f584577a-607f-43d9-a128-39b21f126f96', client-generated unique identifier
-        manifest_id: "KYCAMLAttestation",
+        manifest_id: "KYCAMLManifest",
         format: { jwt_vp: { alg: ["EdDSA"] } }
       },
       presentation_submission: {

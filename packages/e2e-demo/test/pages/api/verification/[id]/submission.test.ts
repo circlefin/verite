@@ -156,7 +156,7 @@ describe("POST /verification/[id]/submission", () => {
 })
 
 async function generateKycAmlVc(clientDidKey: DidKey) {
-  const manifest = await findManifestById("KYCAMLAttestation")
+  const manifest = await findManifestById("KYCAMLManifest")
   const user = await userFactory()
   const application = await buildCredentialApplication(clientDidKey, manifest)
 
