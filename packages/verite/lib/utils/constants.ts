@@ -14,10 +14,3 @@ export const VC_CONTEXT_URI = "https://www.w3.org/2018/credentials/v1"
 
 // Verite vocab
 export const VERITE_VOCAB_URI = "https://verite.id/identity/"
-
-// Common credential / manifest fields
-export const CREDENTIAL_SCHEMA_PROPERTY_NAME = "credentialSchema"
-export const CREDENTIAL_SUBJECT_PROPERTY_NAME = "credentialSubject"
-export const HOLDER_PROPERTY_NAME = "holder"
-export const ID_PROPERTY_NAME = "id"
-export const EDDSA = "EdDSA"

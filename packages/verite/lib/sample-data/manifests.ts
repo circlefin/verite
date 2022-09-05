@@ -6,6 +6,7 @@ import {
 } from "../../types"
 import {
   buildManifest,
+  HOLDER_PROPERTY_NAME,
   JWT_VP_CLAIM_FORMAT_DESIGNATION,
   OutputDescriptorBuilder,
   PresentationDefinitionBuilder
@@ -15,7 +16,6 @@ import {
   getAttestionDefinition,
   KYCAML_ATTESTATION
 } from "../utils/attestation-registry"
-import { HOLDER_PROPERTY_NAME } from "../utils/constants"
 import {
   PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME,
   KYCAML_CREDENTIAL_TYPE_NAME,

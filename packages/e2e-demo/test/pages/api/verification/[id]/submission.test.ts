@@ -115,6 +115,7 @@ describe("POST /verification/[id]/submission", () => {
       process.env.VERIFIER_DID,
       fullURL("/api/demos/verifier/submission"),
       fullURL("/api/demos/verifier/callback"),
+      [],
       700
     )
     await saveVerificationOffer(verificationRequest)
@@ -145,7 +146,7 @@ describe("POST /verification/[id]/submission", () => {
           message:
             "Credential failed to meet criteria specified by input descriptor CreditScoreCredential",
           details:
-            "Credential did not match constraint: The Credit Score Attestation requires the field: 'score'."
+            "Credential did not match constraint: We can only accept credentials where the score value is above 700."
         }
       ]
     })

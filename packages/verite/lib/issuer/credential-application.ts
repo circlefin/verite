@@ -12,12 +12,12 @@ import {
   DidKey,
   EncodedCredentialApplication
 } from "../../types"
+import { HOLDER_PROPERTY_NAME } from "../builders/common"
 import {
   buildIssuer,
   CREDENTIAL_APPLICATION_TYPE_NAME,
   decodeVerifiablePresentation,
   encodeVerifiablePresentation,
-  HOLDER_PROPERTY_NAME,
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
 

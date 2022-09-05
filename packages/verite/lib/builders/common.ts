@@ -7,7 +7,14 @@ import {
   InputDescriptorConstraintDirective,
   InputDescriptorConstraintSubjectConstraint
 } from "../../types"
-import { EDDSA } from "../utils/constants"
+
+// Common credential / manifest fields
+export const CREDENTIAL_SCHEMA_PROPERTY_NAME = "credentialSchema"
+export const CREDENTIAL_SUBJECT_PROPERTY_NAME = "credentialSubject"
+export const HOLDER_PROPERTY_NAME = "holder"
+export const ID_PROPERTY_NAME = "id"
+export const EDDSA = "EdDSA"
+
 
 export const CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0 =
   "https://identity.foundation/credential-manifest/spec/v1.0.0/"
