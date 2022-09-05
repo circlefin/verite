@@ -5,8 +5,8 @@ import {
   buildCredentialApplication,
   decodeCredentialApplication
 } from "../../../lib/issuer/credential-application"
+import { buildKycAmlManifest } from "../../../lib/sample-data/manifests"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
-import { buildKycAmlManifest } from "../../../lib/utils/sample-data/manifests"
 import { ClaimFormat } from "../../../types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 

@@ -9,11 +9,17 @@ import {
   buildAndSignMultiVcFulfillment,
   buildAndSignVerifiableCredential
 } from "../../../lib/issuer/credential-fulfillment"
+import {
+  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+  KYCAML_CREDENTIAL_TYPE_NAME
+} from "../../../lib/sample-data"
+import { creditScorePresentationDefinition } from "../../../lib/sample-data/presentation-definitions"
+import {
+  buildCreditScoreVerificationOffer,
+  buildKycVerificationOffer
+} from "../../../lib/sample-data/verification-offer"
 import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
-import { CREDIT_SCORE_CREDENTIAL_TYPE_NAME, KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/utils/sample-data"
-import { creditScorePresentationDefinition } from "../../../lib/utils/sample-data/presentation-definitions"
-import { buildCreditScoreVerificationOffer, buildKycVerificationOffer } from "../../../lib/utils/sample-data/verification-offer"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
@@ -21,7 +27,10 @@ import {
   creditScoreAttestationFixture,
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ, CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
+import {
+  KYC_ATTESTATION_SCHEMA_VC_OBJ,
+  CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ
+} from "../../fixtures/credentials"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 

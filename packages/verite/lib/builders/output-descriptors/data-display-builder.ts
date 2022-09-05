@@ -7,7 +7,13 @@ import {
   DisplayMapping,
   LabeledDisplayMapping
 } from "../../../types"
-import { Action, DATE_TIME_SCHEMA, NUMBER_SCHEMA, STRING_SCHEMA, AsDisplayMapping } from "../common"
+import {
+  Action,
+  DATE_TIME_SCHEMA,
+  NUMBER_SCHEMA,
+  STRING_SCHEMA,
+  AsDisplayMapping
+} from "../common"
 import { LabeledDisplayMappingBuilder } from "./labeled-display-mapping-builder"
 
 export class DataDisplayBuilder {
@@ -24,7 +30,6 @@ export class DataDisplayBuilder {
     return this
   }
 
-
   subtitle(path: string[] | DisplayMapping): DataDisplayBuilder {
     this._builder.subtitle = AsDisplayMapping(path)
     return this
@@ -40,7 +45,10 @@ export class DataDisplayBuilder {
     return this
   }
 
-  addProperty(label: string, schema: DataMappingSchema, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  addProperty(
+    label: string,
+    schema: DataMappingSchema,
+    itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
     const b = new LabeledDisplayMappingBuilder(label, schema)
     itemBuilder(b)
@@ -48,17 +56,23 @@ export class DataDisplayBuilder {
     return this
   }
 
-  addNumberProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  addNumberProperty(
+    label: string,
+    itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
     return this.addProperty(label, NUMBER_SCHEMA, itemBuilder)
   }
 
-  addDateTimeProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  addDateTimeProperty(
+    label: string,
+    itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
     return this.addProperty(label, DATE_TIME_SCHEMA, itemBuilder)
   }
 
-  addStringProperty(label: string, itemBuilder: Action<LabeledDisplayMappingBuilder>
+  addStringProperty(
+    label: string,
+    itemBuilder: Action<LabeledDisplayMappingBuilder>
   ): DataDisplayBuilder {
     return this.addProperty(label, STRING_SCHEMA, itemBuilder)
   }

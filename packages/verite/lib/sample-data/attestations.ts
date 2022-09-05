@@ -1,9 +1,19 @@
-import { CredentialSchema, CreditScoreAttestation, KYCAMLAttestation } from "../../../types"
-import { AttestationDefinition, CREDIT_SCORE_ATTESTATION, getAttestionDefinition, KYCAML_ATTESTATION } from "../attestation-registry"
 import {
-  VERIFIABLE_CREDENTIAL_TYPE_NAME
-} from "../constants"
-import { CREDIT_SCORE_CREDENTIAL_TYPE_NAME, KYCAML_CREDENTIAL_TYPE_NAME } from "./constants"
+  CredentialSchema,
+  CreditScoreAttestation,
+  KYCAMLAttestation
+} from "../../types"
+import {
+  AttestationDefinition,
+  CREDIT_SCORE_ATTESTATION,
+  getAttestionDefinition,
+  KYCAML_ATTESTATION
+} from "../utils/attestation-registry"
+import { VERIFIABLE_CREDENTIAL_TYPE_NAME } from "../utils/constants"
+import {
+  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+  KYCAML_CREDENTIAL_TYPE_NAME
+} from "./constants"
 
 export function getSampleKycAmlAttestation(): KYCAMLAttestation {
   const kycInfo = getAttestionDefinition(KYCAML_ATTESTATION)

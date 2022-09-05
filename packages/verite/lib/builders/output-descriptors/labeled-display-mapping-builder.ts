@@ -1,8 +1,8 @@
 import {
   DataMappingPath,
-  DataMappingSchema, LabeledDisplayMapping
+  DataMappingSchema,
+  LabeledDisplayMapping
 } from "../../../types"
-
 
 export class LabeledDisplayMappingBuilder {
   private readonly _builder: Partial<LabeledDisplayMapping & DataMappingPath>

@@ -1,10 +1,6 @@
-import {
-  DataDisplay,
-  EntityStyle,
-  OutputDescriptor
-} from "../../../types"
+import { DataDisplay, EntityStyle, OutputDescriptor } from "../../../types"
 import { Action, AsDisplayMapping } from "../common"
-import {  DataDisplayBuilder } from "./data-display-builder"
+import { DataDisplayBuilder } from "./data-display-builder"
 
 export class OutputDescriptorBuilder {
   private readonly _builder: Partial<OutputDescriptor>
@@ -46,7 +42,10 @@ export class OutputDescriptorBuilder {
     return this
   }
 
-  withDisplay(title: string, action: Action<DataDisplayBuilder>): OutputDescriptorBuilder {
+  withDisplay(
+    title: string,
+    action: Action<DataDisplayBuilder>
+  ): OutputDescriptorBuilder {
     const b = new DataDisplayBuilder({
       ...this._builder.display,
       title: AsDisplayMapping(title)

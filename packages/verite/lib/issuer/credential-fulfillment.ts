@@ -109,8 +109,7 @@ export async function buildAndSignFulfillment(
     payload,
     options
   )
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const format = parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc
+  const format = ClaimFormat.JwtVc
 
   const encodedPresentation = await encodeVerifiablePresentation(
     signer.did,
@@ -160,8 +159,7 @@ export async function buildAndSignMultiVcFulfillment(
           manifest.output_descriptors.map<DescriptorMap>((d, i) => {
             return {
               id: d.id,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              format: parseClaimFormat(manifest.format!) || ClaimFormat.JwtVc,
+              format: ClaimFormat.JwtVc,
               path: `$.verifiableCredential[${i}]`
             }
           }) ?? []

@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { cloneDeep, isEmpty } from "lodash"
 
-import { InputDescriptorConstraints, InputDescriptorConstraintStatuses, InputDescriptorConstraintDirective, InputDescriptorConstraintField, InputDescriptorConstraintSubjectConstraint } from "../../../types"
+import {
+  InputDescriptorConstraints,
+  InputDescriptorConstraintStatuses,
+  InputDescriptorConstraintDirective,
+  InputDescriptorConstraintField,
+  InputDescriptorConstraintSubjectConstraint
+} from "../../../types"
 import { Action, AsSubjectConstraint } from "../common"
 import { InputDescriptorConstraintFieldBuilder } from "./input-descriptor-constraints-field"
-
 
 export class InputDescriptorConstraintsBuilder {
   private readonly _builder: Partial<InputDescriptorConstraints>
@@ -20,15 +25,19 @@ export class InputDescriptorConstraintsBuilder {
         fields: [],
         is_holder: []
       }
-  }
+    }
   }
 
-  fields(fields: InputDescriptorConstraintField[]): InputDescriptorConstraintsBuilder {
+  fields(
+    fields: InputDescriptorConstraintField[]
+  ): InputDescriptorConstraintsBuilder {
     this._builder.fields = fields
     return this
   }
 
-  addField(itemBuilder: Action<InputDescriptorConstraintFieldBuilder>): InputDescriptorConstraintsBuilder {
+  addField(
+    itemBuilder: Action<InputDescriptorConstraintFieldBuilder>
+  ): InputDescriptorConstraintsBuilder {
     const b = new InputDescriptorConstraintFieldBuilder()
     itemBuilder(b)
     const result = b.build()
@@ -38,23 +47,30 @@ export class InputDescriptorConstraintsBuilder {
     return this
   }
 
-  statuses(statuses: InputDescriptorConstraintStatuses): InputDescriptorConstraintsBuilder {
+  statuses(
+    statuses: InputDescriptorConstraintStatuses
+  ): InputDescriptorConstraintsBuilder {
     this._builder.statuses = statuses
     return this
   }
 
-  subjectIsIssuer(directive: InputDescriptorConstraintDirective): InputDescriptorConstraintsBuilder {
+  subjectIsIssuer(
+    directive: InputDescriptorConstraintDirective
+  ): InputDescriptorConstraintsBuilder {
     this._builder.subject_is_issuer = directive
     return this
   }
 
-  sameSubject(constraints: InputDescriptorConstraintSubjectConstraint[]): InputDescriptorConstraintsBuilder {
+  sameSubject(
+    constraints: InputDescriptorConstraintSubjectConstraint[]
+  ): InputDescriptorConstraintsBuilder {
     this._builder.same_subject = constraints
     return this
   }
 
-
-  isHolder(holderConstraint: string[]| InputDescriptorConstraintSubjectConstraint): InputDescriptorConstraintsBuilder {
+  isHolder(
+    holderConstraint: string[] | InputDescriptorConstraintSubjectConstraint
+  ): InputDescriptorConstraintsBuilder {
     this._builder.is_holder!.push(AsSubjectConstraint(holderConstraint))
     return this
   }

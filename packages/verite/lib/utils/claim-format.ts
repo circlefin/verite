@@ -1,9 +1,7 @@
-import {
-  ClaimFormat,
-  ClaimFormatDesignation
-} from "../../types"
+import { ClaimFormat, ClaimFormatDesignation } from "../../types"
 
 export function parseClaimFormat(d: ClaimFormatDesignation): ClaimFormat {
+  if (!d) return ClaimFormat.JwtVc
   const keys = Object.keys(d)
   if (!keys) {
     return ClaimFormat.JwtVc
@@ -16,4 +14,3 @@ export function parseClaimFormat(d: ClaimFormatDesignation): ClaimFormat {
     throw TypeError("Unsupported format")
   }
 }
-

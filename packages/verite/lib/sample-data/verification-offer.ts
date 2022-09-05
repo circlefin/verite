@@ -1,8 +1,11 @@
-import { buildRequestCommon } from "../../submission-requests"
-import { VERIFICATION_REQUEST_TYPE_NAME } from "../constants"
-import { creditScorePresentationDefinition, kycAmlPresentationDefinition } from "./presentation-definitions"
+import { buildRequestCommon } from "../submission-requests"
+import { VERIFICATION_REQUEST_TYPE_NAME } from "../utils/constants"
+import {
+  creditScorePresentationDefinition,
+  kycAmlPresentationDefinition
+} from "./presentation-definitions"
 
-import type { VerificationOffer } from "../../../types"
+import type { VerificationOffer } from "../../types"
 
 export function buildKycVerificationOffer(
   id: string,

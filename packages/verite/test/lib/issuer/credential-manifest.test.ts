@@ -3,14 +3,12 @@ import { omit } from "lodash"
 
 import { hasPaths } from "../../../lib"
 import {
-  randomDidKey
-} from "../../../lib/utils"
-import {
   buildCreditScoreManifest,
   buildKycAmlManifest,
   proofOfControlPresentationDefinition,
   requiresRevocableCredentials
-} from "../../../lib/utils/sample-data/manifests"
+} from "../../../lib/sample-data/manifests"
+import { randomDidKey } from "../../../lib/utils"
 import { CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures/dids"
 
@@ -47,7 +45,8 @@ describe("buildKycAmlManifest", () => {
 
     const expected = {
       id: "KYCAMLManifest",
-      spec_version: "https://identity.foundation/credential-manifest/spec/v1.0.0/",
+      spec_version:
+        "https://identity.foundation/credential-manifest/spec/v1.0.0/",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."
@@ -113,7 +112,8 @@ describe("buildCreditScoreManifest", () => {
 
     const expected = {
       id: "CreditScoreManifest",
-      spec_version: "https://identity.foundation/credential-manifest/spec/v1.0.0/",
+      spec_version:
+        "https://identity.foundation/credential-manifest/spec/v1.0.0/",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."

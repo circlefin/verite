@@ -1,11 +1,9 @@
 import { ValidationError } from "../errors"
 
-const VERITE_SCHEMAS_PREFIX_URI =
-  "https://verite.id/definitions/schemas/0.0.1"
-const VERITE_PROCESSES_PREFIX_URI =
-  "https://verite.id/definitions/processes"
+const VERITE_SCHEMAS_PREFIX_URI = "https://verite.id/definitions/schemas/0.0.1"
+const VERITE_PROCESSES_PREFIX_URI = "https://verite.id/definitions/processes"
 
-  // Known Attestations
+// Known Attestations
 export const KYCAML_ATTESTATION = "KYCAMLAttestation"
 export const KYBPAML_ATTESTATION = "KYBPAMLAttestation"
 export const CREDIT_SCORE_ATTESTATION = "CreditScoreAttestation"
@@ -32,11 +30,20 @@ export type AttestationDefinition = {
   process?: string
 }
 
-
 const allAttestations = new Map<string, AttestationDefinition>([
   [
     KYCAML_ATTESTATION,
-    instantiate(KYCAML_ATTESTATION, `${VERITE_PROCESSES_PREFIX_URI}/kycaml/0.0.1/usa`)
+    instantiate(
+      KYCAML_ATTESTATION,
+      `${VERITE_PROCESSES_PREFIX_URI}/kycaml/0.0.1/usa`
+    )
+  ],
+  [
+    KYBPAML_ATTESTATION,
+    instantiate(
+      KYBPAML_ATTESTATION,
+      `${VERITE_PROCESSES_PREFIX_URI}/kybpaml/0.0.1/usa`
+    )
   ],
   [
     ENTITY_ACC_INV_ATTESTATION,

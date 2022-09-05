@@ -6,11 +6,13 @@ import {
   buildAndSignVerifiableCredential
 } from "../../../lib/issuer/credential-fulfillment"
 import {
-  buildIssuer,
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+  KYCAML_CREDENTIAL_TYPE_NAME
+} from "../../../lib/sample-data"
+import {
+  buildIssuer,
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
-  KYCAML_CREDENTIAL_TYPE_NAME,
   randomDidKey
 } from "../../../lib/utils"
 import { RevocationList2021Status } from "../../../types"

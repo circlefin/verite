@@ -1,8 +1,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { isEmpty } from "lodash"
 
-import { ClaimFormatDesignation, CredentialIssuer, CredentialManifest, OutputDescriptor, PresentationDefinition } from "../../types"
-import { Action, CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0, JWT_CLAIM_FORMAT_DESIGNATION } from "./common"
+import {
+  ClaimFormatDesignation,
+  CredentialIssuer,
+  CredentialManifest,
+  OutputDescriptor,
+  PresentationDefinition
+} from "../../types"
+import {
+  Action,
+  CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
+  JWT_CLAIM_FORMAT_DESIGNATION
+} from "./common"
 import { OutputDescriptorBuilder } from "./output-descriptors"
 import { PresentationDefinitionBuilder } from "./presentation-definition-builder"
 
@@ -31,7 +41,10 @@ export class CredentialManifestBuilder {
     return this
   }
 
-  addOutputDescriptor(id: string, itemBuilder: Action<OutputDescriptorBuilder>): CredentialManifestBuilder {
+  addOutputDescriptor(
+    id: string,
+    itemBuilder: Action<OutputDescriptorBuilder>
+  ): CredentialManifestBuilder {
     const b = new OutputDescriptorBuilder(id)
     itemBuilder(b)
     const result = b.build()
@@ -41,12 +54,17 @@ export class CredentialManifestBuilder {
     return this
   }
 
-  presentation_definition(presentation_definition: PresentationDefinition): CredentialManifestBuilder {
+  presentation_definition(
+    presentation_definition: PresentationDefinition
+  ): CredentialManifestBuilder {
     this._builder.presentation_definition = presentation_definition
     return this
   }
 
-  withPresentationDefinitionBuilder(id: string, pdBuilder: Action<PresentationDefinitionBuilder>) : CredentialManifestBuilder {
+  withPresentationDefinitionBuilder(
+    id: string,
+    pdBuilder: Action<PresentationDefinitionBuilder>
+  ): CredentialManifestBuilder {
     const b = new PresentationDefinitionBuilder({
       ...this._builder.presentation_definition,
       id: id
@@ -64,7 +82,6 @@ export class CredentialManifestBuilder {
   }
 }
 
-
 export function buildManifest(
   manifestId: string,
   issuer: CredentialIssuer,
@@ -72,13 +89,12 @@ export function buildManifest(
   presentationDefinition: PresentationDefinition,
   format: ClaimFormatDesignation = JWT_CLAIM_FORMAT_DESIGNATION
 ): CredentialManifest {
-
   const manifest = new CredentialManifestBuilder(manifestId)
-  .issuer(issuer)
-  .output_descriptors(outputDescriptors)
-  .presentation_definition(presentationDefinition)
-  .format(format)
-  .build()
+    .issuer(issuer)
+    .output_descriptors(outputDescriptors)
+    .presentation_definition(presentationDefinition)
+    .format(format)
+    .build()
 
   return manifest
 }

@@ -50,10 +50,9 @@ export async function encodeVerifiableCredential(
     payload.exp = Math.round(Date.parse(vcPayload.expirationDate) / 1000)
   }
   if (vcPayload.issuer) {
-    payload.iss =
-      isString(vcPayload.issuer)
-        ? vcPayload.issuer
-        : vcPayload.issuer.id
+    payload.iss = isString(vcPayload.issuer)
+      ? vcPayload.issuer
+      : vcPayload.issuer.id
   }
   if (vcPayload.credentialSubject) {
     // assumes the same subject for all attestations

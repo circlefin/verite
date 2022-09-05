@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { cloneDeep, isEmpty } from "lodash"
 
-import { ClaimFormatDesignation, InputDescriptor, PresentationDefinition } from "../../types"
+import {
+  ClaimFormatDesignation,
+  InputDescriptor,
+  PresentationDefinition
+} from "../../types"
 import { Action } from "./common"
 import { InputDescriptorBuilder } from "./input-descriptors"
-
 
 export class PresentationDefinitionBuilder {
   _builder: Partial<PresentationDefinition>
@@ -25,7 +28,10 @@ export class PresentationDefinitionBuilder {
     return this
   }
 
-  addInputDescriptor(id: string, itemBuilder: Action<InputDescriptorBuilder>): PresentationDefinitionBuilder {
+  addInputDescriptor(
+    id: string,
+    itemBuilder: Action<InputDescriptorBuilder>
+  ): PresentationDefinitionBuilder {
     const b = new InputDescriptorBuilder(id)
     itemBuilder(b)
     const result = b.build()

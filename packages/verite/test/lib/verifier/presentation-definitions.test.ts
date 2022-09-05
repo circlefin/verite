@@ -1,4 +1,4 @@
-import { kycAmlPresentationDefinition } from "../../../lib/utils/sample-data/presentation-definitions"
+import { kycAmlPresentationDefinition } from "../../../lib/sample-data/presentation-definitions"
 
 describe("kycPresentationDefinition", () => {
   it("builds the Credential Definitions with no requirement on the issuer", () => {
@@ -20,8 +20,7 @@ describe("kycPresentationDefinition", () => {
                   "$.KYCAMLAttestation.process"
                 ],
                 predicate: "required",
-                purpose:
-                  "The Attestation must contain the field: 'process'."
+                purpose: "The Attestation must contain the field: 'process'."
               },
               {
                 filter: {
@@ -110,8 +109,7 @@ describe("kycPresentationDefinition", () => {
                   "$.KYCAMLAttestation.process"
                 ],
                 predicate: "required",
-                purpose:
-                  "The Attestation must contain the field: 'process'."
+                purpose: "The Attestation must contain the field: 'process'."
               },
               {
                 filter: {

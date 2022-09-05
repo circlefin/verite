@@ -39,3 +39,6 @@ build
 
 # Build artifacts
 *.tsbuildinfo
+
+# App store config
+eas.json

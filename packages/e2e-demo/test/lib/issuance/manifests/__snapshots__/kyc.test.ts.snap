@@ -102,12 +102,19 @@ Object {
             },
           ],
         },
+        "format": Object {
+          "jwt_vp": Object {
+            "alg": Array [
+              "EdDSA",
+            ],
+          },
+        },
         "id": "proofOfIdentifierControlVP",
         "name": "Proof of Control Verifiable Presentation",
         "purpose": "A VP establishing proof of identifier control over the DID.",
       },
     ],
   },
-  "version": "0.1.0",
+  "spec_version": "https://identity.foundation/credential-manifest/spec/v1.0.0/",
 }
 `;

@@ -3,11 +3,13 @@ import jsonpath from "jsonpath"
 
 import { buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
 import {
+  kycAmlPresentationDefinition,
+  KYCAML_CREDENTIAL_TYPE_NAME
+} from "../../../lib/sample-data"
+import {
   buildIssuer,
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
-  kycAmlPresentationDefinition,
-  KYCAML_CREDENTIAL_TYPE_NAME,
   randomDidKey
 } from "../../../lib/utils"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"

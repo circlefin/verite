@@ -1,4 +1,4 @@
-import { buildKycVerificationOffer } from "../../../lib/utils/sample-data/verification-offer"
+import { buildKycVerificationOffer } from "../../../lib/sample-data/verification-offer"
 
 describe("verification offer", () => {
   it("builds a Verification Offer", () => {
@@ -75,7 +75,8 @@ describe("verification offer", () => {
                       pattern:
                         "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
                     },
-                    purpose: "We need to ensure the credential conforms to the expected schema"
+                    purpose:
+                      "We need to ensure the credential conforms to the expected schema"
                   },
                   {
                     filter: {

@@ -1,4 +1,8 @@
-import { InputDescriptorConstraintField, InputDescriptorConstraintFilter, InputDescriptorConstraintDirective } from "../../../types"
+import {
+  InputDescriptorConstraintField,
+  InputDescriptorConstraintFilter,
+  InputDescriptorConstraintDirective
+} from "../../../types"
 
 export class InputDescriptorConstraintFieldBuilder {
   private readonly _builder: Partial<InputDescriptorConstraintField>
@@ -16,12 +20,16 @@ export class InputDescriptorConstraintFieldBuilder {
     return this
   }
 
-  filter(filter: InputDescriptorConstraintFilter): InputDescriptorConstraintFieldBuilder {
+  filter(
+    filter: InputDescriptorConstraintFilter
+  ): InputDescriptorConstraintFieldBuilder {
     this._builder.filter = filter
     return this
   }
 
-  predicate(predicate: InputDescriptorConstraintDirective): InputDescriptorConstraintFieldBuilder {
+  predicate(
+    predicate: InputDescriptorConstraintDirective
+  ): InputDescriptorConstraintFieldBuilder {
     this._builder.predicate = predicate
     return this
   }

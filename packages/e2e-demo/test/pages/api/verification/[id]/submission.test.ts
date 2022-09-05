@@ -114,7 +114,8 @@ describe("POST /verification/[id]/submission", () => {
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/demos/verifier/submission"),
-      fullURL("/api/demos/verifier/callback")
+      fullURL("/api/demos/verifier/callback"),
+      700
     )
     await saveVerificationOffer(verificationRequest)
     const clientDidKey = await randomDidKey(randomBytes)
