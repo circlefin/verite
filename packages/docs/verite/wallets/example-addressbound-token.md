@@ -114,7 +114,7 @@ It's up to wallet how to display or handle expired credentials, but an expired c
       "EntityAccInvAttestation"
     ],
 ```
-In many use-cases, a token actually contains multiple credential/claim types.  The semantics for these types is explained in [this blog post](https://verite.id/blog/crossfunctionationality). 
+In many use-cases, a token actually contains multiple credential/claim types, each expressed as a distinct (and fully-formed) `credentialSubject` object with a `type` property in this list.  The semantics for these types is explained in [this blog post](https://verite.id/blog/crossfunctionationality). 
 ```
     "id": "d49b865e-86f1-4954-a2c3-b94f206ca668",
 ```
