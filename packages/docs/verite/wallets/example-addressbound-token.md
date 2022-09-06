@@ -26,18 +26,17 @@ In practice, a wallet that wants to receive and share the simpler address-bound 
       "EntityAccInvAttestation"
     ],
     "id": "d49b865e-86f1-4954-a2c3-b94f206ca668",
-    "credentialSubject": {
-      "EntityAccInvAttestation": {
+    "credentialSubject": [{
+        "type": "EntityAccInvAttestation",
         "approvalDate": "2022-08-18T21:25:57.285Z",
         "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-accinv-all-checks",
         "type": "EntityAccInvAttestation"
-      },
-      "KYBPAMLAttestation": {
+    },{
+        "type": "KYBPAMLAttestation",
         "approvalDate": "2022-08-18T21:25:57.285Z",
         "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-legal_person",
         "type": "KYBPAMLAttestation"
-      },
-    },
+    }],
     "credentialStatus": {
       "id": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0#1161",
       "type": "StatusList2021Entry",
@@ -50,7 +49,7 @@ In practice, a wallet that wants to receive and share the simpler address-bound 
 
 ## Example Address-Bound Verifiable Credential (Decoded)
 
-The mandatory properties of a JWT that are redundant to mandatory properties in the Verifiable Credentials data model get converted deterministically (and can, of course, be round-tripped).  Note that `sub` gets moved into the `id` property inside the `credentialSubject` object rather than staying at the top level.
+The mandatory properties of a JWT that are redundant to mandatory properties in the Verifiable Credentials data model get converted deterministically (and can, of course, be round-tripped).  Note that `sub` gets moved into the `id` property inside [each] `credentialSubject` object rather than staying at the top level.
 
 ```
 {
@@ -68,19 +67,19 @@ The mandatory properties of a JWT that are redundant to mandatory properties in 
       "EntityAccInvAttestation"
     ],
     "id": "d49b865e-86f1-4954-a2c3-b94f206ca668",
-    "credentialSubject": {
-      "id": "did:pkh:eip155:1:0xb9ff5450db13a154d3cc40eb57a619e59bb7d8b9",
-      "EntityAccInvAttestation": {
+    "credentialSubject": [{
+        "id": "did:pkh:eip155:1:0xb9ff5450db13a154d3cc40eb57a619e59bb7d8b9",
+        "type": "EntityAccInvAttestation",
         "approvalDate": "2022-08-18T21:25:57.285Z",
         "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-accinv-all-checks",
         "type": "EntityAccInvAttestation"
-      },
-      "KYBPAMLAttestation": {
+    },{
+        "id": "did:pkh:eip155:1:0xb9ff5450db13a154d3cc40eb57a619e59bb7d8b9",
+        "type": "KYBPAMLAttestation",
         "approvalDate": "2022-08-18T21:25:57.285Z",
         "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-legal_person",
         "type": "KYBPAMLAttestation"
-      },
-    },
+    }],
     "credentialStatus": {
       "id": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0#1161",
       "type": "StatusList2021Entry",
@@ -121,26 +120,29 @@ In many use-cases, a token actually contains multiple credential/claim types.  T
 ```
 Verite mandates a unique identifier for each credential to facilitate cross-organization (and even forensic) audit trails. We recommend a standard UUID, which can simplify how wallets handle multiple such tokens.
 ```
-    "credentialSubject": {
+    "credentialSubject": [{
+```
+Note that multiple credentials are put into the VC as multiple co-equal `credentialSubject` objects-- each with its own `id` and `type`. See the [VC data model spec](https://www.w3.org/TR/vc-data-model/#credential-subject) for guidance.
+```
+
       "id": "did:pkh:eip155:1:0xb9ff5450db13a154d3cc40eb57a619e59bb7d8b9",
 ```
 Note that an explanatory prefix before the address, specified in the cross-chain [did:pkh](https://github.com/w3c-ccg/did-pkh/blob/main/did-pkh-method-draft.md#examples) specification based on the [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md#test-cases) address URN scheme, shows this to be an Ethereum (`eip155`) Mainnet (`1`) address. This same convention is used for CACAO receipts of offchain signature-based authentication event, i.e. "web3 wallet connections".  
 ```
-      "EntityAccInvAttestation": {
+        "type": "EntityAccInvAttestation",
         "approvalDate": "2022-08-18T21:25:57.285Z",
         "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-accinv-all-checks",
         "type": "EntityAccInvAttestation"
-      },
-      "KYBPAMLAttestation": {
+    },{
+        "type": "KYBPAMLAttestation",
         "approvalDate": "2022-08-18T21:25:57.285Z",
         "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-legal_person",
         "type": "KYBPAMLAttestation"
-      },
-    },
+    }],
     "credentialStatus": {
       "id": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0#1161",
 ```
-This URL can simplify on-going verification-- rather than ask the wallet to re-present this credential at each future transaction or event, a verifier can simply re-check this URL between first verification and expiration of the credential.
+This URL can simplify on-going verification-- rather than ask the wallet to re-present this credential at each future transaction or event, a verifier can simply re-check this URL at each transaction taking place between the first verification and the expiration of the credential.
 ```
       "type": "StatusList2021Entry",
       "statusListIndex": "1161",
