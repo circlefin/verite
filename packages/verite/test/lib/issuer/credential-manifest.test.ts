@@ -5,8 +5,9 @@ import { hasPaths } from "../../../lib"
 import {
   buildCreditScoreManifest,
   buildKycAmlManifest,
+  proofOfControlPresentationDefinition,
   requiresRevocableCredentials
-} from "../../../lib/issuer/credential-manifest"
+} from "../../../lib/sample-data/manifests"
 import { randomDidKey } from "../../../lib/utils"
 import { CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures/dids"
@@ -18,7 +19,7 @@ function validateManifestFormat(
 ): boolean {
   return hasPaths(manifest, [
     "id",
-    "version",
+    "spec_version",
     "issuer.id",
     "output_descriptors[0]",
     "output_descriptors[0].id",
@@ -44,7 +45,8 @@ describe("buildKycAmlManifest", () => {
 
     const expected = {
       id: "KYCAMLManifest",
-      version: "0.1.0",
+      spec_version:
+        "https://identity.foundation/credential-manifest/spec/v1.0.0/",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."
@@ -52,12 +54,9 @@ describe("buildKycAmlManifest", () => {
       format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
       output_descriptors: [
         {
-          id: "kycAttestationOutput",
-          schema: [
-            {
-              uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-            }
-          ],
+          id: "KYCAMLCredential",
+          schema:
+            "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
           name: "Proof of KYC from Issuer Inc.",
           description:
             "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",
@@ -88,23 +87,7 @@ describe("buildKycAmlManifest", () => {
           styles: {}
         }
       ],
-      presentation_definition: {
-        id: "ProofOfControlPresentationDefinition",
-        format: { jwt_vp: { alg: ["EdDSA"] } },
-        input_descriptors: [
-          {
-            id: "proofOfIdentifierControlVP",
-            name: "Proof of Control Verifiable Presentation",
-            purpose:
-              "A Verifiable Presentation establishing proof of identifier control over the DID.",
-            schema: [
-              {
-                uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-              }
-            ]
-          }
-        ]
-      }
+      presentation_definition: proofOfControlPresentationDefinition()
     }
 
     expect(manifest).toEqual(expected)
@@ -129,7 +112,8 @@ describe("buildCreditScoreManifest", () => {
 
     const expected = {
       id: "CreditScoreManifest",
-      version: "0.1.0",
+      spec_version:
+        "https://identity.foundation/credential-manifest/spec/v1.0.0/",
       issuer: {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."
@@ -137,12 +121,9 @@ describe("buildCreditScoreManifest", () => {
       format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
       output_descriptors: [
         {
-          id: "creditScoreAttestationOutput",
-          schema: [
-            {
-              uri: "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation"
-            }
-          ],
+          id: "CreditScoreCredential",
+          schema:
+            "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
           name: "Proof of Credit Score from Issuer Inc.",
           description:
             "Attestation that Issuer Inc. has performed a Credit Score check for this subject",
@@ -176,23 +157,7 @@ describe("buildCreditScoreManifest", () => {
           styles: {}
         }
       ],
-      presentation_definition: {
-        id: "ProofOfControlPresentationDefinition",
-        format: { jwt_vp: { alg: ["EdDSA"] } },
-        input_descriptors: [
-          {
-            id: "proofOfIdentifierControlVP",
-            name: "Proof of Control Verifiable Presentation",
-            purpose:
-              "A Verifiable Presentation establishing proof of identifier control over the DID.",
-            schema: [
-              {
-                uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-              }
-            ]
-          }
-        ]
-      }
+      presentation_definition: proofOfControlPresentationDefinition()
     }
 
     expect(manifest).toEqual(expected)
@@ -240,7 +205,7 @@ describe("validateManifestFormat", () => {
     const issuerDid = await randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
-    const requiredKeys = ["id", "version", "issuer", "output_descriptors"]
+    const requiredKeys = ["id", "spec_version", "issuer", "output_descriptors"]
 
     requiredKeys.forEach((key) => {
       const omitted = omit(manifest, [key])

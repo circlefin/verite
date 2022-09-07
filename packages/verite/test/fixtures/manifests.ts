@@ -1,4 +1,6 @@
+import { proofOfControlPresentationDefinition } from "../../lib"
 import { CredentialManifest } from "../../types"
+import { KYC_ATTESTATION_SCHEMA_URI } from "./attestations"
 import { didFixture } from "./dids"
 
 /**
@@ -7,8 +9,9 @@ import { didFixture } from "./dids"
 export const manifestFixture = (value = 0): CredentialManifest => {
   const issuer = didFixture(value)
   return {
-    id: "KYCAMLAttestation",
-    version: "0.1.0",
+    id: "KYCAMLManifest",
+    spec_version:
+      "https://identity.foundation/credential-manifest/spec/v1.0.0/",
     issuer: {
       id: issuer.subject, // default is "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp"
       name: "Issuer Inc."
@@ -16,12 +19,8 @@ export const manifestFixture = (value = 0): CredentialManifest => {
     format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
     output_descriptors: [
       {
-        id: "kycAttestationOutput",
-        schema: [
-          {
-            uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-          }
-        ],
+        id: "kyc_vc",
+        schema: KYC_ATTESTATION_SCHEMA_URI,
         name: "Proof of KYC from Issuer Inc.",
         description:
           "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",
@@ -52,22 +51,6 @@ export const manifestFixture = (value = 0): CredentialManifest => {
         styles: {}
       }
     ],
-    presentation_definition: {
-      id: "ProofOfControlPresentationDefinition",
-      format: { jwt_vp: { alg: ["EdDSA"] } },
-      input_descriptors: [
-        {
-          id: "proofOfIdentifierControlVP",
-          name: "Proof of Control Verifiable Presentation",
-          purpose:
-            "A Verifiable Presentation establishing proof of identifier control over the DID.",
-          schema: [
-            {
-              uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-            }
-          ]
-        }
-      ]
-    }
+    presentation_definition: proofOfControlPresentationDefinition()
   }
 }

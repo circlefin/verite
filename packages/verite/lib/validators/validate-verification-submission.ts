@@ -4,13 +4,11 @@ import jsonpath from "jsonpath"
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
 import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
-import { findSchemaById, validateAttestationSchema } from "./validate-schema"
 
 import type {
   DecodedPresentationSubmission,
   InputDescriptor,
   PresentationDefinition,
-  DecodedCredentialApplication,
   W3CCredential,
   W3CPresentation,
   Verifiable,
@@ -112,7 +110,7 @@ function validateInputDescriptors(
  * credentials from the submission.
  */
 function mapInputsToDescriptors(
-  submission: DecodedPresentationSubmission | DecodedCredentialApplication,
+  submission: DecodedPresentationSubmission,
   definition?: PresentationDefinition
 ): Map<string, Verifiable<W3CCredential>[]> {
   const descriptorMap = submission.presentation_submission?.descriptor_map ?? []
@@ -166,38 +164,20 @@ function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
   }
 }
 
-async function validateCredentialAgainstSchema(
-  credentialMap: Map<string, Verifiable<W3CCredential>[]>,
-  descriptors?: InputDescriptor[],
-  knownSchemas?: Record<string, Record<string, unknown>>
-): Promise<void> {
-  if (!descriptors) {
-    // no input descriptors, so there is nothing to validate
-    return
+/*
+async function findSchema(knownSchemas: Record<string, Record<string, unknown>> | undefined, schemaUri: string): Promise<Record<string, unknown>> {
+  const schema = knownSchemas?.[schemaUri]
+    ? knownSchemas?.[schemaUri]
+    : await findSchemaById(schemaUri)
+
+  if (!schema) {
+    throw new ValidationError(
+      "Unknown Schema",
+      `Unable to load schema: ${schemaUri}`
+    )
   }
-
-  // iterate over all input descriptors to find the relevant credentials
-  for await (const descriptor of descriptors) {
-    const credentials = credentialMap.get(descriptor.id)
-
-    const schemaUri = descriptor.schema[0].uri
-    const schema = knownSchemas?.[schemaUri]
-      ? knownSchemas?.[schemaUri]
-      : await findSchemaById(schemaUri)
-
-    if (!schema) {
-      throw new ValidationError(
-        "Unknown Schema",
-        `Unable to load schema: ${descriptor.schema[0].uri}`
-      )
-    }
-
-    credentials?.forEach((credential) => {
-      const type = credential.type[credential.type.length - 1]
-      validateAttestationSchema(credential.credentialSubject[type], schema)
-    })
-  }
-}
+  return schema
+}*/
 
 /**
  * The Presentation Exchange spec includes an `is_holder` constraint.
@@ -307,13 +287,4 @@ export async function validateVerificationSubmission(
    * requirements set forth in the request (e.g. minimum credit score).
    */
   validateInputDescriptors(credentialMap, definition.input_descriptors)
-
-  /**
-   * Validate that each credential matches the expected schema
-   */
-  await validateCredentialAgainstSchema(
-    credentialMap,
-    definition.input_descriptors,
-    options?.knownSchemas
-  )
 }

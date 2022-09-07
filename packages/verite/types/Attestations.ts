@@ -6,38 +6,42 @@ import type { PostalAddress } from "schema-dts"
 export type Attestation =
   | KYCAMLAttestation
   | KYBPAMLAttestation
+  | EntityAccInvAttestation
+  | IndivAccInvAttestation
   | CreditScoreAttestation
   | AddressOwner
   | CounterpartyAccountHolder
 
-export type KYCAMLAttestation = {
-  type: "KYCAMLAttestation"
+export type ProcessApprovalAttestation = {
+  type: string
   process: string
   approvalDate: string
 }
 
-export type KYBPAMLAttestation = {
-  type: "KYBPAMLAttestation"
-  process: string
-  approvalDate: string
-}
+export type KYCAMLAttestation = ProcessApprovalAttestation
+
+export type KYBPAMLAttestation = ProcessApprovalAttestation
+
+export type EntityAccInvAttestation = ProcessApprovalAttestation
+
+export type IndivAccInvAttestation = ProcessApprovalAttestation
 
 export type CreditScoreAttestation = {
-  type: "CreditScoreAttestation"
+  type: string
   score: number
   scoreType: string
   provider: string
 }
 
 export type AddressOwner = {
-  type: "AddressOwner"
+  type: string
   chain: string
   address: string
   proof: string
 }
 
 export type CounterpartyAccountHolder = {
-  type: "CounterpartyAccountHolder"
+  type: string
   legalName: string
   address: Omit<PostalAddress, "@type"> & { type: "PostalAddress" }
   accountNumber: string

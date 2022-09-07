@@ -10,7 +10,6 @@ import {
 import { CredentialManifest, VerificationOffer, handleScan } from "verite"
 
 import { requestIssuance } from "../lib/issuance"
-import { saveManifest } from "../lib/manifestRegistry"
 import { getOrCreateDidKey } from "../lib/storage"
 import { NavigationElement } from "../types"
 import CredentialManifestPrompt from "./CredentialManifestPrompt"
@@ -72,9 +71,6 @@ const HomePage: NavigationElement = ({ navigation, route }) => {
 
       // Issuance
       if ("manifest" in response.body) {
-        // Persist manifest to disk
-        await saveManifest(response.body.manifest)
-
         setSubmissionUrl(response.reply_url)
         setManifest(response.body.manifest)
       }
@@ -86,7 +82,6 @@ const HomePage: NavigationElement = ({ navigation, route }) => {
 
       setIsScanning(false)
     } catch (e) {
-      console.error(e)
       setIsScanning(false)
       Alert.alert("Error", (e as Error).message)
     }

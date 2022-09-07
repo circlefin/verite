@@ -1,5 +1,4 @@
 export * from "./credential-application"
 export * from "./credential-offer"
 export * from "./credential-fulfillment"
-export * from "./credential-manifest"
 export * from "./revocation"

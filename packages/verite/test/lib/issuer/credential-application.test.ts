@@ -5,8 +5,9 @@ import {
   buildCredentialApplication,
   decodeCredentialApplication
 } from "../../../lib/issuer/credential-application"
-import { buildKycAmlManifest } from "../../../lib/issuer/credential-manifest"
+import { buildKycAmlManifest } from "../../../lib/sample-data/manifests"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { ClaimFormat } from "../../../types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 describe("buildCredentialApplication", () => {
@@ -29,10 +30,12 @@ describe("buildCredentialApplication", () => {
     expect(application.credential_application.manifest_id).toEqual(
       "KYCAMLManifest"
     )
-    expect(application.presentation_submission).toBeDefined()
-    expect(application.presentation_submission?.definition_id).toEqual(
-      kycManifest.presentation_definition?.id
-    )
+    expect(
+      application.credential_application.presentation_submission
+    ).toBeDefined()
+    expect(
+      application.credential_application.presentation_submission?.definition_id
+    ).toEqual(kycManifest.presentation_definition?.id)
   })
 })
 
@@ -49,18 +52,18 @@ describe("decodeCredentialApplication", () => {
       credential_application: {
         // id: 'f584577a-607f-43d9-a128-39b21f126f96', client-generated unique identifier
         manifest_id: "KYCAMLManifest",
-        format: { jwt_vp: { alg: ["EdDSA"] } }
-      },
-      presentation_submission: {
-        // id: '0a97ed30-a4a9-43fb-9564-4d65db62d4bc', client-generated unique identifier
-        definition_id: "ProofOfControlPresentationDefinition",
-        descriptor_map: [
-          {
-            id: "proofOfIdentifierControlVP",
-            format: "jwt_vp",
-            path: "$.presentation"
-          }
-        ]
+        format: { jwt_vp: { alg: ["EdDSA"] } },
+        presentation_submission: {
+          // id: '0a97ed30-a4a9-43fb-9564-4d65db62d4bc', client-generated unique identifier
+          definition_id: "ProofOfControlPresentationDefinition",
+          descriptor_map: [
+            {
+              id: "proofOfIdentifierControlVP",
+              format: ClaimFormat.JwtVp,
+              path: "$.holder"
+            }
+          ]
+        }
       },
       verifiableCredential: [],
       holder: clientDidKey.subject,

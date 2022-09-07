@@ -1,8 +1,8 @@
-import { kycPresentationDefinition } from "../../../lib/verifier/presentation-definitions"
+import { kycAmlPresentationDefinition } from "../../../lib/sample-data/presentation-definitions"
 
-describe("kycPresentationDefinition", () => {
+describe("kycAmlPresentationDefinition", () => {
   it("builds the Credential Definitions with no requirement on the issuer", () => {
-    const definitions = kycPresentationDefinition()
+    const definitions = kycAmlPresentationDefinition()
 
     expect(definitions).toEqual({
       id: "KYCAMLPresentationDefinition",
@@ -20,8 +20,7 @@ describe("kycPresentationDefinition", () => {
                   "$.KYCAMLAttestation.process"
                 ],
                 predicate: "required",
-                purpose:
-                  "The KYC/AML Attestation requires the field: 'process'."
+                purpose: "The Attestation must contain the field: 'process'."
               },
               {
                 filter: {
@@ -34,7 +33,7 @@ describe("kycPresentationDefinition", () => {
                 ],
                 predicate: "required",
                 purpose:
-                  "The KYC/AML Attestation requires the field: 'approvalDate'."
+                  "The Attestation must contain the field: 'approvalDate'."
               },
               {
                 id: "subjectId",
@@ -45,6 +44,17 @@ describe("kycPresentationDefinition", () => {
                 ],
                 purpose:
                   "We need to ensure the holder and the subject have the same identifier"
+              },
+              {
+                id: "credentialSchema",
+                path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
+                filter: {
+                  type: "string",
+                  pattern:
+                    "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+                },
+                purpose:
+                  "We need to ensure the credential conforms to the expected schema"
               }
             ],
             is_holder: [
@@ -59,15 +69,17 @@ describe("kycPresentationDefinition", () => {
               }
             }
           },
-          id: "kycaml_input",
+          id: "KYCAMLCredential",
           name: "Proof of KYC",
           purpose: "Please provide a valid credential from a KYC/AML issuer",
-          schema: [
-            {
-              required: true,
-              uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+          format: {
+            jwt_vp: {
+              alg: ["EdDSA"]
+            },
+            jwt_vc: {
+              alg: ["EdDSA"]
             }
-          ]
+          }
         }
       ]
     })
@@ -76,7 +88,7 @@ describe("kycPresentationDefinition", () => {
   it("allows you to customize the list of trusted issuers", () => {
     // Example where you might only want to accept credentials issued by
     // did:web:centre.io or did:web:example.com
-    const definitions = kycPresentationDefinition([
+    const definitions = kycAmlPresentationDefinition([
       "did:web:centre.io",
       "did:web:example.com"
     ])
@@ -97,8 +109,7 @@ describe("kycPresentationDefinition", () => {
                   "$.KYCAMLAttestation.process"
                 ],
                 predicate: "required",
-                purpose:
-                  "The KYC/AML Attestation requires the field: 'process'."
+                purpose: "The Attestation must contain the field: 'process'."
               },
               {
                 filter: {
@@ -111,7 +122,7 @@ describe("kycPresentationDefinition", () => {
                 ],
                 predicate: "required",
                 purpose:
-                  "The KYC/AML Attestation requires the field: 'approvalDate'."
+                  "The Attestation must contain the field: 'approvalDate'."
               },
               {
                 id: "subjectId",
@@ -122,6 +133,17 @@ describe("kycPresentationDefinition", () => {
                 ],
                 purpose:
                   "We need to ensure the holder and the subject have the same identifier"
+              },
+              {
+                id: "credentialSchema",
+                path: ["$.credentialSchema.id", "$.vc.credentialSchema.id"],
+                filter: {
+                  type: "string",
+                  pattern:
+                    "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+                },
+                purpose:
+                  "We need to ensure the credential conforms to the expected schema"
               },
               {
                 filter: {
@@ -145,15 +167,17 @@ describe("kycPresentationDefinition", () => {
               }
             }
           },
-          id: "kycaml_input",
+          id: "KYCAMLCredential",
           name: "Proof of KYC",
           purpose: "Please provide a valid credential from a KYC/AML issuer",
-          schema: [
-            {
-              required: true,
-              uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
+          format: {
+            jwt_vp: {
+              alg: ["EdDSA"]
+            },
+            jwt_vc: {
+              alg: ["EdDSA"]
             }
-          ]
+          }
         }
       ]
     })

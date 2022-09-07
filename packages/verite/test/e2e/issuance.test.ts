@@ -3,11 +3,15 @@ import nock from "nock"
 
 import { buildCredentialApplication } from "../../lib/issuer/credential-application"
 import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
-import { buildKycAmlManifest } from "../../lib/issuer/credential-manifest"
+import {
+  buildKycAmlManifest,
+  KYCAML_CREDENTIAL_TYPE_NAME
+} from "../../lib/sample-data"
 import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../fixtures/credentials"
 import { revocationListFixture } from "../fixtures/revocation-list"
 
 import type {
@@ -53,9 +57,14 @@ describe("issuance", () => {
      */
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      credentialApplication,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
-      { credentialStatus: revocationListFixture }
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      {
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialStatus: revocationListFixture
+      }
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
@@ -66,7 +75,7 @@ describe("issuance", () => {
       (verifiableCredential: RevocableCredential) => {
         expect(verifiableCredential.type).toEqual([
           "VerifiableCredential",
-          "KYCAMLAttestation"
+          "KYCAMLCredential"
         ])
         expect(verifiableCredential.proof).toBeDefined()
 
@@ -147,9 +156,14 @@ describe("issuance", () => {
      */
     const fulfillment = await buildAndSignFulfillment(
       issuer,
-      credentialApplication,
+      clientDidKey.subject,
+      manifest,
       kycAmlAttestationFixture,
-      { credentialStatus: revocationListFixture }
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      {
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialStatus: revocationListFixture
+      }
     )
 
     const verifiablePresentation = (await decodeVerifiablePresentation(
@@ -160,7 +174,7 @@ describe("issuance", () => {
       (verifiableCredential: RevocableCredential) => {
         expect(verifiableCredential.type).toEqual([
           "VerifiableCredential",
-          "KYCAMLAttestation"
+          "KYCAMLCredential"
         ])
         expect(verifiableCredential.proof).toBeDefined()
 

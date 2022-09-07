@@ -1,4 +1,5 @@
 import {
+  attestationToCredentialType,
   buildAndSignFulfillment,
   CredentialManifest,
   decodeCredentialApplication,
@@ -12,7 +13,9 @@ import {
   getManifestIdFromCredentialApplication,
   requiresRevocableCredentials,
   validateCredentialApplication,
-  CREDIT_SCORE_ATTESTATION_MANIFEST_ID
+  CREDIT_SCORE_MANIFEST_ID,
+  getCredentialSchemaAsVCObject,
+  getAttestionDefinition
 } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
@@ -66,17 +69,28 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   // If this is a Credit Score attestation, set the expiration to be
   // one minute for the sake of a demo
   const expirationDate =
-    manifest.id === CREDIT_SCORE_ATTESTATION_MANIFEST_ID
+    manifest.id === CREDIT_SCORE_MANIFEST_ID
       ? new Date(Date.now() + oneMinute)
       : new Date(Date.now() + twoMonths)
+
+  const userAttestation = buildAttestationForUser(user, manifest)
+  const attestationDefinition = getAttestionDefinition(userAttestation.type)
 
   // Generate new credentials for the user
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    credentialApplication,
-    buildAttestationForUser(user, manifest),
-    { credentialStatus: revocationList, expirationDate }
+    credentialApplication.holder,
+    manifest,
+    userAttestation,
+    attestationToCredentialType(userAttestation.type),
+    {
+      credentialSchema: getCredentialSchemaAsVCObject(attestationDefinition),
+      credentialStatus: revocationList,
+      expirationDate
+    }
   )
+
+
 
   // Save the credentials to the database
   await persistGeneratedCredentials(user, fulfillment)

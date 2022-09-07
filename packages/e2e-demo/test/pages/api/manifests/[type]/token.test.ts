@@ -1,7 +1,7 @@
-import { createMocks } from "../../../../support/mocks"
 import { temporaryAuthToken } from "../../../../../lib/database"
 import handler from "../../../../../pages/api/demos/issuer/manifests/[type]/[token]"
 import { userFactory } from "../../../../factories"
+import { createMocks } from "../../../../support/mocks"
 
 describe("GET /api/demos/issuer/manifests/[type]/[token]", () => {
   it("returns the KYC/AML manifest", async () => {

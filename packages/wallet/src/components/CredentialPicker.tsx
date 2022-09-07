@@ -24,6 +24,7 @@ import {
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getCredentialsWithManifests } from "../lib/manifestRegistry"
 import { saveRevocationStatus } from "../lib/storage"
+import { getValueOrLastArrayEntry } from "../lib/utils"
 import { CredentialAndManifest, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 
@@ -36,11 +37,16 @@ const isEnabled = (
   inputDescriptor: InputDescriptor,
   revoked: boolean
 ): boolean => {
-  // Check schemas match
-  const credentialSchema = manifest.output_descriptors[0].schema[0].uri
-  const inputSchema = inputDescriptor.schema[0].uri
+  // for now, we are assuming the credential type is the same as the input
+  // descriptor id. This assumption may need to change in the future.
+  const credentialType = getValueOrLastArrayEntry(credential.type)
+  const inputDescriptorId = inputDescriptor.id
+  /*
+  console.log(
+    `credential type = ${credentialType}, input descriptor id = ${inputDescriptorId}`
+  )*/
 
-  if (credentialSchema !== inputSchema) {
+  if (credentialType !== inputDescriptorId) {
     return false
   }
 
@@ -115,6 +121,7 @@ const CredentialPicker: NavigationElement = ({ navigation, route }) => {
     const manifest = item.manifest
     const credential = item.credential
     const revoked = item.revoked
+
     const expired = isExpired(credential)
     const { title, subtitle } = getDisplayProperties(manifest, credential)
 

@@ -44,7 +44,6 @@ export const saveCredential = async (
   } else {
     credentials = []
   }
-
   credentials.push(credential)
 
   return AsyncStorage.setItem("credentials", JSON.stringify(credentials))
@@ -94,9 +93,7 @@ export const saveItemInList = async <T>(
   if (rawValue) {
     list = JSON.parse(rawValue)
   }
-
   list[valueKey] = value
-
   await AsyncStorage.setItem(key, JSON.stringify(list))
 }
 
@@ -111,5 +108,8 @@ export const getItemInList = async <T>(
   if (rawValue) {
     const list = JSON.parse(rawValue)
     return list[valueKey]
+  } else {
+    // this may not be an error, as in the case with checking revoked status on credentials
+    console.trace(`Couldn't find value for key ${key} => ${valueKey}`)
   }
 }

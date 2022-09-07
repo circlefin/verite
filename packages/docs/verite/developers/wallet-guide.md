@@ -208,7 +208,7 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
       {
         "id": "proofOfIdentifierControlVP",
         "format": "jwt_vp",
-        "path": "$.presentation"
+        "path": "$.holder"
       }
     ]
   },
@@ -225,16 +225,16 @@ What follows is a JSON object containing the same contents as a Verifiable Prese
 ```json
 {
   "@context": ["https://www.w3.org/2018/credentials/v1"],
-  "type": ["VerifiablePresentation", "CredentialFulfillment"],
+  "type": ["VerifiablePresentation", "CredentialResponse"],
   "holder": "did:key:z6Mkgw8mPijYRa3TkHSYtQ4P7S2HGrcJBwzdgjeurqr9Luqb",
   "credential_fulfillment": {
     "id": "5f22f1ea-0441-4041-916b-2504a2a4075c",
     "manifest_id": "KYCAMLManifest",
     "descriptor_map": [
       {
-        "id": "proofOfIdentifierControlVP",
+        "id": "KYCAMLCredential",
         "format": "jwt_vc",
-        "path": "$.presentation.credential[0]"
+        "path": "$.verifiableCredential[0]"
       }
     ]
   },
@@ -252,7 +252,7 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
     "https://www.w3.org/2018/credentials/v1",
     { "@vocab": "https://verite.id/identity/" }
   ],
-  "type": ["VerifiableCredential", "KYCAMLAttestation"],
+  "type": ["VerifiableCredential", "KYCAMLCredential"],
   "credentialSubject": {
     "KYCAMLAttestation": {
       "type": "KYCAMLAttestation",
@@ -329,7 +329,7 @@ Note: In the Presentation Object that follows (a signed VP in JWT form), the `ve
     "definition_id": "KYCAMLPresentationDefinition",
     "descriptor_map": [
       {
-        "id": "kycaml_input",
+        "id": "KYCAMLCredential",
         "format": "jwt_vc",
         "path": "$.presentation.verifiableCredential[0]"
       }
@@ -341,7 +341,7 @@ Note: In the Presentation Object that follows (a signed VP in JWT form), the `ve
         "https://www.w3.org/2018/credentials/v1",
         "https://centre.io/contexts/identity.jsonld"
       ],
-      "type": ["VerifiableCredential", "KYCAMLAttestation"],
+      "type": ["VerifiableCredential", "KYCAMLCredential"],
       "credentialSubject": {
         "id": "did:key:z6Mkjo9pGYpv88SCYZW3ZT1dxrKYJrPf6u6hBeGexChJF4EN",
         "KYCAMLAttestation": {
