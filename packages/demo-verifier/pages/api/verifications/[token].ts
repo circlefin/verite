@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
 import {
-  kycPresentationDefinition,
   buildKycVerificationOffer,
+  kycAmlPresentationDefinition,
   validateVerificationSubmission,
   verificationResult
 } from "verite"
@@ -37,7 +37,7 @@ async function challengeTokenUrl(req: NextApiRequest, res: NextApiResponse) {
    * will require an approvate date, and issued by
    * did:key:z6MktD288XZYEwedyKzWPpHZzoJ4k7iz5R39PtcVR4F7Lkpg
    */
-  const definition = kycPresentationDefinition([
+  const definition = kycAmlPresentationDefinition([
     process.env.NEXT_PUBLIC_ISSUER_DID
   ])
 

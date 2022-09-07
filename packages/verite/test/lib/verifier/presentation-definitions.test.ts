@@ -1,6 +1,6 @@
 import { kycAmlPresentationDefinition } from "../../../lib/sample-data/presentation-definitions"
 
-describe("kycPresentationDefinition", () => {
+describe("kycAmlPresentationDefinition", () => {
   it("builds the Credential Definitions with no requirement on the issuer", () => {
     const definitions = kycAmlPresentationDefinition()
 
