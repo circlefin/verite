@@ -85,8 +85,8 @@ export function creditScorePresentationDefinition(
   const pathPrefixConvention = `${CREDIT_SCORE_ATTESTATION}.`
 
   const constraintsBuilder = new InputDescriptorConstraintsBuilder()
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     .addField(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       minimumValueConstraint("score", minimumCreditScore!, pathPrefixConvention)
     )
     .addField(stringValueConstraint("scoreType", pathPrefixConvention))

@@ -39,7 +39,7 @@ export const requestIssuance = async (
       // Feel free to submit a PR generalizing this.
       const cred = credentials[0]
 
-      // Persist the credential and manifest. 
+      // Persist the credential and manifest.
       // Similar to the above assumptions, we're only using the last type in
       // the VC type array
       const type = getValueOrLastArrayEntry(cred.type)
