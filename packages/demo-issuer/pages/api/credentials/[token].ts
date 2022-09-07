@@ -10,7 +10,8 @@ import {
   getSampleKycAmlAttestation,
   getSampleCreditScoreAttestation,
   KYCAML_CREDENTIAL_TYPE_NAME,
-  getCredentialSchemaAsVCObject
+  getCredentialSchemaAsVCObject,
+  getAttestionDefinition
 } from "verite"
 
 import { ManifestMap } from "../manifests"
@@ -72,7 +73,7 @@ export default async function credentials(
     attestation,
     KYCAML_CREDENTIAL_TYPE_NAME,
     { 
-      credentialSchema: getCredentialSchemaAsVCObject(KYCAML_CREDENTIAL_TYPE_NAME),
+      credentialSchema: getCredentialSchemaAsVCObject(getAttestionDefinition(KYCAML_CREDENTIAL_TYPE_NAME)),
      }
   )
 
