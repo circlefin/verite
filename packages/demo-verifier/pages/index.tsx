@@ -14,7 +14,8 @@ import {
   RevocableCredential,
   buildPresentationSubmission,
   VerificationOffer,
-  ChallengeTokenUrlWrapper
+  ChallengeTokenUrlWrapper,
+  KYCAML_CREDENTIAL_TYPE_NAME
 } from "verite"
 
 import type { Verifiable } from "verite"
@@ -37,18 +38,16 @@ const issueCredential = async () => {
   // We will create a random did to represent our own identity wallet
   const subject = holder
 
-  // Stubbed out credential data
-  const attestation: KYCAMLAttestation = {
-    type: "KYCAMLAttestation",
-    process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-    approvalDate: new Date().toISOString()
-  }
+  const attestation: KYCAMLAttestation = getSampleKycAmlAttestation()
+
+  const credentialType = KYCAML_CREDENTIAL_TYPE_NAME
 
   // Generate the signed, encoded credential
   const encoded = await buildAndSignVerifiableCredential(
     issuer,
     subject,
-    attestation
+    attestation,
+    credentialType
   )
 
   const decoded = await decodeVerifiableCredential(encoded)
@@ -326,4 +325,7 @@ export default function Home(): JSX.Element {
       </main>
     </div>
   )
+}
+function getSampleKycAmlAttestation(): import("verite").ProcessApprovalAttestation {
+  throw new Error("Function not implemented.")
 }

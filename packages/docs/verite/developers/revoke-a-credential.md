@@ -101,6 +101,7 @@ const attestation: KYCAMLAttestation = {
   process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
   approvalDate: new Date().toISOString()
 }
+const credentialType = "KYCAMLCredential"
 
 /**
  * Assume the credential's index within the bitstring will be 0
@@ -117,6 +118,7 @@ const encoded = await buildAndSignVerifiableCredential(
   issuer,
   subject.id,
   attestation,
+  credentialType,
   { credentialStatus }
 )
 ```

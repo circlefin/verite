@@ -3,14 +3,18 @@ import jsonpath from "jsonpath"
 
 import { buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
 import {
+  kycAmlPresentationDefinition,
+  KYCAML_CREDENTIAL_TYPE_NAME
+} from "../../../lib/sample-data"
+import {
   buildIssuer,
   decodeVerifiableCredential,
   decodeVerifiablePresentation,
   randomDidKey
 } from "../../../lib/utils"
-import { kycPresentationDefinition } from "../../../lib/verifier/presentation-definitions"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
+import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 
 describe("buildPresentationSubmission", () => {
   it("builds a Presentation Submission", async () => {
@@ -25,7 +29,9 @@ describe("buildPresentationSubmission", () => {
     const encodedCredential = await buildAndSignVerifiableCredential(
       issuer,
       didKey,
-      kycAmlAttestationFixture
+      kycAmlAttestationFixture,
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
     )
     const credential = await decodeVerifiableCredential(encodedCredential)
 
@@ -33,7 +39,7 @@ describe("buildPresentationSubmission", () => {
     // `definition_id` that identifies the set of definitions we are
     // satisfying. A `descriptor_map` must also map the input parameters by id
     // with the corresponding JSON path in the submission.
-    const presentationDefinition = kycPresentationDefinition()
+    const presentationDefinition = kycAmlPresentationDefinition()
 
     // Build Presentation Submission
     const encodedSubmission = await buildPresentationSubmission(
@@ -41,6 +47,7 @@ describe("buildPresentationSubmission", () => {
       presentationDefinition,
       credential
     )
+
     const submission = await decodeVerifiablePresentation(encodedSubmission)
 
     // In this example, the Presentation Submission is for a Presentation
@@ -52,7 +59,7 @@ describe("buildPresentationSubmission", () => {
         descriptor_map: [
           {
             format: "jwt_vc",
-            id: "kycaml_input",
+            id: "KYCAMLCredential",
             path: "$.verifiableCredential[0]"
           }
         ]
@@ -60,7 +67,7 @@ describe("buildPresentationSubmission", () => {
       },
       verifiableCredential: [
         {
-          type: ["VerifiableCredential", "KYCAMLAttestation"],
+          type: ["VerifiableCredential", "KYCAMLCredential"],
           credentialSubject: {
             id: didKey.subject,
             KYCAMLAttestation: {
@@ -79,15 +86,15 @@ describe("buildPresentationSubmission", () => {
     // presentation request requirements.
 
     // Notice that the presentation definition has an input with the
-    // id "kycaml_input". The submission will satisfy it with the value at the
+    // id "KYCAMLCredential". The submission will satisfy it with the value at the
     // given path.
     expect(presentationDefinition.input_descriptors[0].id).toEqual(
-      "kycaml_input"
+      "KYCAMLCredential"
     )
 
     // The submission has a matching identifier
     expect(submission.presentation_submission.descriptor_map[0].id).toEqual(
-      "kycaml_input"
+      "KYCAMLCredential"
     )
     // The submission defines the path to find it
     const path = submission.presentation_submission.descriptor_map[0].path
@@ -97,13 +104,12 @@ describe("buildPresentationSubmission", () => {
 
     // It will match the KYC credential that is required
     expect(query[0]).toMatchObject({
-      type: ["VerifiableCredential", "KYCAMLAttestation"],
+      type: ["VerifiableCredential", "KYCAMLCredential"],
       credentialSubject: {
         id: didKey.subject,
         KYCAMLAttestation: {
           type: "KYCAMLAttestation",
-          process:
-            "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
+          process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
           // approvalDate: attestation.approvalDate,
         }
       },

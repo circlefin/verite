@@ -1,17 +1,18 @@
 import {
+  getSampleCreditScoreAttestation,
+  getSampleKycAmlAttestation
+} from "../../lib/sample-data"
+import { getAttestionDefinition, KYCAML_ATTESTATION } from "../../lib/utils"
+import {
   CreditScoreAttestation,
   KYCAMLAttestation
 } from "../../types/Attestations"
 
-export const kycAmlAttestationFixture: KYCAMLAttestation = {
-  type: "KYCAMLAttestation",
-  process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-  approvalDate: new Date().toJSON()
-}
+export const KYC_ATTESTATION_SCHEMA_URI =
+  getAttestionDefinition(KYCAML_ATTESTATION).schema
 
-export const creditScoreAttestationFixture: CreditScoreAttestation = {
-  type: "CreditScoreAttestation",
-  score: 700,
-  scoreType: "Credit Rating",
-  provider: "Experian"
-}
+export const kycAmlAttestationFixture: KYCAMLAttestation =
+  getSampleKycAmlAttestation()
+
+export const creditScoreAttestationFixture: CreditScoreAttestation =
+  getSampleCreditScoreAttestation(700)

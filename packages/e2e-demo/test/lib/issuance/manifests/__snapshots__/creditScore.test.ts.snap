@@ -66,13 +66,9 @@ Object {
           "text": "Verite Risk Score",
         },
       },
-      "id": "creditScoreAttestationOutput",
+      "id": "CreditScoreCredential",
       "name": "Proof of Credit Score from Verite",
-      "schema": Array [
-        Object {
-          "uri": "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
-        },
-      ],
+      "schema": "https://verite.id/definitions/schemas/0.0.1/CreditScoreAttestation",
       "styles": Object {
         "background": Object {
           "color": "#8B5CF6",
@@ -102,17 +98,30 @@ Object {
     "id": "ProofOfControlPresentationDefinition",
     "input_descriptors": Array [
       Object {
+        "constraints": Object {
+          "fields": Array [
+            Object {
+              "id": "holder",
+              "path": Array [
+                "$.holder",
+              ],
+              "purpose": "The VP should contain a DID in the holder, which is the same DID that signs the VP. This DID will be used as the subject of the issued VC",
+            },
+          ],
+        },
+        "format": Object {
+          "jwt_vp": Object {
+            "alg": Array [
+              "EdDSA",
+            ],
+          },
+        },
         "id": "proofOfIdentifierControlVP",
         "name": "Proof of Control Verifiable Presentation",
-        "purpose": "A Verifiable Presentation establishing proof of identifier control over the DID.",
-        "schema": Array [
-          Object {
-            "uri": "https://verite.id/definitions/schemas/0.0.1/ProofOfControl",
-          },
-        ],
+        "purpose": "A VP establishing proof of identifier control over the DID.",
       },
     ],
   },
-  "version": "0.1.0",
+  "spec_version": "https://identity.foundation/credential-manifest/spec/v1.0.0/",
 }
 `;

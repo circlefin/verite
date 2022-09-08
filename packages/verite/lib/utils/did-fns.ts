@@ -2,6 +2,7 @@ import * as ed25519 from "@stablelib/ed25519"
 import { EdDSASigner, base64ToBytes, hexToBytes, base58ToBytes } from "did-jwt"
 import { Resolver } from "did-resolver"
 import { getResolver as getKeyResolver } from "key-did-resolver"
+import { isString } from "lodash"
 import Multibase from "multibase"
 import Multicodec from "multicodec"
 import { getResolver as getWebResolver } from "web-did-resolver"
@@ -61,7 +62,7 @@ export function randomDidKey(randomBytes: RandomBytesMethod): DidKey {
 }
 
 export function parseKey(input: string | Uint8Array): Uint8Array {
-  if (typeof input === 'string') {
+  if (isString(input)) {
     if (hexMatcher.test(input)) {
       return hexToBytes(input)
     } else if (base58Matcher.test(input)) {
@@ -69,12 +70,12 @@ export function parseKey(input: string | Uint8Array): Uint8Array {
     } else if (base64Matcher.test(input)) {
       return base64ToBytes(input)
     } else {
-      throw TypeError('bad_key: Invalid private key format')
+      throw TypeError("bad_key: Invalid private key format")
     }
   } else if (input instanceof Uint8Array) {
     return input
   } else {
-    throw TypeError('bad_key: Invalid private key format')
+    throw TypeError("bad_key: Invalid private key format")
   }
 }
 

@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 
 import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
+import { proofOfControlPresentationDefinition } from "../../../lib/sample-data/manifests"
 import { manifestFixture } from "../../fixtures/manifests"
 describe("buildCredentialOffer", () => {
   it("returns a Credential Offer", () => {
@@ -24,8 +25,9 @@ describe("buildCredentialOffer", () => {
       body: {
         // challenge: "b68f2c74-8965-4281-8623-4836567b8258",
         manifest: {
-          id: "KYCAMLAttestation",
-          version: "0.1.0",
+          id: "KYCAMLManifest",
+          spec_version:
+            "https://identity.foundation/credential-manifest/spec/v1.0.0/",
           issuer: {
             id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
             name: "Issuer Inc."
@@ -33,12 +35,9 @@ describe("buildCredentialOffer", () => {
           format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
           output_descriptors: [
             {
-              id: "kycAttestationOutput",
-              schema: [
-                {
-                  uri: "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation"
-                }
-              ],
+              id: "kyc_vc",
+              schema:
+                "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
               name: "Proof of KYC from Issuer Inc.",
               description:
                 "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",
@@ -69,23 +68,7 @@ describe("buildCredentialOffer", () => {
               styles: {}
             }
           ],
-          presentation_definition: {
-            id: "ProofOfControlPresentationDefinition",
-            format: { jwt_vp: { alg: ["EdDSA"] } },
-            input_descriptors: [
-              {
-                id: "proofOfIdentifierControlVP",
-                name: "Proof of Control Verifiable Presentation",
-                purpose:
-                  "A Verifiable Presentation establishing proof of identifier control over the DID.",
-                schema: [
-                  {
-                    uri: "https://verite.id/definitions/schemas/0.0.1/ProofOfControl"
-                  }
-                ]
-              }
-            ]
-          }
+          presentation_definition: proofOfControlPresentationDefinition()
         }
       }
     }

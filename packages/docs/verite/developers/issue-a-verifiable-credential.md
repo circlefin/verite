@@ -9,7 +9,7 @@ _This tutorial will walk you through issuing verifiable credentials using the ve
 
 For the sake of this demo, we will be using Decentralized Identifiers (DIDs) to identify the issuer (you) and subject (the person or entity the credential is about), as well as JSON Web Tokens (JWTs) as the means of signing and verifying the credentials. Strictly speaking, you do not need to use JWTs, but as they are industry-standard and tooling extensively available, they are used throughout this sample implementation.
 
-In practice, you are not limited to using DIDs to identify and prove ownership; anything with a public/private key pair can effectively be used to identity a credential's subject and later prove that identity. Public blockchain addresses offer less privacy and rotation/recovery capabilities than DIDs, but can simplify VC handling in some architectures where DIDs are inhibitive. To make them subjects of verifiable credentials, blockchain addresses can be expressed as DID-like URI's using the [did:pkh method](https://github.com/w3c-ccg/did-pkh/blob/main/did-pkh-method-draft.md), based on the [CAIP-10 URI scheme](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md).  To prove these, you will need a signature to recover the public key of a given address; the off-chain signatures used to "connect wallet" in most contemporary web3 apps and dApps is adequate for such purposes.
+In practice, you are not limited to using DIDs to identify and prove ownership; anything with a public/private key pair can effectively be used to identity a credential's subject and later prove that identity. Public blockchain addresses offer less privacy and rotation/recovery capabilities than DIDs, but can simplify VC handling in some architectures where DIDs are inhibitive. To make them subjects of verifiable credentials, blockchain addresses can be expressed as DID-like URI's using the [did:pkh method](https://github.com/w3c-ccg/did-pkh/blob/main/did-pkh-method-draft.md), based on the [CAIP-10 URI scheme](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md). To prove these, you will need a signature to recover the public key of a given address; the off-chain signatures used to "connect wallet" in most contemporary web3 apps and dApps is adequate for such purposes.
 
 ## Prerequisites: Issuer Setup
 
@@ -47,7 +47,7 @@ In order to leverage trust already established by your domain name, you can expo
 
 For example, instead of listing the issuer of your VCs as `did:key:z6Mkf2wKCqtkNcKB9kRdHnEjieCLJPSfgwuR19fxBhioAwR7`, you could issue your VCs from `did:web:example.com`.
 
-To do this, you need to create a `.well-known/did.json` file on your domain, which will allow did resolvers to find your public keys. An added benefit of did:web is that it will allow you to rotate your keys at your desire;  previously-issued VCs will no longer verify against a rotated key.
+To do this, you need to create a `.well-known/did.json` file on your domain, which will allow did resolvers to find your public keys. An added benefit of did:web is that it will allow you to rotate your keys at your desire; previously-issued VCs will no longer verify against a rotated key.
 
 We won’t go into the specifics in this article, but you can read more about did:web [here](https://w3c-ccg.github.io/did-method-web/), and you can set up a did:web in minutes using [this tutorial](https://spruceid.dev/docs/didkit/did-web).
 
@@ -82,9 +82,15 @@ const application = await buildCredentialApplication(subject, manifest)
 
 Once the subject has requested a VC and submitted their DID (as part of their credential application), the Issuer can create a VC.
 
-For our example, we're building a VC containing a KYC/AML Attestation. This attestation is quite simple in Verite. It defines an authority which has performed proper KYC/AML checks on the subject (in this example the authority is Verite, with the DID of `did:web:verite.id`).
+For our example, we're building a VC containing a KYC/AML Attestation. This attestation is quite simple in Verite. It defines an authority which has performed proper KYC/AML checks on the subject (in this example the authority is Verite, with the DID of `did:web:verite.id`), so that will used in the issuer field.
 
-We transport Verifiable Credentials using a Verifiable Presentation. The presentation is just a way of transferring credentials, with the benefit that the presentation creator does not need to be the credential issuer or subject.
+From the Credential Application, the issuer also confirms:
+
+- Who to issue the VC to -- the subject identifier is the `holder` field from the VP in the Credential Application
+  - That the subject actually controls the identifier by signing a proof (along with the challenge)
+- Any other inputs requested by the manifest (if specified)
+
+We transport Verifiable Credentials using a Verifiable Presentation. The presentation allows the issuer to bundle the credentials before sending to the subject, along with signed proof.
 
 Putting this together, we can do the following:
 
@@ -103,13 +109,15 @@ const attestation: KYCAMLAttestation = {
   process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
   approvalDate: new Date().toISOString()
 }
-
+const credentialType = "KYCAMLCredential"
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 
 const presentation = await buildAndSignFulfillment(
   issuer,
-  decodedApplication,
-  attestation
+  decodedApplication.holder,
+  manifest,
+  attestation,
+  credentialType
 )
 ```
 

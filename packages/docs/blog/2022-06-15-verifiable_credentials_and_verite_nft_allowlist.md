@@ -64,8 +64,8 @@ inequity, justifiably grouchy late-comers to the community, and other problems.
 Additionally, allowlists can often become "static requirements": rigid patterns
 that get over-applied by a one-size-fits-all approach. Services like
 [Premint](https://www.premint.xyz/) have begun to change this, which introduces
-an economy of scale to save on gas and other features.  But further improvements
-are possible! Projects should have the flexibility to implement *dynamic*
+an economy of scale to save on gas and other features. But further improvements
+are possible! Projects should have the flexibility to implement _dynamic_
 requirements on whom gets added to an allowlist and how.
 
 That's where Verifiable Credentials come in.
@@ -240,11 +240,14 @@ const getPresentation = async (issuerDidKey, application) => {
     approvalDate: new Date().toISOString()
   }
 
+  const credentialType = "KYCAMLCredential"
+
   const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
   const presentation = await buildAndSignFulfillment(
     issuer,
     decodedApplication,
-    attestation
+    attestation,
+    credentialType
   )
 
   return presentation

@@ -4,8 +4,10 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
+import { isString } from "lodash"
 
 import { VerificationError } from "../errors"
+import { VC_CONTEXT_URI, VERIFIABLE_PRESENTATION_TYPE_NAME } from "./constants"
 import { didResolver } from "./did-fns"
 
 import type {
@@ -48,13 +50,16 @@ export async function encodeVerifiableCredential(
     payload.exp = Math.round(Date.parse(vcPayload.expirationDate) / 1000)
   }
   if (vcPayload.issuer) {
-    payload.iss =
-      typeof vcPayload.issuer === "string"
-        ? vcPayload.issuer
-        : vcPayload.issuer.id
+    payload.iss = isString(vcPayload.issuer)
+      ? vcPayload.issuer
+      : vcPayload.issuer.id
   }
-  if (vcPayload.credentialSubject && vcPayload.credentialSubject.id) {
-    payload.sub = vcPayload.credentialSubject.id
+  if (vcPayload.credentialSubject) {
+    // assumes the same subject for all attestations
+    const sub = Array.isArray(vcPayload.credentialSubject)
+      ? vcPayload.credentialSubject[0].id
+      : vcPayload.credentialSubject.id
+    payload.sub = sub
   }
 
   return createVerifiableCredentialJwt(payload, signer, options)
@@ -70,7 +75,34 @@ export async function decodeVerifiableCredential(
 > {
   try {
     const res = await verifyCredential(vcJwt, didResolver)
-    return res.verifiableCredential
+    // eslint-disable-next-line no-prototype-builtins
+    if (res.verifiableCredential.credentialSubject.hasOwnProperty(0)) {
+      // did-jwt-vc turns these arrays into maps; convert back
+      const newCs = Object.entries(
+        res.verifiableCredential.credentialSubject
+      ).map(([_, value]) => {
+        // need this addtional cleanup for did-jwt-vc adding string-y payload
+        // args to the decoded representation
+        if (!isString(value)) {
+          return value
+        }
+      })
+      const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
+      clone.credentialSubject = newCs
+      if (clone.vc) {
+        // delete vc property if it wasn't cleaned up by did-jwt-vc
+        delete clone.vc
+      }
+
+      return clone
+    } else {
+      const clone = JSON.parse(JSON.stringify(res.verifiableCredential))
+      if (clone.vc) {
+        // delete vc property if it wasn't cleaned up by did-jwt-vc
+        delete clone.vc
+      }
+      return clone
+    }
   } catch (err) {
     throw new VerificationError(
       "Input wasn't a valid Verifiable Credential",
@@ -90,18 +122,15 @@ export async function encodeVerifiablePresentation(
   type?: string[],
   extra: Record<string, unknown> = {}
 ): Promise<JWT> {
-  const payload = Object.assign(
-    {
-      sub: subject,
-      vp: {
-        "@context": ["https://www.w3.org/2018/credentials/v1"],
-        type: type ?? ["VerifiablePresentation"],
-        holder: subject,
-        verifiableCredential: [vcJwt].flat()
-      }
-    },
-    extra
-  )
+  const vcJwtPayload = Array.isArray(vcJwt) ? vcJwt : [vcJwt]
+  const payload = Object.assign({
+    vp: {
+      "@context": [VC_CONTEXT_URI],
+      type: type ?? [VERIFIABLE_PRESENTATION_TYPE_NAME],
+      verifiableCredential: vcJwtPayload,
+      ...extra
+    }
+  })
   return createVerifiablePresentationJwt(payload, signer, options)
 }
 
@@ -114,6 +143,17 @@ export async function decodeVerifiablePresentation(
 ): Promise<Verifiable<W3CPresentation> | RevocablePresentation> {
   try {
     const res = await verifyPresentation(vpJwt, didResolver, options)
+    if (res.verifiablePresentation.vp) {
+      // did-jwt-vc leaves properties it doesn't recognize in vp; move them
+      const vpFields = res.verifiablePresentation.vp
+      res.verifiablePresentation = {
+        ...res.verifiablePresentation,
+        ...vpFields
+      }
+      const clone = JSON.parse(JSON.stringify(res.verifiablePresentation))
+      delete clone.vp
+      return clone
+    }
     return res.verifiablePresentation
   } catch (err) {
     throw new VerificationError(

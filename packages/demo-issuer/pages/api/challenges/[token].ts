@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
 import { buildKycAmlManifest, buildCredentialOffer } from "verite"
 
+import { ManifestMap } from "../manifests"
+
 export default async function challenges(
   req: NextApiRequest,
   res: NextApiResponse
@@ -12,6 +14,7 @@ export default async function challenges(
     name: "Verite"
   })
 
+  ManifestMap[manifest.id] = manifest
   // Wrap the manifest with additional metadata, such as the URL to post the
   // request to, so the mobile wallet knows how to request the credential.
   // In a production environment, the URL would need to be absolute, but for

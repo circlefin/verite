@@ -1,14 +1,20 @@
 import { v4 as uuidv4 } from "uuid"
 
-import { buildIssuer, encodeVerifiablePresentation } from "../utils"
-
-import type {
+import {
+  ClaimFormat,
   DescriptorMap,
   DidKey,
   PresentationDefinition,
   Verifiable,
   W3CCredential
 } from "../../types"
+import {
+  buildIssuer,
+  encodeVerifiablePresentation,
+  PRESENTAION_SUBMISSION_TYPE_NAME,
+  VERIFIABLE_PRESENTATION_TYPE_NAME
+} from "../utils"
+
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
 export async function buildPresentationSubmission(
@@ -23,11 +29,11 @@ export async function buildPresentationSubmission(
     id: uuidv4(),
     definition_id: presentationDefinition.id,
     descriptor_map: presentationDefinition.input_descriptors.map<DescriptorMap>(
-      (d) => {
+      (d, i) => {
         return {
           id: d.id,
-          format: "jwt_vc",
-          path: `$.verifiableCredential[0]`
+          format: ClaimFormat.JwtVc,
+          path: `$.verifiableCredential[${i}]`
         }
       }
     )
@@ -38,7 +44,7 @@ export async function buildPresentationSubmission(
     verifiableCredential,
     client,
     options,
-    ["VerifiablePresentation", "PresentationSubmission"],
+    [VERIFIABLE_PRESENTATION_TYPE_NAME, PRESENTAION_SUBMISSION_TYPE_NAME],
     { presentation_submission: presentationSubmission }
   )
 

@@ -1,11 +1,16 @@
 // https://identity.foundation/presentation-exchange/#input-descriptor-object
 
-import type { Schema } from "./Schema"
+import { ClaimFormatDesignation } from "./ClaimFormatDesignation"
 
 export enum InputDescriptorConstraintStatusDirective {
   REQUIRED = "required",
   ALLOWED = "allowed",
   DISALLOWED = "disallowed"
+}
+
+export enum InputDescriptorConstraintDirective {
+  REQUIRED = "required",
+  PREFERRED = "preferred"
 }
 
 export type InputDescriptorConstraintStatus = {
@@ -20,7 +25,7 @@ export type InputDescriptorConstraintStatuses = {
 
 export type InputDescriptorConstraintSubjectConstraint = {
   field_id: string[]
-  directive: "required" | "preferred"
+  directive: InputDescriptorConstraintDirective
 }
 
 export type InputDescriptorConstraintFilter = {
@@ -43,13 +48,13 @@ export type InputDescriptorConstraintField = {
   id?: string
   purpose?: string
   filter?: InputDescriptorConstraintFilter
-  predicate?: "required" | "preferred"
+  predicate?: InputDescriptorConstraintDirective
 }
 
 export type InputDescriptorConstraints = {
-  limit_disclosure?: "required" | "preferred"
+  limit_disclosure?: InputDescriptorConstraintDirective
   statuses?: InputDescriptorConstraintStatuses
-  subject_is_issuer?: "required" | "preferred"
+  subject_is_issuer?: InputDescriptorConstraintDirective
   is_holder?: InputDescriptorConstraintSubjectConstraint[]
   same_subject?: InputDescriptorConstraintSubjectConstraint[]
   fields?: InputDescriptorConstraintField[]
@@ -57,9 +62,9 @@ export type InputDescriptorConstraints = {
 
 export type InputDescriptor = {
   id: string
-  schema: Schema[]
   group?: string
   name?: string
   purpose?: string
   constraints?: InputDescriptorConstraints
+  format?: ClaimFormatDesignation
 }

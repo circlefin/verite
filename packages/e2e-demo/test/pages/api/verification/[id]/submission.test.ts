@@ -3,13 +3,12 @@ import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
   buildAndSignFulfillment,
-  buildCredentialApplication,
   buildPresentationSubmission,
   decodeVerifiablePresentation,
   randomDidKey,
-  decodeCredentialApplication,
   buildKycVerificationOffer,
-  buildCreditScoreVerificationOffer
+  buildCreditScoreVerificationOffer,
+  attestationToCredentialType
 } from "verite"
 
 import {
@@ -22,6 +21,7 @@ import { fullURL } from "../../../../../lib/utils"
 import handler from "../../../../../pages/api/demos/verifier/[id]/submission"
 import { userFactory } from "../../../../factories"
 import { createMocks } from "../../../../support/mocks"
+import { kycAttestationSchema } from "../../../../support/schemas"
 
 import type { DidKey } from "verite"
 
@@ -114,7 +114,9 @@ describe("POST /verification/[id]/submission", () => {
       uuidv4(),
       process.env.VERIFIER_DID,
       fullURL("/api/demos/verifier/submission"),
-      fullURL("/api/demos/verifier/callback")
+      fullURL("/api/demos/verifier/callback"),
+      [],
+      700
     )
     await saveVerificationOffer(verificationRequest)
     const clientDidKey = await randomDidKey(randomBytes)
@@ -142,9 +144,9 @@ describe("POST /verification/[id]/submission", () => {
       errors: [
         {
           message:
-            "Credential failed to meet criteria specified by input descriptor creditScore_input",
+            "Credential failed to meet criteria specified by input descriptor CreditScoreCredential",
           details:
-            "Credential did not match constraint: The Credit Score Attestation requires the field: 'score'."
+            "Credential did not match constraint: We can only accept credentials where the score value is above 700."
         }
       ]
     })
@@ -158,14 +160,14 @@ describe("POST /verification/[id]/submission", () => {
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLManifest")
   const user = await userFactory()
-  const application = await buildCredentialApplication(clientDidKey, manifest)
-
-  const decodedApplication = await decodeCredentialApplication(application)
-
+  const userAttestation = buildAttestationForUser(user, manifest)
   const fulfillment = await buildAndSignFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    decodedApplication,
-    buildAttestationForUser(user, manifest)
+    clientDidKey.subject,
+    manifest,
+    userAttestation,
+    attestationToCredentialType(userAttestation.type),
+    { credentialSchema: kycAttestationSchema }
   )
 
   const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)

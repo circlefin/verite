@@ -71,7 +71,7 @@ const CreditScorePage: NextPage<Props> = ({
             <em>{user.email}</em>
           </b>
           . The issuer signed the Verifiable Credential with its own DID. The
-          raw VC is below.
+          decoded VC is below.
         </p>
         <p>
           <Link href="/demos/verifier/" passHref>
@@ -87,7 +87,7 @@ const CreditScorePage: NextPage<Props> = ({
             </button>
           </Link>
         </p>
-        <h3>Raw KYC Verifiable Credential:</h3>
+        <h3>Decoded KYC Verifiable Credential:</h3>
         <pre>{JSON.stringify(data.credential, null, 4)}</pre>
       </div>
     ) : (
