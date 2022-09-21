@@ -14,47 +14,13 @@ import { Colors } from "react-native/Libraries/NewAppScreen"
 import {
   asyncMap,
   CredentialManifest,
-  CreditScoreAttestation,
-  KYCAMLAttestation,
-  MaybeRevocableCredential
+  MaybeRevocableCredential,
+  isRevocable
 } from "verite"
 
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getManifest } from "../lib/manifestRegistry"
 import { NavigationElement } from "../types"
-
-type AttestationProperties = Partial<KYCAMLAttestation> &
-  Partial<CreditScoreAttestation> & {
-    revocable?: boolean
-  }
-
-function extractAttestationPropertiesForDisplay(
-  credential: MaybeRevocableCredential
-): AttestationProperties {
-  if (credential.credentialSubject?.KYCAMLAttestation) {
-    const attestation = credential.credentialSubject
-      .KYCAMLAttestation as KYCAMLAttestation
-
-    return {
-      approvalDate: attestation.approvalDate,
-      revocable: true
-    }
-  }
-
-  if (credential.credentialSubject?.CreditScoreAttestation) {
-    const attestation = credential.credentialSubject
-      ?.CreditScoreAttestation as CreditScoreAttestation
-
-    return {
-      score: attestation.score,
-      scoreType: attestation.scoreType,
-      provider: attestation.provider,
-      revocable: false
-    }
-  }
-
-  return {}
-}
 
 const Section: React.FC<{
   title: string
@@ -117,8 +83,7 @@ const CredentialDetail: NavigationElement = ({ navigation, route }) => {
   }, [credential, navigation])
 
   const expirationDate = credential.expirationDate
-  const { approvalDate, score, scoreType, provider, revocable } =
-    extractAttestationPropertiesForDisplay(credential)
+  const revocable = isRevocable(credential)
 
   let display
   if (manifest && credential) {
@@ -162,16 +127,10 @@ const CredentialDetail: NavigationElement = ({ navigation, route }) => {
                 {display?.description}
               </Section>
             </View>
-
-            {properties}
           </View>
         )}
 
-        {approvalDate && <Section title="Approved">{approvalDate}</Section>}
-
-        {score && <Section title="Score">{score}</Section>}
-        {scoreType && <Section title="Score Type">{scoreType}</Section>}
-        {provider && <Section title="Provider">{provider}</Section>}
+        {properties}
 
         {revocable && (
           <Section title="Revoked">{revoked ? "Yes" : "No"}</Section>
