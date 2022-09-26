@@ -21,7 +21,7 @@ Verite is currently orchestrated by Centre in close collaboration with its initi
 
 ## Target-State: Three Interlocking Governance Mechanisms
 
-In a scaled ecosystem with multiple issuers and verifiers of differing scales and foci, Verite needs an explicit, detailed governance framework and rulebook that defines how to create, update, and enforce rules and standards that bind the network together legally and technically. These can be thought of as “by-laws” that structure how Verite expands, as Centre steps back to allow a more community-driven governance.
+In a scaled ecosystem with multiple issuers and verifiers of differing scales and foci, Verite needs an explicit, detailed governance framework and rulebook that defines how to create, update, and enforce rules and standards that bind the network together legally and technically. These can be thought of as “by-laws” that structure how Verite expands, as community-driven governance gets formalized.
 
 This rule-based governance will be key to making Verifiable Credentials, and the business relationships they represent, portable and interoperable, and thus to achieving mass adoption. 
 
