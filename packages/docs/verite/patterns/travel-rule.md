@@ -39,6 +39,8 @@ Note: The "travel rule" demo in the Verite codebase on github demonstrates one i
 
 ### Discovery and Credentials Exchange Sequence
 
+Note, the following diagram reflects the prototype on github, which predates much of the exploratory/theoretical design work of the FATF working group within Verite's open-source development initiative.  The text below presents an expanded, more detailed view; for an understanding of the prototype, refer to the diagram wherever the two differ.
+
 <img src="/img/docs/travel_rule.png" alt="Travel Rule" width="800"/>
 
 ### Part 1: Discovery and Proving Control of Blockchain Addresses
