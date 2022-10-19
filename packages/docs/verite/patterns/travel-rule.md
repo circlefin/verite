@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # Travel Rule Research
 
-The Verite open source repo includes some code that provides a cursory demonstration of how exchanging verifiable credentials could be a core component of scalable and open ecosystems  for financial institutions to comply with Travel Rule reporting obligations with minimal privacy, data leakage, and security risks.
+The Verite open source repo includes some code that provides a cursory demonstration of how exchanging verifiable credentials could be a core component of scalable and open ecosystems for financial institutions to comply with Travel Rule reporting obligations with minimal privacy, data leakage, and security risks.
 
 In addition to this high-level "proof of concept," long-tail research in ongoing into FATF use cases forming a cornerstone of Verite in the latter part of 2023. To get involved with the research team, contact Verite's <a href=mailto:verite@centre.io>standards team at Centre</a>.  
 
