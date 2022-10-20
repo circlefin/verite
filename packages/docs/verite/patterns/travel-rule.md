@@ -90,7 +90,7 @@ As a prototype of user-centric UX and an architecture that layers consent receip
 2. Bob's FI receives M3 and verifies the originator counterparty verifiable credential, and then executes its internal compliance procedures.
 3. Once Bob's FI clears the information, it generates message "M4" containing Bob's beneficiary counterparty verifiable credential (or other verifiable consent receipt).
 4. Bob transmits M4 to the secure callback URL endpoint.
-5. Alice's FI receives M4 and verifies Bob's beneficiary counterparty verifiable credential, and then executes its internal compliance procedures.
+5. Alice's FI receives M4 and verifies Bob's beneficiary counterparty verifiable credential, and then has enough information to decide whether and how to proceed.  *[Note: this step may include multiple steps, business logic depending on jurisdiction of both parties, bootstrapping into existing travel rule PII exchange protocols, etc.]*
 6. Once Alice's FI clears the information, it broadcasts the planned transaction to the appropriate blockchain's [actual, public transaction] mempool to execute the exchange of value.  
 7. [Optional] Depending on the design of the bulletin board, M1 may need to be manually withdrawn to spare resources.
 
