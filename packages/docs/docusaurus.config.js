@@ -4,7 +4,7 @@ const lightCodeTheme = require("prism-react-renderer/themes/github")
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: "Verite Documentation",
-  tagline: "Verite decentralized identity for DeFi",
+  tagline: "Decentralized identity for DeFi",
   url: "https://docs.centre.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
@@ -22,7 +22,7 @@ module.exports = {
         {
           to: "verite",
           activeBasePath: "docs/",
-          label: "Intro",
+          label: "Docs",
           position: "left"
         },
         {
