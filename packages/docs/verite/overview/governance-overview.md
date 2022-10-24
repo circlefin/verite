@@ -56,7 +56,7 @@ The governance framework will define (not exhaustive):
 
 The “**Network Utilities**” that power Verite provide common services to all participants and end-users in the Verite ecosystem. 
 
-The first and most structural network utility is the **Trusted Identity Registry**. The Trusted Identity Registry defines which Issuers and Verifiers can be trusted to adhere to Centre Verite Standards.  It functions as an “key directory” providing authoritative key material to prevent phishing or impersonation within the system. As Verite scales up, it will also include up-to-date information on conformance testing, to facilitate real-time decision making about the trustworthiness and roadworthiness of each actor’s implementation and credentials.  Centre reserves the right to remove actors from the Registry if they have no signed the Rulebook or have been judged by the community not to be honoring it.
+The first and most structural network utility is the **Trusted Identity Registry**. The Trusted Identity Registry defines which Issuers and Verifiers can be trusted to adhere to Centre Verite Standards.  It functions as an “key directory” providing authoritative key material to prevent phishing or impersonation within the system. As Verite scales up, it will also include up-to-date information on conformance testing, to facilitate real-time decision making about the trustworthiness and roadworthiness of each actor’s implementation and credentials.  Centre reserves the right to remove actors from the Registry if they have not signed the Rulebook or have been judged by the community not to be honoring it.
 
 #### Detailed Remit: Trusted Identity Registry  
 
@@ -87,7 +87,7 @@ The Verite Rulebook will cover a number of different topics, including but not l
 * Defines how liability is allocated across various participants and network utilities 
 * Define who has recourse and whom do they have recourse against and the terms of that recourse
 * Representations and warranties of participants that signers commit to uphold
-* Technical standards that must be adhered to sustain and protect the interoperability / integrity of the ecosystem 
+* Technical standards which, in being adhered to, sustain and protect the integrity of the ecosystem 
 * Financial requirements of the issuers/verifiers 
 * SLAs for the network utilities (e.g. uptime, resiliency, latency, etc)
 
