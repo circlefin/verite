@@ -87,7 +87,7 @@ The Verite Rulebook will cover a number of different topics, including but not l
 * Defines how liability is allocated across various participants and network utilities 
 * Define who has recourse and whom do they have recourse against and the terms of that recourse
 * Representations and warranties of participants that signers commit to uphold
-* Technical standards that must be followed to sustain and protect the interoperability / integrity of the ecosystem 
+* Technical standards which, in being adhered to, sustain and protect the integrity of the ecosystem 
 * Financial requirements of the issuers/verifiers 
 * SLAs for the network utilities (e.g. uptime, resiliency, latency, etc)
 
