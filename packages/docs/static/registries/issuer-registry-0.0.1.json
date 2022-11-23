@@ -1,0 +1,14 @@
+{
+    "id": "issuer-registry",
+    "version": "0.0.1",
+    "issuer": [
+        {
+            "name": "Circle Internet Financial, LLC",
+            "id": "did:web:circle.com",
+            "authorizations": [
+                "KYBPAMLAttestation",
+                "EntityAccInvAttestation"
+            ]
+        }
+    ]
+}
