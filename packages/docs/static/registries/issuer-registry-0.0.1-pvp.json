@@ -1,6 +1,6 @@
 {
     "id": "issuer-registry",
-    "version": "0.0.1",
+    "version": "0.0.1-pvp",
     "issuer": [
         {
             "name": "Circle Internet Financial, LLC",

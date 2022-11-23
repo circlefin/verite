@@ -2,13 +2,13 @@
 sidebar_position: 2
 ---
 
-# Verite Issuer Registry NVP
+# Verite Issuer Registry PVP
 
-The issuer registry non-viable product (NVP) is a simple demonstration issuer registry without the [proper governance structure](/verite/overview/governance-overview) in place. 
+The issuer registry pre-viable product (PVP) is a simple demonstration issuer registry without the [proper governance structure](/verite/overview/governance-overview) in place. 
 
-## Usage/Intent of the NVP Verite Issuer Registry
+## Usage/Intent of the PVP Verite Issuer Registry
 
-The NVP Verite Issuer Registry focuses exclusively on Issuer ID and authorization and leaves out of scope governance considerations. As such, this should be viewed as an experiment implementation for initial Verite issuers as the governance structure is being developed.
+The PVP Verite Issuer Registry focuses exclusively on Issuer ID and authorization and leaves out of scope governance considerations. As such, this should be viewed as an experiment implementation for initial Verite issuers as the governance structure is being developed.
 
 The NVG Verite Issuer Registry identifies entities authorized to issue Verite credentials (segmented by different credential types), along with associated metadata. 
 
@@ -17,7 +17,7 @@ On receipt of a Verite credential, a verifier confirms:
 2. the issuer is authorized to issue the credential type
 
 ### Context of the Issuer Registry
-The Issuer Registry, along with the Issuer Rules associated with credential types and processes ([described further in Verite Governance Overview](/verite/overview/governance-overview)), helps achieve determinism in Verite credential issuance, in the sense that identical identity claim inputs should lead, among different Verite issuers, to the same decision to issue, or not to issue, a credential. The NVP version of the Issuer Registry is an experimental placeholder while the MVP is being developed.
+The Issuer Registry, along with the Issuer Rules associated with credential types and processes ([described further in Verite Governance Overview](/verite/overview/governance-overview)), helps achieve determinism in Verite credential issuance, in the sense that identical identity claim inputs should lead, among different Verite issuers, to the same decision to issue, or not to issue, a credential. The PVP version of the Issuer Registry is an experimental placeholder while the MVP is being developed.
 
 ### Limitations, Assumptions, Scope (of this document and in general)
 
@@ -26,11 +26,11 @@ The Issuer Registry, along with the Issuer Rules associated with credential type
 
 ## Design
 
-The NVP issuer registry will be stored off-chain as a JSON file in Verite gihub repo (similar to Verite credential schemas and processes).
+The PVP issuer registry will be stored off-chain as a JSON file in Verite gihub repo (similar to Verite credential schemas and processes).
 
 The structure, usage, semantics, and lightweight governance is described here.
 
-All is to be interpreted as experimental for NVP and subject to revision.
+All is to be interpreted as experimental for PVP and subject to revision.
 
 ### Roles
 
