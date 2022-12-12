@@ -1,0 +1,20 @@
+{
+  "id": "issuer-registry",
+  "version": "0.0.1-pvg",
+  "issuer": [
+    { 
+      "name": "Circle Internet Financial, LLC",
+      "id": "did:web:assets.circle.com",
+      "authorizations": [
+        {
+          "credentialType": "KYBPAMLAttestations",
+          "effectiveStart": "2022-12-01T00:00:00Z"
+        },
+        {
+          "credentialType": "EntityAccInvAttestation",
+          "effectiveStart": "2022-12-01T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}
