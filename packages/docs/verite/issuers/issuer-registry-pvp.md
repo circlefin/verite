@@ -40,7 +40,7 @@ The following roles are referred to below
     - Sole technical/logistic ability to approval and merge PRs 
     - Later to be replaced with real governance/membership scheme
 - Verite participants:
-    - Signing Verite CLA is prerequisite
+    - Signing the Verite Contributor License Agreement (CLA) is a prerequisite to be an issuer in the experimental phase or a co-designer of Verite credentials and tooling; once formal governance is launched, it will not be a requirement
 
 ### Implementation
 
