@@ -7,11 +7,11 @@
       "id": "did:web:assets.circle.com",
       "authorizations": [
         {
-          "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-accinv-all-checks",
+          "credentialType": "KYBPAMLAttestations",
           "effectiveStart": "2022-12-01T00:00:00Z"
         },
         {
-          "process": "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-kycaml-all-checks",
+          "credentialType": "EntityAccInvAttestation",
           "effectiveStart": "2022-12-01T00:00:00Z"
         }
       ]
