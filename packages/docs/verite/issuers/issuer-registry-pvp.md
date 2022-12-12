@@ -8,7 +8,7 @@ The issuer registry pre-viable product (PVP) is a simple demonstration issuer re
 
 ## Usage/Intent of the PVP Verite Issuer Registry
 
-The PVP Verite Issuer Registry focuses exclusively on Issuer ID and authorization and leaves out of scope governance considerations. As such, this should be viewed as an experiment implementation for initial Verite issuers as the governance structure is being developed.
+The PVP Verite Issuer Registry focuses exclusively on Issuer ID and authorization and leaves out of scope governance considerations. As such, this should be viewed as an experimental implementation for the initial Verite issuers as the governance structure is being developed, with only manual and Centre-governed additions and removals until such a time as Verite issuance can be communally self-governing.
 
 The NVG Verite Issuer Registry identifies entities authorized to issue Verite credentials (segmented by different credential types), along with associated metadata. 
 
