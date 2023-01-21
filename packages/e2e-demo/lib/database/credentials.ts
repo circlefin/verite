@@ -12,7 +12,7 @@ import {
   decodeVerifiableCredential,
   generateRevocationList,
   buildIssuer,
-  EncodedRevocationListCredential,
+  EncodedStatusListCredential,
   generateEncodedRevocationList
 } from "verite"
 
@@ -198,7 +198,7 @@ const findCredentialsByRevocationlist = async (
  */
 export const getRevocationListById = async (
   id: string
-): Promise<EncodedRevocationListCredential | undefined> => {
+): Promise<EncodedStatusListCredential | undefined> => {
   const revocationList = await prisma.revocationList.findFirst({
     where: {
       id
@@ -252,7 +252,7 @@ export const saveRevocationList = async (
  * @returns a revocation list status containing a list and index
  */
 export const generateRevocationListStatus =
-  async (): Promise<RevocationList2021Status> => {
+  async (): Promise<StatusList2021Entry> => {
     // Pick a random revocation list
     const lists = await findAllOrCreateRevocationLists()
     const revocationList = sample(lists)
