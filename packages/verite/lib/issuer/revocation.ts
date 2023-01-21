@@ -10,12 +10,12 @@ import {
 
 import type {
   CredentialPayload,
-  EncodedRevocationListCredential,
+  EncodedStatusListCredential,
   Issuer,
   MaybeRevocableCredential,
   RevocableCredential,
-  RevocationList,
-  RevocationListCredential,
+  StatusList,
+  StatusList2021Credential,
   Verifiable,
   W3CCredential
 } from "../../types"
@@ -56,10 +56,10 @@ export const generateEncodedRevocationList = async ({
   issuer,
   signer,
   issuanceDate
-}: GenerateRevocationListOptions): Promise<EncodedRevocationListCredential> => {
+}: GenerateRevocationListOptions): Promise<EncodedStatusListCredential> => {
   const encodedList = generateBitstring(statusList)
 
-  const vcPayload: RevocationList<CredentialPayload> = {
+  const vcPayload: StatusList<CredentialPayload> = {
     "@context": [
       "https://www.w3.org/2018/credentials/v1",
       "https://w3id.org/vc-status-list-2021/v1"
@@ -70,7 +70,8 @@ export const generateEncodedRevocationList = async ({
     issuanceDate: issuanceDate ?? new Date(),
     credentialSubject: {
       id: `${url}#list`,
-      type: "RevocationList2021",
+      type: "StatusList2021",
+      statusPurpose: "revocation",
       encodedList
     }
   }
@@ -86,10 +87,10 @@ export const generateEncodedRevocationList = async ({
  */
 export const generateRevocationList = async (
   opts: GenerateRevocationListOptions
-): Promise<RevocationListCredential> => {
+): Promise<StatusList2021Credential> => {
   const vcJwt = await generateEncodedRevocationList(opts)
 
-  return decodeVerifiableCredential(vcJwt) as Promise<RevocationListCredential>
+  return decodeVerifiableCredential(vcJwt) as Promise<StatusList2021Credential>
 }
 
 /**
@@ -99,9 +100,9 @@ export const generateRevocationList = async (
  */
 export const revokeCredential = async (
   credential: RevocableCredential,
-  revocationList: RevocationListCredential,
+  revocationList: StatusList2021Credential,
   signer: Issuer
-): Promise<RevocationListCredential> => {
+): Promise<StatusList2021Credential> => {
   /**
    * If the credential is not revocable, it can not be revoked
    */
@@ -134,9 +135,9 @@ export const revokeCredential = async (
  */
 export const unrevokeCredential = async (
   credential: RevocableCredential,
-  revocationList: RevocationListCredential,
+  revocationList: StatusList2021Credential,
   signer: Issuer
-): Promise<RevocationListCredential> => {
+): Promise<StatusList2021Credential> => {
   /**
    * If the credential is not revocable, it can not be revoked
    */
@@ -171,7 +172,7 @@ export const unrevokeCredential = async (
  */
 export const isRevoked = async (
   credential: Verifiable<W3CCredential> | RevocableCredential,
-  revocationStatusList?: RevocationListCredential
+  revocationStatusList?: StatusList2021Credential
 ): Promise<boolean> => {
   /**
    * If the credential is not revocable, it can not be revoked
@@ -209,7 +210,7 @@ export const isRevoked = async (
  */
 export async function fetchStatusList(
   credential: MaybeRevocableCredential
-): Promise<RevocationListCredential | undefined> {
+): Promise<StatusList2021Credential | undefined> {
   /**
    * If the credential is not revocable, it can not be revoked
    */
@@ -228,7 +229,7 @@ export async function fetchStatusList(
 
       return decodeVerifiableCredential(
         vcJwt
-      ) as Promise<RevocationListCredential>
+      ) as Promise<StatusList2021Credential>
     }
   } catch (e) {}
 }

@@ -6,7 +6,7 @@ import {
   EncodedCredentialFulfillment,
   isRevocable,
   RevocableCredential,
-  RevocationList2021Status,
+  StatusList2021Entry,
   buildIssuer,
   revokeCredential,
   decodeVerifiablePresentation,

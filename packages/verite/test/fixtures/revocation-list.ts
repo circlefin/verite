@@ -1,8 +1,9 @@
-import { RevocationList2021Status } from "../../types/RevocationList2021"
+import { StatusList2021Entry } from "../../types/StatusList2021"
 
-export const revocationListFixture: RevocationList2021Status = {
+export const revocationListFixture: StatusList2021Entry = {
   id: "http://example.com/revocation-list#42",
-  type: "RevocationList2021Status",
+  type: "StatusList2021Entry",
+  statusPurpose: "revocation",
   statusListIndex: "42",
   statusListCredential: "http://example.com/revocation-list"
 }

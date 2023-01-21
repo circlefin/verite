@@ -13,7 +13,7 @@ import {
   KYCAML_CREDENTIAL_TYPE_NAME,
   randomDidKey,
   RevocableCredential,
-  RevocationListCredential,
+  StatusList2021Credential,
   revokeCredential,
   unrevokeCredential
 } from "verite"
@@ -55,7 +55,7 @@ const issueRevocationList = async () => {
  * here.
  */
 const issueCredential = async (
-  revocationList: RevocationListCredential
+  revocationList: StatusList2021Credential
 ): Promise<RevocableCredential> => {
   // We will create a random did to represent our own identity wallet
   const subject = randomDidKey(randomBytes)
@@ -70,7 +70,8 @@ const issueCredential = async (
    */
   const credentialStatus = {
     id: `${revocationList.id}#0`,
-    type: "RevocationList2021Status",
+    type: "StatusList2021Entry",
+    statusPurpose: "revocation",
     statusListIndex: "0",
     statusListCredential: `http://localhost:3000/${revocationList.id}`
   }
@@ -92,7 +93,7 @@ const issueCredential = async (
 export default function Home(): JSX.Element {
   // Revocation list credential
   const [revocationList, setRevocationList] =
-    useState<RevocationListCredential>()
+    useState<StatusList2021Credential>()
 
   // Set the initial Revocation List.
   // This is a simple hack to get around the fact it is an async method.
@@ -111,7 +112,7 @@ export default function Home(): JSX.Element {
   const RevocationList = ({
     credential
   }: {
-    credential: RevocationListCredential
+    credential: StatusList2021Credential
   }) => {
     return (
       <>
@@ -135,9 +136,9 @@ export default function Home(): JSX.Element {
   }: {
     credential:
       | Verifiable<W3CCredential>
-      | RevocationListCredential
+      | StatusList2021Credential
       | RevocableCredential
-    revocationList: RevocationListCredential
+    revocationList: StatusList2021Credential
   }) => {
     return (
       <>
@@ -160,7 +161,7 @@ export default function Home(): JSX.Element {
     issuer
   }: {
     credential: RevocableCredential
-    revocationList: RevocationListCredential
+    revocationList: StatusList2021Credential
     issuer: Issuer
   }) => {
     /**

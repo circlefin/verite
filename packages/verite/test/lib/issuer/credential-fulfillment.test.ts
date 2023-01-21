@@ -15,7 +15,7 @@ import {
   decodeVerifiablePresentation,
   randomDidKey
 } from "../../../lib/utils"
-import { RevocationList2021Status } from "../../../types"
+import { StatusList2021Entry } from "../../../types"
 import {
   creditScoreAttestationFixture,
   kycAmlAttestationFixture
@@ -79,9 +79,10 @@ describe("buildAndSignVerifiableCredential", () => {
     const attestation = kycAmlAttestationFixture
 
     // Builds a signed Verifiable Credential with a credentialStatus
-    const credentialStatus: RevocationList2021Status = {
+    const credentialStatus: StatusList2021Entry = {
       id: "https://dmv.example.gov/credentials/status/3#94567",
-      type: "RevocationList2021Status",
+      type: "StatusList2021Entry",
+      statusPurpose: "revocation",
       statusListIndex: "94567",
       statusListCredential: "https://example.com/credentials/status/3"
     }
@@ -100,8 +101,9 @@ describe("buildAndSignVerifiableCredential", () => {
 
     expect(decoded.credentialStatus).toEqual({
       id: "https://dmv.example.gov/credentials/status/3#94567",
-      type: "RevocationList2021Status",
+      type: "StatusList2021Entry",
       statusListIndex: "94567",
+      statusPurpose: "revocation",
       statusListCredential: "https://example.com/credentials/status/3"
     })
   })
