@@ -12,26 +12,47 @@ The following represents the intermediate did-jwt-vc decoded form of a JWT-encod
 
 ```json
 {
-  "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    {
-      "@vocab": "https://verite.id/identity/"
-    }
-  ],
-  "type": ["VerifiableCredential", "KYCAMLCredential"],
-  "issuer": {
-    "id": "did:key:z6MkwMmraBRtV4ZyJsTQY7NW52YACpHm6ErKAaicZFuTxcHN"
-  },
-  "credentialSubject": {
-    "id": "did:key:z6MkpVasvTGxhLwMycLWWBa7WaYZTpvc3PstVdKaie5phPut",
-    "KYCAMLAttestation": {
-      "type": "KYCAMLAttestation",
-      "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-      "approvalDate": "2022-08-30T03:12:23.865Z"
-    }
-  },
-  "issuanceDate": "2022-08-30T03:12:23.000Z",
-  "expirationDate": "2022-10-29T03:12:23.000Z"
+   "nbf":1674267289,
+   "iss":"did:key:z6MkmaeU7gzC8xhemRVEgSs1fz4fWxJJGcYHhwiFd6jJsWRZ",
+   "sub":"did:key:z6MktPy7D89A4S3Nrvw6cRh4V9LQGpidTdgKXtA4m13sv58t",
+   "exp":1679451289,
+   "vc":{
+      "@context":[
+         "https://www.w3.org/2018/credentials/v1",
+         {
+            "@vocab":"https://verite.id/identity/"
+         }
+      ],
+      "type":[
+         "VerifiableCredential",
+         "KYCAMLCredential"
+      ],
+      "credentialSubject":{
+         "id":"did:key:z6MktPy7D89A4S3Nrvw6cRh4V9LQGpidTdgKXtA4m13sv58t",
+         "KYCAMLAttestation":{
+            "type":"KYCAMLAttestation",
+            "process":"https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+            "approvalDate":"2023-01-21T02:14:49.270Z"
+         }
+      },
+      "issuanceDate":"2023-01-21T02:14:49.270Z",
+      "issuer":{
+         "id":"did:key:z6MkmaeU7gzC8xhemRVEgSs1fz4fWxJJGcYHhwiFd6jJsWRZ"
+      },
+      "credentialSchema":{
+         "id":"https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
+         "type":"KYCAMLAttestation"
+      },
+      "expirationDate":"2023-03-22T02:14:49.270Z"
+   }
+}
+```
+
+With JWT Header:
+```json
+{
+  "alg": "EdDSA",
+  "typ": "JWT"
 }
 ```
 
@@ -41,35 +62,65 @@ This extends the above to add credential status. Note that the credential status
 
 ```json
 {
-  "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    {
-      "@vocab": "https://verite.id/identity/"
-    }
-  ],
-  "type": ["VerifiableCredential", "KYCAMLCredential"],
-  "issuer": {
-    "id": "did:key:z6MkwMmraBRtV4ZyJsTQY7NW52YACpHm6ErKAaicZFuTxcHN"
-  },
-  "credentialSubject": {
-    "id": "did:key:z6MkpVasvTGxhLwMycLWWBa7WaYZTpvc3PstVdKaie5phPut",
-    "KYCAMLAttestation": {
-      "type": "KYCAMLAttestation",
-      "process": "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-      "approvalDate": "2022-08-30T03:12:23.865Z"
-    }
-  },
-  "credentialStatus": {
-    "id": "http://192.168.1.11:3000/api/demos/revocation/25321352-ba2f-4a0d-aa72-8d7516992a45#94416",
-    "type": "StatusList2021Entry",
-    "statusPurpose": "revocation",
-    "statusListIndex": "94416",
-    "statusListCredential": "http://192.168.1.11:3000/api/demos/revocation/25321352-ba2f-4a0d-aa72-8d7516992a45"
-  },
-  "issuanceDate": "2022-08-30T03:12:23.000Z",
-  "expirationDate": "2022-10-29T03:12:23.000Z"
+   "nbf":1674267289,
+   "iss":"did:key:z6MkmaeU7gzC8xhemRVEgSs1fz4fWxJJGcYHhwiFd6jJsWRZ",
+   "sub":"did:key:z6MktPy7D89A4S3Nrvw6cRh4V9LQGpidTdgKXtA4m13sv58t",
+   "exp":1679451289,
+   "vc":{
+      "@context":[
+         "https://www.w3.org/2018/credentials/v1",
+         {
+            "@vocab":"https://verite.id/identity/"
+         }
+      ],
+      "type":[
+         "VerifiableCredential",
+         "KYCAMLCredential"
+      ],
+      "credentialSubject":{
+         "id":"did:key:z6MktPy7D89A4S3Nrvw6cRh4V9LQGpidTdgKXtA4m13sv58t",
+         "KYCAMLAttestation":{
+            "type":"KYCAMLAttestation",
+            "process":"https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+            "approvalDate":"2023-01-21T02:14:49.270Z"
+         }
+      },
+      "issuanceDate":"2023-01-21T02:14:49.270Z",
+      "issuer":{
+         "id":"did:key:z6MkmaeU7gzC8xhemRVEgSs1fz4fWxJJGcYHhwiFd6jJsWRZ"
+      },
+      "credentialSchema":{
+         "id":"https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
+         "type":"KYCAMLAttestation"
+      },
+      "credentialStatus":{
+         "id":"http://192.168.1.11:3000/api/demos/revocation/22364811-e75d-4877-a5ca-b906527f5f98#97903",
+         "type":"StatusList2021Entry",
+         "statusPurpose":"revocation",
+         "statusListIndex":"97903",
+         "statusListCredential":"http://192.168.1.11:3000/api/demos/revocation/22364811-e75d-4877-a5ca-b906527f5f98"
+      },
+      "expirationDate":"2023-03-22T02:14:49.270Z"
+   }
 }
 ```
+
+With JWT Header:
+```json
+{
+  "alg": "EdDSA",
+  "typ": "JWT"
+}
+```
+
+### Encoded JWT
+
+The JWT encoded version of the previous example is below:
+
+```
+eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzk0NTEyODksInZjIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIix7IkB2b2NhYiI6Imh0dHBzOi8vdmVyaXRlLmlkL2lkZW50aXR5LyJ9XSwidHlwZSI6WyJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIktZQ0FNTENyZWRlbnRpYWwiXSwiY3JlZGVudGlhbFN1YmplY3QiOnsiaWQiOiJkaWQ6a2V5Ono2TWt0UHk3RDg5QTRTM05ydnc2Y1JoNFY5TFFHcGlkVGRnS1h0QTRtMTNzdjU4dCIsIktZQ0FNTEF0dGVzdGF0aW9uIjp7InR5cGUiOiJLWUNBTUxBdHRlc3RhdGlvbiIsInByb2Nlc3MiOiJodHRwczovL3Zlcml0ZS5pZC9kZWZpbml0aW9ucy9wcm9jZXNzZXMva3ljYW1sLzAuMC4xL3VzYSIsImFwcHJvdmFsRGF0ZSI6IjIwMjMtMDEtMjFUMDI6MTQ6NDkuMjcwWiJ9fSwiaXNzdWFuY2VEYXRlIjoiMjAyMy0wMS0yMVQwMjoxNDo0OS4yNzBaIiwiaXNzdWVyIjp7ImlkIjoiZGlkOmtleTp6Nk1rbWFlVTdnekM4eGhlbVJWRWdTczFmejRmV3hKSkdjWUhod2lGZDZqSnNXUloifSwiY3JlZGVudGlhbFNjaGVtYSI6eyJpZCI6Imh0dHBzOi8vdmVyaXRlLmlkL2RlZmluaXRpb25zL3NjaGVtYXMvMC4wLjEvS1lDQU1MQXR0ZXN0YXRpb24iLCJ0eXBlIjoiS1lDQU1MQXR0ZXN0YXRpb24ifSwiY3JlZGVudGlhbFN0YXR1cyI6eyJpZCI6Imh0dHA6Ly8xOTIuMTY4LjEuMTE6MzAwMC9hcGkvZGVtb3MvcmV2b2NhdGlvbi8yMjM2NDgxMS1lNzVkLTQ4NzctYTVjYS1iOTA2NTI3ZjVmOTgjOTc5MDMiLCJ0eXBlIjoiU3RhdHVzTGlzdDIwMjFFbnRyeSIsInN0YXR1c1B1cnBvc2UiOiJyZXZvY2F0aW9uIiwic3RhdHVzTGlzdEluZGV4IjoiOTc5MDMiLCJzdGF0dXNMaXN0Q3JlZGVudGlhbCI6Imh0dHA6Ly8xOTIuMTY4LjEuMTE6MzAwMC9hcGkvZGVtb3MvcmV2b2NhdGlvbi8yMjM2NDgxMS1lNzVkLTQ4NzctYTVjYS1iOTA2NTI3ZjVmOTgifSwiZXhwaXJhdGlvbkRhdGUiOiIyMDIzLTAzLTIyVDAyOjE0OjQ5LjI3MFoifSwibmJmIjoxNjc0MjY3Mjg5LCJpc3MiOiJkaWQ6a2V5Ono2TWttYWVVN2d6Qzh4aGVtUlZFZ1NzMWZ6NGZXeEpKR2NZSGh3aUZkNmpKc1dSWiIsInN1YiI6ImRpZDprZXk6ejZNa3RQeTdEODlBNFMzTnJ2dzZjUmg0VjlMUUdwaWRUZGdLWHRBNG0xM3N2NTh0In0.v3b8dp8fGfwWGxHTR7hsiFbXyEt-HDLdVS9iW3kP0-12Qm8de56boNbRtowVVFlpmSJk4piNmHVQysN_iWTfCw
+```
+
 
 ## Issuance
 
