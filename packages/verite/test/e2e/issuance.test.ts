@@ -86,7 +86,8 @@ describe("issuance", () => {
         expect(credentialStatus.id).toEqual(
           "http://example.com/revocation-list#42"
         )
-        expect(credentialStatus.type).toEqual("RevocationList2021Status")
+        expect(credentialStatus.type).toEqual("StatusList2021Entry")
+        expect(credentialStatus.statusPurpose).toEqual("revocation")
         expect(credentialStatus.statusListIndex).toEqual("42")
         expect(credentialStatus.statusListCredential).toEqual(
           "http://example.com/revocation-list"
@@ -185,7 +186,8 @@ describe("issuance", () => {
         expect(credentialStatus.id).toEqual(
           "http://example.com/revocation-list#42"
         )
-        expect(credentialStatus.type).toEqual("RevocationList2021Status")
+        expect(credentialStatus.type).toEqual("StatusList2021Entry")
+        expect(credentialStatus.statusPurpose).toEqual("revocation")
         expect(credentialStatus.statusListIndex).toEqual("42")
         expect(credentialStatus.statusListCredential).toEqual(
           "http://example.com/revocation-list"

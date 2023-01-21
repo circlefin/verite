@@ -5,14 +5,14 @@ import {
   isRevocable,
   MaybeRevocableCredential,
   RevocableCredential,
-  RevocationList2021Status,
-  RevocationListCredential,
+  StatusList2021Entry,
+  StatusList2021Credential,
   MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
   decodeVerifiableCredential,
   generateRevocationList,
   buildIssuer,
-  EncodedRevocationListCredential,
+  EncodedStatusListCredential,
   generateEncodedRevocationList
 } from "verite"
 
@@ -50,7 +50,7 @@ export const storeCredentials = async (
  * @returns revocation lists filtered by host
  */
 export const findAllOrCreateRevocationLists = async (): Promise<
-  RevocationListCredential[]
+  StatusList2021Credential[]
 > => {
   const lists = await prisma.revocationList.findMany()
 
@@ -83,7 +83,7 @@ export const findAllOrCreateRevocationLists = async (): Promise<
  */
 export const findRevocationListForCredential = async (
   credential: RevocableCredential
-): Promise<RevocationListCredential | undefined> => {
+): Promise<StatusList2021Credential | undefined> => {
   if (!credential.credentialStatus) {
     return
   }
@@ -174,7 +174,7 @@ export const findNewestCredentialSinceDate = async (
  *
  */
 const findCredentialsByRevocationlist = async (
-  revocationList: RevocationListCredential
+  revocationList: StatusList2021Credential
 ): Promise<DecodedDatabaseCredential<RevocableCredential>[]> => {
   // NOTE: This is not efficient. In production you would normally have an index
   // to allow for these credentials to be mapped to a revocation list record.
@@ -198,7 +198,7 @@ const findCredentialsByRevocationlist = async (
  */
 export const getRevocationListById = async (
   id: string
-): Promise<EncodedRevocationListCredential | undefined> => {
+): Promise<EncodedStatusListCredential | undefined> => {
   const revocationList = await prisma.revocationList.findFirst({
     where: {
       id
@@ -223,7 +223,7 @@ export const getRevocationListById = async (
  * Upsert a Revocation List record to the database
  */
 export const saveRevocationList = async (
-  revocationList: RevocationListCredential
+  revocationList: StatusList2021Credential
 ): Promise<void> => {
   // Use the uuid from the URL as the ID
   const id = revocationList.id.split("/").pop()
@@ -252,7 +252,7 @@ export const saveRevocationList = async (
  * @returns a revocation list status containing a list and index
  */
 export const generateRevocationListStatus =
-  async (): Promise<RevocationList2021Status> => {
+  async (): Promise<StatusList2021Entry> => {
     // Pick a random revocation list
     const lists = await findAllOrCreateRevocationLists()
     const revocationList = sample(lists)
@@ -271,7 +271,8 @@ export const generateRevocationListStatus =
       if (index === -1) {
         return {
           id: `${revocationList.id}#${randomIndex}`,
-          type: "RevocationList2021Status",
+          type: "StatusList2021Entry",
+          statusPurpose: "revocation",
           statusListIndex: randomIndex.toString(),
           statusListCredential: revocationList.id
         }

@@ -10,7 +10,7 @@ import {
   isRevocable,
   MaybeRevocableCredential,
   RevocableCredential,
-  RevocationListCredential
+  StatusList2021Credential
 } from "verite"
 
 import RevocationLayout from "../../../../components/demos/revocation/Layout"
@@ -21,7 +21,7 @@ import { findUserByCredential, User } from "../../../../lib/database"
 type Props = {
   credential: RevocableCredential
   revocable: boolean
-  revocationList?: RevocationListCredential
+  revocationList?: StatusList2021Credential
   revoked: boolean
   user: User
 }
@@ -76,7 +76,7 @@ const AdminCredentialPage: NextPage<Props> = ({
   user
 }) => {
   // Revocation List can change if we revoke the credential so we need to store state
-  const [list, setList] = useState<RevocationListCredential>(revocationList)
+  const [list, setList] = useState<StatusList2021Credential>(revocationList)
 
   return (
     <RevocationLayout>

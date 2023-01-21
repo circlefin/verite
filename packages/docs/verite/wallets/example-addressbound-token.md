@@ -40,6 +40,7 @@ In practice, a wallet that wants to receive and share the simpler address-bound 
     "credentialStatus": {
       "id": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0#1161",
       "type": "StatusList2021Entry",
+      "statusPurpose": "revocation",
       "statusListIndex": "1161",
       "statusListCredential": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0"
     },
@@ -83,6 +84,7 @@ The mandatory properties of a JWT that are redundant to mandatory properties in 
     "credentialStatus": {
       "id": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0#1161",
       "type": "StatusList2021Entry",
+      "statusPurpose": "revocation",
       "statusListIndex": "1161",
       "statusListCredential": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0"
     }
@@ -145,6 +147,7 @@ Note that an explanatory prefix before the address, specified in the cross-chain
 This URL can simplify on-going verification-- rather than ask the wallet to re-present this credential at each future transaction or event, a verifier can simply re-check this URL at each transaction taking place between the first verification and the expiration of the credential.
 ```
       "type": "StatusList2021Entry",
+      "statusPurpose": "revocation",
       "statusListIndex": "1161",
       "statusListCredential": "https://issuer-smokebox.circle.com/api/v1/issuance/status/0"
     }

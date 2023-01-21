@@ -17,7 +17,7 @@ import type {
   JWT,
   VerifiableCredential,
   RevocableCredential,
-  RevocationListCredential,
+  StatusList2021Credential,
   Verifiable,
   W3CCredential,
   W3CPresentation,
@@ -71,7 +71,7 @@ export async function encodeVerifiableCredential(
 export async function decodeVerifiableCredential(
   vcJwt: JWT
 ): Promise<
-  Verifiable<W3CCredential> | RevocableCredential | RevocationListCredential
+  Verifiable<W3CCredential> | RevocableCredential | StatusList2021Credential
 > {
   try {
     const res = await verifyCredential(vcJwt, didResolver)

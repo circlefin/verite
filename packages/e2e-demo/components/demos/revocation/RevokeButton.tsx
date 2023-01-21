@@ -4,7 +4,7 @@ import {
   isRevoked,
   JWT,
   RevocableCredential,
-  RevocationListCredential
+  StatusList2021Credential
 } from "verite"
 
 import { LoadingButton } from "../../shared/LoadingButton"
@@ -12,7 +12,7 @@ import { LoadingButton } from "../../shared/LoadingButton"
 type Props = {
   credential: RevocableCredential
   defaultRevoked?: boolean | undefined
-  onToggle?: (revocationList: RevocationListCredential) => Promise<void>
+  onToggle?: (revocationList: StatusList2021Credential) => Promise<void>
 }
 
 const perform = async (
@@ -81,7 +81,7 @@ export default function RevokeButton({
           if (onToggle) {
             const revocationList = (await decodeVerifiableCredential(
               data
-            )) as RevocationListCredential
+            )) as StatusList2021Credential
 
             await onToggle(revocationList)
           }
