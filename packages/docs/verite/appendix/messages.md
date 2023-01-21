@@ -61,7 +61,8 @@ This extends the above to add credential status. Note that the credential status
   },
   "credentialStatus": {
     "id": "http://192.168.1.11:3000/api/demos/revocation/25321352-ba2f-4a0d-aa72-8d7516992a45#94416",
-    "type": "RevocationList2021Status",
+    "type": "StatusList2021Entry",
+    "statusPurpose": "revocation",
     "statusListIndex": "94416",
     "statusListCredential": "http://192.168.1.11:3000/api/demos/revocation/25321352-ba2f-4a0d-aa72-8d7516992a45"
   },

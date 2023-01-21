@@ -6,7 +6,7 @@ import {
   EncodedCredentialFulfillment,
   isRevocable,
   RevocableCredential,
-  RevocationList2021Status,
+  StatusList2021Entry,
   buildIssuer,
   revokeCredential,
   decodeVerifiablePresentation,
@@ -106,7 +106,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
 async function handleRevocationIfNecessary(
   user: User,
   manifest: CredentialManifest
-): Promise<RevocationList2021Status | undefined> {
+): Promise<StatusList2021Entry | undefined> {
   if (requiresRevocableCredentials(manifest)) {
     // Before we issue a new credential of this type to a user, revoke all their
     // previous credentials of the same type.

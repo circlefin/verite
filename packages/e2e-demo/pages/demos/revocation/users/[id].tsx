@@ -7,7 +7,7 @@ import {
   isRevoked,
   isRevocable,
   RevocableCredential,
-  RevocationListCredential
+  StatusList2021Credential
 } from "verite"
 
 import RevocationLayout from "../../../../components/demos/revocation/Layout"
@@ -43,7 +43,7 @@ export const getServerSideProps = requireAuth<Props>(async (context) => {
   ) as DecodedDatabaseCredential[]
   const revocationLists = JSON.parse(
     JSON.stringify(await findAllOrCreateRevocationLists())
-  ) as RevocationListCredential[]
+  ) as StatusList2021Credential[]
 
   // Map data for easy rendering
   const credentialList = await asyncMap(credentials, async (credential) => {

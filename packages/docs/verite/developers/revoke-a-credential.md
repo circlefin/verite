@@ -39,7 +39,8 @@ Below is an [example from Status List 2021](https://w3c-ccg.github.io/vc-status-
   "issued": "2021-04-05T14:27:42Z",
   "credentialStatus": {
     "id": "https://dmv.example.gov/credentials/status/3#94567",
-    "type": "RevocationList2021Status",
+    "type": "StatusList2021Entry",
+    "statusPurpose": "revocation",
     "statusListIndex": "94567",
     "statusListCredential": "https://example.com/credentials/status/3"
   },
@@ -56,7 +57,7 @@ The presence of this object tells verifiers that they should check the credentia
 
 - `statusListCredential` is the URI from which the revocation list should be retrieved
 - `statusListIndex` indicates which index in the bitstring this credential corresponds to
-- The type `RevocationList2021Status` informs verifiers the data structure to expect and steps to use to check whether the credential has been revoked
+- The type `StatusList2021Entry` informs verifiers the data structure to expect and steps to use to check whether the credential has been revoked
 
 ## How an Issuer Creates a Revocable Credential
 
@@ -72,7 +73,8 @@ Then `credentialStatus` can be populated as follows:
 ```ts
 const credentialStatus: {
   id: `${url}#${index}`,
-  type: "RevocationList2021Status",
+  type: "StatusList2021Entry",
+  statusPurpose: "revocation",
   statusListIndex: index.toString(),
   statusListCredential: url
 }
@@ -108,7 +110,8 @@ const credentialType = "KYCAMLCredential"
  */
 const credentialStatus = {
   id: `${revocationListUrl}#0`,
-  type: "RevocationList2021Status",
+  type: "StatusList2021Entry",
+  statusPurpose: "revocation",
   statusListIndex: "0",
   statusListCredential: `${revocationListUrl}`
 }
@@ -157,7 +160,8 @@ At verification time, the verifier will fetch the content at the `revocationList
   "issued": "2021-04-05T14:27:40Z",
   "credentialSubject": {
     "id": "https://example.com/status/3#list",
-    "type": "RevocationList2021",
+    "type": "StatusList2021",
+    "statusPurpose": "revocation",
     "encodedList": "H4sIAAAAAAAAA-3BMQEAAADCoPVPbQsvoAAAAAAAAAAAAAAAAP4GcwM92tQwAAA"
   },
   "proof": { ... }

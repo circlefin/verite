@@ -56,7 +56,8 @@ const credentialFactory = async (
     },
     credentialStatus: {
       id: `http://example.com/revocation#${index}`,
-      type: "RevocationList2021Status",
+      type: "StatusList2021Entry",
+      statusPurpose: "revocation",
       statusListIndex: index.toString(),
       statusListCredential: "http://example.com/revocation"
     }
@@ -92,7 +93,8 @@ describe("Status List 2021", () => {
     const vc = await statusListFactory(statusList)
     expect(vc.id).toBe(`${url}`)
     expect(vc.issuer.id).toBe(issuer)
-    expect(vc.credentialSubject.type).toBe("RevocationList2021")
+    expect(vc.credentialSubject.type).toBe("StatusList2021")
+    expect(vc.credentialSubject.statusPurpose).toBe("revocation")
     expect(vc.credentialSubject.encodedList).toBe(
       "eJztwSEBAAAAAiAn+H+tMyxAAwAAAAAAAAAAAAAAAAAAALwNQDwAEQ=="
     )
@@ -164,7 +166,8 @@ describe("Status List 2021", () => {
         },
         credentialStatus: {
           id: `${url}#${index}`,
-          type: "RevocationList2021Status",
+          type: "StatusList2021Entry",
+          statusPurpose: "revocation",
           statusListIndex: index.toString(),
           statusListCredential: url
         }
@@ -206,7 +209,8 @@ describe("Status List 2021", () => {
         },
         credentialStatus: {
           id: `${url}#${index}`,
-          type: "RevocationList2021Status",
+          type: "StatusList2021Entry",
+          statusPurpose: "revocation",
           statusListIndex: index.toString(),
           statusListCredential: url
         }

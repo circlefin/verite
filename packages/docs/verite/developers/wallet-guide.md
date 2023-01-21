@@ -266,7 +266,8 @@ The following represents the intermediate form of a JWT-encoded verifiable crede
   },
   "credentialStatus": {
     "id": "http://192.168.1.16:3000/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91#94372",
-    "type": "RevocationList2021Status",
+    "type": "StatusList2021Entry",
+    "statusPurpose": "revocation",
     "statusListIndex": "94372",
     "statusListCredential": "http://192.168.1.16:3000/api/revocation/05c74310-4810-4ec4-8402-cee4c28dda91"
   },
