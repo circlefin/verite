@@ -8,7 +8,7 @@ sidebar_position: 2
 
 ### Verifiable Credential
 
-The following represents the intermediate did-jwt-vc decoded form of a JWT-encoded verifiable credential:
+The following represents the "intermediate" did-jwt-vc decoded form of a JWT-encoded verifiable credential, i.e., the form with mandatory JWT payload properties duplicated and translated into their VC data model equivalents for interoperability with non-JWT VCs:
 
 ```json
 {
