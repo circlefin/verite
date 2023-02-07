@@ -14,7 +14,7 @@ import { isExpired, isRevoked } from "verite"
 
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getCredentialsWithManifests } from "../lib/manifestRegistry"
-import { saveRevocationStatus } from "../lib/storage"
+import { saveRevocationStatus, setCredential } from "../lib/storage"
 import { CredentialAndManifest, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 
@@ -55,9 +55,8 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
     item: CredentialAndManifest
     index: number
   }) => {
-    const credential = item.credential
-    const manifest = item.manifest
-    const revoked = item.revoked
+    const { credential, manifest, revoked } = item
+    const { isRead } = credential
     const expired = isExpired(credential)
     const { title, subtitle } = getDisplayProperties(manifest, credential)
     const thumbnail = manifest.output_descriptors[0].styles?.thumbnail?.uri
@@ -65,7 +64,10 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
     return (
       <TouchableOpacity
         key={index}
-        onPress={() => navigation.navigate("Details", { credential, revoked })}
+        onPress={() => {
+          setCredential(credential)
+          navigation.navigate("Details", { credential, revoked })
+        }}
       >
         <View
           style={
@@ -92,6 +94,16 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
 
             {revoked && <Text style={styles.badge}>Revoked</Text>}
             {expired && <Text style={styles.badge}>Expired</Text>}
+            {!isRead && (
+              <View
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  backgroundColor: "#21a4db"
+                }}
+              />
+            )}
           </View>
         </View>
       </TouchableOpacity>

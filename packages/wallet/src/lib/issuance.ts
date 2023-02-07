@@ -37,7 +37,7 @@ export const requestIssuance = async (
       // Note that the Verite wallet currently assumes only 1 VC is in the
       // response, but the main Verite libraries can support more than one.
       // Feel free to submit a PR generalizing this.
-      const cred = credentials[0]
+      const cred = { ...credentials[0], isRead: false }
 
       // Persist the credential and manifest.
       // Similar to the above assumptions, we're only using the last type in
