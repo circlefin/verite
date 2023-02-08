@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native"
 import compact from "lodash/compact"
 import React, { useState, useEffect } from "react"
 import {
@@ -14,7 +15,7 @@ import { isExpired, isRevoked } from "verite"
 
 import { getDisplayProperties } from "../lib/manifest-fns"
 import { getCredentialsWithManifests } from "../lib/manifestRegistry"
-import { saveRevocationStatus } from "../lib/storage"
+import { saveRevocationStatus, setCredential } from "../lib/storage"
 import { CredentialAndManifest, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 
@@ -22,19 +23,22 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
   const [credentials, setCredentials] = useState<
     CredentialAndManifest[] | undefined
   >()
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", async () => {
-      const creds = await getCredentialsWithManifests()
-      setCredentials(creds)
-      // Check revocation status, but don't block on it.
-      for (const cred of creds) {
-        const r = await isRevoked(cred.credential)
-        await saveRevocationStatus(cred.credential, r)
-      }
-    })
+  const isFocused = useIsFocused()
+  const getCredentials = async () => {
+    const creds = await getCredentialsWithManifests()
 
-    return unsubscribe
-  }, [navigation])
+    setCredentials(creds.reverse())
+    // Check revocation status, but don't block on it.
+    for (const cred of creds) {
+      const r = await isRevoked(cred.credential)
+      await saveRevocationStatus(cred.credential, r)
+    }
+  }
+  useEffect(() => {
+    if (isFocused) {
+      getCredentials()
+    }
+  }, [isFocused])
 
   if (!credentials) {
     return (
@@ -55,9 +59,8 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
     item: CredentialAndManifest
     index: number
   }) => {
-    const credential = item.credential
-    const manifest = item.manifest
-    const revoked = item.revoked
+    const { credential, manifest, revoked } = item
+    const { isRead } = credential
     const expired = isExpired(credential)
     const { title, subtitle } = getDisplayProperties(manifest, credential)
     const thumbnail = manifest.output_descriptors[0].styles?.thumbnail?.uri
@@ -65,7 +68,10 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
     return (
       <TouchableOpacity
         key={index}
-        onPress={() => navigation.navigate("Details", { credential, revoked })}
+        onPress={() => {
+          setCredential(credential)
+          navigation.navigate("Details", { credential, revoked })
+        }}
       >
         <View
           style={
@@ -92,6 +98,26 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
 
             {revoked && <Text style={styles.badge}>Revoked</Text>}
             {expired && <Text style={styles.badge}>Expired</Text>}
+            {!isRead && (
+              <View
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Text
+                  style={{
+                    color: "green",
+                    fontSize: 14,
+                    fontWeight: "bold"
+                  }}
+                >
+                  new
+                </Text>
+              </View>
+            )}
           </View>
         </View>
       </TouchableOpacity>

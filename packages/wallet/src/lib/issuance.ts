@@ -37,15 +37,19 @@ export const requestIssuance = async (
       // Note that the Verite wallet currently assumes only 1 VC is in the
       // response, but the main Verite libraries can support more than one.
       // Feel free to submit a PR generalizing this.
-      const cred = credentials[0]
 
-      // Persist the credential and manifest.
-      // Similar to the above assumptions, we're only using the last type in
-      // the VC type array
-      const type = getValueOrLastArrayEntry(cred.type)
-      saveCredential(cred)
-      saveManifest(manifest, type)
-      return cred
+      // // Persist the credential and manifest.
+      // // Similar to the above assumptions, we're only using the last type in
+      // // the VC type array
+
+      const updatedCredentials = credentials.map((cred) => {
+        const type = getValueOrLastArrayEntry(cred.type)
+        saveCredential(cred)
+        saveManifest(manifest, type)
+
+        return { ...cred, isRead: false }
+      })
+      return updatedCredentials
     } catch (e) {
       const errorMessage = `Error requesting issuance, cause = ${
         (e as VerificationError).cause

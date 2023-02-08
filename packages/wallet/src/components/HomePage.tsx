@@ -109,17 +109,10 @@ const HomePage: NavigationElement = ({ navigation, route }) => {
     }
     setIsRequesting(true)
     const did = await getOrCreateDidKey()
-    const credential = await requestIssuance(submissionUrl, did, manifest)
+    const credentials = await requestIssuance(submissionUrl, did, manifest)
 
-    if (credential) {
-      navigation.navigate("Credentials", {
-        screen: "Details",
-        initial: false,
-        params: {
-          credential,
-          revoked: false
-        }
-      })
+    if (credentials?.length) {
+      navigation.navigate("Credentials")
       clear()
     } else {
       setIsRequesting(false)
