@@ -11,7 +11,6 @@ import {
 } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
 import {
-  CredentialManifest,
   InputDescriptor,
   InputDescriptorConstraintField,
   isExpired,
@@ -21,11 +20,11 @@ import {
   W3CCredential
 } from "verite"
 
-import { getDisplayProperties } from "../lib/manifest-fns"
-import { getCredentialsWithManifests } from "../lib/manifestRegistry"
+import { getDisplayProperties } from "../lib/descriptor-fns"
+import { getCredentialsWithDescriptors } from "../lib/schemaRegistry"
 import { saveRevocationStatus } from "../lib/storage"
 import { getValueOrLastArrayEntry } from "../lib/utils"
-import { CredentialAndManifest, NavigationElement } from "../types"
+import { CredentialAndDescriptor, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 
 /**
@@ -33,7 +32,6 @@ import NoCredentials from "./NoCredentials"
  */
 const isEnabled = (
   credential: Verifiable<W3CCredential>,
-  manifest: CredentialManifest,
   inputDescriptor: InputDescriptor,
   revoked: boolean
 ): boolean => {
@@ -83,7 +81,7 @@ const isEnabled = (
 
 const CredentialPicker: NavigationElement = ({ navigation, route }) => {
   const [credentials, setCredentials] = useState<
-    CredentialAndManifest[] | undefined
+    CredentialAndDescriptor[] | undefined
   >()
 
   const verificationRequest = route.params.payload as VerificationOffer
@@ -92,7 +90,7 @@ const CredentialPicker: NavigationElement = ({ navigation, route }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      const creds = await getCredentialsWithManifests()
+      const creds = await getCredentialsWithDescriptors()
       setCredentials(creds)
 
       // Check revocation status, but don't block on it.
@@ -117,17 +115,17 @@ const CredentialPicker: NavigationElement = ({ navigation, route }) => {
     return <NoCredentials />
   }
 
-  const renderItem = ({ item }: { item: CredentialAndManifest }) => {
-    const manifest = item.manifest
+  const renderItem = ({ item }: { item: CredentialAndDescriptor }) => {
+    const descriptor = item.descriptor
     const credential = item.credential
     const revoked = item.revoked
 
     const expired = isExpired(credential)
-    const { title, subtitle } = getDisplayProperties(manifest, credential)
+    const { title, subtitle } = getDisplayProperties(descriptor, credential)
 
-    const enabled = isEnabled(credential, manifest, inputDescriptor, revoked)
+    const enabled = isEnabled(credential, inputDescriptor, revoked)
     const style = enabled ? styles.enabled : styles.disabled
-    const thumbnail = manifest.output_descriptors[0].styles?.thumbnail?.uri
+    const thumbnail = descriptor.styles?.thumbnail?.uri
 
     return (
       <TouchableOpacity

@@ -13,19 +13,19 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { isExpired, isRevoked } from "verite"
 
-import { getDisplayProperties } from "../lib/manifest-fns"
-import { getCredentialsWithManifests } from "../lib/manifestRegistry"
+import { getDisplayProperties } from "../lib/descriptor-fns"
+import { getCredentialsWithDescriptors } from "../lib/schemaRegistry"
 import { saveRevocationStatus, setCredential } from "../lib/storage"
-import { CredentialAndManifest, NavigationElement } from "../types"
+import { CredentialAndDescriptor, NavigationElement } from "../types"
 import NoCredentials from "./NoCredentials"
 
 const CredentialsList: NavigationElement = ({ navigation }) => {
   const [credentials, setCredentials] = useState<
-    CredentialAndManifest[] | undefined
+    CredentialAndDescriptor[] | undefined
   >()
   const isFocused = useIsFocused()
   const getCredentials = async () => {
-    const creds = await getCredentialsWithManifests()
+    const creds = await getCredentialsWithDescriptors()
 
     setCredentials(creds.reverse())
     // Check revocation status, but don't block on it.
@@ -56,14 +56,14 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
     item,
     index
   }: {
-    item: CredentialAndManifest
+    item: CredentialAndDescriptor
     index: number
   }) => {
-    const { credential, manifest, revoked } = item
+    const { credential, descriptor, revoked } = item
     const { isRead } = credential
     const expired = isExpired(credential)
-    const { title, subtitle } = getDisplayProperties(manifest, credential)
-    const thumbnail = manifest.output_descriptors[0].styles?.thumbnail?.uri
+    const { title, subtitle } = getDisplayProperties(descriptor, credential)
+    const thumbnail = descriptor.styles?.thumbnail?.uri
 
     return (
       <TouchableOpacity
@@ -123,7 +123,7 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
       </TouchableOpacity>
     )
   }
-
+  
   return (
     <View style={styles.container2}>
       <FlatList

@@ -44,7 +44,7 @@ export const setCredential = async (
   } else {
     credentials = []
   }
-  const updatedCredentials = credentials.map((c) => {
+  const updatedCredentials = credentials.map((c: Verifiable<W3CCredential>) => {
     if (credential.proof.jwt === c.proof.jwt) {
       return { ...c, isRead: true }
     }
