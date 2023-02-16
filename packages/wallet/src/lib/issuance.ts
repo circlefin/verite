@@ -8,7 +8,7 @@ import {
   VerificationError
 } from "verite"
 
-import { saveManifest } from "./manifestRegistry"
+import { saveDescriptor } from "./schemaRegistry"
 import { saveCredential } from "./storage"
 import { getValueOrLastArrayEntry } from "./utils"
 
@@ -16,7 +16,7 @@ export const requestIssuance = async (
   url: string,
   did: DidKey,
   manifest: CredentialManifest
-): Promise<Verifiable<W3CCredential> | undefined> => {
+): Promise<Verifiable<W3CCredential>[] | undefined> => {
   const body = await buildCredentialApplication(did, manifest)
 
   const response = await fetch(url, {
@@ -34,18 +34,15 @@ export const requestIssuance = async (
 
       // Extract the issued VC
       const credentials = verifiablePresentation.verifiableCredential ?? []
-      // Note that the Verite wallet currently assumes only 1 VC is in the
-      // response, but the main Verite libraries can support more than one.
-      // Feel free to submit a PR generalizing this.
-      const cred = credentials[0]
 
-      // Persist the credential and manifest.
-      // Similar to the above assumptions, we're only using the last type in
-      // the VC type array
-      const type = getValueOrLastArrayEntry(cred.type)
-      saveCredential(cred)
-      saveManifest(manifest, type)
-      return cred
+      // Persist the credential and descriptor
+      for (const [index, credential] of credentials.entries()) {
+        const type = getValueOrLastArrayEntry(credential.type)
+        await saveCredential({ ...credential, isRead: false })
+        await saveDescriptor(manifest.output_descriptors[index], type)
+      }
+
+      return credentials
     } catch (e) {
       const errorMessage = `Error requesting issuance, cause = ${
         (e as VerificationError).cause

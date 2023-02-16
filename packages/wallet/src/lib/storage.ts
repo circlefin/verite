@@ -34,6 +34,26 @@ export const getCredentials = async (): Promise<
   }
 }
 
+export const setCredential = async (
+  credential: Verifiable<W3CCredential>
+): Promise<void> => {
+  const value = await AsyncStorage.getItem("credentials")
+  let credentials
+  if (value) {
+    credentials = JSON.parse(value)
+  } else {
+    credentials = []
+  }
+  const updatedCredentials = credentials.map((c: Verifiable<W3CCredential>) => {
+    if (credential.proof.jwt === c.proof.jwt) {
+      return { ...c, isRead: true }
+    }
+    return c
+  })
+
+  return AsyncStorage.setItem("credentials", JSON.stringify(updatedCredentials))
+}
+
 export const saveCredential = async (
   credential: Verifiable<W3CCredential>
 ): Promise<void> => {

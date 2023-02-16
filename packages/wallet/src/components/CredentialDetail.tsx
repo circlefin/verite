@@ -13,13 +13,13 @@ import JSONTree from "react-native-json-tree"
 import { Colors } from "react-native/Libraries/NewAppScreen"
 import {
   asyncMap,
-  CredentialManifest,
+  OutputDescriptor,
   MaybeRevocableCredential,
   isRevocable
 } from "verite"
 
-import { getDisplayProperties } from "../lib/manifest-fns"
-import { getManifest } from "../lib/manifestRegistry"
+import { getDisplayProperties } from "../lib/descriptor-fns"
+import { getDescriptor } from "../lib/schemaRegistry"
 import { NavigationElement } from "../types"
 
 const Section: React.FC<{
@@ -69,14 +69,14 @@ const CredentialDetail: NavigationElement = ({ navigation, route }) => {
   const credential = route.params.credential as MaybeRevocableCredential
   const revoked = route.params.revoked as boolean
 
-  const [manifest, setManifest] = useState<CredentialManifest | undefined>()
+  const [descriptor, setDescriptor] = useState<OutputDescriptor | undefined>()
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", async () => {
-      const manifests = await asyncMap<string, CredentialManifest | undefined>(
+      const descriptors = await asyncMap<string, OutputDescriptor | undefined>(
         credential.type,
-        async (type) => getManifest(type)
+        async (type) => getDescriptor(type)
       )
-      setManifest(last(compact(manifests)))
+      setDescriptor(last(compact(descriptors)))
     })
 
     return unsubscribe
@@ -86,8 +86,8 @@ const CredentialDetail: NavigationElement = ({ navigation, route }) => {
   const revocable = isRevocable(credential)
 
   let display
-  if (manifest && credential) {
-    display = getDisplayProperties(manifest, credential)
+  if (descriptor && credential) {
+    display = getDisplayProperties(descriptor, credential)
   }
 
   const properties = (display?.properties ?? []).map((property, index) => {
@@ -98,8 +98,8 @@ const CredentialDetail: NavigationElement = ({ navigation, route }) => {
     )
   })
 
-  const thumbnail = manifest?.output_descriptors[0].styles?.thumbnail?.uri
-  const hero = manifest?.output_descriptors[0].styles?.hero?.uri
+  const thumbnail = descriptor?.styles?.thumbnail?.uri
+  const hero = descriptor?.styles?.hero?.uri
 
   return (
     <SafeAreaView style={styles.container}>
@@ -111,7 +111,7 @@ const CredentialDetail: NavigationElement = ({ navigation, route }) => {
           />
         )}
 
-        {manifest && (
+        {descriptor && (
           <View style={styles.header}>
             {thumbnail && (
               <Image
@@ -142,10 +142,10 @@ const CredentialDetail: NavigationElement = ({ navigation, route }) => {
           <Text style={styles.rawTitle}>Raw Credential</Text>
           <JSONTree data={credential} />
         </View>
-        {manifest && (
+        {descriptor && (
           <View>
             <Text style={styles.rawTitle}>Raw Manifest</Text>
-            <JSONTree data={manifest} />
+            <JSONTree data={descriptor} />
           </View>
         )}
       </ScrollView>
