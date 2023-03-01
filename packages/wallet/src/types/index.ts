@@ -1,2 +1,2 @@
-export * from "./CredentialAndManifest"
+export * from "./CredentialAndDescriptor"
 export * from "./NavigationElement"

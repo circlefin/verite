@@ -1,6 +1,6 @@
 ---
 sidebar_label: "Implementing a full-featured Verite Identity Wallet"
-sidebar_position: 8
+sidebar_position: 9
 ---
 
 # Verite Wallet Integration Guide

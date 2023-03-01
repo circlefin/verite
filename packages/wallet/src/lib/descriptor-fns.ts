@@ -1,8 +1,8 @@
 import { JSONPath } from "jsonpath-plus"
 import {
-  CredentialManifest,
   DisplayMapping,
   LabeledDisplayMapping,
+  OutputDescriptor,
   Verifiable,
   W3CCredential
 } from "verite"
@@ -30,9 +30,9 @@ const getDisplayProperty = (
     return property.text
   }
   // If DisplayMapping has a fallback, use it.
-  const manifestFallback = property.fallback
-  if (manifestFallback) {
-    fallback = manifestFallback
+  const descriptorFallback = property.fallback
+  if (descriptorFallback) {
+    fallback = descriptorFallback
   }
 
   // If we do not have a credential by this point, we can early return the fallback
@@ -70,7 +70,7 @@ const getLabeledDisplayProperty = (
 }
 
 export const getDisplayProperties = (
-  manifest: CredentialManifest,
+  descriptor: OutputDescriptor,
   credential: Verifiable<W3CCredential>
 ): {
   title?: string
@@ -78,11 +78,11 @@ export const getDisplayProperties = (
   description?: string
   properties?: { label: string; value?: string }[]
 } => {
-  const title = manifest.output_descriptors[0].display?.title
-  const subtitle = manifest.output_descriptors[0].display?.subtitle
-  const description = manifest.output_descriptors[0].display?.description
-  const properties = manifest.output_descriptors[0].display?.properties?.map(
-    (property) => getLabeledDisplayProperty(property, credential)
+  const title = descriptor.display?.title
+  const subtitle = descriptor.display?.subtitle
+  const description = descriptor.display?.description
+  const properties = descriptor.display?.properties?.map((property) =>
+    getLabeledDisplayProperty(property, credential)
   )
 
   return {
