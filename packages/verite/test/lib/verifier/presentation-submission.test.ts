@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 import jsonpath from "jsonpath"
 
-import { buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
+import { buildAndSignVerifiableCredential } from "../../../lib/issuer"
 import {
   kycAmlPresentationDefinition,
   KYCAML_CREDENTIAL_TYPE_NAME

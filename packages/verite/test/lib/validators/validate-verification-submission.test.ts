@@ -8,7 +8,7 @@ import {
   buildAndSignFulfillment,
   buildAndSignMultiVcFulfillment,
   buildAndSignVerifiableCredential
-} from "../../../lib/issuer/credential-fulfillment"
+} from "../../../lib/issuer"
 import {
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
   KYCAML_CREDENTIAL_TYPE_NAME

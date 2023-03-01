@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto"
 
-import { buildAndSignVerifiableCredential } from "../../lib/issuer/credential-fulfillment"
+import { buildAndSignVerifiableCredential } from "../../lib/issuer"
 import { attestationToCredentialType } from "../../lib/sample-data"
 import {
   buildIssuer,
