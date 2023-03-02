@@ -3,7 +3,7 @@ import jsonpath from "jsonpath"
 
 import { ValidationError } from "../errors"
 import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
+import { asyncSome, verifyVerifiablePresentation, isExpired } from "../utils"
 
 import type {
   DecodedPresentationSubmission,
@@ -252,7 +252,7 @@ export async function validateVerificationSubmission(
   definition: PresentationDefinition,
   options?: ValidateVerificationSubmissionOptions
 ): Promise<void> {
-  const presentation = await decodeVerifiablePresentation(submission, options)
+  const presentation = await verifyVerifiablePresentation(submission, options)
 
   /**
    * Check the verifiable credentials to ensure non are revoked. To check

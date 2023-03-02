@@ -29,46 +29,57 @@ import type {
   VerifyPresentationOptions
 } from "did-jwt-vc/src/types"
 
-/**
- * Encodes a Verifiable Credential as a JWT from passed payload object & issuer.
- */
-export async function encodeVerifiableCredential(
-  vcPayload: CredentialPayload | JwtCredentialPayload,
-  signer: Issuer,
-  options: CreateCredentialOptions = {}
-): Promise<JWT> {
+
+export function asJwtCredentialPayload (credentialPayload: CredentialPayload) : JwtCredentialPayload {
   const payload = Object.assign({
-    vc: vcPayload
+    vc: credentialPayload
   })
-  if (vcPayload.id) {
-    payload.jti = vcPayload.id
+  if (credentialPayload.id) {
+    payload.jti = credentialPayload.id
   }
-  if (vcPayload.issuanceDate) {
-    payload.nbf = Math.round(Date.parse(vcPayload.issuanceDate) / 1000)
+  if (credentialPayload.issuanceDate) {
+
+    payload.nbf = Math.round(Date.parse(credentialPayload.issuanceDate.toString()) / 1000)
   }
-  if (vcPayload.expirationDate) {
-    payload.exp = Math.round(Date.parse(vcPayload.expirationDate) / 1000)
+  if (credentialPayload.expirationDate) {
+    payload.exp = Math.round(Date.parse(credentialPayload.expirationDate.toString()) / 1000)
   }
-  if (vcPayload.issuer) {
-    payload.iss = isString(vcPayload.issuer)
-      ? vcPayload.issuer
-      : vcPayload.issuer.id
+  if (credentialPayload.issuer) {
+    payload.iss = isString(credentialPayload.issuer)
+      ? credentialPayload.issuer
+      : credentialPayload.issuer.id
   }
-  if (vcPayload.credentialSubject) {
+  if (credentialPayload.credentialSubject) {
     // assumes the same subject for all attestations
-    const sub = Array.isArray(vcPayload.credentialSubject)
-      ? vcPayload.credentialSubject[0].id
-      : vcPayload.credentialSubject.id
+    const sub = Array.isArray(credentialPayload.credentialSubject)
+      ? credentialPayload.credentialSubject[0].id
+      : credentialPayload.credentialSubject.id
     payload.sub = sub
   }
+  return payload
 
-  return createVerifiableCredentialJwt(payload, signer, options)
+}
+
+/**
+ * Signs a Verifiable Credential as a JWT from passed payload object & issuer.
+ */
+export async function signVerifiableCredential(
+  vcPayload: CredentialPayload | JwtCredentialPayload,
+  issuer: Issuer,
+  options: CreateCredentialOptions = {}
+): Promise<JWT> {
+  let payload = vcPayload
+  if (!vcPayload.hasOwnProperty('vc')) {
+    payload = asJwtCredentialPayload(vcPayload as CredentialPayload)
+  }
+  
+  return createVerifiableCredentialJwt(payload, issuer, options)
 }
 
 /**
  * Decodes a JWT with a Verifiable Credential payload.
  */
-export async function decodeVerifiableCredential(
+export async function verifyVerifiableCredential(
   vcJwt: JWT
 ): Promise<
   Verifiable<W3CCredential> | RevocableCredential | StatusList2021Credential
@@ -112,12 +123,12 @@ export async function decodeVerifiableCredential(
 }
 
 /**
- * Encodes a JWT with the Verifiable Presentation payload.
+ * Signs a JWT with the Verifiable Presentation payload.
  */
-export async function encodeVerifiablePresentation(
+export async function signVerifiablePresentation(
   subject: string,
   vcJwt: VerifiableCredential | VerifiableCredential[] = [],
-  signer: Issuer,
+  issuer: Issuer,
   options?: CreatePresentationOptions,
   type?: string[],
   extra: Record<string, unknown> = {}
@@ -131,13 +142,13 @@ export async function encodeVerifiablePresentation(
       ...extra
     }
   })
-  return createVerifiablePresentationJwt(payload, signer, options)
+  return createVerifiablePresentationJwt(payload, issuer, options)
 }
 
 /**
- * Decode a JWT with a Verifiable Presentation payload.
+ * Verify a JWT with a Verifiable Presentation payload.
  */
-export async function decodeVerifiablePresentation(
+export async function verifyVerifiablePresentation(
   vpJwt: JWT,
   options?: VerifyPresentationOptions
 ): Promise<Verifiable<W3CPresentation> | RevocablePresentation> {

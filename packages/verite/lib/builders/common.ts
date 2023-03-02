@@ -5,8 +5,13 @@ import {
   DataMappingSchema,
   DisplayMapping,
   InputDescriptorConstraintDirective,
-  InputDescriptorConstraintSubjectConstraint
+  InputDescriptorConstraintSubjectConstraint,
 } from "../../types"
+
+import {
+  VC_CONTEXT_URI,
+  VERITE_VOCAB_URI
+} from "../utils"
 
 // Common credential / manifest fields
 export const CREDENTIAL_SCHEMA_PROPERTY_NAME = "credentialSchema"
@@ -15,6 +20,7 @@ export const HOLDER_PROPERTY_NAME = "holder"
 export const ID_PROPERTY_NAME = "id"
 export const EDDSA = "EdDSA"
 
+export const DEFAULT_CONTEXT = [VC_CONTEXT_URI, { "@vocab": VERITE_VOCAB_URI }]
 
 export const CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0 =
   "https://identity.foundation/credential-manifest/spec/v1.0.0/"
@@ -77,3 +83,4 @@ export const AsSubjectConstraint = (
   }
   return subjectConstraint
 }
+

@@ -16,8 +16,8 @@ import { HOLDER_PROPERTY_NAME } from "../builders/common"
 import {
   buildIssuer,
   CREDENTIAL_APPLICATION_TYPE_NAME,
-  decodeVerifiablePresentation,
-  encodeVerifiablePresentation,
+  verifyVerifiablePresentation,
+  signVerifiablePresentation,
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
 
@@ -60,7 +60,7 @@ export async function buildCredentialApplication(
     presentation_submission: presentationSubmission
   }
 
-  const vp = await encodeVerifiablePresentation(
+  const vp = await signVerifiablePresentation(
     client.did,
     undefined,
     client,
@@ -85,7 +85,7 @@ export async function decodeCredentialApplication(
   credentialApplication: EncodedCredentialApplication,
   options?: VerifyPresentationOptions
 ): Promise<DecodedCredentialApplication> {
-  const decodedPresentation = await decodeVerifiablePresentation(
+  const decodedPresentation = await verifyVerifiablePresentation(
     credentialApplication,
     options
   )

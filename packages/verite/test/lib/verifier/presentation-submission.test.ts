@@ -8,8 +8,8 @@ import {
 } from "../../../lib/sample-data"
 import {
   buildIssuer,
-  decodeVerifiableCredential,
-  decodeVerifiablePresentation,
+  verifyVerifiableCredential,
+  verifyVerifiablePresentation,
   randomDidKey
 } from "../../../lib/utils"
 import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
@@ -33,7 +33,7 @@ describe("buildPresentationSubmission", () => {
       KYCAML_CREDENTIAL_TYPE_NAME,
       { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
     )
-    const credential = await decodeVerifiableCredential(encodedCredential)
+    const credential = await verifyVerifiableCredential(encodedCredential)
 
     // When building a Presentation Submission, we must reference a
     // `definition_id` that identifies the set of definitions we are
@@ -48,7 +48,7 @@ describe("buildPresentationSubmission", () => {
       credential
     )
 
-    const submission = await decodeVerifiablePresentation(encodedSubmission)
+    const submission = await verifyVerifiablePresentation(encodedSubmission)
 
     // In this example, the Presentation Submission is for a Presentation
     // Request requiring a KYC credential.

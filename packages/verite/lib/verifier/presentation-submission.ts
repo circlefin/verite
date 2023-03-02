@@ -10,7 +10,7 @@ import {
 } from "../../types"
 import {
   buildIssuer,
-  encodeVerifiablePresentation,
+  signVerifiablePresentation,
   PRESENTAION_SUBMISSION_TYPE_NAME,
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
@@ -39,7 +39,7 @@ export async function buildPresentationSubmission(
     )
   }
 
-  const vp = await encodeVerifiablePresentation(
+  const vp = await signVerifiablePresentation(
     client.did,
     verifiableCredential,
     client,

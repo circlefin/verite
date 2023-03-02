@@ -7,7 +7,7 @@ import {
   buildKycAmlManifest,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
+import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
@@ -46,7 +46,7 @@ describe("issuance", () => {
     /**
      * The issuer validates the credential application
      */
-    const credentialApplication = (await decodeVerifiablePresentation(
+    const credentialApplication = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -67,7 +67,7 @@ describe("issuance", () => {
       }
     )
 
-    const verifiablePresentation = (await decodeVerifiablePresentation(
+    const verifiablePresentation = (await verifyVerifiablePresentation(
       fulfillment
     )) as RevocablePresentation
 
@@ -147,7 +147,7 @@ describe("issuance", () => {
     /**
      * The issuer validates the credential application
      */
-    const credentialApplication = (await decodeVerifiablePresentation(
+    const credentialApplication = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
     await validateCredentialApplication(credentialApplication, manifest)
@@ -167,7 +167,7 @@ describe("issuance", () => {
       }
     )
 
-    const verifiablePresentation = (await decodeVerifiablePresentation(
+    const verifiablePresentation = (await verifyVerifiablePresentation(
       fulfillment
     )) as RevocablePresentation
 

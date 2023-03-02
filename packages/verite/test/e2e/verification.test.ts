@@ -7,7 +7,7 @@ import {
   buildKycVerificationOffer,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
+import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
@@ -44,7 +44,7 @@ describe("verification", () => {
       kycRequest.body.presentation_definition,
       verifiableCredentials
     )
-    const submission = await decodeVerifiablePresentation(encodedSubmission)
+    const submission = await verifyVerifiablePresentation(encodedSubmission)
 
     expect(submission.presentation_submission!.descriptor_map).toEqual([
       {
@@ -72,7 +72,7 @@ async function getClientVerifiableCredential(
     clientDidKey,
     manifest
   )
-  const application = (await decodeVerifiablePresentation(
+  const application = (await verifyVerifiablePresentation(
     encodedApplication
   )) as DecodedCredentialApplication
   await validateCredentialApplication(application, manifest)
@@ -89,7 +89,7 @@ async function getClientVerifiableCredential(
     }
   )
 
-  const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+  const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
 
   return fulfillmentVP.verifiableCredential as RevocableCredential[]
 }

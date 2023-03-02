@@ -8,7 +8,7 @@ import {
 } from "../../../lib/sample-data"
 import {
   buildIssuer,
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   randomDidKey
 } from "../../../lib/utils"
 import { StatusList2021Entry } from "../../../types"
@@ -42,7 +42,7 @@ describe("buildAndSignVerifiableCredential", () => {
       }
     )
 
-    const decoded = await decodeVerifiableCredential(vc)
+    const decoded = await verifyVerifiableCredential(vc)
     expect(decoded).toMatchObject({
       credentialSubject: {
         KYCAMLAttestation: {
@@ -92,7 +92,7 @@ describe("buildAndSignVerifiableCredential", () => {
       }
     )
 
-    const decoded = await decodeVerifiableCredential(vc)
+    const decoded = await verifyVerifiableCredential(vc)
 
     expect(decoded.credentialStatus).toEqual({
       id: "https://dmv.example.gov/credentials/status/3#94567",
@@ -118,7 +118,7 @@ describe("buildAndSignVerifiableCredential", () => {
       attestations,
       "HybridCredential"
     )
-    const fulfillment = await decodeVerifiableCredential(encodedVC)
+    const fulfillment = await verifyVerifiableCredential(encodedVC)
 
     expect(fulfillment).toMatchObject({
       credentialSubject: [

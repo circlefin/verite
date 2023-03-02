@@ -3,8 +3,8 @@ import fetch from "cross-fetch"
 import { has } from "lodash"
 
 import {
-  encodeVerifiableCredential,
-  decodeVerifiableCredential,
+  signVerifiableCredential,
+  verifyVerifiableCredential,
   generateBitstring
 } from "../utils"
 
@@ -76,7 +76,7 @@ export const generateEncodedRevocationList = async ({
     }
   }
 
-  return encodeVerifiableCredential(vcPayload, signer)
+  return signVerifiableCredential(vcPayload, signer)
 }
 
 /**
@@ -90,7 +90,7 @@ export const generateRevocationList = async (
 ): Promise<StatusList2021Credential> => {
   const vcJwt = await generateEncodedRevocationList(opts)
 
-  return decodeVerifiableCredential(vcJwt) as Promise<StatusList2021Credential>
+  return verifyVerifiableCredential(vcJwt) as Promise<StatusList2021Credential>
 }
 
 /**
@@ -227,7 +227,7 @@ export async function fetchStatusList(
     if (response.status === 200) {
       const vcJwt = await response.text()
 
-      return decodeVerifiableCredential(
+      return verifyVerifiableCredential(
         vcJwt
       ) as Promise<StatusList2021Credential>
     }

@@ -6,8 +6,8 @@ import {
 } from "../../../lib/issuer"
 import {
   asyncMap,
-  decodeVerifiableCredential,
-  encodeVerifiableCredential,
+  verifyVerifiableCredential,
+  signVerifiableCredential,
   generateBitstring,
   buildIssuer
 } from "../../../lib/utils"
@@ -62,8 +62,8 @@ const credentialFactory = async (
       statusListCredential: "http://example.com/revocation"
     }
   }
-  const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
-  return decodeVerifiableCredential(vcJwt) as Promise<RevocableCredential>
+  const vcJwt = await signVerifiableCredential(vcPayload, signer)
+  return verifyVerifiableCredential(vcJwt) as Promise<RevocableCredential>
 }
 
 const statusListFactory = async (statusList: number[]) => {
@@ -129,8 +129,8 @@ describe("Status List 2021", () => {
           foo: "bar"
         }
       }
-      const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
-      const credential = await decodeVerifiableCredential(vcJwt)
+      const vcJwt = await signVerifiableCredential(vcPayload, signer)
+      const credential = await verifyVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
       expect(revoked).toBe(false)
@@ -172,8 +172,8 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
-      const credential = await decodeVerifiableCredential(vcJwt)
+      const vcJwt = await signVerifiableCredential(vcPayload, signer)
+      const credential = await verifyVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
       expect(revoked).toBe(false)
@@ -215,8 +215,8 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await encodeVerifiableCredential(vcPayload, signer)
-      const credential = await decodeVerifiableCredential(vcJwt)
+      const vcJwt = await signVerifiableCredential(vcPayload, signer)
+      const credential = await verifyVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
       expect(revoked).toBe(true)

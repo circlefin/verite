@@ -4,7 +4,7 @@ import { buildAndSignVerifiableCredential } from "../../lib/issuer"
 import { attestationToCredentialType } from "../../lib/sample-data"
 import {
   buildIssuer,
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   randomDidKey
 } from "../../lib/utils"
 import { creditScoreAttestationFixture } from "../fixtures/attestations"
@@ -25,5 +25,5 @@ export async function generateVerifiableCredential(): Promise<
     { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
   )
 
-  return decodeVerifiableCredential(jwt)
+  return verifyVerifiableCredential(jwt)
 }

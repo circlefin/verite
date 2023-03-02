@@ -12,28 +12,25 @@ import {
 } from "../../types"
 import {
   CREDENTIAL_RESPONSE_TYPE_NAME,
-  VC_CONTEXT_URI,
-  VERIFIABLE_PRESENTATION_TYPE_NAME,
-  VERITE_VOCAB_URI
+  VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
 import {
-  encodeVerifiablePresentation
+  signVerifiablePresentation
 } from "../utils/credentials"
 
 import type {
   CreatePresentationOptions
 } from "did-jwt-vc/src/types"
-import { buildVerifiableCredential, signVerifiableCredential } from "./credential"
-
-const DEFAULT_CONTEXT = [VC_CONTEXT_URI, { "@vocab": VERITE_VOCAB_URI }]
+import { buildAndSignVerifiableCredential, buildVerifiableCredential } from "./credential"
 
 /**
+ * @decprecated use build and sign separately
  * Build a VerifiablePresentation containing a list of attestations.
  *
  * Creates a single Verifiable Credential.
  */
 export async function buildAndSignFulfillment(
-  signer: Issuer,
+  issuer: Issuer,
   subject: string | DidKey,
   manifest: CredentialManifest,
   attestation: Attestation | Attestation[],
@@ -41,20 +38,21 @@ export async function buildAndSignFulfillment(
   payload: Partial<CredentialPayload> = {},
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const encodedCredentials = await buildVerifiableCredential(
-    signer,
+  const encodedCredentials = await buildAndSignVerifiableCredential(
+    issuer,
     subject,
     attestation,
     credentialType,
-    payload
+    payload,
+    options
   )
-  const signedCredential = await signVerifiableCredential(signer, encodedCredentials, options)
+
   const format = ClaimFormat.JwtVc
 
-  const encodedPresentation = await encodeVerifiablePresentation(
-    signer.did,
-    signedCredential,
-    signer,
+  const encodedPresentation = await signVerifiablePresentation(
+    issuer.did,
+    encodedCredentials,
+    issuer,
     options,
     [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
     {
@@ -80,15 +78,15 @@ export async function buildAndSignFulfillment(
  * Build a VerifiablePresentation from a list of signed Verifiable Credentials.
  */
 export async function buildAndSignMultiVcFulfillment(
-  signer: Issuer,
+  issuer: Issuer,
   manifest: CredentialManifest,
   encodedCredentials: string[],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const encodedPresentation = await encodeVerifiablePresentation(
-    signer.did,
+  const encodedPresentation = await signVerifiablePresentation(
+    issuer.did,
     encodedCredentials,
-    signer,
+    issuer,
     options,
     [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
     {
@@ -108,8 +106,5 @@ export async function buildAndSignMultiVcFulfillment(
   )
 
   return encodedPresentation as unknown as EncodedCredentialFulfillment
-}
-function parseSubjectId(subject: string | DidKey) {
-  throw new Error("Function not implemented.")
 }
 

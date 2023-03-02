@@ -18,7 +18,7 @@ import {
   buildCreditScoreVerificationOffer,
   buildKycVerificationOffer
 } from "../../../lib/sample-data/verification-offer"
-import { decodeVerifiablePresentation } from "../../../lib/utils/credentials"
+import { verifyVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
 import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
@@ -55,7 +55,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -73,7 +73,7 @@ describe("Submission validator", () => {
       }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildKycVerificationOffer(
@@ -106,7 +106,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -121,7 +121,7 @@ describe("Submission validator", () => {
       { credentialSchema: CREDIT_SCORE_ATTESTATION_SCHEMA_VC_OBJ }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildCreditScoreVerificationOffer(
@@ -156,7 +156,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -202,7 +202,7 @@ describe("Submission validator", () => {
       creds
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(encodedFulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(encodedFulfillment)
     const clientVC = fulfillmentVP.verifiableCredential!
 
     // create hybrid pres def
@@ -241,7 +241,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -259,7 +259,7 @@ describe("Submission validator", () => {
       }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildKycVerificationOffer(
@@ -291,7 +291,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -307,7 +307,7 @@ describe("Submission validator", () => {
     )
 
     const minimumCreditScore = creditScoreAttestationFixture.score + 1
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildCreditScoreVerificationOffer(
@@ -340,7 +340,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -358,7 +358,7 @@ describe("Submission validator", () => {
       }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     // Generate Credit Score Request, even though we have a KYC credential
@@ -392,7 +392,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -410,7 +410,7 @@ describe("Submission validator", () => {
       }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildKycVerificationOffer(
@@ -443,7 +443,7 @@ describe("Submission validator", () => {
       clientDidKey,
       manifest
     )
-    const application = (await decodeVerifiablePresentation(
+    const application = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
 
@@ -461,7 +461,7 @@ describe("Submission validator", () => {
       }
     )
 
-    const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+    const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
     const clientVC = fulfillmentVP.verifiableCredential![0]
 
     const verificationRequest = buildKycVerificationOffer(

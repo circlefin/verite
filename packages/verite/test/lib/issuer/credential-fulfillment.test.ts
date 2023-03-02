@@ -12,7 +12,7 @@ import {
 } from "../../../lib/sample-data"
 import {
   buildIssuer,
-  decodeVerifiablePresentation,
+  verifyVerifiablePresentation,
   randomDidKey
 } from "../../../lib/utils"
 import {
@@ -38,7 +38,7 @@ describe("buildAndSignFulfillment", () => {
     )
 
     // The client can then decode the presentation
-    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
+    const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
 
     // The fulfillment looks like this:
     expect(fulfillment).toMatchObject({
@@ -108,7 +108,7 @@ describe("buildAndSignFulfillment", () => {
         credentialStatus: revocationListFixture
       }
     )
-    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
+    const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
     expect(fulfillment.credential_response).toBeDefined()
     expect(fulfillment.credential_response.manifest_id).toEqual(
       "KYCAMLManifest"
@@ -163,7 +163,7 @@ describe("buildAndSignFulfillment", () => {
     )
 
     // The client can then decode the presentation
-    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
+    const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
     expect(fulfillment).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation", "CredentialResponse"],
