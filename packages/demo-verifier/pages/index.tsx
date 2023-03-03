@@ -12,7 +12,7 @@ import {
   buildIssuer,
   verifyVerifiableCredential,
   RevocableCredential,
-  buildPresentationSubmission,
+  buildAndSignPresentationSubmission,
   VerificationOffer,
   ChallengeTokenUrlWrapper,
   KYCAML_CREDENTIAL_TYPE_NAME
@@ -110,7 +110,7 @@ export default function Home(): JSX.Element {
     credential: Verifiable<W3CCredential> | RevocableCredential
   ) => {
     const subject = holder
-    const request = await buildPresentationSubmission(
+    const request = await buildAndSignPresentationSubmission(
       subject,
       verificationRequest.body.presentation_definition,
       credential

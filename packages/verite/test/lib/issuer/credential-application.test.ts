@@ -2,7 +2,7 @@ import { randomBytes } from "crypto"
 
 import { VerificationError } from "../../../lib/errors"
 import {
-  buildCredentialApplication,
+  buildAndSignCredentialApplication,
   verifyCredentialApplication
 } from "../../../lib/issuer/credential-application"
 import { buildKycAmlManifest } from "../../../lib/sample-data/manifests"
@@ -10,7 +10,7 @@ import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import { ClaimFormat } from "../../../types"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
-describe("buildCredentialApplication", () => {
+describe("buildAndSignCredentialApplication", () => {
   it("builds a valid credential application", async () => {
     const issuerDidKey = await randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
@@ -20,7 +20,7 @@ describe("buildCredentialApplication", () => {
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const kycManifest = buildKycAmlManifest(credentialIssuer)
 
-    const credentialApplication = await buildCredentialApplication(
+    const credentialApplication = await buildAndSignCredentialApplication(
       clientDidKey,
       kycManifest
     )
@@ -43,7 +43,10 @@ describe("verifyCredentialApplication", () => {
   it("decodes the Credential Application", async () => {
     const clientDidKey = randomDidKey(randomBytes)
     const { manifest } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const application = await buildAndSignCredentialApplication(
+      clientDidKey,
+      manifest
+    )
 
     const decoded = await verifyCredentialApplication(application)
 

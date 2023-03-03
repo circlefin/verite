@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
   buildAndSignFulfillment,
-  buildPresentationSubmission,
+  buildAndSignPresentationSubmission,
   verifyVerifiablePresentation,
   randomDidKey,
   buildKycVerificationOffer,
@@ -37,7 +37,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildPresentationSubmission(
+    const submission = await buildAndSignPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -75,7 +75,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildPresentationSubmission(
+    const submission = await buildAndSignPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -122,7 +122,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildPresentationSubmission(
+    const submission = await buildAndSignPresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,

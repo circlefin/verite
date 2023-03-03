@@ -2,11 +2,11 @@ import { randomBytes } from "crypto"
 import nock from "nock"
 
 import {
-  buildCredentialApplication,
+  buildAndSignCredentialApplication,
+  buildAndSignCredentialFulfillment,
+  buildAndSignVerifiableCredential,
   buildCredentialFulfillment,
-  buildVerifiableCredential,
-  constructCredentialFulfillment,
-  constructVerifiableCredential
+  buildVerifiableCredential
 } from "../../lib/issuer"
 import {
   buildKycAmlManifest,
@@ -47,7 +47,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const encodedApplication = await buildCredentialApplication(
+    const encodedApplication = await buildAndSignCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -61,7 +61,7 @@ describe("issuance", () => {
 
     await validateCredentialApplication(credentialApplication, manifest)
 
-    const vc = await constructVerifiableCredential(
+    const vc = await buildVerifiableCredential(
       issuer.did,
       clientDidKey.subject,
       kycAmlAttestationFixture,
@@ -72,7 +72,7 @@ describe("issuance", () => {
       }
     )
     const jwt = await signVerifiableCredential(vc, issuer)
-    const fulfillment = await constructCredentialFulfillment(manifest, jwt)
+    const fulfillment = await buildCredentialFulfillment(manifest, jwt)
     const signedVp = await signVerifiablePresentation(fulfillment, issuer)
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
@@ -147,7 +147,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const encodedApplication = await buildCredentialApplication(
+    const encodedApplication = await buildAndSignCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -163,7 +163,7 @@ describe("issuance", () => {
     /**
      * The issuer builds and signs a verifiable credential
      */
-    const vc = await buildVerifiableCredential(
+    const vc = await buildAndSignVerifiableCredential(
       issuer,
       clientDidKey.subject,
       kycAmlAttestationFixture,
@@ -177,7 +177,11 @@ describe("issuance", () => {
     /**
      * The issuer builds and signs a fulfillment
      */
-    const fulfillment = await buildCredentialFulfillment(issuer, manifest, vc)
+    const fulfillment = await buildAndSignCredentialFulfillment(
+      issuer,
+      manifest,
+      vc
+    )
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
       fulfillment

@@ -2,9 +2,9 @@ import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 
 import {
-  buildCredentialFulfillment,
-  buildCredentialApplication,
-  buildVerifiableCredential
+  buildAndSignCredentialFulfillment,
+  buildAndSignCredentialApplication,
+  buildAndSignVerifiableCredential
 } from "../../lib/issuer"
 import {
   buildKycVerificationOffer,
@@ -16,7 +16,7 @@ import {
   validateCredentialApplication,
   validateVerificationSubmission
 } from "../../lib/validators"
-import { buildPresentationSubmission } from "../../lib/verifier/presentation-submission"
+import { buildAndSignPresentationSubmission } from "../../lib/verifier/presentation-submission"
 import {
   DecodedCredentialApplication,
   DidKey,
@@ -44,7 +44,7 @@ describe("verification", () => {
     )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
-    const encodedSubmission = await buildPresentationSubmission(
+    const encodedSubmission = await buildAndSignPresentationSubmission(
       clientDidKey,
       kycRequest.body.presentation_definition,
       verifiableCredentials
@@ -73,7 +73,7 @@ async function getClientVerifiableCredential(
   const { manifest, issuer } = await generateManifestAndIssuer()
 
   // 0. PREREQ: Ensure client has a valid KYC credential
-  const encodedApplication = await buildCredentialApplication(
+  const encodedApplication = await buildAndSignCredentialApplication(
     clientDidKey,
     manifest
   )
@@ -82,7 +82,7 @@ async function getClientVerifiableCredential(
   )) as DecodedCredentialApplication
   await validateCredentialApplication(application, manifest)
 
-  const vc = await buildVerifiableCredential(
+  const vc = await buildAndSignVerifiableCredential(
     issuer,
     clientDidKey.subject,
     kycAmlAttestationFixture,
@@ -93,7 +93,11 @@ async function getClientVerifiableCredential(
     }
   )
 
-  const fulfillment = await buildCredentialFulfillment(issuer, manifest, vc)
+  const fulfillment = await buildAndSignCredentialFulfillment(
+    issuer,
+    manifest,
+    vc
+  )
 
   const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
 

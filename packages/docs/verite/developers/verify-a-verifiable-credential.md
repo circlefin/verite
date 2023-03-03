@@ -47,9 +47,9 @@ const decodedVc = await verifyVerifiableCredential(vc.proof.jwt)
 Then, an example of building the presentation submission using the decoded verifiable credential:
 
 ```ts
-import { buildPresentationSubmission } from "verite"
+import { buildAndSignPresentationSubmission } from "verite"
 
-const submission = await buildPresentationSubmission(
+const submission = await buildAndSignPresentationSubmission(
   clientDidKey,
   offer.body.presentation_definition,
   decodedVc
@@ -84,7 +84,7 @@ const decoded = await verifyVerifiablePresentation(presentation)
 const vc = decoded.verifiableCredential[0]
 const decodedVc = await verifyVerifiableCredential(vc.proof.jwt)
 
-const submission = await buildPresentationSubmission(
+const submission = await buildAndSignPresentationSubmission(
   clientDidKey,
   offer.body.presentation_definition,
   decodedVc

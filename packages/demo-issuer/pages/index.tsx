@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react"
 import { useState } from "react"
 import {
   randomDidKey,
-  buildCredentialApplication,
+  buildAndSignCredentialApplication,
   verifyVerifiablePresentation,
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
@@ -103,7 +103,10 @@ export default function Home({
   // API call to apply for a credential
   const applyForCredential = async (offer: CredentialOffer) => {
     const manifest = offer.body.manifest
-    const application = await buildCredentialApplication(subject, manifest)
+    const application = await buildAndSignCredentialApplication(
+      subject,
+      manifest
+    )
 
     const response = await fetch(offer.reply_url, {
       method: "POST",

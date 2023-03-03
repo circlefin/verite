@@ -27,7 +27,7 @@ import {
   VC_CONTEXT_URI
 } from "../utils"
 
-export function constructCredentialApplication(
+export function buildCredentialApplication(
   manifest: CredentialManifest,
   presentationType: string | string[] = [
     VERIFIABLE_PRESENTATION_TYPE_NAME,
@@ -79,13 +79,13 @@ export function constructCredentialApplication(
  *
  * @returns an encoded & signed application that can be submitted to the issuer
  */
-export async function buildCredentialApplication(
+export async function buildAndSignCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest,
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
-  const application = constructCredentialApplication(manifest)
+  const application = buildCredentialApplication(manifest)
   const vp = await signVerifiablePresentation(application, client, options)
 
   return vp

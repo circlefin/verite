@@ -13,9 +13,9 @@ import { signVerifiableCredential } from "../utils"
 import type { CreateCredentialOptions } from "did-jwt-vc/src/types"
 
 /**
- * Construct a Credential Payload containing an attestation for the given holder.
+ * Build a Verifiable Credential (for subsequent signing) containing an attestation for the given holder.
  */
-export async function constructVerifiableCredential(
+export async function buildVerifiableCredential(
   issuerDid: string,
   subjectDid: string,
   attestation: Attestation | Attestation[],
@@ -37,11 +37,13 @@ function parseSubjectId(subject: string | DidKey): string {
 /**
  *  Build and sign a VerifiableCredential containing attestations for the subject.
  *
- * "Build" overloads provide convenience wrappers for 2 steps: constructing and signing.
- * You can call the construct and sign steps separately for more fine-grained control.
+ * "Build and sign" overloads provide convenience wrappers for 2 steps: building and signing.
+ * You can call the wrapped functions separately for more fine-grained control.
+ *
+ * Signing is forwarded to the did-jwt-vc library.
  *
  */
-export async function buildVerifiableCredential(
+export async function buildAndSignVerifiableCredential(
   issuer: Issuer,
   subject: string | DidKey,
   attestation: Attestation | Attestation[],
@@ -49,7 +51,7 @@ export async function buildVerifiableCredential(
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
-  const credentialPayload = await constructVerifiableCredential(
+  const credentialPayload = await buildVerifiableCredential(
     issuer.did,
     parseSubjectId(subject),
     attestation,

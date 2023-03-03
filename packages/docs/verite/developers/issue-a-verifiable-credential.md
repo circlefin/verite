@@ -70,12 +70,12 @@ This manifest contains instructions for the subject to use to request a VC.
 The subject uses that manifest to build a “Credential Application”, which serves as a request for a VC. For example, a subject could create the application as such:
 
 ```ts
-import { randomDidKey, buildCredentialApplication } from "verite"
+import { randomDidKey, buildAndSignCredentialApplication } from "verite"
 
 // The subject needs a did:key, generate a random one:
 const subjectDidKey = randomDidKey(randomBytes)
 
-const application = await buildCredentialApplication(subject, manifest)
+const application = await buildAndSignCredentialApplication(subject, manifest)
 ```
 
 ## Step 3: Issue the Verifiable Credential

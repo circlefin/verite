@@ -22,7 +22,7 @@ import {
 
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
 
-export function buildSubmission(
+export function buildPresentationSubmission(
   presentationDefinition: PresentationDefinition,
   verifiableCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
   presentationType: string | string[] = [
@@ -59,14 +59,14 @@ export function buildSubmission(
   return payload
 }
 
-export async function buildPresentationSubmission(
+export async function buildAndSignPresentationSubmission(
   didKey: DidKey,
   presentationDefinition: PresentationDefinition,
   verifiableCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
   options?: VerifyPresentationOptions
 ): Promise<JWT> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
-  const submission = buildSubmission(
+  const submission = buildPresentationSubmission(
     presentationDefinition,
     verifiableCredential
   )

@@ -19,9 +19,9 @@ import {
   VC_CONTEXT_URI,
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
-import { buildVerifiableCredential } from "./credential"
+import { buildAndSignVerifiableCredential } from "./credential"
 
-export function constructCredentialFulfillment(
+export function buildCredentialFulfillment(
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],
   presentationType: string | string[] = [
@@ -61,7 +61,7 @@ export function constructCredentialFulfillment(
 
 /**
  * @deprecated
- * Keeping for backwards compatibility. Signature is too complex; use buildVerifiableCredential and buildFulfillment instead.
+ * Keeping for backwards compatibility. Signature is too confisuing and complex; use buildAndSignVerifiableCredential and buildAndSignCredentialFulfillment instead.
  */
 export async function buildAndSignFulfillment(
   issuer: Issuer,
@@ -77,7 +77,7 @@ export async function buildAndSignFulfillment(
   ],
   presentationOptions?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const encodedCredentials = await buildVerifiableCredential(
+  const encodedCredentials = await buildAndSignVerifiableCredential(
     issuer,
     subject,
     attestation,
@@ -86,7 +86,7 @@ export async function buildAndSignFulfillment(
     options
   )
 
-  return buildCredentialFulfillment(
+  return buildAndSignCredentialFulfillment(
     issuer,
     manifest,
     encodedCredentials,
@@ -96,13 +96,15 @@ export async function buildAndSignFulfillment(
 }
 
 /**
- * Construct and sign a Credential Fulfillment (which is a VerifiablePresentation) from a list of signed Verifiable Credentials.
+ * Build and sign a Credential Fulfillment (which is a VerifiablePresentation) from a list of signed Verifiable Credentials.
  *
- * "Build" overloads provide convenience wrappers for 2 steps: constructing and signing.
- * You can call the construct and sign steps separately for more fine-grained control.
+ * "Build and sign" overloads provide convenience wrappers for 2 steps: building and signing.
+ * You can call the wrapped functions separately for more fine-grained control.
+ *
+ * Signing is forwarded to the did-jwt-vc library.
  *
  */
-export async function buildCredentialFulfillment(
+export async function buildAndSignCredentialFulfillment(
   issuer: Issuer,
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],
@@ -112,16 +114,16 @@ export async function buildCredentialFulfillment(
   ],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const fulfillment = constructCredentialFulfillment(
+  const fulfillment = buildCredentialFulfillment(
     manifest,
     encodedCredentials,
     presentationType
   )
-  const encodedPresentation = await signVerifiablePresentation(
+  const signedPresentation = await signVerifiablePresentation(
     fulfillment,
     issuer,
     options
   )
 
-  return encodedPresentation as unknown as EncodedCredentialFulfillment
+  return signedPresentation as unknown as EncodedCredentialFulfillment
 }
