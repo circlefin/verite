@@ -21,7 +21,6 @@ import {
 } from "../utils"
 import { buildVerifiableCredential } from "./credential"
 
-// TODO: fix up after making consistent with latest Credential Manifest
 export function constructCredentialFulfillment(
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],

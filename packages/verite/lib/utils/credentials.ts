@@ -238,7 +238,6 @@ export async function signVerifiablePresentation(
   issuer: Issuer,
   options: CreatePresentationOptions = {}
 ): Promise<JWT> {
-  // TODO: also accept PresentationPayload?
   return createVerifiablePresentationJwt(vpPayload, issuer, options)
 }
 
@@ -250,7 +249,6 @@ export async function verifyVerifiablePresentation(
   options?: VerifyPresentationOptions
 ): Promise<Verifiable<W3CPresentation> | RevocablePresentation> {
   try {
-    // TODO: ensure this verifies all nested credentials
     const res = await verifyPresentation(vpJwt, didResolver, options)
     if (res.verifiablePresentation.vp) {
       // did-jwt-vc leaves properties it doesn't recognize in vp; move them

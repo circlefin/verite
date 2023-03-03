@@ -91,7 +91,6 @@ describe("buildAndSignFulfillment", () => {
     })
   })
 
-  // TODO: does this duplicate the test above?
   it("builds and signs a kyc/aml fulfillment", async () => {
     const issuerDidKey = await randomDidKey(randomBytes)
     const clientDidKey = await randomDidKey(randomBytes)
