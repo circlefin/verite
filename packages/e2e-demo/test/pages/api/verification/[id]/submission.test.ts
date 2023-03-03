@@ -4,7 +4,7 @@ import {
   buildIssuer,
   buildAndSignFulfillment,
   buildPresentationSubmission,
-  decodeVerifiablePresentation,
+  verifyVerifiablePresentation,
   randomDidKey,
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer,
@@ -170,7 +170,7 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
     { credentialSchema: kycAttestationSchema }
   )
 
-  const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+  const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
 
   return fulfillmentVP.verifiableCredential[0]
 }

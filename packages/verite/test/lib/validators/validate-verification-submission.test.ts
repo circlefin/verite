@@ -6,8 +6,8 @@ import { ValidationError } from "../../../lib/errors"
 import { buildCredentialApplication } from "../../../lib/issuer/credential-application"
 import {
   buildAndSignFulfillment,
-  buildAndSignMultiVcFulfillment,
-  buildAndSignVerifiableCredential
+  buildCredentialFulfillment,
+  buildVerifiableCredential
 } from "../../../lib/issuer"
 import {
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
@@ -166,7 +166,7 @@ describe("Submission validator", () => {
     const attestation2 = creditScoreAttestationFixture
 
     // Builds a signed Verifiable Credential
-    const vc1 = await buildAndSignVerifiableCredential(
+    const vc1 = await buildVerifiableCredential(
       issuer,
       clientDidKey,
       attestation1,
@@ -180,7 +180,7 @@ describe("Submission validator", () => {
       }
     )
 
-    const vc2 = await buildAndSignVerifiableCredential(
+    const vc2 = await buildVerifiableCredential(
       issuer,
       clientDidKey,
       attestation2,
@@ -196,7 +196,7 @@ describe("Submission validator", () => {
 
     const creds = [vc1, vc2]
 
-    const encodedFulfillment = await buildAndSignMultiVcFulfillment(
+    const encodedFulfillment = await buildCredentialFulfillment(
       issuer,
       manifest,
       creds

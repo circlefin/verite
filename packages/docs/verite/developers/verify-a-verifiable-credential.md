@@ -35,13 +35,13 @@ Verite exposes libraries to help with this. First, an example of extracting the 
 
 ```ts
 import {
-  decodeVerifiablePresentation,
-  decodeVerifiableCredential
+  verifyVerifiablePresentation,
+  verifyVerifiableCredential
 } from "verite"
 
-const decoded = await decodeVerifiablePresentation(presentation)
+const decoded = await verifyVerifiablePresentation(presentation)
 const vc = decoded.verifiableCredential[0]
-const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+const decodedVc = await verifyVerifiableCredential(vc.proof.jwt)
 ```
 
 Then, an example of building the presentation submission using the decoded verifiable credential:
@@ -80,9 +80,9 @@ const offer = buildKycVerificationOffer(
 )
 
 // 2. CLIENT: Decode the verifiable credential from the presentation and create verification submission (wraps a presentation submission)
-const decoded = await decodeVerifiablePresentation(presentation)
+const decoded = await verifyVerifiablePresentation(presentation)
 const vc = decoded.verifiableCredential[0]
-const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+const decodedVc = await verifyVerifiableCredential(vc.proof.jwt)
 
 const submission = await buildPresentationSubmission(
   clientDidKey,

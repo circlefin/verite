@@ -2,14 +2,14 @@ import {
   attestationToCredentialType,
   buildAndSignFulfillment,
   CredentialManifest,
-  decodeCredentialApplication,
+  verifyCredentialApplication,
   EncodedCredentialFulfillment,
   isRevocable,
   RevocableCredential,
   StatusList2021Entry,
   buildIssuer,
   revokeCredential,
-  decodeVerifiablePresentation,
+  verifyVerifiablePresentation,
   getManifestIdFromCredentialApplication,
   requiresRevocableCredentials,
   validateCredentialApplication,
@@ -53,7 +53,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   }
 
   // Decode the Verifiable Presentation and check the signature
-  const credentialApplication = await decodeCredentialApplication(req.body)
+  const credentialApplication = await verifyCredentialApplication(req.body)
 
   // Validate the format of the Verifiable Presentation.
   const manifestId = getManifestIdFromCredentialApplication(
@@ -153,7 +153,7 @@ async function persistGeneratedCredentials(
   user: User,
   fulfillment: EncodedCredentialFulfillment
 ): Promise<void> {
-  const decodedPresentation = await decodeVerifiablePresentation(fulfillment)
+  const decodedPresentation = await verifyVerifiablePresentation(fulfillment)
 
   await storeCredentials(decodedPresentation.verifiableCredential, user.id)
 }

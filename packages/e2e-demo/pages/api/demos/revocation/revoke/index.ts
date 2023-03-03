@@ -3,7 +3,7 @@ import {
   JWT,
   buildIssuer,
   revokeCredential,
-  decodeVerifiableCredential
+  verifyVerifiableCredential
 } from "verite"
 
 import { apiHandler } from "../../../../../lib/api-fns"
@@ -18,7 +18,7 @@ export default apiHandler<string>(async (req, res) => {
 
   let credential: RevocableCredential
   try {
-    credential = (await decodeVerifiableCredential(jwt)) as RevocableCredential
+    credential = (await verifyVerifiableCredential(jwt)) as RevocableCredential
   } catch (e) {
     throw new NotFoundError()
   }

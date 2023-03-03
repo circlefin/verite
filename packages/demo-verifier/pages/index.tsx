@@ -10,7 +10,7 @@ import {
   buildAndSignVerifiableCredential,
   KYCAMLAttestation,
   buildIssuer,
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   RevocableCredential,
   buildPresentationSubmission,
   VerificationOffer,
@@ -50,7 +50,7 @@ const issueCredential = async () => {
     credentialType
   )
 
-  const decoded = await decodeVerifiableCredential(encoded)
+  const decoded = await verifyVerifiableCredential(encoded)
 
   return decoded
 }

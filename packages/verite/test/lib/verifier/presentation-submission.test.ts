@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 import jsonpath from "jsonpath"
 
-import { buildAndSignVerifiableCredential } from "../../../lib/issuer"
+import { buildVerifiableCredential } from "../../../lib/issuer"
 import {
   kycAmlPresentationDefinition,
   KYCAML_CREDENTIAL_TYPE_NAME
@@ -26,7 +26,7 @@ describe("buildPresentationSubmission", () => {
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
     // Builds a signed Verifiable Credential
-    const encodedCredential = await buildAndSignVerifiableCredential(
+    const encodedCredential = await buildVerifiableCredential(
       issuer,
       didKey,
       kycAmlAttestationFixture,

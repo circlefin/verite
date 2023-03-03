@@ -13,8 +13,7 @@ import {
   buildIssuer,
   signVerifiablePresentation,
   PRESENTAION_SUBMISSION_TYPE_NAME,
-  VERIFIABLE_PRESENTATION_TYPE_NAME,
-  VC_CONTEXT_URI
+  VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
 
 import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"

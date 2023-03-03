@@ -9,7 +9,7 @@ import {
   StatusList2021Credential,
   MINIMUM_BITSTREAM_LENGTH,
   asyncMap,
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   generateRevocationList,
   buildIssuer,
   EncodedStatusListCredential,
@@ -162,7 +162,7 @@ export const findNewestCredentialSinceDate = async (
 
   if (result) {
     try {
-      const decoded = await decodeVerifiableCredential(result.jwt)
+      const decoded = await verifyVerifiableCredential(result.jwt)
       return decoded
     } catch (e) {
       return
@@ -285,7 +285,7 @@ async function decodeDatabaseCredentials(
 ): Promise<DecodedDatabaseCredential[]> {
   const credentials = await asyncMap(records, async (record) => {
     try {
-      const decoded = await decodeVerifiableCredential(record.jwt)
+      const decoded = await verifyVerifiableCredential(record.jwt)
 
       return {
         ...record,

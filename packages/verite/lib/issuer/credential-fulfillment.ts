@@ -1,72 +1,29 @@
+import { CreateCredentialOptions, CreatePresentationOptions } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 
 import {
   DescriptorMap,
-  EncodedCredentialFulfillment,
-  Issuer,
-  CredentialPayload,
-  DidKey,
-  Attestation,
   CredentialManifest,
   ClaimFormat,
   JWT,
-  PresentationPayload,
-  JwtPresentationPayload
+  JwtPresentationPayload,
+  Attestation,
+  CredentialPayload,
+  DidKey,
+  EncodedCredentialFulfillment,
+  Issuer
 } from "../../types"
 import {
   CREDENTIAL_RESPONSE_TYPE_NAME,
+  signVerifiablePresentation,
   VC_CONTEXT_URI,
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
-import {
-  signVerifiablePresentation
-} from "../utils/credentials"
+import { buildVerifiableCredential } from "./credential"
 
-import type {
-  CreateCredentialOptions,
-  CreatePresentationOptions
-} from "did-jwt-vc/src/types"
-import { buildAndSignVerifiableCredential, buildVerifiableCredential } from "./credential"
 
-/**
- * @decprecated use build and sign separately
- * Build a VerifiablePresentation containing a list of attestations.
- *
- * Creates a single Verifiable Credential.
- */
-export async function buildAndSignFulfillment(
-  issuer: Issuer,
-  subject: string | DidKey,
-  manifest: CredentialManifest,
-  attestation: Attestation | Attestation[],
-  credentialType: string | string[],
-  payload: Partial<CredentialPayload> = {},
-  options?: CreateCredentialOptions,
-  presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
-  presentationOptions?: CreatePresentationOptions
-): Promise<EncodedCredentialFulfillment> {
-  const encodedCredentials = await buildAndSignVerifiableCredential(
-    issuer,
-    subject,
-    attestation,
-    credentialType,
-    payload,
-    options
-  )
-
-  const fulfillment = buildFulfillment(manifest, encodedCredentials, presentationType)
-  const encodedPresentation = await signVerifiablePresentation(
-    fulfillment,
-    issuer,
-    presentationOptions,
-  )
-
-  return encodedPresentation as unknown as EncodedCredentialFulfillment
-
-}
-
-// TODO: switch to builder after fixing object structure
-export function buildFulfillment(
+// TODO: fix up after making consistent with latest Credential Manifest
+export function constructCredentialFulfillment(
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],
   presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME]): JwtPresentationPayload {
@@ -97,12 +54,42 @@ export function buildFulfillment(
  return payload;
 }
 
+/**
+ * @deprecated
+ * Keeping for backwards compatibility. Signature is too complex; use buildVerifiableCredential and buildFulfillment instead.
+ */
+export async function buildAndSignFulfillment(
+  issuer: Issuer,
+  subject: string | DidKey,
+  manifest: CredentialManifest,
+  attestation: Attestation | Attestation[],
+  credentialType: string | string[],
+  payload: Partial<CredentialPayload> = {},
+  options?: CreateCredentialOptions,
+  presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
+  presentationOptions?: CreatePresentationOptions
+): Promise<EncodedCredentialFulfillment> {
+  const encodedCredentials = await buildVerifiableCredential(
+    issuer,
+    subject,
+    attestation,
+    credentialType,
+    payload,
+    options
+  )
 
+  return buildCredentialFulfillment(issuer, manifest, encodedCredentials, presentationType, presentationOptions)
+
+}
 
 /**
- * Build a VerifiablePresentation from a list of signed Verifiable Credentials.
+ * Construct and sign a Credential Fulfillment (which is a VerifiablePresentation) from a list of signed Verifiable Credentials.
+ * 
+ * "Build" overloads provide convenience wrappers for 2 steps: constructing and signing. 
+ * You can call the construct and sign steps separately for more fine-grained control.
+ * 
  */
-export async function buildAndSignMultiVcFulfillment(
+export async function buildCredentialFulfillment(
   issuer: Issuer,
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],
@@ -110,7 +97,7 @@ export async function buildAndSignMultiVcFulfillment(
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
 
-  const fulfillment = buildFulfillment(manifest, encodedCredentials, presentationType)
+  const fulfillment = constructCredentialFulfillment(manifest, encodedCredentials, presentationType)
   const encodedPresentation = await signVerifiablePresentation(
     fulfillment,
     issuer,
@@ -119,4 +106,6 @@ export async function buildAndSignMultiVcFulfillment(
 
   return encodedPresentation as unknown as EncodedCredentialFulfillment
 }
+
+
 

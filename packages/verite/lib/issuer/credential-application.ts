@@ -25,7 +25,7 @@ import {
 } from "../utils"
 
 
-export function buildApplication(
+export function constructCredentialApplication(
   manifest: CredentialManifest,
   presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_APPLICATION_TYPE_NAME]
   ): JwtPresentationPayload {
@@ -79,7 +79,7 @@ export async function buildCredentialApplication(
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
-  const application = buildApplication(manifest)
+  const application = constructCredentialApplication(manifest)
   const vp = await signVerifiablePresentation(
     application,
     client, 
@@ -90,13 +90,11 @@ export async function buildCredentialApplication(
 }
 
 /**
- * Decode an encoded Credential Application.
+ * Verify and decode an encoded Credential Application.
  *
- * A Credential Application contains an encoded Verifiable Presentation in it's
- * `presentation` field. This method decodes the Verifiable Presentation and
- * returns the decoded application.
+ * A Credential Application is a Verifiable Presentation. This method decodes the submitted Credential Application, verifies it as a Verifiable Presentation, and returs the decoded Credential Application.
  */
-export async function decodeCredentialApplication(
+export async function verifyCredentialApplication(
   credentialApplication: EncodedCredentialApplication,
   options?: VerifyPresentationOptions
 ): Promise<DecodedCredentialApplication> {

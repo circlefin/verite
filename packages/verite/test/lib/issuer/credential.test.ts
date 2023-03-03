@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 
 import {
-  buildAndSignVerifiableCredential
+  buildVerifiableCredential
 } from "../../../lib/issuer"
 import {
   KYCAML_CREDENTIAL_TYPE_NAME
@@ -30,8 +30,8 @@ describe("buildAndSignVerifiableCredential", () => {
     // Claims
     const attestation = kycAmlAttestationFixture
 
-    // Builds a signed Verifiable Credential
-    const vc = await buildAndSignVerifiableCredential(
+    // Constructs and signs a Verifiable Credential
+    const vc = await buildVerifiableCredential(
       issuer,
       subjectDid,
       attestation,
@@ -81,7 +81,7 @@ describe("buildAndSignVerifiableCredential", () => {
       statusListIndex: "94567",
       statusListCredential: "https://example.com/credentials/status/3"
     }
-    const vc = await buildAndSignVerifiableCredential(
+    const vc = await buildVerifiableCredential(
       issuer,
       subjectDid,
       attestation,
@@ -112,7 +112,7 @@ describe("buildAndSignVerifiableCredential", () => {
       creditScoreAttestationFixture
     ]
 
-    const encodedVC = await buildAndSignVerifiableCredential(
+    const encodedVC = await buildVerifiableCredential(
       issuer,
       subjectDid,
       attestations,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   isRevoked,
   JWT,
   RevocableCredential,
@@ -79,7 +79,7 @@ export default function RevokeButton({
             : await doRevoke(credential)
 
           if (onToggle) {
-            const revocationList = (await decodeVerifiableCredential(
+            const revocationList = (await verifyVerifiableCredential(
               data
             )) as StatusList2021Credential
 

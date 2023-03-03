@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 import {
   buildAndSignFulfillment,
-  decodeCredentialApplication,
+  verifyCredentialApplication,
   Attestation,
   buildIssuer,
   CREDIT_SCORE_MANIFEST_ID,
@@ -36,9 +36,9 @@ export default async function credentials(
   /**
    * Using Presentation Exchange, the client will submit a credential
    * application. Since we are using JWTs to format the data, we first must
-   * decode it.
+   * verify and decode it.
    */
-  const application = await decodeCredentialApplication(req.body)
+  const application = await verifyCredentialApplication(req.body)
 
   /**
    * The user id has been passed along with the JWT as the subject. In a

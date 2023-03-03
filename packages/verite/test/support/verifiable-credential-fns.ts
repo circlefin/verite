@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto"
 
-import { buildAndSignVerifiableCredential } from "../../lib/issuer"
+import { buildVerifiableCredential } from "../../lib/issuer"
 import { attestationToCredentialType } from "../../lib/sample-data"
 import {
   buildIssuer,
@@ -17,7 +17,7 @@ export async function generateVerifiableCredential(): Promise<
 > {
   const didKey = randomDidKey(randomBytes)
   const signer = buildIssuer(didKey.subject, didKey.privateKey)
-  const jwt = await buildAndSignVerifiableCredential(
+  const jwt = await buildVerifiableCredential(
     signer,
     signer.did,
     creditScoreAttestationFixture,

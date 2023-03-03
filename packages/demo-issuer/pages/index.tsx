@@ -6,12 +6,12 @@ import { useState } from "react"
 import {
   randomDidKey,
   buildCredentialApplication,
-  decodeVerifiablePresentation,
+  verifyVerifiablePresentation,
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
   CredentialOffer,
   DecodedCredentialFulfillment,
-  decodeCredentialApplication,
+  verifyCredentialApplication,
   DecodedCredentialApplication
 } from "verite"
 
@@ -112,10 +112,10 @@ export default function Home({
 
     if (response.ok) {
       const text = await response.text()
-      const presentation = (await decodeVerifiablePresentation(
+      const presentation = (await verifyVerifiablePresentation(
         text
       )) as DecodedCredentialFulfillment
-      const decodedApplication = await decodeCredentialApplication(application)
+      const decodedApplication = await verifyCredentialApplication(application)
       setCredentialApplication(decodedApplication)
       setCredentialResponse(presentation)
       setPresentation(presentation)

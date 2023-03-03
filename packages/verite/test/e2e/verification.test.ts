@@ -1,20 +1,20 @@
 import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 
-import { buildCredentialApplication } from "../../lib/issuer/credential-application"
-import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
+import { buildCredentialFulfillment, buildCredentialApplication, buildVerifiableCredential } from "../../lib/issuer"
 import {
   buildKycVerificationOffer,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
 import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
-import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
-import { validateVerificationSubmission } from "../../lib/validators/validate-verification-submission"
+import { validateCredentialApplication, validateVerificationSubmission } from "../../lib/validators"
 import { buildPresentationSubmission } from "../../lib/verifier/presentation-submission"
 import {
+  CredentialManifest,
   DecodedCredentialApplication,
   DidKey,
+  Issuer,
   RevocableCredential
 } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
@@ -77,19 +77,20 @@ async function getClientVerifiableCredential(
   )) as DecodedCredentialApplication
   await validateCredentialApplication(application, manifest)
 
-  const fulfillment = await buildAndSignFulfillment(
+  const vc = await buildVerifiableCredential(issuer, clientDidKey.subject, kycAmlAttestationFixture, KYCAML_CREDENTIAL_TYPE_NAME, {
+    credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+    credentialStatus: revocationListFixture
+  })
+
+  const fulfillment = await buildCredentialFulfillment(
     issuer,
-    clientDidKey.subject,
     manifest,
-    kycAmlAttestationFixture,
-    KYCAML_CREDENTIAL_TYPE_NAME,
-    {
-      credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-      credentialStatus: revocationListFixture
-    }
+    vc
   )
 
   const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
 
   return fulfillmentVP.verifiableCredential as RevocableCredential[]
 }
+
+

@@ -29,13 +29,13 @@ import {
   buildIssuer,
   buildAndSignFulfillment,
   buildKycAmlManifest,
-  decodeCredentialApplication,
+  verifyCredentialApplication,
   buildCredentialApplication,
   buildKycVerificationOffer,
   buildPresentationSubmission,
   validateVerificationSubmission,
-  decodeVerifiableCredential,
-  decodeVerifiablePresentation
+  verifyVerifiableCredential,
+  verifyVerifiablePresentation
 } from "verite"
 import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
@@ -51,7 +51,7 @@ const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
 //  The credential application is created and returned as a JWT
 const application = await buildCredentialApplication(subject, manifest)
 //  The decoded JWT is necessary when it comes time to issue the verifiable presentation which will include this credential
-const decodedApplication = await decodeCredentialApplication(application)
+const decodedApplication = await verifyCredentialApplication(application)
 //  The attestation is a standardized representation of the issuer
 const attestation = {
   type: "KYCAMLAttestation",
@@ -72,13 +72,13 @@ const presentation = await buildAndSignFulfillment(
 //  As with the application, the verifiable presentation (which contains the credential)
 //  is in JWT form and must be decoded by the subject. This can be done in a mobile app
 //  client or a web browser.
-const decoded = await decodeVerifiablePresentation(presentation)
+const decoded = await verifyVerifiablePresentation(presentation)
 //  The verifiable credential is another JWT within the verifiable presentation and
 //  can be extracted like this:
 const vc = decoded.verifiableCredential[0]
 //  The verifiable credential must then be decoded so that the subject can request
 //  verification
-const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+const decodedVc = await verifyVerifiableCredential(vc.proof.jwt)
 
 //  The subject would make a request to the verifier's server to obtain the verification
 //  offer. The code below must be executed by the verifier, using the verifier's key.

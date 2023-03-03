@@ -232,7 +232,7 @@ const getPresentation = async (issuerDidKey, application) => {
   issuerDidKey.privateKey = fromHexString(issuerDidKey.privateKey)
   issuerDidKey.publicKey = fromHexString(issuerDidKey.publicKey)
 
-  const decodedApplication = await decodeCredentialApplication(application)
+  const decodedApplication = await verifyCredentialApplication(application)
 
   const attestation = {
     type: "KYCAMLAttestation",
@@ -254,7 +254,7 @@ const getPresentation = async (issuerDidKey, application) => {
 }
 ```
 
-We're using the project's issuer DID key here. We decode the application using Verite's `decodeCredentialApplication` function. Then, we have to attest to the credential presentation.
+We're using the project's issuer DID key here. We decode the application using Verite's `verifyCredentialApplication` function. Then, we have to attest to the credential presentation.
 
 Using the issuer private key and public key, we call the Verite library `buildIssuer` function. With the result, we can then create the verifiable presentation that will ultimately be passed back to the user by calling Verite's `buildAndSignFulfillment` function.
 
@@ -273,11 +273,11 @@ try {
   }
   const address = req.session.siwe.address
 
-  const decoded = await decodeVerifiablePresentation(jwt)
+  const decoded = await verifyVerifiablePresentation(jwt)
 
   const vc = decoded.verifiableCredential[0]
 
-  const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+  const decodedVc = await verifyVerifiableCredential(vc.proof.jwt)
 
   const issuerDidKey = await getIssuerKey()
 
@@ -338,7 +338,7 @@ try {
 }
 ```
 
-Once again, the first thing we check is that the user has a valid SIWE session. This route takes a body that includes the verifiable presentation we had sent to the user previously. So, the next step is to call the Verite function `decodeVerifiablePresentation` to then be able to extract the verifiable credential and call the `decodeVerifiableCredential` function.
+Once again, the first thing we check is that the user has a valid SIWE session. This route takes a body that includes the verifiable presentation we had sent to the user previously. So, the next step is to call the Verite function `verifyVerifiablePresentation` to then be able to extract the verifiable credential and call the `verifyVerifiableCredential` function.
 
 As with our `requestAllowlist` route, we now need to get the issuer DID key and look up the user's delegated DID key. From there, we can use the issuer key to call the Verite library function `buildKycVerificationOffer`. We use the results of that call and the user's DID key to call the Verite library function `buildPresentationSubmission`.
 

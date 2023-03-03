@@ -1,13 +1,13 @@
 import { randomBytes } from "crypto"
 import nock from "nock"
 
-import { buildCredentialApplication } from "../../lib/issuer/credential-application"
-import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
+import { buildCredentialApplication, buildAndSignFulfillment, buildCredentialFulfillment, buildVerifiableCredential, constructCredentialFulfillment, constructVerifiableCredential } from "../../lib/issuer"
+
 import {
   buildKycAmlManifest,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
+import { signVerifiableCredential, signVerifiablePresentation, verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
@@ -52,23 +52,20 @@ describe("issuance", () => {
 
     await validateCredentialApplication(credentialApplication, manifest)
 
-    /**
-     * The issuer builds and signs a fulfillment
-     */
-    const fulfillment = await buildAndSignFulfillment(
-      issuer,
-      clientDidKey.subject,
-      manifest,
-      kycAmlAttestationFixture,
-      KYCAML_CREDENTIAL_TYPE_NAME,
+    const vc = await constructVerifiableCredential(issuer.did, 
+      clientDidKey.subject, 
+      kycAmlAttestationFixture, 
+      KYCAML_CREDENTIAL_TYPE_NAME, 
       {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        credentialStatus: revocationListFixture
-      }
-    )
+      credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+      credentialStatus: revocationListFixture
+    })
+    const jwt = await signVerifiableCredential(vc, issuer)
+    const fulfillment = await constructCredentialFulfillment(manifest, jwt)
+    const signedVp = await signVerifiablePresentation(fulfillment, issuer)
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
-      fulfillment
+      signedVp
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(
@@ -153,18 +150,21 @@ describe("issuance", () => {
     await validateCredentialApplication(credentialApplication, manifest)
 
     /**
+     * The issuer builds and signs a verifiable credential
+     */
+    const vc = await buildVerifiableCredential(issuer, clientDidKey.subject, kycAmlAttestationFixture, KYCAML_CREDENTIAL_TYPE_NAME, {
+      credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+      credentialStatus: revocationListFixture
+    })
+
+
+    /**
      * The issuer builds and signs a fulfillment
      */
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await buildCredentialFulfillment(
       issuer,
-      clientDidKey.subject,
       manifest,
-      kycAmlAttestationFixture,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        credentialStatus: revocationListFixture
-      }
+     vc
     )
 
     const verifiablePresentation = (await verifyVerifiablePresentation(

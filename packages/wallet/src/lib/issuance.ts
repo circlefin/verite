@@ -2,7 +2,7 @@ import {
   DidKey,
   CredentialManifest,
   buildCredentialApplication,
-  decodeVerifiablePresentation,
+  verifyVerifiablePresentation,
   Verifiable,
   W3CCredential,
   VerificationError
@@ -30,7 +30,7 @@ export const requestIssuance = async (
 
     try {
       // Decode the VP
-      const verifiablePresentation = await decodeVerifiablePresentation(text)
+      const verifiablePresentation = await verifyVerifiablePresentation(text)
 
       // Extract the issued VC
       const credentials = verifiablePresentation.verifiableCredential ?? []

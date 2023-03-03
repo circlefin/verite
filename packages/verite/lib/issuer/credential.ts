@@ -1,40 +1,36 @@
-import { CreateCredentialOptions } from "did-jwt-vc"
 import { isString } from "lodash"
 
+
 import {
+  EncodedCredentialFulfillment,
   Issuer,
   CredentialPayload,
   DidKey,
+  Attestation,
+  CredentialManifest,
   JWT,
-  Attestation
 } from "../../types"
+import {
+  CREDENTIAL_RESPONSE_TYPE_NAME,
+  VERIFIABLE_PRESENTATION_TYPE_NAME,
+  signVerifiableCredential,
+  signVerifiablePresentation
+} from "../utils"
+
+import type {
+  CreateCredentialOptions,
+  CreatePresentationOptions
+} from "did-jwt-vc/src/types"
+
+
 import { CredentialPayloadBuilder } from "../builders"
-import { signVerifiableCredential } from "../utils"
 
 
-function parseSubjectId(subject: string | DidKey) : string {
-  return isString(subject) ? subject : subject.subject
-}
-/**
- * @deprecated use build and sign separately
- * Build and sign a VerifiableCredential containing an attestation for the given holder.
- */
-export async function buildAndSignVerifiableCredential(
-  issuer: Issuer,
-  subject: string | DidKey,
-  attestation: Attestation | Attestation[],
-  credentialType: string | string[],
-  payload: Partial<CredentialPayload> = {},
-  options?: CreateCredentialOptions
-): Promise<JWT> {
-  const normalizedPayload = await buildVerifiableCredential(issuer.did, parseSubjectId(subject), attestation, credentialType, payload)
-  return signVerifiableCredential(normalizedPayload, issuer, options)
-}
 
 /**
- * Build a VerifiableCredential containing an attestation for the given holder.
+ * Construct a Credential Payload containing an attestation for the given holder.
  */
-export async function buildVerifiableCredential(
+export async function constructVerifiableCredential(
   issuerDid: string,
   subjectDid: string,
   attestation: Attestation | Attestation[],
@@ -47,4 +43,29 @@ export async function buildVerifiableCredential(
     .attestations(subjectDid, attestation)
     .additionalPayload(additionalPayload)
     .build()
+}
+
+
+
+function parseSubjectId(subject: string | DidKey) : string {
+  return isString(subject) ? subject : subject.subject
+}
+
+/**
+ *  Build and sign a VerifiableCredential containing attestations for the subject.
+ * 
+ * "Build" overloads provide convenience wrappers for 2 steps: constructing and signing. 
+ * You can call the construct and sign steps separately for more fine-grained control.
+ * 
+ */
+export async function buildVerifiableCredential(
+  issuer: Issuer,
+  subject: string | DidKey,
+  attestation: Attestation | Attestation[],
+  credentialType: string | string[],
+  payload: Partial<CredentialPayload> = {},
+  options?: CreateCredentialOptions
+): Promise<JWT> {
+  const credentialPayload = await constructVerifiableCredential(issuer.did, parseSubjectId(subject), attestation, credentialType, payload)
+  return signVerifiableCredential(credentialPayload, issuer, options)
 }

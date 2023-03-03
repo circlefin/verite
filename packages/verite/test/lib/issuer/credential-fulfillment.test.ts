@@ -2,8 +2,8 @@ import { randomBytes } from "crypto"
 
 import {
   buildAndSignFulfillment,
-  buildAndSignMultiVcFulfillment,
-  buildAndSignVerifiableCredential
+  buildCredentialFulfillment,
+  buildVerifiableCredential
 } from "../../../lib/issuer"
 import {
   buildKycAmlManifest,
@@ -27,14 +27,16 @@ describe("buildAndSignFulfillment", () => {
   it("works", async () => {
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const subjectDid = randomDidKey(randomBytes)
-    const attestation = kycAmlAttestationFixture
-    const encodedFulfillment = await buildAndSignFulfillment(
+    const vc = await buildVerifiableCredential(
+      issuer, 
+      subjectDid.subject, 
+      kycAmlAttestationFixture, 
+      KYCAML_CREDENTIAL_TYPE_NAME, 
+      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ })
+    const encodedFulfillment = await buildCredentialFulfillment(
       issuer,
-      subjectDid.subject,
       manifest,
-      attestation,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
+      vc
     )
 
     // The client can then decode the presentation
@@ -97,17 +99,17 @@ describe("buildAndSignFulfillment", () => {
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
-    const encodedFulfillment = await buildAndSignFulfillment(
+    const vc = await buildVerifiableCredential(issuer, clientDidKey, kycAmlAttestationFixture, KYCAML_CREDENTIAL_TYPE_NAME, {
+      credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+      credentialStatus: revocationListFixture
+    })
+
+    const encodedFulfillment = await buildCredentialFulfillment(
       issuer,
-      clientDidKey.subject,
       manifest,
-      kycAmlAttestationFixture,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        credentialStatus: revocationListFixture
-      }
+      vc
     )
+
     const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
     expect(fulfillment.credential_response).toBeDefined()
     expect(fulfillment.credential_response.manifest_id).toEqual(
@@ -125,7 +127,7 @@ describe("buildAndSignFulfillment", () => {
     const attestation2 = creditScoreAttestationFixture
 
     // Builds a signed Verifiable Credential
-    const vc1 = await buildAndSignVerifiableCredential(
+    const vc1 = await buildVerifiableCredential(
       issuer,
       subjectDid,
       attestation1,
@@ -139,7 +141,7 @@ describe("buildAndSignFulfillment", () => {
       }
     )
 
-    const vc2 = await buildAndSignVerifiableCredential(
+    const vc2 = await buildVerifiableCredential(
       issuer,
       subjectDid,
       attestation2,
@@ -156,7 +158,7 @@ describe("buildAndSignFulfillment", () => {
 
     const creds = [vc1, vc2]
 
-    const encodedFulfillment = await buildAndSignMultiVcFulfillment(
+    const encodedFulfillment = await buildCredentialFulfillment(
       issuer,
       manifest,
       creds

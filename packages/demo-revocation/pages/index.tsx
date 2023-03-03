@@ -6,7 +6,7 @@ import useSWRImmutable from "swr/immutable"
 import {
   buildAndSignVerifiableCredential,
   buildIssuer,
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   generateRevocationList,
   getSampleKycAmlAttestation,
   isRevoked,
@@ -85,7 +85,7 @@ const issueCredential = async (
     { credentialStatus }
   )
 
-  const decoded = await decodeVerifiableCredential(encoded)
+  const decoded = await verifyVerifiableCredential(encoded)
 
   return decoded as RevocableCredential
 }
