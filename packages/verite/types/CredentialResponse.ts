@@ -14,3 +14,4 @@ export type EncodedCredentialFulfillment = JWT
 
 export type DecodedCredentialFulfillment = NarrowCredentialFulfillment &
   Verifiable<W3CPresentation>
+

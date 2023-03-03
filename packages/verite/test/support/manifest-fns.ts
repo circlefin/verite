@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 
 import { proofOfControlPresentationDefinition } from "../../lib"
-import { buildManifest } from "../../lib/builders/manifest-builder"
+import { buildManifest } from "../../lib/builders"
 import {
   buildCreditScoreManifest,
   buildKycAmlManifest

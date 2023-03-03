@@ -10,16 +10,63 @@ import {
   DecodedCredentialApplication,
   DescriptorMap,
   DidKey,
-  EncodedCredentialApplication
+  EncodedCredentialApplication,
+  JwtPresentationPayload,
+  PresentationSubmission
 } from "../../types"
-import { HOLDER_PROPERTY_NAME } from "../builders/common"
+import { CredentialApplicationBuilder, HOLDER_PROPERTY_NAME, PresentationSubmissionBuilder } from "../builders"
 import {
   buildIssuer,
   CREDENTIAL_APPLICATION_TYPE_NAME,
   verifyVerifiablePresentation,
   signVerifiablePresentation,
-  VERIFIABLE_PRESENTATION_TYPE_NAME
+  VERIFIABLE_PRESENTATION_TYPE_NAME,
+  VC_CONTEXT_URI
 } from "../utils"
+
+
+export function buildApplication(
+  manifest: CredentialManifest,
+  presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_APPLICATION_TYPE_NAME]
+  ): JwtPresentationPayload {
+
+    let presentationSubmission
+    if (manifest.presentation_definition) {
+
+      presentationSubmission = new PresentationSubmissionBuilder()
+      .id(uuidv4())
+      .definition_id(manifest.presentation_definition.id)
+      .descriptor_map(
+          manifest.presentation_definition?.input_descriptors?.map<DescriptorMap>(
+            (d) => {
+              return {
+                id: d.id,
+                format: ClaimFormat.JwtVp,
+                path: `$.${HOLDER_PROPERTY_NAME}`
+              }
+            }
+          )).build()
+      }
+
+    const application = new CredentialApplicationBuilder()
+    .id(uuidv4())
+    .manifest_id(manifest.id)
+    .format({
+      jwt_vp: manifest.presentation_definition?.format?.jwt_vp
+    }).presentation_submission(presentationSubmission)
+    .build()
+
+    const payload = Object.assign({
+      vp: {
+        "@context": [VC_CONTEXT_URI],
+        type: presentationType,
+        credential_application: application
+      }
+    })
+
+  return payload;
+  }
+
 
 /**
  * Generates a Credential Application as response to a Credential Manifest
@@ -32,43 +79,11 @@ export async function buildCredentialApplication(
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
-
-  let presentationSubmission
-  if (manifest.presentation_definition) {
-    presentationSubmission = {
-      id: uuidv4(),
-      definition_id: manifest.presentation_definition?.id,
-      descriptor_map:
-        manifest.presentation_definition?.input_descriptors?.map<DescriptorMap>(
-          (d) => {
-            return {
-              id: d.id,
-              format: ClaimFormat.JwtVp,
-              path: `$.${HOLDER_PROPERTY_NAME}`
-            }
-          }
-        )
-    }
-  }
-
-  const credentialApplication = {
-    id: uuidv4(),
-    manifest_id: manifest.id,
-    format: {
-      jwt_vp: manifest.presentation_definition?.format?.jwt_vp
-    },
-    presentation_submission: presentationSubmission
-  }
-
+  const application = buildApplication(manifest)
   const vp = await signVerifiablePresentation(
-    client.did,
-    undefined,
-    client,
-    options,
-    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_APPLICATION_TYPE_NAME],
-    {
-      credential_application: credentialApplication
-    }
+    application,
+    client, 
+    options
   )
 
   return vp

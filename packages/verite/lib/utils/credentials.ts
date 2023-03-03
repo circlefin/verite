@@ -4,7 +4,7 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
-import { isString } from "lodash"
+import { has, isString } from "lodash"
 
 import { VerificationError } from "../errors"
 import { VC_CONTEXT_URI, VERIFIABLE_PRESENTATION_TYPE_NAME } from "./constants"
@@ -21,13 +21,17 @@ import type {
   Verifiable,
   W3CCredential,
   W3CPresentation,
-  RevocablePresentation
+  RevocablePresentation,
+  MaybeRevocableCredential
 } from "../../types"
 import type {
   CreateCredentialOptions,
   CreatePresentationOptions,
+  JwtPresentationPayload,
+  PresentationPayload,
   VerifyPresentationOptions
 } from "did-jwt-vc/src/types"
+import { BitBuffer } from "bit-buffers"
 
 
 export function asJwtCredentialPayload (credentialPayload: CredentialPayload) : JwtCredentialPayload {
@@ -60,6 +64,101 @@ export function asJwtCredentialPayload (credentialPayload: CredentialPayload) : 
 
 }
 
+
+/**
+ * Determines if a given credential is expired
+ */
+export function isExpired(credential: Verifiable<W3CCredential>): boolean {
+  if (!credential.expirationDate) {
+    return false
+  }
+
+  const expirationDate = new Date(credential.expirationDate)
+  return expirationDate < new Date()
+}
+
+/**
+ * Given a verifiable credential, check if it has been revoked.
+ *
+ * @returns true if the credential is revoked, false otherwise
+ */
+export async function isRevoked (
+  credential: Verifiable<W3CCredential> | RevocableCredential,
+  revocationStatusList?: StatusList2021Credential
+): Promise<boolean> {
+  /**
+   * If the credential is not revocable, it can not be revoked
+   */
+  if (!isRevocable(credential)) {
+    return false
+  }
+
+  const revocableCredential = credential as RevocableCredential
+  const statusList =
+    revocationStatusList || (await fetchStatusList(revocableCredential))
+
+  /**
+   * If we are unable to fetch a status list for this credential, we can not
+   * know if it is revoked.
+   */
+  if (!statusList) {
+    return false
+  }
+
+  const list = BitBuffer.fromBitstring(statusList.credentialSubject.encodedList)
+
+  const index = parseInt(
+    (credential as RevocableCredential).credentialStatus.statusListIndex,
+    10
+  )
+
+  return list.test(index)
+}
+
+/**
+ * Performs an HTTP request to fetch the revocation status list for a credential.
+ *
+ * @returns the encoded status list, if present
+ */
+export async function fetchStatusList(
+  credential: MaybeRevocableCredential
+): Promise<StatusList2021Credential | undefined> {
+  /**
+   * If the credential is not revocable, it can not be revoked
+   */
+  if (!isRevocable(credential)) {
+    return
+  }
+
+  const url = (credential as RevocableCredential).credentialStatus
+    .statusListCredential
+
+  try {
+    const response = await fetch(url)
+
+    if (response.status === 200) {
+      const vcJwt = await response.text()
+
+      return verifyVerifiableCredential(
+        vcJwt
+      ) as Promise<StatusList2021Credential>
+    }
+  } catch (e) {}
+}
+
+/**
+ * Determine if a given credential is revocable or not.
+ *
+ * @returns true if the credential is revocable, false otherwise
+ */
+export const isRevocable = (
+  credential: Verifiable<W3CCredential> | RevocableCredential
+): credential is RevocableCredential => {
+  return has(credential, "credentialStatus.statusListIndex")
+}
+
+
+
 /**
  * Signs a Verifiable Credential as a JWT from passed payload object & issuer.
  */
@@ -77,7 +176,7 @@ export async function signVerifiableCredential(
 }
 
 /**
- * Decodes a JWT with a Verifiable Credential payload.
+ * Verifies a JWT with a Verifiable Credential payload.
  */
 export async function verifyVerifiableCredential(
   vcJwt: JWT
@@ -86,6 +185,21 @@ export async function verifyVerifiableCredential(
 > {
   try {
     const res = await verifyCredential(vcJwt, didResolver)
+
+    // check expired
+    if (isExpired(res.verifiableCredential)) {
+      throw new VerificationError(
+        "Expired Credential"
+      )
+    }
+
+    // check revocation
+    if (await isRevoked(res.verifiableCredential)) {
+      throw new VerificationError(
+        "Revoked Credential"
+      )
+    }
+
     // eslint-disable-next-line no-prototype-builtins
     if (res.verifiableCredential.credentialSubject.hasOwnProperty(0)) {
       // did-jwt-vc turns these arrays into maps; convert back
@@ -126,23 +240,12 @@ export async function verifyVerifiableCredential(
  * Signs a JWT with the Verifiable Presentation payload.
  */
 export async function signVerifiablePresentation(
-  subject: string,
-  vcJwt: VerifiableCredential | VerifiableCredential[] = [],
+  vpPayload: JwtPresentationPayload,
   issuer: Issuer,
-  options?: CreatePresentationOptions,
-  type?: string[],
-  extra: Record<string, unknown> = {}
+  options: CreatePresentationOptions = {}
 ): Promise<JWT> {
-  const vcJwtPayload = Array.isArray(vcJwt) ? vcJwt : [vcJwt]
-  const payload = Object.assign({
-    vp: {
-      "@context": [VC_CONTEXT_URI],
-      type: type ?? [VERIFIABLE_PRESENTATION_TYPE_NAME],
-      verifiableCredential: vcJwtPayload,
-      ...extra
-    }
-  })
-  return createVerifiablePresentationJwt(payload, issuer, options)
+  // TODO: also accept PresentationPayload?
+  return createVerifiablePresentationJwt(vpPayload, issuer, options)
 }
 
 /**
@@ -172,16 +275,4 @@ export async function verifyVerifiablePresentation(
       err as Error
     )
   }
-}
-
-/**
- * Determines if a given credential is expired
- */
-export function isExpired(credential: Verifiable<W3CCredential>): boolean {
-  if (!credential.expirationDate) {
-    return false
-  }
-
-  const expirationDate = new Date(credential.expirationDate)
-  return expirationDate < new Date()
 }

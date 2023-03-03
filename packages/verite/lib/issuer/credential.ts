@@ -8,7 +8,7 @@ import {
   JWT,
   Attestation
 } from "../../types"
-import { CredentialPayloadBuilder } from "../builders/credential-payload-builder"
+import { CredentialPayloadBuilder } from "../builders"
 import { signVerifiableCredential } from "../utils"
 
 

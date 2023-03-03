@@ -1,6 +1,5 @@
 import {
   generateRevocationList,
-  isRevoked,
   revokeCredential,
   unrevokeCredential
 } from "../../../lib/issuer"
@@ -9,7 +8,8 @@ import {
   verifyVerifiableCredential,
   signVerifiableCredential,
   generateBitstring,
-  buildIssuer
+  buildIssuer,
+  isRevoked
 } from "../../../lib/utils"
 
 import type {

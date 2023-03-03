@@ -8,10 +8,14 @@ import {
   DidKey,
   Attestation,
   CredentialManifest,
-  ClaimFormat
+  ClaimFormat,
+  JWT,
+  PresentationPayload,
+  JwtPresentationPayload
 } from "../../types"
 import {
   CREDENTIAL_RESPONSE_TYPE_NAME,
+  VC_CONTEXT_URI,
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
 import {
@@ -19,6 +23,7 @@ import {
 } from "../utils/credentials"
 
 import type {
+  CreateCredentialOptions,
   CreatePresentationOptions
 } from "did-jwt-vc/src/types"
 import { buildAndSignVerifiableCredential, buildVerifiableCredential } from "./credential"
@@ -36,7 +41,9 @@ export async function buildAndSignFulfillment(
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
   payload: Partial<CredentialPayload> = {},
-  options?: CreatePresentationOptions
+  options?: CreateCredentialOptions,
+  presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
+  presentationOptions?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
   const encodedCredentials = await buildAndSignVerifiableCredential(
     issuer,
@@ -47,32 +54,50 @@ export async function buildAndSignFulfillment(
     options
   )
 
-  const format = ClaimFormat.JwtVc
-
+  const fulfillment = buildFulfillment(manifest, encodedCredentials, presentationType)
   const encodedPresentation = await signVerifiablePresentation(
-    issuer.did,
-    encodedCredentials,
+    fulfillment,
     issuer,
-    options,
-    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
-    {
-      credential_response: {
-        id: uuidv4(),
-        manifest_id: manifest.id,
-        descriptor_map:
-          manifest.output_descriptors.map<DescriptorMap>((d, i) => {
-            return {
-              id: d.id,
-              format: format,
-              path: `$.verifiableCredential[${i}]`
-            }
-          }) ?? []
-      }
-    }
+    presentationOptions,
   )
 
   return encodedPresentation as unknown as EncodedCredentialFulfillment
+
 }
+
+// TODO: switch to builder after fixing object structure
+export function buildFulfillment(
+  manifest: CredentialManifest,
+  encodedCredentials: JWT | JWT[],
+  presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME]): JwtPresentationPayload {
+
+   const credentialResponse = { credential_response: {
+      id: uuidv4(),
+      manifest_id: manifest.id,
+      descriptor_map: manifest.output_descriptors.map<DescriptorMap>((d, i) => {
+        return {
+          id: d.id,
+          format: ClaimFormat.JwtVc,
+          path: `$.verifiableCredential[${i}]`
+        }
+      }) ?? []
+    }
+  }
+
+  const vcJwtPayload = Array.isArray(encodedCredentials) ? encodedCredentials : [encodedCredentials]
+  const payload = Object.assign({
+    vp: {
+      "@context": [VC_CONTEXT_URI],
+      type: presentationType,
+      verifiableCredential: vcJwtPayload,
+      ...credentialResponse
+    }
+  })
+
+ return payload;
+}
+
+
 
 /**
  * Build a VerifiablePresentation from a list of signed Verifiable Credentials.
@@ -80,29 +105,16 @@ export async function buildAndSignFulfillment(
 export async function buildAndSignMultiVcFulfillment(
   issuer: Issuer,
   manifest: CredentialManifest,
-  encodedCredentials: string[],
+  encodedCredentials: JWT | JWT[],
+  presentationType: string | string[] = [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
+
+  const fulfillment = buildFulfillment(manifest, encodedCredentials, presentationType)
   const encodedPresentation = await signVerifiablePresentation(
-    issuer.did,
-    encodedCredentials,
+    fulfillment,
     issuer,
     options,
-    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
-    {
-      credential_response: {
-        id: uuidv4(),
-        manifest_id: manifest.id,
-        descriptor_map:
-          manifest.output_descriptors.map<DescriptorMap>((d, i) => {
-            return {
-              id: d.id,
-              format: ClaimFormat.JwtVc,
-              path: `$.verifiableCredential[${i}]`
-            }
-          }) ?? []
-      }
-    }
   )
 
   return encodedPresentation as unknown as EncodedCredentialFulfillment
