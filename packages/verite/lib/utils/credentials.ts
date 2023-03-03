@@ -1,3 +1,4 @@
+import { BitBuffer } from "bit-buffers"
 import {
   createVerifiableCredentialJwt,
   createVerifiablePresentationJwt,
@@ -7,7 +8,6 @@ import {
 import { has, isString } from "lodash"
 
 import { VerificationError } from "../errors"
-import { VC_CONTEXT_URI, VERIFIABLE_PRESENTATION_TYPE_NAME } from "./constants"
 import { didResolver } from "./did-fns"
 
 import type {
@@ -15,7 +15,6 @@ import type {
   JwtCredentialPayload,
   Issuer,
   JWT,
-  VerifiableCredential,
   RevocableCredential,
   StatusList2021Credential,
   Verifiable,
@@ -28,13 +27,12 @@ import type {
   CreateCredentialOptions,
   CreatePresentationOptions,
   JwtPresentationPayload,
-  PresentationPayload,
   VerifyPresentationOptions
 } from "did-jwt-vc/src/types"
-import { BitBuffer } from "bit-buffers"
 
-
-export function asJwtCredentialPayload (credentialPayload: CredentialPayload) : JwtCredentialPayload {
+export function asJwtCredentialPayload(
+  credentialPayload: CredentialPayload
+): JwtCredentialPayload {
   const payload = Object.assign({
     vc: credentialPayload
   })
@@ -42,11 +40,14 @@ export function asJwtCredentialPayload (credentialPayload: CredentialPayload) : 
     payload.jti = credentialPayload.id
   }
   if (credentialPayload.issuanceDate) {
-
-    payload.nbf = Math.round(Date.parse(credentialPayload.issuanceDate.toString()) / 1000)
+    payload.nbf = Math.round(
+      Date.parse(credentialPayload.issuanceDate.toString()) / 1000
+    )
   }
   if (credentialPayload.expirationDate) {
-    payload.exp = Math.round(Date.parse(credentialPayload.expirationDate.toString()) / 1000)
+    payload.exp = Math.round(
+      Date.parse(credentialPayload.expirationDate.toString()) / 1000
+    )
   }
   if (credentialPayload.issuer) {
     payload.iss = isString(credentialPayload.issuer)
@@ -61,9 +62,7 @@ export function asJwtCredentialPayload (credentialPayload: CredentialPayload) : 
     payload.sub = sub
   }
   return payload
-
 }
-
 
 /**
  * Determines if a given credential is expired
@@ -82,7 +81,7 @@ export function isExpired(credential: Verifiable<W3CCredential>): boolean {
  *
  * @returns true if the credential is revoked, false otherwise
  */
-export async function isRevoked (
+export async function isRevoked(
   credential: Verifiable<W3CCredential> | RevocableCredential,
   revocationStatusList?: StatusList2021Credential
 ): Promise<boolean> {
@@ -157,8 +156,6 @@ export const isRevocable = (
   return has(credential, "credentialStatus.statusListIndex")
 }
 
-
-
 /**
  * Signs a Verifiable Credential as a JWT from passed payload object & issuer.
  */
@@ -168,10 +165,11 @@ export async function signVerifiableCredential(
   options: CreateCredentialOptions = {}
 ): Promise<JWT> {
   let payload = vcPayload
-  if (!vcPayload.hasOwnProperty('vc')) {
+  // eslint-disable-next-line no-prototype-builtins
+  if (!vcPayload.hasOwnProperty("vc")) {
     payload = asJwtCredentialPayload(vcPayload as CredentialPayload)
   }
-  
+
   return createVerifiableCredentialJwt(payload, issuer, options)
 }
 
@@ -188,16 +186,12 @@ export async function verifyVerifiableCredential(
 
     // check expired
     if (isExpired(res.verifiableCredential)) {
-      throw new VerificationError(
-        "Expired Credential"
-      )
+      throw new VerificationError("Expired Credential")
     }
 
     // check revocation
     if (await isRevoked(res.verifiableCredential)) {
-      throw new VerificationError(
-        "Revoked Credential"
-      )
+      throw new VerificationError("Revoked Credential")
     }
 
     // eslint-disable-next-line no-prototype-builtins

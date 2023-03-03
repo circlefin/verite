@@ -2,14 +2,13 @@ import { Attestation, CredentialPayload } from "../../types"
 import { VERIFIABLE_CREDENTIAL_TYPE_NAME } from "../utils"
 import { DEFAULT_CONTEXT } from "./common"
 
-
 export class CredentialPayloadBuilder {
   _builder: Partial<CredentialPayload>
   _additionalPayload: Partial<CredentialPayload> = {}
 
   constructor() {
     this._builder = Object.assign({
-        "@context": DEFAULT_CONTEXT
+      "@context": DEFAULT_CONTEXT
     })
   }
 
@@ -45,25 +44,21 @@ export class CredentialPayloadBuilder {
     }
     this._builder.credentialSubject = attsns
     return this
-}
+  }
 
-issuer(issuerDid: string) {
-  this._builder.issuer = { id: issuerDid }
-  return this
-}
+  issuer(issuerDid: string) {
+    this._builder.issuer = { id: issuerDid }
+    return this
+  }
 
-additionalPayload(additionalPayload: Partial<CredentialPayload>) {
-  this._additionalPayload = additionalPayload
-  return this
-}
+  additionalPayload(additionalPayload: Partial<CredentialPayload>) {
+    this._additionalPayload = additionalPayload
+    return this
+  }
 
-build(): CredentialPayload {
+  build(): CredentialPayload {
     this._builder.issuanceDate = new Date()
     this._builder = Object.assign(this._builder, this._additionalPayload)
     return this._builder as CredentialPayload
   }
 }
-
-
-
-

@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto"
 
 import {
-  buildAndSignFulfillment,
   buildCredentialFulfillment,
   buildVerifiableCredential
 } from "../../../lib/issuer"
@@ -28,11 +27,12 @@ describe("buildAndSignFulfillment", () => {
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const subjectDid = randomDidKey(randomBytes)
     const vc = await buildVerifiableCredential(
-      issuer, 
-      subjectDid.subject, 
-      kycAmlAttestationFixture, 
-      KYCAML_CREDENTIAL_TYPE_NAME, 
-      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ })
+      issuer,
+      subjectDid.subject,
+      kycAmlAttestationFixture,
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
+    )
     const encodedFulfillment = await buildCredentialFulfillment(
       issuer,
       manifest,
@@ -99,10 +99,16 @@ describe("buildAndSignFulfillment", () => {
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
-    const vc = await buildVerifiableCredential(issuer, clientDidKey, kycAmlAttestationFixture, KYCAML_CREDENTIAL_TYPE_NAME, {
-      credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-      credentialStatus: revocationListFixture
-    })
+    const vc = await buildVerifiableCredential(
+      issuer,
+      clientDidKey,
+      kycAmlAttestationFixture,
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      {
+        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialStatus: revocationListFixture
+      }
+    )
 
     const encodedFulfillment = await buildCredentialFulfillment(
       issuer,

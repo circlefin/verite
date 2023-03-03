@@ -2,7 +2,7 @@ import Ajv from "ajv"
 import jsonpath from "jsonpath"
 
 import { ValidationError } from "../errors"
-import { asyncSome, verifyVerifiablePresentation, isExpired, isRevoked } from "../utils"
+import { verifyVerifiablePresentation } from "../utils"
 
 import type {
   DecodedPresentationSubmission,

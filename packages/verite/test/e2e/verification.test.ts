@@ -1,20 +1,25 @@
 import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 
-import { buildCredentialFulfillment, buildCredentialApplication, buildVerifiableCredential } from "../../lib/issuer"
+import {
+  buildCredentialFulfillment,
+  buildCredentialApplication,
+  buildVerifiableCredential
+} from "../../lib/issuer"
 import {
   buildKycVerificationOffer,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
 import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
-import { validateCredentialApplication, validateVerificationSubmission } from "../../lib/validators"
+import {
+  validateCredentialApplication,
+  validateVerificationSubmission
+} from "../../lib/validators"
 import { buildPresentationSubmission } from "../../lib/verifier/presentation-submission"
 import {
-  CredentialManifest,
   DecodedCredentialApplication,
   DidKey,
-  Issuer,
   RevocableCredential
 } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
@@ -77,20 +82,20 @@ async function getClientVerifiableCredential(
   )) as DecodedCredentialApplication
   await validateCredentialApplication(application, manifest)
 
-  const vc = await buildVerifiableCredential(issuer, clientDidKey.subject, kycAmlAttestationFixture, KYCAML_CREDENTIAL_TYPE_NAME, {
-    credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-    credentialStatus: revocationListFixture
-  })
-
-  const fulfillment = await buildCredentialFulfillment(
+  const vc = await buildVerifiableCredential(
     issuer,
-    manifest,
-    vc
+    clientDidKey.subject,
+    kycAmlAttestationFixture,
+    KYCAML_CREDENTIAL_TYPE_NAME,
+    {
+      credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+      credentialStatus: revocationListFixture
+    }
   )
+
+  const fulfillment = await buildCredentialFulfillment(issuer, manifest, vc)
 
   const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
 
   return fulfillmentVP.verifiableCredential as RevocableCredential[]
 }
-
-

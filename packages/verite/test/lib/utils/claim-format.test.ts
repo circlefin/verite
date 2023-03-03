@@ -1,13 +1,12 @@
-import {  parseClaimFormat } from "../../../lib/utils"
+import { parseClaimFormat } from "../../../lib/utils"
 
 describe("claim-format", () => {
   it("works", async () => {
-    const result = parseClaimFormat( {
+    const result = parseClaimFormat({
       jwt_vp: {
         alg: ["EdDSA"]
       }
     })
-    expect(result).toEqual("jwt_vp")  
-
+    expect(result).toEqual("jwt_vp")
   })
 })

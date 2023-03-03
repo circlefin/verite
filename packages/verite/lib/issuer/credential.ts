@@ -1,31 +1,16 @@
 import { isString } from "lodash"
 
-
 import {
-  EncodedCredentialFulfillment,
   Issuer,
   CredentialPayload,
   DidKey,
   Attestation,
-  CredentialManifest,
-  JWT,
+  JWT
 } from "../../types"
-import {
-  CREDENTIAL_RESPONSE_TYPE_NAME,
-  VERIFIABLE_PRESENTATION_TYPE_NAME,
-  signVerifiableCredential,
-  signVerifiablePresentation
-} from "../utils"
-
-import type {
-  CreateCredentialOptions,
-  CreatePresentationOptions
-} from "did-jwt-vc/src/types"
-
-
 import { CredentialPayloadBuilder } from "../builders"
+import { signVerifiableCredential } from "../utils"
 
-
+import type { CreateCredentialOptions } from "did-jwt-vc/src/types"
 
 /**
  * Construct a Credential Payload containing an attestation for the given holder.
@@ -45,18 +30,16 @@ export async function constructVerifiableCredential(
     .build()
 }
 
-
-
-function parseSubjectId(subject: string | DidKey) : string {
+function parseSubjectId(subject: string | DidKey): string {
   return isString(subject) ? subject : subject.subject
 }
 
 /**
  *  Build and sign a VerifiableCredential containing attestations for the subject.
- * 
- * "Build" overloads provide convenience wrappers for 2 steps: constructing and signing. 
+ *
+ * "Build" overloads provide convenience wrappers for 2 steps: constructing and signing.
  * You can call the construct and sign steps separately for more fine-grained control.
- * 
+ *
  */
 export async function buildVerifiableCredential(
   issuer: Issuer,
@@ -66,6 +49,12 @@ export async function buildVerifiableCredential(
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
-  const credentialPayload = await constructVerifiableCredential(issuer.did, parseSubjectId(subject), attestation, credentialType, payload)
+  const credentialPayload = await constructVerifiableCredential(
+    issuer.did,
+    parseSubjectId(subject),
+    attestation,
+    credentialType,
+    payload
+  )
   return signVerifiableCredential(credentialPayload, issuer, options)
 }

@@ -3,12 +3,12 @@ import nock from "nock"
 import { v4 as uuidv4 } from "uuid"
 
 import { ValidationError } from "../../../lib/errors"
-import { buildCredentialApplication } from "../../../lib/issuer/credential-application"
 import {
   buildAndSignFulfillment,
   buildCredentialFulfillment,
   buildVerifiableCredential
 } from "../../../lib/issuer"
+import { buildCredentialApplication } from "../../../lib/issuer/credential-application"
 import {
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
   KYCAML_CREDENTIAL_TYPE_NAME

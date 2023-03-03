@@ -5,13 +5,9 @@ import {
   DataMappingSchema,
   DisplayMapping,
   InputDescriptorConstraintDirective,
-  InputDescriptorConstraintSubjectConstraint,
+  InputDescriptorConstraintSubjectConstraint
 } from "../../types"
-
-import {
-  VC_CONTEXT_URI,
-  VERITE_VOCAB_URI
-} from "../utils"
+import { VC_CONTEXT_URI, VERITE_VOCAB_URI } from "../utils"
 
 // Common credential / manifest fields
 export const CREDENTIAL_SCHEMA_PROPERTY_NAME = "credentialSchema"
@@ -83,4 +79,3 @@ export const AsSubjectConstraint = (
   }
   return subjectConstraint
 }
-

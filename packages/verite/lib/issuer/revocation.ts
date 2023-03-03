@@ -11,12 +11,9 @@ import type {
   CredentialPayload,
   EncodedStatusListCredential,
   Issuer,
-  MaybeRevocableCredential,
   RevocableCredential,
   StatusList,
-  StatusList2021Credential,
-  Verifiable,
-  W3CCredential
+  StatusList2021Credential
 } from "../../types"
 
 type GenerateRevocationListOptions = {

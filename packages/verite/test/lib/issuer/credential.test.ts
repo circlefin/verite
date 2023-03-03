@@ -1,11 +1,7 @@
 import { randomBytes } from "crypto"
 
-import {
-  buildVerifiableCredential
-} from "../../../lib/issuer"
-import {
-  KYCAML_CREDENTIAL_TYPE_NAME
-} from "../../../lib/sample-data"
+import { buildVerifiableCredential } from "../../../lib/issuer"
+import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/sample-data"
 import {
   buildIssuer,
   verifyVerifiableCredential,
@@ -151,4 +147,3 @@ describe("buildAndSignVerifiableCredential", () => {
     })
   })
 })
-

@@ -1,17 +1,9 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { cloneDeep } from "lodash"
-import { type } from "os"
-
-import {
-  DescriptorMap,
-  PresentationSubmission
-} from "../../types"
+import { DescriptorMap, PresentationSubmission } from "../../types"
 
 export class PresentationSubmissionBuilder {
   _builder: Partial<PresentationSubmission>
   constructor() {
-    this._builder = {
-    }
+    this._builder = {}
   }
 
   id(id: string): PresentationSubmissionBuilder {
@@ -28,7 +20,6 @@ export class PresentationSubmissionBuilder {
     this._builder.descriptor_map = descriptor_map
     return this
   }
-
 
   build(): PresentationSubmission {
     return this._builder as PresentationSubmission
