@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 import {
   buildAndSignFulfillment,
-  verifyCredentialApplication,
+  validateCredentialApplication,
   Attestation,
   buildIssuer,
   CREDIT_SCORE_MANIFEST_ID,
@@ -36,9 +36,9 @@ export default async function credentials(
   /**
    * Using Presentation Exchange, the client will submit a credential
    * application. Since we are using JWTs to format the data, we first must
-   * verify and decode it.
+   * validate and decode it.
    */
-  const application = await verifyCredentialApplication(req.body)
+  const application = await validateCredentialApplication(req.body)
 
   /**
    * The user id has been passed along with the JWT as the subject. In a
@@ -52,7 +52,7 @@ export default async function credentials(
    * Generate the attestation.
    */
   const manifestId = application.credential_application.manifest_id
-  
+
   const manifest = ManifestMap[manifestId]
   let attestation: Attestation
   if (manifestId === KYCAML_MANIFEST_ID) {
@@ -72,9 +72,11 @@ export default async function credentials(
     manifest,
     attestation,
     KYCAML_CREDENTIAL_TYPE_NAME,
-    { 
-      credentialSchema: getCredentialSchemaAsVCObject(getAttestionDefinition(KYCAML_CREDENTIAL_TYPE_NAME)),
-     }
+    {
+      credentialSchema: getCredentialSchemaAsVCObject(
+        getAttestionDefinition(KYCAML_CREDENTIAL_TYPE_NAME)
+      )
+    }
   )
 
   // Response

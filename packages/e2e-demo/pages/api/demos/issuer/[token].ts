@@ -2,7 +2,7 @@ import {
   attestationToCredentialType,
   buildAndSignFulfillment,
   CredentialManifest,
-  verifyCredentialApplication,
+  validateCredentialApplication,
   EncodedCredentialFulfillment,
   isRevocable,
   RevocableCredential,
@@ -53,7 +53,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   }
 
   // Decode the Verifiable Presentation and check the signature
-  const credentialApplication = await verifyCredentialApplication(req.body)
+  const credentialApplication = await validateCredentialApplication(req.body)
 
   // Validate the format of the Verifiable Presentation.
   const manifestId = getManifestIdFromCredentialApplication(

@@ -96,7 +96,7 @@ export async function buildAndSignCredentialApplication(
  *
  * A Credential Application is a Verifiable Presentation. This method decodes the submitted Credential Application, verifies it as a Verifiable Presentation, and returs the decoded Credential Application.
  */
-export async function verifyCredentialApplication(
+export async function validateCredentialApplication(
   credentialApplication: EncodedCredentialApplication,
   options?: VerifyPresentationOptions
 ): Promise<DecodedCredentialApplication> {

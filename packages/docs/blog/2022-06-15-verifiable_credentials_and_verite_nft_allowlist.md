@@ -232,7 +232,7 @@ const getPresentation = async (issuerDidKey, application) => {
   issuerDidKey.privateKey = fromHexString(issuerDidKey.privateKey)
   issuerDidKey.publicKey = fromHexString(issuerDidKey.publicKey)
 
-  const decodedApplication = await verifyCredentialApplication(application)
+  const decodedApplication = await validateCredentialApplication(application)
 
   const attestation = {
     type: "KYCAMLAttestation",
@@ -254,7 +254,7 @@ const getPresentation = async (issuerDidKey, application) => {
 }
 ```
 
-We're using the project's issuer DID key here. We decode the application using Verite's `verifyCredentialApplication` function. Then, we have to attest to the credential presentation.
+We're using the project's issuer DID key here. We validate and decode the application using Verite's `validateCredentialApplication` function. Then, we have to attest to the credential presentation.
 
 Using the issuer private key and public key, we call the Verite library `buildIssuer` function. With the result, we can then create the verifiable presentation that will ultimately be passed back to the user by calling Verite's `buildAndSignFulfillment` function.
 

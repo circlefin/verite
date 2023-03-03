@@ -97,12 +97,12 @@ Putting this together, we can do the following:
 ```ts
 import {
   buildAndSignFulfillment,
-  verifyCredentialApplication,
+  validateCredentialApplication,
   buildIssuer,
   KYCAMLAttestation
 } from "verite"
 
-const decodedApplication = await verifyCredentialApplication(application)
+const decodedApplication = await validateCredentialApplication(application)
 
 const attestation: KYCAMLAttestation = {
   type: "KYCAMLAttestation",

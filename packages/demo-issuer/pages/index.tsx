@@ -11,7 +11,7 @@ import {
   ChallengeTokenUrlWrapper,
   CredentialOffer,
   DecodedCredentialFulfillment,
-  verifyCredentialApplication,
+  validateCredentialApplication,
   DecodedCredentialApplication
 } from "verite"
 
@@ -118,7 +118,9 @@ export default function Home({
       const presentation = (await verifyVerifiablePresentation(
         text
       )) as DecodedCredentialFulfillment
-      const decodedApplication = await verifyCredentialApplication(application)
+      const decodedApplication = await validateCredentialApplication(
+        application
+      )
       setCredentialApplication(decodedApplication)
       setCredentialResponse(presentation)
       setPresentation(presentation)

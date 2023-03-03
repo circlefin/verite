@@ -3,7 +3,7 @@ import { randomBytes } from "crypto"
 import { VerificationError } from "../../../lib/errors"
 import {
   buildAndSignCredentialApplication,
-  verifyCredentialApplication
+  validateCredentialApplication
 } from "../../../lib/issuer/credential-application"
 import { buildKycAmlManifest } from "../../../lib/sample-data/manifests"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
@@ -25,7 +25,9 @@ describe("buildAndSignCredentialApplication", () => {
       kycManifest
     )
 
-    const application = await verifyCredentialApplication(credentialApplication)
+    const application = await validateCredentialApplication(
+      credentialApplication
+    )
 
     expect(application.credential_application.manifest_id).toEqual(
       "KYCAMLManifest"
@@ -39,7 +41,7 @@ describe("buildAndSignCredentialApplication", () => {
   })
 })
 
-describe("verifyCredentialApplication", () => {
+describe("validateCredentialApplication", () => {
   it("decodes the Credential Application", async () => {
     const clientDidKey = randomDidKey(randomBytes)
     const { manifest } = await generateManifestAndIssuer()
@@ -48,7 +50,7 @@ describe("verifyCredentialApplication", () => {
       manifest
     )
 
-    const decoded = await verifyCredentialApplication(application)
+    const decoded = await validateCredentialApplication(application)
 
     expect(decoded).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
@@ -81,7 +83,7 @@ describe("verifyCredentialApplication", () => {
       "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
 
     await expect(
-      verifyCredentialApplication(expiredPresentation)
+      validateCredentialApplication(expiredPresentation)
     ).rejects.toThrowError(VerificationError)
   })
 })

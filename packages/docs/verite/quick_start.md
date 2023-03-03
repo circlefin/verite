@@ -29,7 +29,7 @@ import {
   buildIssuer,
   buildAndSignFulfillment,
   buildKycAmlManifest,
-  verifyCredentialApplication,
+  validateCredentialApplication,
   buildAndSignCredentialApplication,
   buildKycVerificationOffer,
   buildAndSignPresentationSubmission,
@@ -51,7 +51,7 @@ const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
 //  The credential application is created and returned as a JWT
 const application = await buildAndSignCredentialApplication(subject, manifest)
 //  The decoded JWT is necessary when it comes time to issue the verifiable presentation which will include this credential
-const decodedApplication = await verifyCredentialApplication(application)
+const decodedApplication = await validateCredentialApplication(application)
 //  The attestation is a standardized representation of the issuer
 const attestation = {
   type: "KYCAMLAttestation",
