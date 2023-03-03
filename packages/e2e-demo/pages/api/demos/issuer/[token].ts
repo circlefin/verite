@@ -90,8 +90,6 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     }
   )
 
-
-
   // Save the credentials to the database
   await persistGeneratedCredentials(user, fulfillment)
 
