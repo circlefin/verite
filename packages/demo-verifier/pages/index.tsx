@@ -7,12 +7,12 @@ import { useState } from "react"
 import useSWRImmutable from "swr/immutable"
 import {
   randomDidKey,
-  buildAndSignVerifiableCredential,
+  composeVerifiableCredential,
   KYCAMLAttestation,
   buildIssuer,
   verifyVerifiableCredential,
   RevocableCredential,
-  buildAndSignPresentationSubmission,
+  composePresentationSubmission,
   VerificationOffer,
   ChallengeTokenUrlWrapper,
   KYCAML_CREDENTIAL_TYPE_NAME
@@ -43,7 +43,7 @@ const issueCredential = async () => {
   const credentialType = KYCAML_CREDENTIAL_TYPE_NAME
 
   // Generate the signed, encoded credential
-  const encoded = await buildAndSignVerifiableCredential(
+  const encoded = await composeVerifiableCredential(
     issuer,
     subject,
     attestation,
@@ -110,7 +110,7 @@ export default function Home(): JSX.Element {
     credential: Verifiable<W3CCredential> | RevocableCredential
   ) => {
     const subject = holder
-    const request = await buildAndSignPresentationSubmission(
+    const request = await composePresentationSubmission(
       subject,
       verificationRequest.body.presentation_definition,
       credential

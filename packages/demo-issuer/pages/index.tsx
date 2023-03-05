@@ -5,14 +5,14 @@ import { QRCodeSVG } from "qrcode.react"
 import { useState } from "react"
 import {
   randomDidKey,
-  buildAndSignCredentialApplication,
+  composeCredentialApplication,
   verifyVerifiablePresentation,
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
   CredentialOffer,
   DecodedCredentialFulfillment,
-  validateCredentialApplication,
-  DecodedCredentialApplication
+  DecodedCredentialApplication,
+  evaluateCredentialApplication
 } from "verite"
 
 import type { RevocablePresentation, Verifiable, W3CPresentation } from "verite"
@@ -103,10 +103,7 @@ export default function Home({
   // API call to apply for a credential
   const applyForCredential = async (offer: CredentialOffer) => {
     const manifest = offer.body.manifest
-    const application = await buildAndSignCredentialApplication(
-      subject,
-      manifest
-    )
+    const application = await composeCredentialApplication(subject, manifest)
 
     const response = await fetch(offer.reply_url, {
       method: "POST",
@@ -118,8 +115,9 @@ export default function Home({
       const presentation = (await verifyVerifiablePresentation(
         text
       )) as DecodedCredentialFulfillment
-      const decodedApplication = await validateCredentialApplication(
-        application
+      const decodedApplication = await evaluateCredentialApplication(
+        application,
+        manifest
       )
       setCredentialApplication(decodedApplication)
       setCredentialResponse(presentation)

@@ -4,7 +4,7 @@ import { useState } from "react"
 import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 import {
-  buildAndSignVerifiableCredential,
+  composeVerifiableCredential,
   buildIssuer,
   verifyVerifiableCredential,
   generateRevocationList,
@@ -77,7 +77,7 @@ const issueCredential = async (
   }
 
   // Generate the signed, encoded credential
-  const encoded = await buildAndSignVerifiableCredential(
+  const encoded = await composeVerifiableCredential(
     issuer,
     subject,
     attestation,
