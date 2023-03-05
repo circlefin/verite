@@ -135,7 +135,7 @@ describe("issuance", () => {
     // stub out the https request for a did document
     nock("https://example.com")
       .get("/.well-known/did.json")
-      .times(0)
+      .times(2)
       .reply(200, JSON.stringify(didDocument))
 
     /**

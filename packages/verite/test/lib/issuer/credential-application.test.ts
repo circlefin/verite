@@ -9,7 +9,6 @@ import {
   VerificationError
 } from "../../../lib"
 import {
-  buildCredentialApplication,
   composeCredentialApplication,
   decodeCredentialApplication,
   evaluateCredentialApplication
@@ -87,8 +86,7 @@ describe("validateCredentialApplication", () => {
   })
 
   it("rejects an expired input", async () => {
-    expect.assertions(1)
-    const credentialIssuer = { id: "did:example:1234", name: "Verite" }
+    const credentialIssuer = { id: "did:web:example", name: "Verite" }
     const kycManifest = buildKycAmlManifest(credentialIssuer)
 
     const clientDidKey = randomDidKey(randomBytes)
@@ -125,8 +123,9 @@ describe("validateCredentialApplication", () => {
     }
     const signedApplication = await signVerifiablePresentation(vp, client)
 
+    expect.assertions(1)
     await expect(
-      await evaluateCredentialApplication(signedApplication, kycManifest)
+      evaluateCredentialApplication(signedApplication, kycManifest)
     ).rejects.toThrowError(VerificationError)
   })
 })

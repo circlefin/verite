@@ -254,7 +254,7 @@ export async function verifyVerifiablePresentation(
     const vc = res.payload.vp.verifiableCredential
     if (vc) {
       if (isArray(vc)) {
-        Promise.all(
+        await Promise.all(
           vc.map(async (c) => {
             await verifyVerifiableCredential(c)
           })
