@@ -50,6 +50,7 @@ describe("verification", () => {
       verifiableCredentials
     )
 
+    // 4. VERIFIER: Decodes and validates submission
     const submission = await decodePresentationSubmission(encodedSubmission)
 
     expect(submission.presentation_submission!.descriptor_map).toEqual([
@@ -60,7 +61,6 @@ describe("verification", () => {
       }
     ])
 
-    // 4. VERIFIER: Verifies submission
     await validatePresentationSubmission(
       submission,
       kycRequest.body.presentation_definition

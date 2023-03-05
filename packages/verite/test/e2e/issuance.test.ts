@@ -6,7 +6,8 @@ import {
   composeCredentialFulfillment,
   composeVerifiableCredential,
   buildCredentialFulfillment,
-  buildVerifiableCredential
+  buildVerifiableCredential,
+  evaluateCredentialApplication
 } from "../../lib/issuer"
 import {
   buildKycAmlManifest,
@@ -32,38 +33,59 @@ import type {
 describe("issuance", () => {
   it("issues verified credentails", async () => {
     /**
-     * The issuer and the client get a DID
+     * Create a DID for both the issuer and the subject for this test. In the
+     * real world, this would be done separately on the issuer side and the
+     * subject side. For example, the subject's identity wallet could generate
+     * the DID for them.
      */
     const issuerDidKey = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-    const clientDidKey = randomDidKey(randomBytes)
+    const subjectDidKey = randomDidKey(randomBytes)
 
     /**
-     * The issuer generates a QR code for the client to scan
+     * The issuer generates a QR code for the subject to scan, depending on
+     * the type of credential they are issuing. In this case, it's a KYC/AML
+     * credential.
      */
-    const credentialIssuer = { id: issuer.did, name: "Verite" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
+    const manifest = buildKycAmlManifest({ id: issuer.did, name: "Verite" })
 
     /**
-     * The client scans the QR code and generates a credential application
+     * The issuer makes the manifest available to the subject. In this case,
+     * we're assuming the issuer displays a QR code for the subject to scan.
+     *
+     * The subject scans the QR code with their wallet, which retreives the
+     * manifest.
+     */
+
+    /**
+     * The wallet code then calls composeCredentialApplication to build and
+     * sign Credential Application.
      */
     const encodedApplication = await composeCredentialApplication(
-      clientDidKey,
+      subjectDidKey,
       manifest
     )
 
     /**
-     * The issuer validates the credential application
+     * The client sends the Credential Application to the issuer.
      */
-    const credentialApplication = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
 
-    await validateCredentialApplication(credentialApplication, manifest)
+    /**
+     * The issuer evaluates the Credential Application
+     */
+    await evaluateCredentialApplication(encodedApplication, manifest)
 
-    const vc = await buildVerifiableCredential(
-      issuer.did,
-      clientDidKey.subject,
+    /**
+     * In general, the issuer would extract data from the Credential
+     * Application. If the Credential Application is valid, then the
+     * issuer would issue a credential to the subject.
+     *
+     * Verite libraries allow high- and low-level methods. Compose
+     * methods call build* and sign* methods.
+     */
+    const vc = await composeVerifiableCredential(
+      issuer,
+      subjectDidKey.subject,
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
       {
@@ -71,12 +93,19 @@ describe("issuance", () => {
         credentialStatus: revocationListFixture
       }
     )
-    const jwt = await signVerifiableCredential(vc, issuer)
-    const fulfillment = await buildCredentialFulfillment(manifest, jwt)
-    const signedVp = await signVerifiablePresentation(fulfillment, issuer)
+    /**
+     * The issuer wraps the signed VC in a Credential Fulfillment, which
+     * is a signed VP
+     */
+    const fulfillment = await composeCredentialFulfillment(issuer, manifest, vc)
+
+    /**
+     * The issuer sends the Credential Fulfillment to the subject. The subject's
+     * wallet can then verify the VP and store it.
+     */
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
-      signedVp
+      fulfillment
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(
@@ -88,7 +117,7 @@ describe("issuance", () => {
         expect(verifiableCredential.proof).toBeDefined()
 
         const credentialSubject = verifiableCredential.credentialSubject
-        expect(credentialSubject.id).toEqual(clientDidKey.subject)
+        expect(credentialSubject.id).toEqual(subjectDidKey.subject)
 
         const credentialStatus = verifiableCredential.credentialStatus
         expect(credentialStatus.id).toEqual(
