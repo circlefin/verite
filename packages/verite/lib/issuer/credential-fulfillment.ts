@@ -96,9 +96,9 @@ export async function composeFulfillment(
 }
 
 /**
- * Build and sign a Credential Fulfillment (which is a VerifiablePresentation) from a list of signed Verifiable Credentials.
+ * Compose a Credential Fulfillment (which is a VerifiablePresentation) from a list of signed Verifiable Credentials.
  *
- * "Build and sign" overloads provide convenience wrappers for 2 steps: building and signing.
+ * "Compose" overloads provide convenience wrappers for 2 steps: building and signing.
  * You can call the wrapped functions separately for more fine-grained control.
  *
  * Signing is forwarded to the did-jwt-vc library.
