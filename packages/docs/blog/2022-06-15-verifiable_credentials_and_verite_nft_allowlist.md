@@ -216,14 +216,14 @@ const createApplication = async (issuerDidKey, subject) => {
   subject.privateKey = fromHexString(subject.privateKey)
   subject.publicKey = fromHexString(subject.publicKey)
   const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
-  const application = await buildAndSignCredentialApplication(subject, manifest)
+  const application = await composeCredentialApplication(subject, manifest)
   return application
 }
 ```
 
 This function includes some helpers to convert the DID key private and public keys back from hex strings to buffers. The function then uses the `buildKycAmlManifest` function from the Verite library to build a manifest that will be used in the credential application. It should be noted that I'm using the `KycAmlManifest` but you could create your own manifest that more closely mirrors adding someone to an allowlist. The KycAmlManifest fit closely enough for me, though.
 
-Finally, the manifest is used and passed into the Verite library function `buildAndSignCredentialApplication` and the application is returned.
+Finally, the manifest is used and passed into the Verite library function `composeCredentialApplication` and the application is returned.
 
 When the application is built, we now call a function called `getPresentation`:
 
@@ -243,7 +243,7 @@ const getPresentation = async (issuerDidKey, application) => {
   const credentialType = "KYCAMLCredential"
 
   const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-  const presentation = await buildAndSignFulfillment(
+  const presentation = await composeFulfillment(
     issuer,
     decodedApplication,
     attestation,
@@ -256,7 +256,7 @@ const getPresentation = async (issuerDidKey, application) => {
 
 We're using the project's issuer DID key here. We validate and decode the application using Verite's `validateCredentialApplication` function. Then, we have to attest to the credential presentation.
 
-Using the issuer private key and public key, we call the Verite library `buildIssuer` function. With the result, we can then create the verifiable presentation that will ultimately be passed back to the user by calling Verite's `buildAndSignFulfillment` function.
+Using the issuer private key and public key, we call the Verite library `buildIssuer` function. With the result, we can then create the verifiable presentation that will ultimately be passed back to the user by calling Verite's `composeFulfillment` function.
 
 It is that presentation that is sent back to the user. We'll take a look at the frontend shortly, but just know that the presentation comes in the form of a JWT.
 
@@ -288,7 +288,7 @@ try {
     issuerDidKey.subject,
     "https://test.host/verify"
   )
-  const submission = await buildAndSignPresentationSubmission(
+  const submission = await composePresentationSubmission(
     subject,
     offer.body.presentation_definition,
     decodedVc
@@ -340,7 +340,7 @@ try {
 
 Once again, the first thing we check is that the user has a valid SIWE session. This route takes a body that includes the verifiable presentation we had sent to the user previously. So, the next step is to call the Verite function `verifyVerifiablePresentation` to then be able to extract the verifiable credential and call the `verifyVerifiableCredential` function.
 
-As with our `requestAllowlist` route, we now need to get the issuer DID key and look up the user's delegated DID key. From there, we can use the issuer key to call the Verite library function `buildKycVerificationOffer`. We use the results of that call and the user's DID key to call the Verite library function `buildAndSignPresentationSubmission`.
+As with our `requestAllowlist` route, we now need to get the issuer DID key and look up the user's delegated DID key. From there, we can use the issuer key to call the Verite library function `buildKycVerificationOffer`. We use the results of that call and the user's DID key to call the Verite library function `composePresentationSubmission`.
 
 Now, we get on to the good stuff. We're going to make sure a valid credential was sent to us. We call the Verite library function `validateVerificationSubmission`. This function will throw if the credential is invalid. Otherwise, it does nothing. We're rooting for nothing!
 

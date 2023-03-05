@@ -2,8 +2,8 @@ import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
-  buildAndSignFulfillment,
-  buildAndSignPresentationSubmission,
+  composeFulfillment,
+  composePresentationSubmission,
   verifyVerifiablePresentation,
   randomDidKey,
   buildKycVerificationOffer,
@@ -37,7 +37,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -75,7 +75,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -122,7 +122,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -161,7 +161,7 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLManifest")
   const user = await userFactory()
   const userAttestation = buildAttestationForUser(user, manifest)
-  const fulfillment = await buildAndSignFulfillment(
+  const fulfillment = await composeFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     clientDidKey.subject,
     manifest,

@@ -26,6 +26,7 @@ import {
   VERIFIABLE_PRESENTATION_TYPE_NAME,
   VC_CONTEXT_URI
 } from "../utils"
+import { validateCredentialApplication } from "../validators"
 
 export function buildCredentialApplication(
   manifest: CredentialManifest,
@@ -79,7 +80,7 @@ export function buildCredentialApplication(
  *
  * @returns an encoded & signed application that can be submitted to the issuer
  */
-export async function buildAndSignCredentialApplication(
+export async function composeCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest,
   options?: CreatePresentationOptions
@@ -92,16 +93,22 @@ export async function buildAndSignCredentialApplication(
 }
 
 /**
- * Verify and decode an encoded Credential Application.
+ * Decode an encoded Credential Application.
  *
- * A Credential Application is a Verifiable Presentation. This method decodes the submitted Credential Application, verifies it as a Verifiable Presentation, and returs the decoded Credential Application.
+ * A Credential Application is a Verifiable Presentation. This method decodes
+ * the submitted Credential Application, verifies it as a Verifiable
+ * Presentation, and returns the decoded Credential Application.
+ *
+ * @returns the decoded Credential Application
+ * @throws VerificationException if the Credential Application is not a valid
+ *  Verifiable Presentation
  */
-export async function validateCredentialApplication(
-  credentialApplication: EncodedCredentialApplication,
+export async function decodeCredentialApplication(
+  encodedApplication: EncodedCredentialApplication,
   options?: VerifyPresentationOptions
 ): Promise<DecodedCredentialApplication> {
   const decodedPresentation = await verifyVerifiablePresentation(
-    credentialApplication,
+    encodedApplication,
     options
   )
 
@@ -109,10 +116,24 @@ export async function validateCredentialApplication(
 }
 
 /**
- * Fetches the manifest id from a credential application
+ * Decode and validate an encoded Credential Application.
+ *
+ * This is a convenience wrapper around `decodeCredentialApplication` and `validateCredentialApplication`,
+ * which can be called separately.
+ *
+ * @returns the decoded Credential Application
+ * @throws VerificationException if the Credential Application is not a valid
+ *  Verifiable Presentation
  */
-export function getManifestIdFromCredentialApplication(
-  application: DecodedCredentialApplication
-): string {
-  return application.credential_application.manifest_id
+export async function evaluateCredentialApplication(
+  encodedApplication: EncodedCredentialApplication,
+  manifest: CredentialManifest,
+  options?: VerifyPresentationOptions
+): Promise<DecodedCredentialApplication> {
+  const application = await decodeCredentialApplication(
+    encodedApplication,
+    options
+  )
+  await validateCredentialApplication(application, manifest)
+  return application
 }

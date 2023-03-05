@@ -2,9 +2,10 @@ import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 
 import {
-  buildAndSignCredentialFulfillment,
-  buildAndSignCredentialApplication,
-  buildAndSignVerifiableCredential
+  composeCredentialFulfillment,
+  composeCredentialApplication,
+  composeVerifiableCredential,
+  decodeCredentialApplication
 } from "../../lib/issuer"
 import {
   buildKycVerificationOffer,
@@ -14,14 +15,13 @@ import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { randomDidKey } from "../../lib/utils/did-fns"
 import {
   validateCredentialApplication,
-  validateVerificationSubmission
+  validatePresentationSubmission
 } from "../../lib/validators"
-import { buildAndSignPresentationSubmission } from "../../lib/verifier/presentation-submission"
 import {
-  DecodedCredentialApplication,
-  DidKey,
-  RevocableCredential
-} from "../../types"
+  composePresentationSubmission,
+  decodePresentationSubmission
+} from "../../lib/verifier/presentation-submission"
+import { DidKey, RevocableCredential } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../fixtures/credentials"
 import { revocationListFixture } from "../fixtures/revocation-list"
@@ -44,12 +44,13 @@ describe("verification", () => {
     )
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
-    const encodedSubmission = await buildAndSignPresentationSubmission(
+    const encodedSubmission = await composePresentationSubmission(
       clientDidKey,
       kycRequest.body.presentation_definition,
       verifiableCredentials
     )
-    const submission = await verifyVerifiablePresentation(encodedSubmission)
+
+    const submission = await decodePresentationSubmission(encodedSubmission)
 
     expect(submission.presentation_submission!.descriptor_map).toEqual([
       {
@@ -60,8 +61,8 @@ describe("verification", () => {
     ])
 
     // 4. VERIFIER: Verifies submission
-    await validateVerificationSubmission(
-      encodedSubmission,
+    await validatePresentationSubmission(
+      submission,
       kycRequest.body.presentation_definition
     )
   })
@@ -73,16 +74,14 @@ async function getClientVerifiableCredential(
   const { manifest, issuer } = await generateManifestAndIssuer()
 
   // 0. PREREQ: Ensure client has a valid KYC credential
-  const encodedApplication = await buildAndSignCredentialApplication(
+  const encodedApplication = await composeCredentialApplication(
     clientDidKey,
     manifest
   )
-  const application = (await verifyVerifiablePresentation(
-    encodedApplication
-  )) as DecodedCredentialApplication
+  const application = await decodeCredentialApplication(encodedApplication)
   await validateCredentialApplication(application, manifest)
 
-  const vc = await buildAndSignVerifiableCredential(
+  const vc = await composeVerifiableCredential(
     issuer,
     clientDidKey.subject,
     kycAmlAttestationFixture,
@@ -93,11 +92,7 @@ async function getClientVerifiableCredential(
     }
   )
 
-  const fulfillment = await buildAndSignCredentialFulfillment(
-    issuer,
-    manifest,
-    vc
-  )
+  const fulfillment = await composeCredentialFulfillment(issuer, manifest, vc)
 
   const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
 

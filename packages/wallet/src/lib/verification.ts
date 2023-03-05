@@ -1,6 +1,6 @@
 import {
   DidKey,
-  buildAndSignPresentationSubmission,
+  composePresentationSubmission,
   Verifiable,
   W3CCredential,
   VerificationOffer
@@ -39,7 +39,7 @@ export const submitVerification = async (
   verificationRequest: VerificationOffer,
   credential: Verifiable<W3CCredential>
 ): Promise<SubmissionResponse | undefined> => {
-  const body = await buildAndSignPresentationSubmission(
+  const body = await composePresentationSubmission(
     didKey,
     verificationRequest.body.presentation_definition,
     credential,

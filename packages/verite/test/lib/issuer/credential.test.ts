@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto"
 
-import { buildAndSignVerifiableCredential } from "../../../lib/issuer"
+import { composeVerifiableCredential } from "../../../lib/issuer"
 import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/sample-data"
 import {
   buildIssuer,
@@ -14,7 +14,7 @@ import {
 } from "../../fixtures/attestations"
 import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 
-describe("buildAndSignVerifiableCredential", () => {
+describe("composeVerifiableCredential", () => {
   it("builds and signs a verifiable credential", async () => {
     // Map Issuer DID to Issuer for signing
     const issuerDid = randomDidKey(randomBytes)
@@ -27,7 +27,7 @@ describe("buildAndSignVerifiableCredential", () => {
     const attestation = kycAmlAttestationFixture
 
     // Constructs and signs a Verifiable Credential
-    const vc = await buildAndSignVerifiableCredential(
+    const vc = await composeVerifiableCredential(
       issuer,
       subjectDid,
       attestation,
@@ -77,7 +77,7 @@ describe("buildAndSignVerifiableCredential", () => {
       statusListIndex: "94567",
       statusListCredential: "https://example.com/credentials/status/3"
     }
-    const vc = await buildAndSignVerifiableCredential(
+    const vc = await composeVerifiableCredential(
       issuer,
       subjectDid,
       attestation,
@@ -108,7 +108,7 @@ describe("buildAndSignVerifiableCredential", () => {
       creditScoreAttestationFixture
     ]
 
-    const encodedVC = await buildAndSignVerifiableCredential(
+    const encodedVC = await composeVerifiableCredential(
       issuer,
       subjectDid,
       attestations,

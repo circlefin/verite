@@ -5,7 +5,7 @@ import {
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
-import { has, isString } from "lodash"
+import { has, isArray, isString } from "lodash"
 
 import { VerificationError } from "../errors"
 import { didResolver } from "./did-fns"
@@ -250,6 +250,20 @@ export async function verifyVerifiablePresentation(
 ): Promise<Verifiable<W3CPresentation> | RevocablePresentation> {
   try {
     const res = await verifyPresentation(vpJwt, didResolver, options)
+    // verify nested VCs
+    const vc = res.payload.vp.verifiableCredential
+    if (vc) {
+      if (isArray(vc)) {
+        Promise.all(
+          vc.map(async (c) => {
+            await verifyVerifiableCredential(c)
+          })
+        )
+      } else {
+        await verifyVerifiableCredential(vc)
+      }
+    }
+
     if (res.verifiablePresentation.vp) {
       // did-jwt-vc leaves properties it doesn't recognize in vp; move them
       const vpFields = res.verifiablePresentation.vp
@@ -261,6 +275,7 @@ export async function verifyVerifiablePresentation(
       delete clone.vp
       return clone
     }
+
     return res.verifiablePresentation
   } catch (err) {
     throw new VerificationError(

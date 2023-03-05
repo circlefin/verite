@@ -43,7 +43,7 @@ function parseSubjectId(subject: string | DidKey): string {
  * Signing is forwarded to the did-jwt-vc library.
  *
  */
-export async function buildAndSignVerifiableCredential(
+export async function composeVerifiableCredential(
   issuer: Issuer,
   subject: string | DidKey,
   attestation: Attestation | Attestation[],

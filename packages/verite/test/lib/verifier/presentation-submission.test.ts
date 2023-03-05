@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 import jsonpath from "jsonpath"
 
-import { buildAndSignVerifiableCredential } from "../../../lib/issuer"
+import { composeVerifiableCredential } from "../../../lib/issuer"
 import {
   kycAmlPresentationDefinition,
   KYCAML_CREDENTIAL_TYPE_NAME
@@ -12,11 +12,11 @@ import {
   verifyVerifiablePresentation,
   randomDidKey
 } from "../../../lib/utils"
-import { buildAndSignPresentationSubmission } from "../../../lib/verifier/presentation-submission"
+import { composePresentationSubmission } from "../../../lib/verifier/presentation-submission"
 import { kycAmlAttestationFixture } from "../../fixtures/attestations"
 import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 
-describe("buildAndSignPresentationSubmission", () => {
+describe("composePresentationSubmission", () => {
   it("builds a Presentation Submission", async () => {
     // DID of the holder
     const didKey = randomDidKey(randomBytes)
@@ -26,7 +26,7 @@ describe("buildAndSignPresentationSubmission", () => {
     const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
 
     // Builds a signed Verifiable Credential
-    const encodedCredential = await buildAndSignVerifiableCredential(
+    const encodedCredential = await composeVerifiableCredential(
       issuer,
       didKey,
       kycAmlAttestationFixture,
@@ -42,7 +42,7 @@ describe("buildAndSignPresentationSubmission", () => {
     const presentationDefinition = kycAmlPresentationDefinition()
 
     // Build Presentation Submission
-    const encodedSubmission = await buildAndSignPresentationSubmission(
+    const encodedSubmission = await composePresentationSubmission(
       didKey,
       presentationDefinition,
       credential

@@ -1,2 +1,2 @@
-export * from "./validate-verification-submission"
+export * from "./validate-presentation-submission"
 export * from "./validate-credential-application"

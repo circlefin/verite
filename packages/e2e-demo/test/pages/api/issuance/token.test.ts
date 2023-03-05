@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto"
 import {
-  buildAndSignCredentialApplication,
+  composeCredentialApplication,
   verifyVerifiablePresentation,
   randomDidKey
 } from "verite"
@@ -22,7 +22,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLManifest")
-    const credentialApplication = await buildAndSignCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -53,7 +53,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("CreditScoreManifest")
-    const credentialApplication = await buildAndSignCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -157,7 +157,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLManifest")
-    const credentialApplication = await buildAndSignCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )

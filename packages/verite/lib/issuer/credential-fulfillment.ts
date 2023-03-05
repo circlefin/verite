@@ -19,7 +19,7 @@ import {
   VC_CONTEXT_URI,
   VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
-import { buildAndSignVerifiableCredential } from "./credential"
+import { composeVerifiableCredential } from "./credential"
 
 export function buildCredentialFulfillment(
   manifest: CredentialManifest,
@@ -61,9 +61,9 @@ export function buildCredentialFulfillment(
 
 /**
  * @deprecated
- * Keeping for backwards compatibility. Signature is too confisuing and complex; use buildAndSignVerifiableCredential and buildAndSignCredentialFulfillment instead.
+ * Keeping for backwards compatibility. Signature is too confisuing and complex; use composeVerifiableCredential and composeCredentialFulfillment instead.
  */
-export async function buildAndSignFulfillment(
+export async function composeFulfillment(
   issuer: Issuer,
   subject: string | DidKey,
   manifest: CredentialManifest,
@@ -77,7 +77,7 @@ export async function buildAndSignFulfillment(
   ],
   presentationOptions?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const encodedCredentials = await buildAndSignVerifiableCredential(
+  const encodedCredentials = await composeVerifiableCredential(
     issuer,
     subject,
     attestation,
@@ -86,7 +86,7 @@ export async function buildAndSignFulfillment(
     options
   )
 
-  return buildAndSignCredentialFulfillment(
+  return composeCredentialFulfillment(
     issuer,
     manifest,
     encodedCredentials,
@@ -104,7 +104,7 @@ export async function buildAndSignFulfillment(
  * Signing is forwarded to the did-jwt-vc library.
  *
  */
-export async function buildAndSignCredentialFulfillment(
+export async function composeCredentialFulfillment(
   issuer: Issuer,
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],

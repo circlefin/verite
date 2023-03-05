@@ -1,7 +1,7 @@
 import {
   DidKey,
   CredentialManifest,
-  buildAndSignCredentialApplication,
+  composeCredentialApplication,
   verifyVerifiablePresentation,
   Verifiable,
   W3CCredential,
@@ -17,7 +17,7 @@ export const requestIssuance = async (
   did: DidKey,
   manifest: CredentialManifest
 ): Promise<Verifiable<W3CCredential>[] | undefined> => {
-  const body = await buildAndSignCredentialApplication(did, manifest)
+  const body = await composeCredentialApplication(did, manifest)
 
   const response = await fetch(url, {
     method: "POST",

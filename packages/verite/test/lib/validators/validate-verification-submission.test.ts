@@ -4,11 +4,14 @@ import { v4 as uuidv4 } from "uuid"
 
 import { ValidationError } from "../../../lib/errors"
 import {
-  buildAndSignFulfillment,
-  buildAndSignCredentialFulfillment,
-  buildAndSignVerifiableCredential
+  composeFulfillment,
+  composeCredentialFulfillment,
+  composeVerifiableCredential
 } from "../../../lib/issuer"
-import { buildAndSignCredentialApplication } from "../../../lib/issuer/credential-application"
+import {
+  composeCredentialApplication,
+  decodeCredentialApplication
+} from "../../../lib/issuer/credential-application"
 import {
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
   KYCAML_CREDENTIAL_TYPE_NAME
@@ -21,8 +24,11 @@ import {
 import { verifyVerifiablePresentation } from "../../../lib/utils/credentials"
 import { randomDidKey } from "../../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../../lib/validators/validate-credential-application"
-import { validateVerificationSubmission } from "../../../lib/validators/validate-verification-submission"
-import { buildAndSignPresentationSubmission } from "../../../lib/verifier/presentation-submission"
+import { validatePresentationSubmission } from "../../../lib/validators/validate-presentation-submission"
+import {
+  composePresentationSubmission,
+  decodePresentationSubmission
+} from "../../../lib/verifier/presentation-submission"
 import {
   creditScoreAttestationFixture,
   kycAmlAttestationFixture
@@ -36,7 +42,6 @@ import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
 import type {
   CredentialSchema,
-  DecodedCredentialApplication,
   EncodedPresentationSubmission,
   VerificationOffer
 } from "../../../types"
@@ -51,17 +56,14 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await composeFulfillment(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -84,15 +86,17 @@ describe("Submission validator", () => {
       [issuer.did]
     )
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
     )
 
+    const decodedSubmission = await decodePresentationSubmission(submission)
+
     await expect(
-      validateVerificationSubmission(
-        submission,
+      validatePresentationSubmission(
+        decodedSubmission,
         verificationRequest.body.presentation_definition
       )
     ).resolves.not.toThrow()
@@ -102,17 +106,14 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await composeFulfillment(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -133,15 +134,16 @@ describe("Submission validator", () => {
       creditScoreAttestationFixture.score
     )
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
     )
+    const decodedSubmission = await decodePresentationSubmission(submission)
 
     await expect(
-      validateVerificationSubmission(
-        submission,
+      validatePresentationSubmission(
+        decodedSubmission,
         verificationRequest.body.presentation_definition
       )
     ).resolves.not.toThrow()
@@ -152,21 +154,18 @@ describe("Submission validator", () => {
     const verifierDidKey = randomDidKey(randomBytes)
 
     const { manifest, issuer } = await generateManifestAndIssuer("hybrid")
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
     const attestation1 = kycAmlAttestationFixture
     const attestation2 = creditScoreAttestationFixture
 
     // Builds a signed Verifiable Credential
-    const vc1 = await buildAndSignVerifiableCredential(
+    const vc1 = await composeVerifiableCredential(
       issuer,
       clientDidKey,
       attestation1,
@@ -180,7 +179,7 @@ describe("Submission validator", () => {
       }
     )
 
-    const vc2 = await buildAndSignVerifiableCredential(
+    const vc2 = await composeVerifiableCredential(
       issuer,
       clientDidKey,
       attestation2,
@@ -196,7 +195,7 @@ describe("Submission validator", () => {
 
     const creds = [vc1, vc2]
 
-    const encodedFulfillment = await buildAndSignCredentialFulfillment(
+    const encodedFulfillment = await composeCredentialFulfillment(
       issuer,
       manifest,
       creds
@@ -219,15 +218,16 @@ describe("Submission validator", () => {
       verificationRequest.body.presentation_definition.input_descriptors.concat(
         creditScorePres.input_descriptors
       )
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
     )
+    const decodedSubmission = await decodePresentationSubmission(submission)
 
     await expect(
-      validateVerificationSubmission(
-        submission,
+      validatePresentationSubmission(
+        decodedSubmission,
         verificationRequest.body.presentation_definition
       )
     ).resolves.not.toThrow()
@@ -237,17 +237,14 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await composeFulfillment(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -270,7 +267,7 @@ describe("Submission validator", () => {
       ["NOT TRUSTED"]
     )
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -287,17 +284,14 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer("creditScore")
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await composeFulfillment(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -319,7 +313,7 @@ describe("Submission validator", () => {
       minimumCreditScore
     )
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -336,17 +330,14 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await composeFulfillment(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -371,7 +362,7 @@ describe("Submission validator", () => {
       800
     )
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -388,17 +379,14 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await composeFulfillment(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -422,7 +410,7 @@ describe("Submission validator", () => {
     )
 
     const differentHolderThanSubject = randomDidKey(randomBytes)
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       differentHolderThanSubject,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -439,17 +427,14 @@ describe("Submission validator", () => {
     const clientDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
     const { manifest, issuer } = await generateManifestAndIssuer()
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
-    const application = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
+    const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await buildAndSignFulfillment(
+    const fulfillment = await composeFulfillment(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -472,7 +457,7 @@ describe("Submission validator", () => {
       [issuer.did]
     )
 
-    const submission = await buildAndSignPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC
@@ -495,10 +480,11 @@ async function expectValidationError(
   message: string
 ): Promise<void> {
   let error: ValidationError | undefined
+  const decodedSubmission = await decodePresentationSubmission(submission)
 
   try {
-    await validateVerificationSubmission(
-      submission,
+    await validatePresentationSubmission(
+      decodedSubmission,
       verificationRequest.body.presentation_definition
     )
   } catch (e) {

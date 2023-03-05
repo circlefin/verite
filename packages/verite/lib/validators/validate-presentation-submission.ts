@@ -2,7 +2,6 @@ import Ajv from "ajv"
 import jsonpath from "jsonpath"
 
 import { ValidationError } from "../errors"
-import { verifyVerifiablePresentation } from "../utils"
 
 import type {
   DecodedPresentationSubmission,
@@ -13,13 +12,17 @@ import type {
   Verifiable,
   InputDescriptorConstraintField
 } from "../../types"
-import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
-
-type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
-  knownSchemas?: Record<string, Record<string, unknown>>
-}
 
 const ajv = new Ajv()
+
+/**
+ * Fetches the definition id from a Presentation Submission
+ */
+function getDefinitionIdFromPresentationSubmission(
+  submission: DecodedPresentationSubmission
+): string | undefined {
+  return submission.presentation_submission?.definition_id
+}
 
 /**
  * Find the first path in the input descriptor field which is present in the
@@ -208,21 +211,26 @@ async function ensureHolderIsSubject(
 
 /**
  * Validate a verifiable presentation against a presentation definition
+ * @throws ValidationError if the presentation does not meet the requirements
  */
-export async function validateVerificationSubmission(
-  submission: JWT,
-  definition: PresentationDefinition,
-  options?: ValidateVerificationSubmissionOptions
+export async function validatePresentationSubmission(
+  submission: DecodedPresentationSubmission,
+  definition: PresentationDefinition
 ): Promise<void> {
-  const presentation = await verifyVerifiablePresentation(submission, options)
+  if (getDefinitionIdFromPresentationSubmission(submission) !== definition.id) {
+    throw new ValidationError(
+      "Invalid Definition ID",
+      "This submission does not include a valid definition id"
+    )
+  }
 
-  const credentialMap = mapInputsToDescriptors(presentation, definition)
+  const credentialMap = mapInputsToDescriptors(submission, definition)
   /**
    * Check that the Verified Presentation was signed by the subject of the
    * Verified Credential. This ensures that the person submitting the
    * Presentation is the credential subject.
    */
-  await ensureHolderIsSubject(credentialMap, presentation, definition)
+  await ensureHolderIsSubject(credentialMap, submission, definition)
 
   /**
    * Check the verifiable credentials to ensure they meet the requirements

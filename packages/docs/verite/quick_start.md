@@ -27,12 +27,12 @@ or
 import {
   randomDidKey,
   buildIssuer,
-  buildAndSignFulfillment,
+  composeFulfillment,
   buildKycAmlManifest,
   validateCredentialApplication,
-  buildAndSignCredentialApplication,
+  composeCredentialApplication,
   buildKycVerificationOffer,
-  buildAndSignPresentationSubmission,
+  composePresentationSubmission,
   validateVerificationSubmission,
   verifyVerifiableCredential,
   verifyVerifiablePresentation
@@ -49,7 +49,7 @@ const verifier = randomDidKey(randomBytes)
 //  Issuer builds a manifest representing the type of credential (in this case a KYCAML credential)
 const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
 //  The credential application is created and returned as a JWT
-const application = await buildAndSignCredentialApplication(subject, manifest)
+const application = await composeCredentialApplication(subject, manifest)
 //  The decoded JWT is necessary when it comes time to issue the verifiable presentation which will include this credential
 const decodedApplication = await validateCredentialApplication(application)
 //  The attestation is a standardized representation of the issuer
@@ -62,7 +62,7 @@ const credentialType = "KYCAMLCredential"
 
 //  The issuer is created from the issuer key, and the credential is issued
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-const presentation = await buildAndSignFulfillment(
+const presentation = await composeFulfillment(
   issuer,
   decodedApplication,
   attestation,
@@ -90,7 +90,7 @@ const offer = buildKycVerificationOffer(
 
 //  The subject can then create a submission is the full verification request which would
 //  be sent to the verifier that uses the offer created and supplied by the verifier
-const submission = await buildAndSignPresentationSubmission(
+const submission = await composePresentationSubmission(
   subject,
   offer.body.presentation_definition,
   decodedVc

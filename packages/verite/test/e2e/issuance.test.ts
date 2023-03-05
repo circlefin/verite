@@ -2,9 +2,9 @@ import { randomBytes } from "crypto"
 import nock from "nock"
 
 import {
-  buildAndSignCredentialApplication,
-  buildAndSignCredentialFulfillment,
-  buildAndSignVerifiableCredential,
+  composeCredentialApplication,
+  composeCredentialFulfillment,
+  composeVerifiableCredential,
   buildCredentialFulfillment,
   buildVerifiableCredential
 } from "../../lib/issuer"
@@ -47,7 +47,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -147,7 +147,7 @@ describe("issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const encodedApplication = await buildAndSignCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -163,7 +163,7 @@ describe("issuance", () => {
     /**
      * The issuer builds and signs a verifiable credential
      */
-    const vc = await buildAndSignVerifiableCredential(
+    const vc = await composeVerifiableCredential(
       issuer,
       clientDidKey.subject,
       kycAmlAttestationFixture,
@@ -177,11 +177,7 @@ describe("issuance", () => {
     /**
      * The issuer builds and signs a fulfillment
      */
-    const fulfillment = await buildAndSignCredentialFulfillment(
-      issuer,
-      manifest,
-      vc
-    )
+    const fulfillment = await composeCredentialFulfillment(issuer, manifest, vc)
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
       fulfillment

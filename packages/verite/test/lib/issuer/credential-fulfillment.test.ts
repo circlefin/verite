@@ -1,8 +1,8 @@
 import { randomBytes } from "crypto"
 
 import {
-  buildAndSignCredentialFulfillment,
-  buildAndSignVerifiableCredential
+  composeCredentialFulfillment,
+  composeVerifiableCredential
 } from "../../../lib/issuer"
 import {
   buildKycAmlManifest,
@@ -22,18 +22,18 @@ import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
-describe("buildAndSignFulfillment", () => {
+describe("composeFulfillment", () => {
   it("works", async () => {
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const subjectDid = randomDidKey(randomBytes)
-    const vc = await buildAndSignVerifiableCredential(
+    const vc = await composeVerifiableCredential(
       issuer,
       subjectDid.subject,
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
       { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
     )
-    const encodedFulfillment = await buildAndSignCredentialFulfillment(
+    const encodedFulfillment = await composeCredentialFulfillment(
       issuer,
       manifest,
       vc
@@ -98,7 +98,7 @@ describe("buildAndSignFulfillment", () => {
     const credentialIssuer = { id: issuer.did, name: "Verite" }
     const manifest = buildKycAmlManifest(credentialIssuer)
 
-    const vc = await buildAndSignVerifiableCredential(
+    const vc = await composeVerifiableCredential(
       issuer,
       clientDidKey,
       kycAmlAttestationFixture,
@@ -109,7 +109,7 @@ describe("buildAndSignFulfillment", () => {
       }
     )
 
-    const encodedFulfillment = await buildAndSignCredentialFulfillment(
+    const encodedFulfillment = await composeCredentialFulfillment(
       issuer,
       manifest,
       vc
@@ -132,7 +132,7 @@ describe("buildAndSignFulfillment", () => {
     const attestation2 = creditScoreAttestationFixture
 
     // Builds a signed Verifiable Credential
-    const vc1 = await buildAndSignVerifiableCredential(
+    const vc1 = await composeVerifiableCredential(
       issuer,
       subjectDid,
       attestation1,
@@ -146,7 +146,7 @@ describe("buildAndSignFulfillment", () => {
       }
     )
 
-    const vc2 = await buildAndSignVerifiableCredential(
+    const vc2 = await composeVerifiableCredential(
       issuer,
       subjectDid,
       attestation2,
@@ -163,7 +163,7 @@ describe("buildAndSignFulfillment", () => {
 
     const creds = [vc1, vc2]
 
-    const encodedFulfillment = await buildAndSignCredentialFulfillment(
+    const encodedFulfillment = await composeCredentialFulfillment(
       issuer,
       manifest,
       creds

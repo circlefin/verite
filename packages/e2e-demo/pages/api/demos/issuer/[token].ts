@@ -1,6 +1,6 @@
 import {
   attestationToCredentialType,
-  buildAndSignFulfillment,
+  composeFulfillment,
   CredentialManifest,
   validateCredentialApplication,
   EncodedCredentialFulfillment,
@@ -12,10 +12,10 @@ import {
   verifyVerifiablePresentation,
   getManifestIdFromCredentialApplication,
   requiresRevocableCredentials,
-  validateCredentialApplication,
   CREDIT_SCORE_MANIFEST_ID,
   getCredentialSchemaAsVCObject,
-  getAttestionDefinition
+  getAttestionDefinition,
+  decodeCredentialApplication
 } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
@@ -52,8 +52,8 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
     throw new NotFoundError()
   }
 
-  // Decode the Verifiable Presentation and check the signature
-  const credentialApplication = await validateCredentialApplication(req.body)
+  // Decode the Credential Application and check the signature
+  const credentialApplication = await decodeCredentialApplication(req.body)
 
   // Validate the format of the Verifiable Presentation.
   const manifestId = getManifestIdFromCredentialApplication(
@@ -77,7 +77,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   const attestationDefinition = getAttestionDefinition(userAttestation.type)
 
   // Generate new credentials for the user
-  const fulfillment = await buildAndSignFulfillment(
+  const fulfillment = await composeFulfillment(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     credentialApplication.holder,
     manifest,
@@ -89,11 +89,9 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
       expirationDate
     }
   )
-
+  res.send(fulfillment)
   // Save the credentials to the database
   await persistGeneratedCredentials(user, fulfillment)
-
-  res.send(fulfillment)
 })
 
 /**
