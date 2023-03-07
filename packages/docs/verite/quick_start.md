@@ -27,7 +27,7 @@ or
 import {
   randomDidKey,
   buildIssuer,
-  composeFulfillment,
+  composeFulfillmentFromAttestation,
   buildKycAmlManifest,
   validateCredentialApplication,
   composeCredentialApplication,
@@ -62,7 +62,7 @@ const credentialType = "KYCAMLCredential"
 
 //  The issuer is created from the issuer key, and the credential is issued
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-const presentation = await composeFulfillment(
+const presentation = await composeFulfillmentFromAttestation(
   issuer,
   decodedApplication,
   attestation,

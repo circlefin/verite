@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 
 import { ValidationError } from "../../../lib/errors"
 import {
-  composeFulfillment,
+  composeFulfillmentFromAttestation,
   composeCredentialFulfillment,
   composeVerifiableCredential
 } from "../../../lib/issuer"
@@ -63,7 +63,7 @@ describe("Submission validator", () => {
     const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await composeFulfillment(
+    const fulfillment = await composeFulfillmentFromAttestation(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -113,7 +113,7 @@ describe("Submission validator", () => {
     const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await composeFulfillment(
+    const fulfillment = await composeFulfillmentFromAttestation(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -244,7 +244,7 @@ describe("Submission validator", () => {
     const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await composeFulfillment(
+    const fulfillment = await composeFulfillmentFromAttestation(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -291,7 +291,7 @@ describe("Submission validator", () => {
     const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await composeFulfillment(
+    const fulfillment = await composeFulfillmentFromAttestation(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -337,7 +337,7 @@ describe("Submission validator", () => {
     const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await composeFulfillment(
+    const fulfillment = await composeFulfillmentFromAttestation(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -386,7 +386,7 @@ describe("Submission validator", () => {
     const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await composeFulfillment(
+    const fulfillment = await composeFulfillmentFromAttestation(
       issuer,
       clientDidKey.subject,
       manifest,
@@ -434,7 +434,7 @@ describe("Submission validator", () => {
     const application = await decodeCredentialApplication(encodedApplication)
     await validateCredentialApplication(application, manifest)
 
-    const fulfillment = await composeFulfillment(
+    const fulfillment = await composeFulfillmentFromAttestation(
       issuer,
       clientDidKey.subject,
       manifest,

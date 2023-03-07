@@ -96,7 +96,7 @@ Putting this together, we can do the following:
 
 ```ts
 import {
-  composeFulfillment,
+  composeFulfillmentFromAttestation,
   validateCredentialApplication,
   buildIssuer,
   KYCAMLAttestation
@@ -112,7 +112,7 @@ const attestation: KYCAMLAttestation = {
 const credentialType = "KYCAMLCredential"
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 
-const presentation = await composeFulfillment(
+const presentation = await composeFulfillmentFromAttestation(
   issuer,
   decodedApplication.holder,
   manifest,

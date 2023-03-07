@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 import {
-  composeFulfillment,
+  composeFulfillmentFromAttestation,
   validateCredentialApplication,
   Attestation,
   buildIssuer,
@@ -68,7 +68,7 @@ export default async function credentials(
   }
 
   // Generate the Verifiable Presentation
-  const presentation = await composeFulfillment(
+  const presentation = await composeFulfillmentFromAttestation(
     issuer,
     application.holder,
     manifest,

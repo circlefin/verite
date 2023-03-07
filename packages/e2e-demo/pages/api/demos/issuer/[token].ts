@@ -1,6 +1,6 @@
 import {
   attestationToCredentialType,
-  composeFulfillment,
+  composeFulfillmentFromAttestation,
   CredentialManifest,
   validateCredentialApplication,
   EncodedCredentialFulfillment,
@@ -77,7 +77,7 @@ export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
   const attestationDefinition = getAttestionDefinition(userAttestation.type)
 
   // Generate new credentials for the user
-  const fulfillment = await composeFulfillment(
+  const fulfillment = await composeFulfillmentFromAttestation(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     credentialApplication.holder,
     manifest,

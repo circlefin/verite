@@ -243,7 +243,7 @@ const getPresentation = async (issuerDidKey, application) => {
   const credentialType = "KYCAMLCredential"
 
   const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-  const presentation = await composeFulfillment(
+  const presentation = await composeFulfillmentFromAttestation(
     issuer,
     decodedApplication,
     attestation,
@@ -256,7 +256,7 @@ const getPresentation = async (issuerDidKey, application) => {
 
 We're using the project's issuer DID key here. We validate and decode the application using Verite's `validateCredentialApplication` function. Then, we have to attest to the credential presentation.
 
-Using the issuer private key and public key, we call the Verite library `buildIssuer` function. With the result, we can then create the verifiable presentation that will ultimately be passed back to the user by calling Verite's `composeFulfillment` function.
+Using the issuer private key and public key, we call the Verite library `buildIssuer` function. With the result, we can then create the verifiable presentation that will ultimately be passed back to the user by calling Verite's `composeFulfillmentFromAttestation` function.
 
 It is that presentation that is sent back to the user. We'll take a look at the frontend shortly, but just know that the presentation comes in the form of a JWT.
 

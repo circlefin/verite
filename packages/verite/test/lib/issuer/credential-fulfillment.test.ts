@@ -22,7 +22,7 @@ import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 import { generateManifestAndIssuer } from "../../support/manifest-fns"
 
-describe("composeFulfillment", () => {
+describe("composeFulfillmentFromAttestation", () => {
   it("works", async () => {
     const { manifest, issuer } = await generateManifestAndIssuer("kyc")
     const subjectDid = randomDidKey(randomBytes)

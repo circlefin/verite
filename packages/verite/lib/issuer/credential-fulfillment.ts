@@ -60,10 +60,11 @@ export function buildCredentialFulfillment(
 }
 
 /**
- * @deprecated
- * Keeping for backwards compatibility. Signature is too confisuing and complex; use composeVerifiableCredential and composeCredentialFulfillment instead.
+ * Builds and signs a Credential Fulfillment from attestation(s).
+ * This includes the intermediate step of building and signing a Verifiable
+ * Credential.
  */
-export async function composeFulfillment(
+export async function composeFulfillmentFromAttestation(
   issuer: Issuer,
   subject: string | DidKey,
   manifest: CredentialManifest,

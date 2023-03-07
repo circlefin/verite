@@ -48,6 +48,7 @@ describe("composePresentationSubmission", () => {
       credential
     )
 
+    // TODO:
     const submission = await verifyVerifiablePresentation(encodedSubmission)
 
     // In this example, the Presentation Submission is for a Presentation
