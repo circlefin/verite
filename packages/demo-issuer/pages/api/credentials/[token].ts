@@ -10,9 +10,12 @@ import {
   getSampleKycAmlAttestation,
   getSampleCreditScoreAttestation,
   KYCAML_CREDENTIAL_TYPE_NAME,
-  getCredentialSchemaAsVCObject,
-  getAttestionDefinition,
-  decodeCredentialApplication
+  decodeCredentialApplication,
+  attestationToVCSchema,
+  KYCAML_ATTESTATION,
+  CredentialSchema,
+  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
+  CREDIT_SCORE_ATTESTATION
 } from "verite"
 
 import { ManifestMap } from "../manifests"
@@ -57,10 +60,16 @@ export default async function credentials(
   const manifest = ManifestMap[manifestId]
   await validateCredentialApplication(application, manifest)
   let attestation: Attestation
+  let credentialType: string
+  let credentialSchema: CredentialSchema
   if (manifestId === KYCAML_MANIFEST_ID) {
     attestation = getSampleKycAmlAttestation()
+    credentialType = KYCAML_CREDENTIAL_TYPE_NAME
+    credentialSchema = attestationToVCSchema(KYCAML_ATTESTATION)
   } else if (manifestId === CREDIT_SCORE_MANIFEST_ID) {
     attestation = getSampleCreditScoreAttestation(90)
+    credentialType = CREDIT_SCORE_CREDENTIAL_TYPE_NAME
+    credentialSchema = attestationToVCSchema(CREDIT_SCORE_ATTESTATION)
   } else {
     // Unsupported Credential Manifest
     res.status(500)
@@ -73,11 +82,9 @@ export default async function credentials(
     application.holder,
     manifest,
     attestation,
-    KYCAML_CREDENTIAL_TYPE_NAME,
+    credentialType,
     {
-      credentialSchema: getCredentialSchemaAsVCObject(
-        getAttestionDefinition(KYCAML_CREDENTIAL_TYPE_NAME)
-      )
+      credentialSchema: credentialSchema
     }
   )
 

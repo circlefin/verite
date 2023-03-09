@@ -1,10 +1,5 @@
+import { CreditScoreAttestation, KYCAMLAttestation } from "../../types"
 import {
-  CredentialSchema,
-  CreditScoreAttestation,
-  KYCAMLAttestation
-} from "../../types"
-import {
-  AttestationDefinition,
   CREDIT_SCORE_ATTESTATION,
   getAttestionDefinition,
   KYCAML_ATTESTATION
@@ -49,12 +44,3 @@ const typeMap = new Map<string, string>([
   [KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME],
   [CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME]
 ])
-
-export function getCredentialSchemaAsVCObject(
-  attestationDefinition: AttestationDefinition
-): CredentialSchema {
-  return {
-    id: attestationDefinition.schema,
-    type: attestationDefinition.type
-  }
-}

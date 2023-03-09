@@ -1,3 +1,4 @@
+import { CredentialSchema } from "../../types"
 import { ValidationError } from "../errors"
 
 const VERITE_SCHEMAS_PREFIX_URI = "https://verite.id/definitions/schemas/0.0.1"
@@ -78,4 +79,19 @@ export function getAttestionDefinition(
     )
   }
   return attestationInfo
+}
+
+export function getCredentialSchemaAsVCObject(
+  attestationDefinition: AttestationDefinition
+): CredentialSchema {
+  return {
+    id: attestationDefinition.schema,
+    type: attestationDefinition.type
+  }
+}
+
+export function attestationToVCSchema(
+  attestationName: string
+): CredentialSchema {
+  return getCredentialSchemaAsVCObject(getAttestionDefinition(attestationName))
 }
