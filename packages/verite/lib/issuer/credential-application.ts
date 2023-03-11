@@ -11,6 +11,7 @@ import {
   DescriptorMap,
   DidKey,
   EncodedCredentialApplication,
+  JWT,
   JwtPresentationPayload
 } from "../../types"
 import {
@@ -30,10 +31,7 @@ import { validateCredentialApplication } from "../validators"
 
 export function buildCredentialApplication(
   manifest: CredentialManifest,
-  presentationType: string | string[] = [
-    VERIFIABLE_PRESENTATION_TYPE_NAME,
-    CREDENTIAL_APPLICATION_TYPE_NAME
-  ]
+  verifiableCredential?: JWT | JWT[]
 ): JwtPresentationPayload {
   const applicationBuilder = new CredentialApplicationBuilder()
     .id(uuidv4())
@@ -63,6 +61,11 @@ export function buildCredentialApplication(
   }
 
   const application = applicationBuilder.build()
+  // TODO
+  const presentationType = [
+    VERIFIABLE_PRESENTATION_TYPE_NAME,
+    CREDENTIAL_APPLICATION_TYPE_NAME
+  ]
 
   const payload = Object.assign({
     vp: {
@@ -71,6 +74,10 @@ export function buildCredentialApplication(
       credential_application: application
     }
   })
+
+  if (verifiableCredential) {
+    payload.vp["verifiableCredential"] = verifiableCredential
+  }
 
   return payload
 }
@@ -83,10 +90,11 @@ export function buildCredentialApplication(
 export async function composeCredentialApplication(
   didKey: DidKey,
   manifest: CredentialManifest,
+  verifiableCredential?: JWT | JWT[],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
-  const application = buildCredentialApplication(manifest)
+  const application = buildCredentialApplication(manifest, verifiableCredential)
   const vp = await signVerifiablePresentation(application, client, options)
 
   return vp

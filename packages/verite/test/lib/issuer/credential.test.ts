@@ -12,7 +12,7 @@ import {
   creditScoreAttestationFixture,
   kycAmlAttestationFixture
 } from "../../fixtures/attestations"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
+import { KYC_VC_SCHEMA } from "../../fixtures/credentials"
 
 describe("composeVerifiableCredential", () => {
   it("builds and signs a verifiable credential", async () => {
@@ -33,7 +33,7 @@ describe("composeVerifiableCredential", () => {
       attestation,
       KYCAML_CREDENTIAL_TYPE_NAME,
       {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialSchema: KYC_VC_SCHEMA,
         issuanceDate: "2021-10-26T16:17:13.000Z"
       }
     )
@@ -83,7 +83,7 @@ describe("composeVerifiableCredential", () => {
       attestation,
       KYCAML_CREDENTIAL_TYPE_NAME,
       {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialSchema: KYC_VC_SCHEMA,
         credentialStatus
       }
     )

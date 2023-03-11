@@ -4,12 +4,12 @@ import { omit } from "lodash"
 import { hasPaths } from "../../../lib"
 import {
   buildCreditScoreManifest,
-  buildKycAmlManifest,
+  buildSampleProcessApprovalManifest,
   proofOfControlPresentationDefinition,
   requiresRevocableCredentials
 } from "../../../lib/sample-data/manifests"
 import { randomDidKey } from "../../../lib/utils"
-import { CredentialManifest } from "../../../types"
+import { AttestationTypes, CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures/dids"
 
 // Helper function to ensure the Credential Manifest has the bare-minimum
@@ -31,7 +31,10 @@ describe("buildKycAmlManifest", () => {
   it("returns a valid manifest", () => {
     const issuerDid = didFixture(0)
     const issuer = { id: issuerDid.subject }
-    const manifest = buildKycAmlManifest(issuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      issuer
+    )
     expect(validateManifestFormat(manifest)).toBe(true)
   })
 
@@ -41,7 +44,10 @@ describe("buildKycAmlManifest", () => {
     // The issuer in a Credential Manifest lets you define additional
     // properties to assist identity wallets render the interaction.
     const issuer = { id: issuerDid.subject, name: "Issuer Inc." }
-    const manifest = buildKycAmlManifest(issuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      issuer
+    )
 
     const expected = {
       id: "KYCAMLManifest",
@@ -57,19 +63,19 @@ describe("buildKycAmlManifest", () => {
           id: "KYCAMLCredential",
           schema:
             "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
-          name: "Proof of KYC from Issuer Inc.",
+          name: "KYCAMLCredential from Issuer Inc.",
           description:
-            "Attestation that Issuer Inc. has completed KYC/AML verification for this subject",
+            "Attestation that Issuer Inc. has completed KYCAMLAttestation verification for this subject",
           display: {
             title: {
-              text: "Issuer Inc. KYC Attestation"
+              text: "Issuer Inc. KYCAMLAttestation"
             },
             subtitle: {
               path: ["$.approvalDate", "$.vc.approvalDate"],
               fallback: "Includes date of approval"
             },
             description: {
-              text: "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers."
+              text: "The issuing authority processes KYCAMLAttestation analysis, potentially employing a number of internal and external vendor providers."
             },
             properties: [
               {
@@ -168,7 +174,10 @@ describe("requiresRevocableCredentials", () => {
   it("is true for KYCAMLAttestations", () => {
     const issuerDid = randomDidKey(randomBytes)
     const issuer = { id: issuerDid.subject }
-    const manifest = buildKycAmlManifest(issuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      issuer
+    )
     expect(requiresRevocableCredentials(manifest)).toBeTruthy()
   })
 
@@ -184,10 +193,13 @@ describe("validateManifestFormat", () => {
   it("returns true if all required fields are present", () => {
     const issuerDidKey = randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDidKey.subject, name: "Verite" }
-    const manifest = omit(buildKycAmlManifest(credentialIssuer), [
-      "format",
-      "presentation_definition"
-    ])
+    const manifest = omit(
+      buildSampleProcessApprovalManifest(
+        AttestationTypes.KYCAMLAttestation,
+        credentialIssuer
+      ),
+      ["format", "presentation_definition"]
+    )
 
     expect(validateManifestFormat(manifest)).toBe(true)
   })
@@ -195,7 +207,10 @@ describe("validateManifestFormat", () => {
   it("ignores optional fields", () => {
     const issuerDid = randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
+    )
 
     expect(hasPaths(manifest, ["presentation_definition", "format"])).toBe(true)
     expect(validateManifestFormat(manifest)).toBe(true)
@@ -204,7 +219,10 @@ describe("validateManifestFormat", () => {
   it("returns false if any of the fields are missing", async () => {
     const issuerDid = await randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
+    )
     const requiredKeys = ["id", "spec_version", "issuer", "output_descriptors"]
 
     requiredKeys.forEach((key) => {

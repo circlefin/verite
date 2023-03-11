@@ -8,20 +8,21 @@ export class CredentialPayloadBuilder {
 
   constructor() {
     this._builder = Object.assign({
-      "@context": DEFAULT_CONTEXT
+      "@context": DEFAULT_CONTEXT,
+      type: VERIFIABLE_CREDENTIAL_TYPE_NAME
     })
   }
 
   type(type: string | string[]) {
     // append all types other than "Verifiable Credential", which we always include
-    const finalCredentialTypes = [VERIFIABLE_CREDENTIAL_TYPE_NAME].concat(
-      Array.isArray(type)
-        ? type.filter((c) => c !== VERIFIABLE_CREDENTIAL_TYPE_NAME)
-        : type !== VERIFIABLE_CREDENTIAL_TYPE_NAME
-        ? [type]
-        : []
+    const credentialTypeArray = Array.isArray(type) ? type : [type]
+    const filteredCredentialTypes = credentialTypeArray.filter(
+      (t) => t !== VERIFIABLE_CREDENTIAL_TYPE_NAME
     )
-    this._builder.type = finalCredentialTypes
+    this._builder.type = [
+      VERIFIABLE_CREDENTIAL_TYPE_NAME,
+      ...filteredCredentialTypes
+    ]
     return this
   }
 

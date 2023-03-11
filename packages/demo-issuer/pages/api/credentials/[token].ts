@@ -12,7 +12,6 @@ import {
   KYCAML_CREDENTIAL_TYPE_NAME,
   decodeCredentialApplication,
   attestationToVCSchema,
-  KYCAML_ATTESTATION,
   CredentialSchema,
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
   CREDIT_SCORE_ATTESTATION
@@ -65,7 +64,7 @@ export default async function credentials(
   if (manifestId === KYCAML_MANIFEST_ID) {
     attestation = getSampleKycAmlAttestation()
     credentialType = KYCAML_CREDENTIAL_TYPE_NAME
-    credentialSchema = attestationToVCSchema(KYCAML_ATTESTATION)
+    credentialSchema = attestationToVCSchema(AttestationTypes.TODO)
   } else if (manifestId === CREDIT_SCORE_MANIFEST_ID) {
     attestation = getSampleCreditScoreAttestation(90)
     credentialType = CREDIT_SCORE_CREDENTIAL_TYPE_NAME

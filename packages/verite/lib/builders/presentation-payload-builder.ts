@@ -1,4 +1,5 @@
 import {
+  JWT,
   PresentationPayload,
   PresentationSubmission,
   Verifiable,
@@ -28,6 +29,8 @@ export class PresentationPayloadBuilder {
     verifiableCredential:
       | Verifiable<W3CCredential>
       | Verifiable<W3CCredential>[]
+      | JWT
+      | JWT[]
   ): PresentationPayloadBuilder {
     const vcJwtPayload = Array.isArray(verifiableCredential)
       ? verifiableCredential

@@ -30,9 +30,14 @@ type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
   knownSchemas?: Record<string, Record<string, unknown>>
 }
 
+// TODO: need new type for this union?
 export function buildPresentationSubmission(
   presentationDefinition: PresentationDefinition,
-  verifiableCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
+  verifiableCredential:
+    | Verifiable<W3CCredential>
+    | Verifiable<W3CCredential>[]
+    | JWT
+    | JWT[],
   presentationType: string | string[] = [
     VERIFIABLE_PRESENTATION_TYPE_NAME,
     PRESENTAION_SUBMISSION_TYPE_NAME
@@ -70,7 +75,13 @@ export function buildPresentationSubmission(
 export async function composePresentationSubmission(
   didKey: DidKey,
   presentationDefinition: PresentationDefinition,
-  verifiableCredential: Verifiable<W3CCredential> | Verifiable<W3CCredential>[],
+  verifiableCredential:
+    | Verifiable<W3CCredential>
+    | Verifiable<W3CCredential>[]
+    | Verifiable<W3CCredential>
+    | Verifiable<W3CCredential>[]
+    | JWT
+    | JWT[],
   options?: VerifyPresentationOptions
 ): Promise<JWT> {
   const client = buildIssuer(didKey.subject, didKey.privateKey)
@@ -79,6 +90,7 @@ export async function composePresentationSubmission(
     verifiableCredential
   )
 
+  // TODO: expose as alias too?
   const vp = await signVerifiablePresentation(submission, client, options)
 
   return vp

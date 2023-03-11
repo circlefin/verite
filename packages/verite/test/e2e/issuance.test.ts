@@ -5,32 +5,26 @@ import {
   composeCredentialApplication,
   composeCredentialFulfillment,
   composeVerifiableCredential,
-  buildCredentialFulfillment,
-  buildVerifiableCredential,
   evaluateCredentialApplication
 } from "../../lib/issuer"
 import {
-  buildKycAmlManifest,
+  buildSampleProcessApprovalManifest,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import {
-  signVerifiableCredential,
-  signVerifiablePresentation,
-  verifyVerifiablePresentation
-} from "../../lib/utils/credentials"
+import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
-import { kycAmlAttestationFixture } from "../fixtures/attestations"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../fixtures/credentials"
-import { revocationListFixture } from "../fixtures/revocation-list"
-
-import type {
+import {
+  AttestationTypes,
   DecodedCredentialApplication,
   RevocableCredential,
   RevocablePresentation
 } from "../../types"
+import { kycAmlAttestationFixture } from "../fixtures/attestations"
+import { KYC_VC_SCHEMA } from "../fixtures/credentials"
+import { revocationListFixture } from "../fixtures/revocation-list"
 
-describe("issuance", () => {
+describe("E2E issuance", () => {
   it("issues verified credentails", async () => {
     /**
      * Create a DID for both the issuer and the subject for this test. In the
@@ -47,18 +41,24 @@ describe("issuance", () => {
      * the type of credential they are issuing. In this case, it's a KYC/AML
      * credential.
      */
-    const manifest = buildKycAmlManifest({ id: issuer.did, name: "Verite" })
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      {
+        id: issuer.did,
+        name: "Verite"
+      }
+    )
 
     /**
      * The issuer makes the manifest available to the subject. In this case,
      * we're assuming the issuer displays a QR code for the subject to scan.
      *
-     * The subject scans the QR code with their wallet, which retreives the
+     * The subject scans the QR code with their wallet, which retrieves the
      * manifest.
      */
 
     /**
-     * The wallet code then calls composeCredentialApplication to build and
+     * The wallet code calls composeCredentialApplication to build and
      * sign Credential Application.
      */
     const encodedApplication = await composeCredentialApplication(
@@ -89,7 +89,7 @@ describe("issuance", () => {
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
       {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialSchema: KYC_VC_SCHEMA,
         credentialStatus: revocationListFixture
       }
     )
@@ -171,7 +171,10 @@ describe("issuance", () => {
      * The issuer generates a QR code for the client to scan
      */
     const credentialIssuer = { id: issuer.did, name: "Example Issuer" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
+    )
 
     /**
      * The client scans the QR code and generates a credential application
@@ -198,7 +201,7 @@ describe("issuance", () => {
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
       {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialSchema: KYC_VC_SCHEMA,
         credentialStatus: revocationListFixture
       }
     )
