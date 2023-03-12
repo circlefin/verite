@@ -8,14 +8,15 @@ import {
   buildIssuer,
   verifyVerifiableCredential,
   generateRevocationList,
-  getSampleKycAmlAttestation,
+  buildProcessApprovalAttestation,
   isRevoked,
   KYCAML_CREDENTIAL_TYPE_NAME,
   randomDidKey,
   RevocableCredential,
   StatusList2021Credential,
   revokeCredential,
-  unrevokeCredential
+  unrevokeCredential,
+  AttestationTypes
 } from "verite"
 
 import type {
@@ -61,7 +62,9 @@ const issueCredential = async (
   const subject = randomDidKey(randomBytes)
 
   // Stubbed out credential data
-  const attestation: KYCAMLAttestation = getSampleKycAmlAttestation()
+  const attestation: KYCAMLAttestation = buildProcessApprovalAttestation(
+    AttestationTypes.KYCAMLAttestation
+  )
 
   const credentialType = KYCAML_CREDENTIAL_TYPE_NAME
   /**

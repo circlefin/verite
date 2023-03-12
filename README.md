@@ -137,6 +137,12 @@ or, with autofix:
 npm run lint -- --fix
 ```
 
+### Run a type check
+
+```sh
+npm run type-check --workspaces --if-present
+```
+
 ### Fixing with Prettier
 
 This app uses [Prettier](https://prettier.io) to format the code, and you can auto-format all files with
