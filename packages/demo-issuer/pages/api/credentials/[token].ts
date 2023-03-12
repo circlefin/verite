@@ -7,14 +7,15 @@ import {
   buildIssuer,
   CREDIT_SCORE_MANIFEST_ID,
   KYCAML_MANIFEST_ID,
-  getSampleKycAmlAttestation,
-  getSampleCreditScoreAttestation,
+  buildProcessApprovalAttestation,
+  buildSampleCreditScoreAttestation,
   KYCAML_CREDENTIAL_TYPE_NAME,
   decodeCredentialApplication,
   attestationToVCSchema,
   CredentialSchema,
-  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
-  CREDIT_SCORE_ATTESTATION
+  AttestationTypes,
+  manifestIdToAttestationType,
+  attestationToCredentialType
 } from "verite"
 
 import { ManifestMap } from "../manifests"
@@ -59,20 +60,21 @@ export default async function credentials(
   const manifest = ManifestMap[manifestId]
   await validateCredentialApplication(application, manifest)
   let attestation: Attestation
-  let credentialType: string
-  let credentialSchema: CredentialSchema
-  if (manifestId === KYCAML_MANIFEST_ID) {
-    attestation = getSampleKycAmlAttestation()
-    credentialType = KYCAML_CREDENTIAL_TYPE_NAME
-    credentialSchema = attestationToVCSchema(AttestationTypes.TODO)
-  } else if (manifestId === CREDIT_SCORE_MANIFEST_ID) {
-    attestation = getSampleCreditScoreAttestation(90)
-    credentialType = CREDIT_SCORE_CREDENTIAL_TYPE_NAME
-    credentialSchema = attestationToVCSchema(CREDIT_SCORE_ATTESTATION)
+  const attestationType = manifestIdToAttestationType(manifestId)
+  const credentialSchema = attestationToVCSchema(attestationType)
+  const credentialType = attestationToCredentialType(attestationType)
+
+  if (manifestId === CREDIT_SCORE_MANIFEST_ID) {
+    attestation = buildSampleCreditScoreAttestation(90)
   } else {
-    // Unsupported Credential Manifest
-    res.status(500)
-    return
+    try {
+      // TOFIX
+      attestation = buildProcessApprovalAttestation(attestationType)
+    } catch (e) {
+      console.error(e)
+      res.status(500)
+      return
+    }
   }
 
   // Generate the Verifiable Presentation

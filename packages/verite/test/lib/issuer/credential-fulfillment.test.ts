@@ -45,7 +45,7 @@ describe("composeCredentialFulfillment", () => {
       AttestationTypes.KYCAMLAttestation,
       issuerDidKey,
       subjectDidKey.subject,
-      { credentialStatus: revocationListFixture }
+      revocationListFixture
     )
     const encodedFulfillment = await composeCredentialFulfillment(
       issuer,
@@ -119,15 +119,13 @@ describe("composeCredentialFulfillment", () => {
       AttestationTypes.KYCAMLAttestation,
       issuerDidKey,
       subjectDidKey.subject,
-      { credentialStatus: revocationListFixture }
+      revocationListFixture
     )
     const vc2 = await buildCreditScoreVC(
       issuerDidKey,
       subjectDidKey.subject,
       700,
-      {
-        credentialStatus: revocationListFixture
-      }
+      revocationListFixture
     )
 
     const creds = [vc1, vc2]

@@ -1,4 +1,10 @@
-import { AttestationTypes, DidKey, JWT } from "../../types"
+import {
+  AttestationTypes,
+  CredentialPayload,
+  DidKey,
+  JWT,
+  StatusList2021Entry
+} from "../../types"
 import { composeVerifiableCredential } from "../issuer"
 import { buildIssuer, attestationToVCSchema } from "../utils"
 import {
@@ -11,20 +17,24 @@ export async function buildProcessApprovalVC(
   attestationType: AttestationTypes,
   issuerKey: DidKey,
   subjectDid: string,
-  credentialStatus?: any
+  credentialStatus?: StatusList2021Entry | null
 ): Promise<JWT> {
   const signer = buildIssuer(issuerKey.subject, issuerKey.privateKey)
   const sampleAttestation = buildProcessApprovalAttestation(attestationType)
+
+  const additionalPayload: Partial<CredentialPayload> = {
+    credentialSchema: attestationToVCSchema(attestationType)
+  }
+  if (credentialStatus) {
+    additionalPayload["credentialStatus"] = credentialStatus
+  }
 
   const vc = await composeVerifiableCredential(
     signer,
     subjectDid,
     sampleAttestation,
     attestationToCredentialType(attestationType),
-    {
-      credentialSchema: attestationToVCSchema(attestationType),
-      ...credentialStatus
-    }
+    additionalPayload
   )
   return vc
 }
@@ -33,22 +43,25 @@ export async function buildCreditScoreVC(
   issuerKey: DidKey,
   subjectDid: string,
   creditScore: number,
-  credentialStatus?: any // TODO
+  credentialStatus?: StatusList2021Entry | null
 ): Promise<JWT> {
   const signer = buildIssuer(issuerKey.subject, issuerKey.privateKey)
   const sampleAttestation = buildSampleCreditScoreAttestation(creditScore)
+  const additionalPayload: Partial<CredentialPayload> = {
+    credentialSchema: attestationToVCSchema(
+      AttestationTypes.CreditScoreAttestation
+    )
+  }
+  if (credentialStatus) {
+    additionalPayload["credentialStatus"] = credentialStatus
+  }
 
   const vc = await composeVerifiableCredential(
     signer,
     subjectDid,
     sampleAttestation,
     attestationToCredentialType(AttestationTypes.CreditScoreAttestation),
-    {
-      credentialSchema: attestationToVCSchema(
-        AttestationTypes.CreditScoreAttestation
-      ),
-      ...credentialStatus
-    }
+    additionalPayload
   )
   return vc
 }

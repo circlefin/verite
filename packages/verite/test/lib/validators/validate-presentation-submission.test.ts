@@ -30,7 +30,6 @@ import {
   DidKey,
   EncodedPresentationSubmission,
   Issuer,
-  JWT,
   PresentationDefinition,
   VerificationOffer
 } from "../../../types"
@@ -56,7 +55,7 @@ async function prepare(attestationType: AttestationTypes): Promise<void> {
     attestationType,
     issuerDidKey,
     subjectDidKey.subject,
-    { credentialStatus: revocationListFixture }
+    revocationListFixture
   )
 
   presentationDefinition =
@@ -155,15 +154,13 @@ describe("Presentation Submission validator", () => {
       AttestationTypes.KYCAMLAttestation,
       issuerDidKey,
       subjectDidKey.subject,
-      { credentialStatus: revocationListFixture }
+      revocationListFixture
     )
     const vc2 = await buildCreditScoreVC(
       issuerDidKey,
       subjectDidKey.subject,
       700,
-      {
-        credentialStatus: revocationListFixture
-      }
+      revocationListFixture
     )
 
     const creds = [vc1, vc2]

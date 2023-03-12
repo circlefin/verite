@@ -34,7 +34,7 @@ async function prepare(attestationType: AttestationTypes): Promise<void> {
     attestationType,
     issuerDidKey,
     subjectDidKey.subject,
-    { credentialStatus: revocationListFixture }
+    revocationListFixture
   )
 
   preparedPresentationDefinition =
@@ -51,7 +51,7 @@ describe("composePresentationSubmission", () => {
       AttestationTypes.KYCAMLAttestation,
       issuerDidKey,
       subjectDidKey.subject,
-      { credentialStatus: revocationListFixture }
+      revocationListFixture
     )
 
     // When building a Presentation Submission, we must reference a

@@ -23,7 +23,7 @@ describe("E2E verification", () => {
       AttestationTypes.KYCAMLAttestation,
       issuerDidKey,
       subjectDidKey.subject,
-      { credentialStatus: revocationListFixture }
+      revocationListFixture
     )
 
     // 2. VERIFIER: Enable discovery of verification requirements

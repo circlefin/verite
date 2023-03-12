@@ -8,7 +8,8 @@ import {
   randomDidKey,
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer,
-  attestationToCredentialType
+  attestationToCredentialType,
+  AttestationTypes
 } from "verite"
 
 import {
@@ -160,13 +161,16 @@ describe("POST /verification/[id]/submission", () => {
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLManifest")
   const user = await userFactory()
-  const userAttestation = buildAttestationForUser(user, manifest)
+  const userAttestation = buildAttestationForUser(
+    user,
+    AttestationTypes.KYCAMLAttestation
+  )
   const fulfillment = await composeFulfillmentFromAttestation(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     clientDidKey.subject,
     manifest,
     userAttestation,
-    attestationToCredentialType(userAttestation.type),
+    attestationToCredentialType(AttestationTypes.KYCAMLAttestation),
     { credentialSchema: kycAttestationSchema }
   )
 

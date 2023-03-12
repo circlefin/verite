@@ -1,5 +1,4 @@
 import { AttestationTypes } from "../../types"
-import { VERIFIABLE_CREDENTIAL_TYPE_NAME } from "../utils"
 import {
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
   KYBPAML_CREDENTIAL_TYPE_NAME,
@@ -24,7 +23,7 @@ import {
   COUNTERPARTY_ACCOUNT_HOLDER_PRESENTATION_DEFINITION_ID
 } from "./constants"
 
-const credentialTypeMap = new Map<string, string>([
+const credentialTypeMap = new Map<AttestationTypes, string>([
   [AttestationTypes.CreditScoreAttestation, CREDIT_SCORE_CREDENTIAL_TYPE_NAME],
   [AttestationTypes.KYBPAMLAttestation, KYBPAML_CREDENTIAL_TYPE_NAME],
   [AttestationTypes.KYCAMLAttestation, KYCAML_CREDENTIAL_TYPE_NAME],
@@ -40,7 +39,7 @@ const credentialTypeMap = new Map<string, string>([
   ]
 ])
 
-const manifestIdMap = new Map<string, string>([
+const manifestIdMap = new Map<AttestationTypes, string>([
   [AttestationTypes.CreditScoreAttestation, CREDIT_SCORE_MANIFEST_ID],
   [AttestationTypes.KYBPAMLAttestation, KYBPAML_MANIFEST_ID],
   [AttestationTypes.KYCAMLAttestation, KYCAML_MANIFEST_ID],
@@ -53,7 +52,7 @@ const manifestIdMap = new Map<string, string>([
   ]
 ])
 
-const definitionIdMap = new Map<string, string>([
+const definitionIdMap = new Map<AttestationTypes, string>([
   [
     AttestationTypes.CreditScoreAttestation,
     CREDIT_SCORE_PRESENTATION_DEFINITION_ID
@@ -97,6 +96,18 @@ export function attestationToManifestId(
     )
   }
   return result
+}
+
+// TOFIX: need to handle hybrid manifests
+export function manifestIdToAttestationType(
+  manifestId: string
+): AttestationTypes {
+  for (const [attestationType, id] of manifestIdMap) {
+    if (id === manifestId) {
+      return attestationType
+    }
+  }
+  throw new Error(`No attestation type found for manifest ID ${manifestId}`)
 }
 
 export function attestationToPresentationDefinitionId(

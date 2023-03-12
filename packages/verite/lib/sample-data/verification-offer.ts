@@ -36,7 +36,6 @@ export function buildVerificationOffer(
   }
 }
 
-// TODO: delete this one
 export function buildKycVerificationOffer(
   id: string,
   from: string,
