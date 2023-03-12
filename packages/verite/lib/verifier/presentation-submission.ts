@@ -30,7 +30,7 @@ type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
   knownSchemas?: Record<string, Record<string, unknown>>
 }
 
-// TODO: need new type for this union?
+// TOFIX: need new type for this union?
 export function buildPresentationSubmission(
   presentationDefinition: PresentationDefinition,
   verifiableCredential:
@@ -90,7 +90,7 @@ export async function composePresentationSubmission(
     verifiableCredential
   )
 
-  // TODO: expose as alias too?
+  // TOFIX: does this need to be exposed as alias too?
   const vp = await signVerifiablePresentation(submission, client, options)
 
   return vp
