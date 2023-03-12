@@ -65,7 +65,7 @@ export function buildProcessApprovalPresentationDefinition(
     .build()
 }
 
-export const withDefaults =
+const withDefaults =
   (schema: string, trustedAuthorities: string[] = []) =>
   (b: InputDescriptorConstraintsBuilder): void => {
     b.addField(subjectContraint)

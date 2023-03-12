@@ -61,7 +61,6 @@ export function buildCredentialApplication(
   }
 
   const application = applicationBuilder.build()
-  // TODO
   const presentationType = [
     VERIFIABLE_PRESENTATION_TYPE_NAME,
     CREDENTIAL_APPLICATION_TYPE_NAME

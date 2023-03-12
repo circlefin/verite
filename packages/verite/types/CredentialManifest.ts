@@ -10,6 +10,8 @@ export type CredentialManifest = {
   spec_version: string
   issuer: CredentialIssuer
   output_descriptors: OutputDescriptor[]
+  name?: string
+  description?: string
   format?: ClaimFormatDesignation
   presentation_definition?: PresentationDefinition
 }

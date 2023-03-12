@@ -47,13 +47,13 @@ export function proofOfControlPresentationDefinition(): PresentationDefinition {
   return p
 }
 
-// TODO
 /**
  * Whether or not a manifest requires revocable credentials.
  */
 export function requiresRevocableCredentials(
   manifest: CredentialManifest
 ): boolean {
+  // TOFIX: generalize this
   return manifest.id === KYCAML_MANIFEST_ID
 }
 
@@ -107,12 +107,12 @@ export function buildCreditScoreManifest(
   )
 }
 
-// TODO: this doesn't handle all types
 export function buildHybridManifest(
   attestationType: AttestationTypes[],
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
+  // TOFIX: this doesn't handle all types
   const outputDescriptors = attestationType.map((a) => {
     if (a === AttestationTypes.CreditScoreAttestation) {
       return buildCreditScoreOutputDescriptor(
@@ -137,7 +137,7 @@ export function buildHybridManifestWithOutputDescriptors(
   outputDescriptors: OutputDescriptor[]
 ): CredentialManifest {
   return buildManifest(
-    `${issuer.name} Hybrid Manifest`, // TODO
+    `${issuer.name} Hybrid Manifest`, // TOFIX: consider renaming from ODs
     issuer,
     outputDescriptors,
     proofOfControlPresentationDefinition()

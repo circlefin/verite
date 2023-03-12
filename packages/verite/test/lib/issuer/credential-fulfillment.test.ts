@@ -53,8 +53,8 @@ describe("composeCredentialFulfillment", () => {
       vc
     )
 
-    // The client can then decode the presentation
-    // TODO: rename
+    // The subject can then decode the presentation
+    // TODFIX: Consider if caller needs wrapper api
     const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
 
     // The fulfillment looks like this:
@@ -138,7 +138,7 @@ describe("composeCredentialFulfillment", () => {
       creds
     )
 
-    // TODO rename
+    // TOFIX: same as above
     // The client can then decode the presentation
     const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
 
