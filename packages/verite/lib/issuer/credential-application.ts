@@ -2,30 +2,20 @@ import {
   CreatePresentationOptions,
   VerifyPresentationOptions
 } from "did-jwt-vc/src/types"
-import { v4 as uuidv4 } from "uuid"
 
 import {
-  ClaimFormat,
   CredentialManifest,
   DecodedCredentialApplication,
-  DescriptorMap,
   DidKey,
   EncodedCredentialApplication,
   JWT,
   JwtPresentationPayload
 } from "../../types"
-import {
-  CredentialApplicationBuilder,
-  HOLDER_PROPERTY_NAME,
-  PresentationSubmissionBuilder
-} from "../builders"
+import { CredentialApplicationWrapperBuilder } from "../builders/credential-application-wrapper-builder"
 import {
   buildIssuer,
-  CREDENTIAL_APPLICATION_TYPE_NAME,
   verifyVerifiablePresentation,
-  signVerifiablePresentation,
-  VERIFIABLE_PRESENTATION_TYPE_NAME,
-  VC_CONTEXT_URI
+  signVerifiablePresentation
 } from "../utils"
 import { validateCredentialApplication } from "../validators"
 
@@ -33,50 +23,15 @@ export function buildCredentialApplication(
   manifest: CredentialManifest,
   verifiableCredential?: JWT | JWT[]
 ): JwtPresentationPayload {
-  const applicationBuilder = new CredentialApplicationBuilder()
-    .id(uuidv4())
-    .manifest_id(manifest.id)
-    .format({
-      jwt_vp: manifest.presentation_definition?.format?.jwt_vp
-    })
+  const wrapper = new CredentialApplicationWrapperBuilder()
+    .withCredentialApplication((a) => a.initFromManifest(manifest))
+    .verifiableCredential(verifiableCredential)
+    .build()
 
-  if (manifest.presentation_definition) {
-    applicationBuilder.presentation_submission(
-      new PresentationSubmissionBuilder()
-        .id(uuidv4())
-        .definition_id(manifest.presentation_definition.id)
-        .descriptor_map(
-          manifest.presentation_definition?.input_descriptors?.map<DescriptorMap>(
-            (d) => {
-              return {
-                id: d.id,
-                format: ClaimFormat.JwtVp,
-                path: `$.${HOLDER_PROPERTY_NAME}`
-              }
-            }
-          )
-        )
-        .build()
-    )
-  }
-
-  const application = applicationBuilder.build()
-  const presentationType = [
-    VERIFIABLE_PRESENTATION_TYPE_NAME,
-    CREDENTIAL_APPLICATION_TYPE_NAME
-  ]
-
+  // TODO: call this embed?
   const payload = Object.assign({
-    vp: {
-      "@context": [VC_CONTEXT_URI],
-      type: presentationType,
-      credential_application: application
-    }
+    vp: wrapper
   })
-
-  if (verifiableCredential) {
-    payload.vp["verifiableCredential"] = verifiableCredential
-  }
 
   return payload
 }
@@ -92,8 +47,8 @@ export async function composeCredentialApplication(
   verifiableCredential?: JWT | JWT[],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialApplication> {
-  const client = buildIssuer(didKey.subject, didKey.privateKey)
   const application = buildCredentialApplication(manifest, verifiableCredential)
+  const client = buildIssuer(didKey.subject, didKey.privateKey)
   const vp = await signVerifiablePresentation(application, client, options)
 
   return vp

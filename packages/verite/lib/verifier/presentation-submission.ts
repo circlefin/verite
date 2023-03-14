@@ -1,9 +1,5 @@
-import { v4 as uuidv4 } from "uuid"
-
 import {
-  ClaimFormat,
   DecodedPresentationSubmission,
-  DescriptorMap,
   DidKey,
   EncodedPresentationSubmission,
   JwtPresentationPayload,
@@ -11,15 +7,10 @@ import {
   Verifiable,
   W3CCredential
 } from "../../types"
-import {
-  PresentationPayloadBuilder,
-  PresentationSubmissionBuilder
-} from "../builders"
+import { PresentationPayloadBuilder } from "../builders"
 import {
   buildIssuer,
   signVerifiablePresentation,
-  PRESENTAION_SUBMISSION_TYPE_NAME,
-  VERIFIABLE_PRESENTATION_TYPE_NAME,
   verifyVerifiablePresentation
 } from "../utils"
 import { validatePresentationSubmission } from "../validators"
@@ -37,30 +28,13 @@ export function buildPresentationSubmission(
     | Verifiable<W3CCredential>
     | Verifiable<W3CCredential>[]
     | JWT
-    | JWT[],
-  presentationType: string | string[] = [
-    VERIFIABLE_PRESENTATION_TYPE_NAME,
-    PRESENTAION_SUBMISSION_TYPE_NAME
-  ]
+    | JWT[]
 ): JwtPresentationPayload {
-  const submission = new PresentationSubmissionBuilder()
-    .id(uuidv4())
-    .definition_id(presentationDefinition.id)
-    .descriptor_map(
-      presentationDefinition.input_descriptors.map<DescriptorMap>((d, i) => {
-        return {
-          id: d.id,
-          format: ClaimFormat.JwtVc,
-          path: `$.verifiableCredential[${i}]`
-        }
-      })
-    )
-    .build()
-
   const presentationPayload = new PresentationPayloadBuilder()
-    .type(presentationType)
     .verifiableCredential(verifiableCredential)
-    .presentation_submission(submission)
+    .withPresentationSubmission((b) =>
+      b.initFromPresentationDefinition(presentationDefinition)
+    )
     .build()
 
   const payload = Object.assign({
@@ -84,13 +58,13 @@ export async function composePresentationSubmission(
     | JWT[],
   options?: VerifyPresentationOptions
 ): Promise<JWT> {
-  const client = buildIssuer(didKey.subject, didKey.privateKey)
   const submission = buildPresentationSubmission(
     presentationDefinition,
     verifiableCredential
   )
 
   // TOFIX: does this need to be exposed as alias too?
+  const client = buildIssuer(didKey.subject, didKey.privateKey)
   const vp = await signVerifiablePresentation(submission, client, options)
 
   return vp

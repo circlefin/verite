@@ -13,7 +13,7 @@ import {
   OutputDescriptorBuilder,
   PresentationDefinitionBuilder
 } from "../builders"
-import { getAttestionDefinition } from "../utils/attestation-registry"
+import { getAttestionDefinition } from "../utils"
 import {
   PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME,
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
