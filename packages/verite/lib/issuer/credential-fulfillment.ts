@@ -86,27 +86,3 @@ export async function composeCredentialFulfillment(
 
   return signedPresentation as unknown as EncodedCredentialFulfillment
 }
-
-// TOFIX: here is tbd's version
-/*
-
-type CredentialResponseWrapper struct {
-	CredentialResponse CredentialResponse `json:"credential_response"`
-	Credentials        []any              `json:"verifiableCredentials,omitempty"`
-}
-
-// CredentialResponse https://identity.foundation/credential-manifest/#credential-response
-type CredentialResponse struct {
-	ID            string `json:"id" validate:"required"`
-	SpecVersion   string `json:"spec_version" validate:"required"`
-	ManifestID    string `json:"manifest_id" validate:"required"`
-	ApplicationID string `json:"application_id"`
-	Fulfillment   *struct {
-		DescriptorMap []exchange.SubmissionDescriptor `json:"descriptor_map" validate:"required"`
-	} `json:"fulfillment,omitempty" validate:"omitempty,dive"`
-	Denial *struct {
-		Reason           string   `json:"reason" validate:"required"`
-		InputDescriptors []string `json:"input_descriptors,omitempty"`
-	} `json:"denial,omitempty" validate:"omitempty,dive"`
-}
-*/
