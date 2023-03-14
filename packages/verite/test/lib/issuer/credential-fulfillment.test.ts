@@ -1,178 +1,61 @@
 import { randomBytes } from "crypto"
 
 import {
-  buildAndSignFulfillment,
-  buildAndSignMultiVcFulfillment,
-  buildAndSignVerifiableCredential
-} from "../../../lib/issuer/credential-fulfillment"
+  buildHybridManifest,
+  buildSampleProcessApprovalManifest
+} from "../../../lib"
+import { composeCredentialFulfillment } from "../../../lib/issuer"
 import {
-  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
-  KYCAML_CREDENTIAL_TYPE_NAME
-} from "../../../lib/sample-data"
+  buildCreditScoreVC,
+  buildProcessApprovalVC
+} from "../../../lib/sample-data/verifiable-credentials"
 import {
   buildIssuer,
-  decodeVerifiableCredential,
-  decodeVerifiablePresentation,
+  verifyVerifiablePresentation,
   randomDidKey
 } from "../../../lib/utils"
-import { StatusList2021Entry } from "../../../types"
 import {
-  creditScoreAttestationFixture,
-  kycAmlAttestationFixture
-} from "../../fixtures/attestations"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
-import { generateManifestAndIssuer } from "../../support/manifest-fns"
+  AttestationTypes,
+  CredentialIssuer,
+  DidKey,
+  Issuer
+} from "../../../types"
+import { revocationListFixture } from "../../fixtures/revocation-list"
 
-describe("buildAndSignVerifiableCredential", () => {
-  it("builds and signs a verifiable credential", async () => {
-    // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
+let subjectDidKey: DidKey
+let issuerDidKey: DidKey
+let issuer: Issuer
+let credentialIssuer: CredentialIssuer
 
-    // Subject DID
-    const subjectDid = randomDidKey(randomBytes)
-
-    // Claims
-    const attestation = kycAmlAttestationFixture
-
-    // Builds a signed Verifiable Credential
-    const vc = await buildAndSignVerifiableCredential(
-      issuer,
-      subjectDid,
-      attestation,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        issuanceDate: "2021-10-26T16:17:13.000Z"
-      }
-    )
-
-    const decoded = await decodeVerifiableCredential(vc)
-    expect(decoded).toMatchObject({
-      credentialSubject: {
-        KYCAMLAttestation: {
-          type: "KYCAMLAttestation",
-          process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-          approvalDate: attestation.approvalDate
-        },
-        id: subjectDid.subject
-      },
-      issuer: { id: issuerDid.subject },
-      type: ["VerifiableCredential", "KYCAMLCredential"],
-      issuanceDate: "2021-10-26T16:17:13.000Z",
-      "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        { "@vocab": "https://verite.id/identity/" }
-      ]
-    })
-  })
-
-  it("can optionally support a credentialStatus", async () => {
-    // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
-
-    // Subject DID
-    const subjectDid = randomDidKey(randomBytes)
-
-    // Claims
-    const attestation = kycAmlAttestationFixture
-
-    // Builds a signed Verifiable Credential with a credentialStatus
-    const credentialStatus: StatusList2021Entry = {
-      id: "https://dmv.example.gov/credentials/status/3#94567",
-      type: "StatusList2021Entry",
-      statusPurpose: "revocation",
-      statusListIndex: "94567",
-      statusListCredential: "https://example.com/credentials/status/3"
-    }
-    const vc = await buildAndSignVerifiableCredential(
-      issuer,
-      subjectDid,
-      attestation,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        credentialStatus
-      }
-    )
-
-    const decoded = await decodeVerifiableCredential(vc)
-
-    expect(decoded.credentialStatus).toEqual({
-      id: "https://dmv.example.gov/credentials/status/3#94567",
-      type: "StatusList2021Entry",
-      statusListIndex: "94567",
-      statusPurpose: "revocation",
-      statusListCredential: "https://example.com/credentials/status/3"
-    })
-  })
-
-  it("builds and signs a verifiable credential with multiple attestations", async () => {
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
-    const subjectDid = randomDidKey(randomBytes)
-    const attestations = [
-      kycAmlAttestationFixture,
-      creditScoreAttestationFixture
-    ]
-
-    const encodedVC = await buildAndSignVerifiableCredential(
-      issuer,
-      subjectDid,
-      attestations,
-      "HybridCredential"
-    )
-    const fulfillment = await decodeVerifiableCredential(encodedVC)
-
-    expect(fulfillment).toMatchObject({
-      credentialSubject: [
-        {
-          id: subjectDid.subject,
-          KYCAMLAttestation: {
-            type: "KYCAMLAttestation",
-            process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
-            approvalDate: kycAmlAttestationFixture.approvalDate
-          }
-        },
-        {
-          id: subjectDid.subject,
-          CreditScoreAttestation: {
-            type: "CreditScoreAttestation",
-            score: 700,
-            scoreType: "Credit Score",
-            provider: "Experian"
-          }
-        }
-      ],
-      issuer: { id: issuer.did },
-      type: ["VerifiableCredential", "HybridCredential"],
-      "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        {
-          "@vocab": "https://verite.id/identity/"
-        }
-      ]
-    })
-  })
+beforeEach(() => {
+  subjectDidKey = randomDidKey(randomBytes)
+  issuerDidKey = randomDidKey(randomBytes)
+  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
+  credentialIssuer = { id: issuer.did, name: "Verite" }
 })
 
-describe("buildAndSignFulfillment", () => {
+describe("composeCredentialFulfillment", () => {
   it("works", async () => {
-    const { manifest, issuer } = await generateManifestAndIssuer("kyc")
-    const subjectDid = randomDidKey(randomBytes)
-    const attestation = kycAmlAttestationFixture
-    const encodedFulfillment = await buildAndSignFulfillment(
-      issuer,
-      subjectDid.subject,
-      manifest,
-      attestation,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
     )
 
-    // The client can then decode the presentation
-    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
+    const vc = await buildProcessApprovalVC(
+      AttestationTypes.KYCAMLAttestation,
+      issuerDidKey,
+      subjectDidKey.subject,
+      revocationListFixture
+    )
+    const encodedFulfillment = await composeCredentialFulfillment(
+      issuer,
+      manifest,
+      vc
+    )
+
+    // The subject can then decode the presentation
+    // TODFIX: Consider if caller needs wrapper api
+    const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
 
     // The fulfillment looks like this:
     expect(fulfillment).toMatchObject({
@@ -199,7 +82,7 @@ describe("buildAndSignFulfillment", () => {
                 "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
               // approvalDate: "2021-11-12T18:56:16.508Z",
             },
-            id: subjectDid.subject
+            id: subjectDidKey.subject
           },
           issuer: {
             id: issuer.did
@@ -224,61 +107,45 @@ describe("buildAndSignFulfillment", () => {
   })
 
   it("builds and signs fulfillment with multiple VCs", async () => {
-    // We need an Issuer, Credential Application, the credential claims or attestations
-    // Map Issuer DID to Issuer for signing
-
-    const subjectDid = randomDidKey(randomBytes)
-    const { manifest, issuer } = await generateManifestAndIssuer("hybrid")
-
-    const attestation1 = kycAmlAttestationFixture
-    const attestation2 = creditScoreAttestationFixture
-
-    // Builds a signed Verifiable Credential
-    const vc1 = await buildAndSignVerifiableCredential(
-      issuer,
-      subjectDid,
-      attestation1,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      // issuanceDate defaults to now, but for testing we will stub it out
-      // Note that the did-jwt-vc library will strip out any milliseconds as
-      // the JWT exp and iat properties must be in seconds.
-      {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        issuanceDate: "2021-10-26T16:17:13.000Z"
-      }
+    const manifest = buildHybridManifest(
+      [
+        AttestationTypes.KYCAMLAttestation,
+        AttestationTypes.CreditScoreAttestation
+      ],
+      credentialIssuer
     )
 
-    const vc2 = await buildAndSignVerifiableCredential(
-      issuer,
-      subjectDid,
-      attestation2,
-      CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
-
-      // issuanceDate defaults to now, but for testing we will stub it out
-      // Note that the did-jwt-vc library will strip out any milliseconds as
-      // the JWT exp and iat properties must be in seconds.
-      {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
-        issuanceDate: "2021-10-26T16:17:13.000Z"
-      }
+    const vc1 = await buildProcessApprovalVC(
+      AttestationTypes.KYCAMLAttestation,
+      issuerDidKey,
+      subjectDidKey.subject,
+      revocationListFixture
+    )
+    const vc2 = await buildCreditScoreVC(
+      issuerDidKey,
+      subjectDidKey.subject,
+      700,
+      revocationListFixture
     )
 
     const creds = [vc1, vc2]
 
-    const encodedFulfillment = await buildAndSignMultiVcFulfillment(
+    const encodedFulfillment = await composeCredentialFulfillment(
       issuer,
       manifest,
       creds
     )
 
+    // TOFIX: same as above
     // The client can then decode the presentation
-    const fulfillment = await decodeVerifiablePresentation(encodedFulfillment)
+    const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
+
     expect(fulfillment).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation", "CredentialResponse"],
       holder: issuer.did,
       credential_response: {
-        manifest_id: "HybridManifest",
+        manifest_id: "Verite Hybrid Manifest",
         descriptor_map: [
           {
             id: "KYCAMLCredential",
@@ -300,7 +167,7 @@ describe("buildAndSignFulfillment", () => {
             }
           },
           credentialSubject: {
-            id: subjectDid.subject,
+            id: subjectDidKey.subject,
             KYCAMLAttestation: {
               type: "KYCAMLAttestation",
               process:
@@ -325,7 +192,7 @@ describe("buildAndSignFulfillment", () => {
             }
           },
           credentialSubject: {
-            id: subjectDid.subject,
+            id: subjectDidKey.subject,
             CreditScoreAttestation: {
               type: "CreditScoreAttestation",
               score: 700,

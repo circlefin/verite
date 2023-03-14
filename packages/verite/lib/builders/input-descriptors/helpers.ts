@@ -4,7 +4,12 @@ import {
   InputDescriptorConstraintStatusDirective,
   InputDescriptorConstraintDirective
 } from "../../../types"
-import { CREDENTIAL_SCHEMA_PROPERTY_NAME, CREDENTIAL_SUBJECT_PROPERTY_NAME, ID_PROPERTY_NAME, STRING_SCHEMA } from "../common"
+import {
+  CREDENTIAL_SCHEMA_PROPERTY_NAME,
+  CREDENTIAL_SUBJECT_PROPERTY_NAME,
+  ID_PROPERTY_NAME,
+  STRING_SCHEMA
+} from "../common"
 import { InputDescriptorConstraintFieldBuilder } from "./input-descriptor-constraints-field"
 
 export const ACTIVE_STATUS_CONSTRAINT = {

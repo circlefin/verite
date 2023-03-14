@@ -1,9 +1,9 @@
 import { Contract } from "@ethersproject/contracts"
 import { Wallet } from "@ethersproject/wallet"
 import {
-  validateVerificationSubmission,
   VerificationResultResponse,
-  verificationResult
+  verificationResult,
+  evaluatePresentationSubmission
 } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../../lib/api-fns"
@@ -46,7 +46,7 @@ export default apiHandler<PostResponse>(async (req, res) => {
   }
 
   try {
-    await validateVerificationSubmission(
+    await evaluatePresentationSubmission(
       submission,
       verificationRequest.body.presentation_definition,
       options

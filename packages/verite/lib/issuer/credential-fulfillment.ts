@@ -1,170 +1,130 @@
-import { isString } from "lodash"
+import { CreateCredentialOptions, CreatePresentationOptions } from "did-jwt-vc"
 import { v4 as uuidv4 } from "uuid"
 
 import {
   DescriptorMap,
-  EncodedCredentialFulfillment,
-  Issuer,
+  CredentialManifest,
+  ClaimFormat,
+  JWT,
+  JwtPresentationPayload,
+  Attestation,
   CredentialPayload,
   DidKey,
-  JWT,
-  Attestation,
-  CredentialManifest,
-  ClaimFormat
+  EncodedCredentialFulfillment,
+  Issuer
 } from "../../types"
 import {
   CREDENTIAL_RESPONSE_TYPE_NAME,
+  signVerifiablePresentation,
   VC_CONTEXT_URI,
-  VERIFIABLE_CREDENTIAL_TYPE_NAME,
-  VERIFIABLE_PRESENTATION_TYPE_NAME,
-  VERITE_VOCAB_URI
+  VERIFIABLE_PRESENTATION_TYPE_NAME
 } from "../utils"
-import {
-  encodeVerifiableCredential,
-  encodeVerifiablePresentation
-} from "../utils/credentials"
+import { composeVerifiableCredential } from "./credential"
 
-import type {
-  CreateCredentialOptions,
-  CreatePresentationOptions
-} from "did-jwt-vc/src/types"
-
-const DEFAULT_CONTEXT = [VC_CONTEXT_URI, { "@vocab": VERITE_VOCAB_URI }]
-/**
- * Build a VerifiableCredential containing an attestation for the given holder.
- */
-export async function buildAndSignVerifiableCredential(
-  signer: Issuer,
-  subject: string | DidKey,
-  attestation: Attestation | Attestation[],
-  credentialType: string | string[],
-  payload: Partial<CredentialPayload> = {},
-  options?: CreateCredentialOptions
-): Promise<JWT> {
-  const subjectId = parseSubjectId(subject)
-
-  // append all types other than "Verifiable Credential", which is already there
-  const finalCredentialTypes = [VERIFIABLE_CREDENTIAL_TYPE_NAME].concat(
-    Array.isArray(credentialType)
-      ? credentialType.filter((c) => c !== VERIFIABLE_CREDENTIAL_TYPE_NAME)
-      : credentialType !== VERIFIABLE_CREDENTIAL_TYPE_NAME
-      ? [credentialType]
-      : []
-  )
-
-  // For attestations, preserve the array or object structure
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let attsns: any[] | any
-  if (Array.isArray(attestation)) {
-    attsns = attestation.map((att) => {
-      return {
-        id: subjectId,
-        [att["type"].toString()]: att
-      }
-    })
-  } else {
-    attsns = {
-      id: subjectId,
-      [attestation["type"].toString()]: attestation
+export function buildCredentialFulfillment(
+  manifest: CredentialManifest,
+  encodedCredentials: JWT | JWT[],
+  presentationType: string | string[] = [
+    VERIFIABLE_PRESENTATION_TYPE_NAME,
+    CREDENTIAL_RESPONSE_TYPE_NAME
+  ]
+): JwtPresentationPayload {
+  const credentialResponse = {
+    credential_response: {
+      id: uuidv4(),
+      manifest_id: manifest.id,
+      descriptor_map:
+        manifest.output_descriptors.map<DescriptorMap>((d, i) => {
+          return {
+            id: d.id,
+            format: ClaimFormat.JwtVc,
+            path: `$.verifiableCredential[${i}]`
+          }
+        }) ?? []
     }
   }
-  const vcPayload = Object.assign(
-    {
-      "@context": DEFAULT_CONTEXT,
-      type: finalCredentialTypes,
-      credentialSubject: attsns,
-      issuanceDate: new Date(),
-      issuer: { id: signer.did }
-    },
-    payload
-  )
-  return encodeVerifiableCredential(vcPayload, signer, options)
-}
 
-function parseSubjectId(subject: string | DidKey) {
-  return isString(subject) ? subject : subject.subject
+  const vcJwtPayload = Array.isArray(encodedCredentials)
+    ? encodedCredentials
+    : [encodedCredentials]
+  const payload = Object.assign({
+    vp: {
+      "@context": [VC_CONTEXT_URI],
+      type: presentationType,
+      verifiableCredential: vcJwtPayload,
+      ...credentialResponse
+    }
+  })
+
+  return payload
 }
 
 /**
- * Build a VerifiablePresentation containing a list of attestations.
- *
- * Creates a single Verifiable Credential.
+ * Builds and signs a Credential Fulfillment from attestation(s).
+ * This includes the intermediate step of building and signing a Verifiable
+ * Credential.
  */
-export async function buildAndSignFulfillment(
-  signer: Issuer,
+export async function composeFulfillmentFromAttestation(
+  issuer: Issuer,
   subject: string | DidKey,
   manifest: CredentialManifest,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
   payload: Partial<CredentialPayload> = {},
-  options?: CreatePresentationOptions
+  options?: CreateCredentialOptions,
+  presentationType: string | string[] = [
+    VERIFIABLE_PRESENTATION_TYPE_NAME,
+    CREDENTIAL_RESPONSE_TYPE_NAME
+  ],
+  presentationOptions?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const subjectId = parseSubjectId(subject)
-  const encodedCredentials = await buildAndSignVerifiableCredential(
-    signer,
-    subjectId,
+  const encodedCredentials = await composeVerifiableCredential(
+    issuer,
+    subject,
     attestation,
     credentialType,
     payload,
     options
   )
-  const format = ClaimFormat.JwtVc
 
-  const encodedPresentation = await encodeVerifiablePresentation(
-    signer.did,
+  return composeCredentialFulfillment(
+    issuer,
+    manifest,
     encodedCredentials,
-    signer,
-    options,
-    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
-    {
-      credential_response: {
-        id: uuidv4(),
-        manifest_id: manifest.id,
-        descriptor_map:
-          manifest.output_descriptors.map<DescriptorMap>((d, i) => {
-            return {
-              id: d.id,
-              format: format,
-              path: `$.verifiableCredential[${i}]`
-            }
-          }) ?? []
-      }
-    }
+    presentationType,
+    presentationOptions
   )
-
-  return encodedPresentation as unknown as EncodedCredentialFulfillment
 }
 
 /**
- * Build a VerifiablePresentation from a list of signed Verifiable Credentials.
+ * Compose a Credential Fulfillment (which is a VerifiablePresentation) from a list of signed Verifiable Credentials.
+ *
+ * "Compose" overloads provide convenience wrappers for 2 steps: building and signing.
+ * You can call the wrapped functions separately for more fine-grained control.
+ *
+ * Signing is forwarded to the did-jwt-vc library.
+ *
  */
-export async function buildAndSignMultiVcFulfillment(
-  signer: Issuer,
+export async function composeCredentialFulfillment(
+  issuer: Issuer,
   manifest: CredentialManifest,
-  encodedCredentials: string[],
+  encodedCredentials: JWT | JWT[],
+  presentationType: string | string[] = [
+    VERIFIABLE_PRESENTATION_TYPE_NAME,
+    CREDENTIAL_RESPONSE_TYPE_NAME
+  ],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const encodedPresentation = await encodeVerifiablePresentation(
-    signer.did,
+  const fulfillment = buildCredentialFulfillment(
+    manifest,
     encodedCredentials,
-    signer,
-    options,
-    [VERIFIABLE_PRESENTATION_TYPE_NAME, CREDENTIAL_RESPONSE_TYPE_NAME],
-    {
-      credential_response: {
-        id: uuidv4(),
-        manifest_id: manifest.id,
-        descriptor_map:
-          manifest.output_descriptors.map<DescriptorMap>((d, i) => {
-            return {
-              id: d.id,
-              format: ClaimFormat.JwtVc,
-              path: `$.verifiableCredential[${i}]`
-            }
-          }) ?? []
-      }
-    }
+    presentationType
+  )
+  const signedPresentation = await signVerifiablePresentation(
+    fulfillment,
+    issuer,
+    options
   )
 
-  return encodedPresentation as unknown as EncodedCredentialFulfillment
+  return signedPresentation as unknown as EncodedCredentialFulfillment
 }

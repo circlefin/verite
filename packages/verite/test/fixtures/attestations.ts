@@ -1,18 +1,15 @@
 import {
-  getSampleCreditScoreAttestation,
-  getSampleKycAmlAttestation
+  buildSampleCreditScoreAttestation,
+  buildProcessApprovalAttestation
 } from "../../lib/sample-data"
-import { getAttestionDefinition, KYCAML_ATTESTATION } from "../../lib/utils"
 import {
+  AttestationTypes,
   CreditScoreAttestation,
   KYCAMLAttestation
 } from "../../types/Attestations"
 
-export const KYC_ATTESTATION_SCHEMA_URI =
-  getAttestionDefinition(KYCAML_ATTESTATION).schema
-
 export const kycAmlAttestationFixture: KYCAMLAttestation =
-  getSampleKycAmlAttestation()
+  buildProcessApprovalAttestation(AttestationTypes.KYCAMLAttestation)
 
 export const creditScoreAttestationFixture: CreditScoreAttestation =
-  getSampleCreditScoreAttestation(700)
+  buildSampleCreditScoreAttestation(700)

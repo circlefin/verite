@@ -1,4 +1,4 @@
-import { PresentationDefinition } from "../../types/PresentationDefinition"
+import { AttestationTypes, PresentationDefinition } from "../../types"
 import {
   ACTIVE_STATUS_CONSTRAINT,
   minimumValueConstraint,
@@ -10,40 +10,38 @@ import {
   InputDescriptorConstraintsBuilder,
   subjectContraint
 } from "../builders"
-import {
-  AttestationDefinition,
-  CREDIT_SCORE_ATTESTATION,
-  getAttestionDefinition,
-  KYCAML_ATTESTATION
-} from "../utils/attestation-registry"
+import { getAttestionDefinition } from "../utils"
 import {
   CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
-  CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME,
-  KYCAML_CREDENTIAL_TYPE_NAME,
-  KYCAML_PRESENTATION_DEFINITION_TYPE_NAME
+  CREDIT_SCORE_PRESENTATION_DEFINITION_ID
 } from "./constants"
+import {
+  attestationToCredentialType,
+  attestationToPresentationDefinitionId
+} from "./constants-maps"
 
+// TOFIX: name
 export function kycAmlPresentationDefinition(
   trustedAuthorities: string[] = []
 ) {
-  return createBasicPresentationDefinitionForProcessAttestation(
-    KYCAML_PRESENTATION_DEFINITION_TYPE_NAME,
-    getAttestionDefinition(KYCAML_ATTESTATION),
-    KYCAML_CREDENTIAL_TYPE_NAME,
+  return buildProcessApprovalPresentationDefinition(
+    AttestationTypes.KYCAMLAttestation,
+    trustedAuthorities,
     "Proof of KYC",
-    "Please provide a valid credential from a KYC/AML issuer",
-    trustedAuthorities
+    "Please provide a valid credential from a KYC/AML issuer"
   )
 }
-export function createBasicPresentationDefinitionForProcessAttestation(
-  definitionId: string,
-  attestationDefinition: AttestationDefinition,
-  credentialType: string,
-  name: string,
-  purpose: string,
-  trustedAuthorities: string[] = []
+
+export function buildProcessApprovalPresentationDefinition(
+  attestationType: AttestationTypes,
+  trustedAuthorities: string[] = [],
+  name?: string,
+  purpose?: string
 ) {
-  const pathPrefixConvention = `${attestationDefinition.type}.`
+  const pathPrefixConvention = `${attestationType}.`
+  const attestationDefinition = getAttestionDefinition(attestationType)
+  const credentialType = attestationToCredentialType(attestationType)
+  const definitionId = attestationToPresentationDefinitionId(attestationType)
 
   const constraints = new InputDescriptorConstraintsBuilder()
     .addField(stringValueConstraint("process", pathPrefixConvention))
@@ -51,8 +49,11 @@ export function createBasicPresentationDefinitionForProcessAttestation(
 
   const inputDescriptor = new InputDescriptorBuilder()
     .id(credentialType)
-    .name(name)
-    .purpose(purpose)
+    .name(name || `Proof of ${attestationType}`)
+    .purpose(
+      purpose ||
+        `Please provide a valid credential from a ${attestationType} issuer`
+    )
     .constraints(constraints.build())
     .withConstraints(
       withDefaults(attestationDefinition.schema, trustedAuthorities)
@@ -64,7 +65,7 @@ export function createBasicPresentationDefinitionForProcessAttestation(
     .build()
 }
 
-export const withDefaults =
+const withDefaults =
   (schema: string, trustedAuthorities: string[] = []) =>
   (b: InputDescriptorConstraintsBuilder): void => {
     b.addField(subjectContraint)
@@ -79,10 +80,13 @@ export const withDefaults =
  */
 export function creditScorePresentationDefinition(
   trustedAuthorities: string[] = [],
-  minimumCreditScore?: number
+  minimumCreditScore?: number,
+  name?: string,
+  purpose?: string
 ): PresentationDefinition {
-  const attestationInfo = getAttestionDefinition(CREDIT_SCORE_ATTESTATION)
-  const pathPrefixConvention = `${CREDIT_SCORE_ATTESTATION}.`
+  const attestationType = AttestationTypes.CreditScoreAttestation
+  const attestationInfo = getAttestionDefinition(attestationType)
+  const pathPrefixConvention = `${attestationType}.`
 
   const constraintsBuilder = new InputDescriptorConstraintsBuilder()
     .addField(
@@ -94,13 +98,16 @@ export function creditScorePresentationDefinition(
 
   const inputDescriptor = new InputDescriptorBuilder()
     .id(CREDIT_SCORE_CREDENTIAL_TYPE_NAME)
-    .name("Proof of Credit Score")
-    .purpose("Please provide a valid credential from a Credit Score issuer")
+    .name(name || `Proof of ${attestationType}`)
+    .purpose(
+      purpose ||
+        `Please provide a valid credential from a ${attestationType} issuer`
+    )
     .constraints(constraintsBuilder.build())
     .withConstraints(withDefaults(attestationInfo.schema, trustedAuthorities))
     .build()
   return {
-    id: CREDIT_SCORE_PRESENTATION_DEFINITION_TYPE_NAME,
+    id: CREDIT_SCORE_PRESENTATION_DEFINITION_ID,
     input_descriptors: [inputDescriptor]
   }
 }

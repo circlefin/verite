@@ -2,8 +2,6 @@ import Ajv from "ajv"
 import jsonpath from "jsonpath"
 
 import { ValidationError } from "../errors"
-import { isRevoked } from "../issuer"
-import { asyncSome, decodeVerifiablePresentation, isExpired } from "../utils"
 
 import type {
   DecodedPresentationSubmission,
@@ -14,13 +12,17 @@ import type {
   Verifiable,
   InputDescriptorConstraintField
 } from "../../types"
-import type { JWT, VerifyPresentationOptions } from "did-jwt-vc/src/types"
-
-type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
-  knownSchemas?: Record<string, Record<string, unknown>>
-}
 
 const ajv = new Ajv()
+
+/**
+ * Fetches the definition id from a Presentation Submission
+ */
+function getDefinitionIdFromPresentationSubmission(
+  submission: DecodedPresentationSubmission
+): string | undefined {
+  return submission.presentation_submission?.definition_id
+}
 
 /**
  * Find the first path in the input descriptor field which is present in the
@@ -127,43 +129,6 @@ function mapInputsToDescriptors(
   }, new Map<string, Verifiable<W3CCredential>[]>())
 }
 
-/**
- * Ensure all credentials in a verifiable presentation are not revoked
- */
-async function ensureNotRevoked(
-  presentation: Verifiable<W3CPresentation>
-): Promise<void> {
-  const anyRevoked = await asyncSome(
-    presentation.verifiableCredential ?? [],
-    async (credential) => {
-      return isRevoked(credential)
-    }
-  )
-
-  if (anyRevoked) {
-    throw new ValidationError(
-      "Revoked Credential",
-      "The selected verified credential has been revoked"
-    )
-  }
-}
-
-/**
- * Ensure all credentials in a verifiable presentation are not expired
- */
-function ensureNotExpired(presentation: Verifiable<W3CPresentation>): void {
-  const credentials = presentation.verifiableCredential || []
-
-  const anyExpired = credentials.some((credential) => isExpired(credential))
-
-  if (anyExpired) {
-    throw new ValidationError(
-      "Expired Credential",
-      "The selected verified credential has expired"
-    )
-  }
-}
-
 /*
 async function findSchema(knownSchemas: Record<string, Record<string, unknown>> | undefined, schemaUri: string): Promise<Record<string, unknown>> {
   const schema = knownSchemas?.[schemaUri]
@@ -246,39 +211,26 @@ async function ensureHolderIsSubject(
 
 /**
  * Validate a verifiable presentation against a presentation definition
+ * @throws ValidationError if the presentation does not meet the requirements
  */
-export async function validateVerificationSubmission(
-  submission: JWT,
-  definition: PresentationDefinition,
-  options?: ValidateVerificationSubmissionOptions
+export async function validatePresentationSubmission(
+  submission: DecodedPresentationSubmission,
+  definition: PresentationDefinition
 ): Promise<void> {
-  const presentation = await decodeVerifiablePresentation(submission, options)
+  if (getDefinitionIdFromPresentationSubmission(submission) !== definition.id) {
+    throw new ValidationError(
+      "Invalid Definition ID",
+      "This submission does not include a valid definition id"
+    )
+  }
 
-  /**
-   * Check the verifiable credentials to ensure non are revoked. To check
-   * revocation status, we must either have a local cached copy of the revocation
-   * list, or fetch the list from the location described in the credential.
-   */
-  await ensureNotRevoked(presentation)
-
-  /**
-   * Check the verifiable credentials to ensure none are expired. Generally,
-   * the JWT verification itself would handle this by checking the `exp` field
-   * of the JWT, but those JWT properties are only checked on the Presentation
-   * JWT, and not on the included credentials themselves.
-   *
-   * To ensure we do not use any expired credentials, we check this ourselves
-   * here.
-   */
-  ensureNotExpired(presentation)
-
-  const credentialMap = mapInputsToDescriptors(presentation, definition)
+  const credentialMap = mapInputsToDescriptors(submission, definition)
   /**
    * Check that the Verified Presentation was signed by the subject of the
    * Verified Credential. This ensures that the person submitting the
    * Presentation is the credential subject.
    */
-  await ensureHolderIsSubject(credentialMap, presentation, definition)
+  await ensureHolderIsSubject(credentialMap, submission, definition)
 
   /**
    * Check the verifiable credentials to ensure they meet the requirements

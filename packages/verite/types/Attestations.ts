@@ -1,5 +1,22 @@
 import type { PostalAddress } from "schema-dts"
 
+export enum AttestationTypes {
+  KYCAMLAttestation = "KYCAMLAttestation",
+  KYBPAMLAttestation = "KYBPAMLAttestation",
+  EntityAccInvAttestation = "EntityAccInvAttestation",
+  IndivAccInvAttestation = "IndivAccInvAttestation",
+  CreditScoreAttestation = "CreditScoreAttestation",
+  AddressOwner = "AddressOwner", // TOFIX: why is this inconsistent?
+  CounterpartyAccountHolder = "CounterpartyAccountHolder"
+}
+
+type AttestationType = {
+  type: string
+}
+
+type AttestationProcessStatic = AttestationType & {
+  process: string
+}
 /**
  * This is a union type for the possible types of attestations.
  */
@@ -12,9 +29,7 @@ export type Attestation =
   | AddressOwner
   | CounterpartyAccountHolder
 
-export type ProcessApprovalAttestation = {
-  type: string
-  process: string
+export type ProcessApprovalAttestation = AttestationProcessStatic & {
   approvalDate: string
 }
 
@@ -26,25 +41,27 @@ export type EntityAccInvAttestation = ProcessApprovalAttestation
 
 export type IndivAccInvAttestation = ProcessApprovalAttestation
 
-export type CreditScoreAttestation = {
-  type: string
+export type CreditScoreAttestation = AttestationType & {
   score: number
   scoreType: string
   provider: string
 }
 
-export type AddressOwner = {
-  type: string
+export type AddressOwner = AttestationType & {
   chain: string
   address: string
   proof: string
 }
 
-export type CounterpartyAccountHolder = {
-  type: string
+export type CounterpartyAccountHolder = AttestationType & {
   legalName: string
   address: Omit<PostalAddress, "@type"> & { type: "PostalAddress" }
   accountNumber: string
   accountSource?: string
   legalID?: string
+}
+
+export type AttestationDefinition = {
+  attestation: AttestationType | AttestationProcessStatic
+  schema: string
 }

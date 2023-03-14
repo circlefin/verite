@@ -1,8 +1,8 @@
 import {
   DidKey,
   CredentialManifest,
-  buildCredentialApplication,
-  decodeVerifiablePresentation,
+  composeCredentialApplication,
+  verifyVerifiablePresentation,
   Verifiable,
   W3CCredential,
   VerificationError
@@ -17,7 +17,7 @@ export const requestIssuance = async (
   did: DidKey,
   manifest: CredentialManifest
 ): Promise<Verifiable<W3CCredential>[] | undefined> => {
-  const body = await buildCredentialApplication(did, manifest)
+  const body = await composeCredentialApplication(did, manifest)
 
   const response = await fetch(url, {
     method: "POST",
@@ -30,7 +30,7 @@ export const requestIssuance = async (
 
     try {
       // Decode the VP
-      const verifiablePresentation = await decodeVerifiablePresentation(text)
+      const verifiablePresentation = await verifyVerifiablePresentation(text)
 
       // Extract the issued VC
       const credentials = verifiablePresentation.verifiableCredential ?? []

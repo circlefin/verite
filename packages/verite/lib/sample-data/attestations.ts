@@ -1,60 +1,29 @@
 import {
-  CredentialSchema,
+  AttestationTypes,
   CreditScoreAttestation,
-  KYCAMLAttestation
+  ProcessApprovalAttestation
 } from "../../types"
-import {
-  AttestationDefinition,
-  CREDIT_SCORE_ATTESTATION,
-  getAttestionDefinition,
-  KYCAML_ATTESTATION
-} from "../utils/attestation-registry"
-import { VERIFIABLE_CREDENTIAL_TYPE_NAME } from "../utils/constants"
-import {
-  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
-  KYCAML_CREDENTIAL_TYPE_NAME
-} from "./constants"
+import { getAttestionDefinition } from "../utils/attestation-registry"
 
-export function getSampleKycAmlAttestation(): KYCAMLAttestation {
-  const kycInfo = getAttestionDefinition(KYCAML_ATTESTATION)
+export function buildProcessApprovalAttestation(
+  attestationType: AttestationTypes
+): ProcessApprovalAttestation {
+  const ad = getAttestionDefinition(attestationType)
+    .attestation as ProcessApprovalAttestation
   return {
-    type: kycInfo.type,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    process: kycInfo.process!,
+    type: ad.type,
+    process: ad.process,
     approvalDate: new Date().toISOString()
   }
 }
 
-export function getSampleCreditScoreAttestation(
+export function buildSampleCreditScoreAttestation(
   score: number
 ): CreditScoreAttestation {
   return {
-    type: CREDIT_SCORE_ATTESTATION,
+    type: AttestationTypes.CreditScoreAttestation,
     score: score,
     scoreType: "Credit Score",
     provider: "Experian"
-  }
-}
-
-export function attestationToCredentialType(attestationType: string): string[] {
-  const types = [VERIFIABLE_CREDENTIAL_TYPE_NAME]
-  const result = typeMap.get(attestationType)
-  if (result) {
-    types.push(result)
-  }
-  return types
-}
-
-const typeMap = new Map<string, string>([
-  [KYCAML_ATTESTATION, KYCAML_CREDENTIAL_TYPE_NAME],
-  [CREDIT_SCORE_ATTESTATION, CREDIT_SCORE_CREDENTIAL_TYPE_NAME]
-])
-
-export function getCredentialSchemaAsVCObject(
-  attestationDefinition: AttestationDefinition
-): CredentialSchema {
-  return {
-    id: attestationDefinition.schema,
-    type: attestationDefinition.type
   }
 }

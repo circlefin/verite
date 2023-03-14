@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { v4 as uuidv4 } from "uuid"
-import { buildKycAmlManifest, buildCredentialOffer } from "verite"
+import {
+  buildSampleProcessApprovalManifest,
+  buildCredentialOffer,
+  AttestationTypes
+} from "verite"
 
 import { ManifestMap } from "../manifests"
 
@@ -9,10 +13,13 @@ export default async function challenges(
   res: NextApiResponse
 ): Promise<void> {
   // Generate manifest
-  const manifest = buildKycAmlManifest({
-    id: process.env.NEXT_PUBLIC_ISSUER_DID,
-    name: "Verite"
-  })
+  const manifest = buildSampleProcessApprovalManifest(
+    AttestationTypes.KYCAMLAttestation,
+    {
+      id: process.env.NEXT_PUBLIC_ISSUER_DID,
+      name: "Verite"
+    }
+  )
 
   ManifestMap[manifest.id] = manifest
   // Wrap the manifest with additional metadata, such as the URL to post the

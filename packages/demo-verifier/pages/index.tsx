@@ -7,15 +7,17 @@ import { useState } from "react"
 import useSWRImmutable from "swr/immutable"
 import {
   randomDidKey,
-  buildAndSignVerifiableCredential,
+  composeVerifiableCredential,
   KYCAMLAttestation,
   buildIssuer,
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   RevocableCredential,
-  buildPresentationSubmission,
+  composePresentationSubmission,
   VerificationOffer,
   ChallengeTokenUrlWrapper,
-  KYCAML_CREDENTIAL_TYPE_NAME
+  KYCAML_CREDENTIAL_TYPE_NAME,
+  buildProcessApprovalAttestation,
+  AttestationTypes
 } from "verite"
 
 import type { Verifiable } from "verite"
@@ -38,19 +40,21 @@ const issueCredential = async () => {
   // We will create a random did to represent our own identity wallet
   const subject = holder
 
-  const attestation: KYCAMLAttestation = getSampleKycAmlAttestation()
+  const attestation: KYCAMLAttestation = buildProcessApprovalAttestation(
+    AttestationTypes.KYCAMLAttestation
+  )
 
   const credentialType = KYCAML_CREDENTIAL_TYPE_NAME
 
   // Generate the signed, encoded credential
-  const encoded = await buildAndSignVerifiableCredential(
+  const encoded = await composeVerifiableCredential(
     issuer,
     subject,
     attestation,
     credentialType
   )
 
-  const decoded = await decodeVerifiableCredential(encoded)
+  const decoded = await verifyVerifiableCredential(encoded)
 
   return decoded
 }
@@ -110,7 +114,7 @@ export default function Home(): JSX.Element {
     credential: Verifiable<W3CCredential> | RevocableCredential
   ) => {
     const subject = holder
-    const request = await buildPresentationSubmission(
+    const request = await composePresentationSubmission(
       subject,
       verificationRequest.body.presentation_definition,
       credential
@@ -325,7 +329,4 @@ export default function Home(): JSX.Element {
       </main>
     </div>
   )
-}
-function getSampleKycAmlAttestation(): import("verite").ProcessApprovalAttestation {
-  throw new Error("Function not implemented.")
 }

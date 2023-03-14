@@ -1,5 +1,6 @@
 export * from "./attestations"
 export * from "./constants"
+export * from "./constants-maps"
 export * from "./manifests"
 export * from "./presentation-definitions"
 export * from "./verification-offer"

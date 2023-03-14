@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 import {
-  buildCredentialApplication,
-  decodeVerifiablePresentation,
+  composeCredentialApplication,
+  verifyVerifiablePresentation,
   randomDidKey
 } from "verite"
 
@@ -22,7 +22,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLManifest")
-    const credentialApplication = await buildCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -39,7 +39,7 @@ describe("POST /issuance/[token]", () => {
 
     const response = res._getData()
 
-    const presentation = (await decodeVerifiablePresentation(
+    const presentation = (await verifyVerifiablePresentation(
       response
     )) as DecodedCredentialFulfillment
 
@@ -53,7 +53,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("CreditScoreManifest")
-    const credentialApplication = await buildCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -70,7 +70,7 @@ describe("POST /issuance/[token]", () => {
 
     const response = res._getData()
 
-    const presentation = (await decodeVerifiablePresentation(
+    const presentation = (await verifyVerifiablePresentation(
       response
     )) as DecodedCredentialFulfillment
 
@@ -157,7 +157,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLManifest")
-    const credentialApplication = await buildCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -173,7 +173,7 @@ describe("POST /issuance/[token]", () => {
     expect(res.statusCode).toBe(200)
 
     const response = res._getData()
-    const verifiablePresentation = await decodeVerifiablePresentation(response)
+    const verifiablePresentation = await verifyVerifiablePresentation(response)
     const vc = verifiablePresentation.verifiableCredential[0]
     expect(vc.credentialSubject.id).toBe(clientDid.subject)
     expect(vc.credentialSubject.KYCAMLAttestation["type"]).toBe(

@@ -1,17 +1,21 @@
 import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 import {
-  buildAndSignFulfillment,
-  decodeCredentialApplication,
+  composeFulfillmentFromAttestation,
+  validateCredentialApplication,
   Attestation,
   buildIssuer,
   CREDIT_SCORE_MANIFEST_ID,
   KYCAML_MANIFEST_ID,
-  getSampleKycAmlAttestation,
-  getSampleCreditScoreAttestation,
+  buildProcessApprovalAttestation,
+  buildSampleCreditScoreAttestation,
   KYCAML_CREDENTIAL_TYPE_NAME,
-  getCredentialSchemaAsVCObject,
-  getAttestionDefinition
+  decodeCredentialApplication,
+  attestationToVCSchema,
+  CredentialSchema,
+  AttestationTypes,
+  manifestIdToAttestationType,
+  attestationToCredentialType
 } from "verite"
 
 import { ManifestMap } from "../manifests"
@@ -52,29 +56,37 @@ export default async function credentials(
    * Generate the attestation.
    */
   const manifestId = application.credential_application.manifest_id
-  
+
   const manifest = ManifestMap[manifestId]
+  await validateCredentialApplication(application, manifest)
   let attestation: Attestation
-  if (manifestId === KYCAML_MANIFEST_ID) {
-    attestation = getSampleKycAmlAttestation()
-  } else if (manifestId === CREDIT_SCORE_MANIFEST_ID) {
-    attestation = getSampleCreditScoreAttestation(90)
+  const attestationType = manifestIdToAttestationType(manifestId)
+  const credentialSchema = attestationToVCSchema(attestationType)
+  const credentialType = attestationToCredentialType(attestationType)
+
+  if (manifestId === CREDIT_SCORE_MANIFEST_ID) {
+    attestation = buildSampleCreditScoreAttestation(90)
   } else {
-    // Unsupported Credential Manifest
-    res.status(500)
-    return
+    try {
+      // TOFIX
+      attestation = buildProcessApprovalAttestation(attestationType)
+    } catch (e) {
+      console.error(e)
+      res.status(500)
+      return
+    }
   }
 
   // Generate the Verifiable Presentation
-  const presentation = await buildAndSignFulfillment(
+  const presentation = await composeFulfillmentFromAttestation(
     issuer,
     application.holder,
     manifest,
     attestation,
-    KYCAML_CREDENTIAL_TYPE_NAME,
-    { 
-      credentialSchema: getCredentialSchemaAsVCObject(getAttestionDefinition(KYCAML_CREDENTIAL_TYPE_NAME)),
-     }
+    credentialType,
+    {
+      credentialSchema: credentialSchema
+    }
   )
 
   // Response

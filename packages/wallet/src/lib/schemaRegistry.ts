@@ -1,10 +1,5 @@
 import { last, compact } from "lodash"
-import {
-  asyncMap,
-  OutputDescriptor,
-  Verifiable,
-  W3CCredential
-} from "verite"
+import { asyncMap, OutputDescriptor, Verifiable, W3CCredential } from "verite"
 
 import { CredentialAndDescriptor } from "../types"
 import {
