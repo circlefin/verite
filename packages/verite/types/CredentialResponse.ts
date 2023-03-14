@@ -8,6 +8,13 @@ export type CredentialResponse = {
   descriptor_map: DescriptorMap[]
 }
 
+export type CredentialResponseWrapper = {
+  "@context": string | string[]
+  type: string | string[]
+  verifiableCredential: JWT | JWT[]
+  credential_response: CredentialResponse
+}
+
 type NarrowCredentialFulfillment = {
   credential_response: CredentialResponse
 }

@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 import {
   ClaimFormat,
   ClaimFormatDesignation,
-  CredentialApplicationHeader,
+  CredentialApplication,
   CredentialManifest,
   DescriptorMap,
   PresentationSubmission
@@ -12,7 +12,8 @@ import {
 import { HOLDER_PROPERTY_NAME, PresentationSubmissionBuilder } from "."
 
 export class CredentialApplicationBuilder {
-  _builder: Partial<CredentialApplicationHeader>
+  _builder: Partial<CredentialApplication>
+  // TOFIX: specversion
 
   constructor(id?: string) {
     this._builder = {
@@ -42,7 +43,6 @@ export class CredentialApplicationBuilder {
     return this
   }
 
-  // TODO: continue
   initFromManifest(manifest: CredentialManifest) {
     this._builder.manifest_id = manifest.id
     this._builder.format = {
@@ -52,7 +52,6 @@ export class CredentialApplicationBuilder {
     if (manifest.presentation_definition) {
       this._builder.presentation_submission =
         new PresentationSubmissionBuilder()
-          .id(uuidv4())
           .definition_id(manifest.presentation_definition.id)
           .descriptor_map(
             manifest.presentation_definition?.input_descriptors?.map<DescriptorMap>(
@@ -71,8 +70,8 @@ export class CredentialApplicationBuilder {
     return this
   }
 
-  build(): CredentialApplicationHeader {
-    return this._builder as CredentialApplicationHeader
+  build(): CredentialApplication {
+    return this._builder as CredentialApplication
   }
 }
 

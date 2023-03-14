@@ -10,7 +10,7 @@ import {
   EncodedCredentialFulfillment,
   Issuer
 } from "../../types"
-import { CredentialFulfillmentWrapperBuilder } from "../builders/credential-fulfillment-wrapper-builder"
+import { CredentialResponseWrapperBuilder } from "../builders/credential-response-wrapper-builder"
 import { signVerifiablePresentation } from "../utils"
 import { composeVerifiableCredential } from "./credential"
 
@@ -18,7 +18,7 @@ export function buildCredentialFulfillment(
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[]
 ): JwtPresentationPayload {
-  const wrapper = new CredentialFulfillmentWrapperBuilder()
+  const wrapper = new CredentialResponseWrapperBuilder()
     .withCredentialResponse((r) => r.initFromManifest(manifest))
     .verifiableCredential(encodedCredentials)
     .build()

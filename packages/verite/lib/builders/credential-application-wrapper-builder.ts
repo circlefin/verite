@@ -1,6 +1,8 @@
-import { v4 as uuidv4 } from "uuid"
-
-import { CredentialApplicationHeader, JWT } from "../../types"
+import {
+  CredentialApplication,
+  CredentialApplicationWrapper,
+  JWT
+} from "../../types"
 import {
   CREDENTIAL_APPLICATION_TYPE_NAME,
   VC_CONTEXT_URI,
@@ -8,13 +10,6 @@ import {
 } from "../utils"
 import { Action } from "./common"
 import { CredentialApplicationBuilder } from "./credential-application-builder"
-
-export type CredentialApplicationWrapper = {
-  "@context": string | string[]
-  type: string | string[]
-  credential_application: CredentialApplicationHeader // TOFIX: is this the right type?
-  verifiableCredential: JWT | JWT[]
-}
 
 export class CredentialApplicationWrapperBuilder {
   _builder: Partial<CredentialApplicationWrapper>
@@ -28,7 +23,7 @@ export class CredentialApplicationWrapperBuilder {
     }
   }
 
-  credentialApplication(credentialApplication: CredentialApplicationHeader) {
+  credentialApplication(credentialApplication: CredentialApplication) {
     this._builder.credential_application = credentialApplication
     return this
   }
@@ -43,7 +38,6 @@ export class CredentialApplicationWrapperBuilder {
   }
 
   verifiableCredential(verifiableCredential?: JWT | JWT[]) {
-    // TOOD: CHECK NULL-NESS
     if (verifiableCredential) {
       const vcJwtPayload = Array.isArray(verifiableCredential)
         ? verifiableCredential

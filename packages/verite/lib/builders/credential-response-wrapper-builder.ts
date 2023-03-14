@@ -1,6 +1,4 @@
-// TODO: types and name
-
-import { CredentialResponse, JWT } from "../../types"
+import { CredentialResponse, CredentialResponseWrapper, JWT } from "../../types"
 import {
   CREDENTIAL_RESPONSE_TYPE_NAME,
   VC_CONTEXT_URI,
@@ -9,15 +7,8 @@ import {
 import { Action } from "./common"
 import { CredentialResponseBuilder } from "./credential-response-builder"
 
-export type CredentialFulfillmentWrapper = {
-  "@context": string | string[]
-  type: string | string[]
-  verifiableCredential: JWT | JWT[]
-  credential_response: CredentialResponse
-}
-
-export class CredentialFulfillmentWrapperBuilder {
-  _builder: Partial<CredentialFulfillmentWrapper>
+export class CredentialResponseWrapperBuilder {
+  _builder: Partial<CredentialResponseWrapper>
 
   constructor() {
     this._builder = {
@@ -50,6 +41,6 @@ export class CredentialFulfillmentWrapperBuilder {
   }
 
   build() {
-    return this._builder as CredentialFulfillmentWrapper
+    return this._builder as CredentialResponseWrapper
   }
 }
