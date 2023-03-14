@@ -1,10 +1,7 @@
 import { CreateCredentialOptions, CreatePresentationOptions } from "did-jwt-vc"
-import { v4 as uuidv4 } from "uuid"
 
 import {
-  DescriptorMap,
   CredentialManifest,
-  ClaimFormat,
   JWT,
   JwtPresentationPayload,
   Attestation,
@@ -13,47 +10,21 @@ import {
   EncodedCredentialFulfillment,
   Issuer
 } from "../../types"
-import {
-  CREDENTIAL_RESPONSE_TYPE_NAME,
-  signVerifiablePresentation,
-  VC_CONTEXT_URI,
-  VERIFIABLE_PRESENTATION_TYPE_NAME
-} from "../utils"
+import { CredentialResponseWrapperBuilder } from "../builders/credential-response-wrapper-builder"
+import { signVerifiablePresentation } from "../utils"
 import { composeVerifiableCredential } from "./credential"
 
 export function buildCredentialFulfillment(
   manifest: CredentialManifest,
-  encodedCredentials: JWT | JWT[],
-  presentationType: string | string[] = [
-    VERIFIABLE_PRESENTATION_TYPE_NAME,
-    CREDENTIAL_RESPONSE_TYPE_NAME
-  ]
+  encodedCredentials: JWT | JWT[]
 ): JwtPresentationPayload {
-  const credentialResponse = {
-    credential_response: {
-      id: uuidv4(),
-      manifest_id: manifest.id,
-      descriptor_map:
-        manifest.output_descriptors.map<DescriptorMap>((d, i) => {
-          return {
-            id: d.id,
-            format: ClaimFormat.JwtVc,
-            path: `$.verifiableCredential[${i}]`
-          }
-        }) ?? []
-    }
-  }
+  const wrapper = new CredentialResponseWrapperBuilder()
+    .withCredentialResponse((r) => r.initFromManifest(manifest))
+    .verifiableCredential(encodedCredentials)
+    .build()
 
-  const vcJwtPayload = Array.isArray(encodedCredentials)
-    ? encodedCredentials
-    : [encodedCredentials]
   const payload = Object.assign({
-    vp: {
-      "@context": [VC_CONTEXT_URI],
-      type: presentationType,
-      verifiableCredential: vcJwtPayload,
-      ...credentialResponse
-    }
+    vp: wrapper
   })
 
   return payload
@@ -72,10 +43,6 @@ export async function composeFulfillmentFromAttestation(
   credentialType: string | string[],
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions,
-  presentationType: string | string[] = [
-    VERIFIABLE_PRESENTATION_TYPE_NAME,
-    CREDENTIAL_RESPONSE_TYPE_NAME
-  ],
   presentationOptions?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
   const encodedCredentials = await composeVerifiableCredential(
@@ -91,7 +58,6 @@ export async function composeFulfillmentFromAttestation(
     issuer,
     manifest,
     encodedCredentials,
-    presentationType,
     presentationOptions
   )
 }
@@ -109,17 +75,9 @@ export async function composeCredentialFulfillment(
   issuer: Issuer,
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],
-  presentationType: string | string[] = [
-    VERIFIABLE_PRESENTATION_TYPE_NAME,
-    CREDENTIAL_RESPONSE_TYPE_NAME
-  ],
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialFulfillment> {
-  const fulfillment = buildCredentialFulfillment(
-    manifest,
-    encodedCredentials,
-    presentationType
-  )
+  const fulfillment = buildCredentialFulfillment(manifest, encodedCredentials)
   const signedPresentation = await signVerifiablePresentation(
     fulfillment,
     issuer,

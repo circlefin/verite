@@ -4,14 +4,22 @@ import type { JWT } from "./Jwt"
 import type { PresentationSubmission } from "./PresentationSubmission"
 
 type NarrowCredentialApplication = {
-  credential_application: CredentialApplicationHeader
+  credential_application: CredentialApplication
 }
 
-export type CredentialApplicationHeader = {
+export type CredentialApplication = {
+  // TODFIX: specversion
   id: string
   manifest_id: string
   format: ClaimFormatDesignation
   presentation_submission?: PresentationSubmission
+}
+
+export type CredentialApplicationWrapper = {
+  "@context": string | string[]
+  type: string | string[]
+  credential_application: CredentialApplication
+  verifiableCredential: JWT | JWT[]
 }
 
 export type GenericCredentialApplication =
