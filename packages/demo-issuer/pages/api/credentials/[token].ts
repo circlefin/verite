@@ -6,14 +6,10 @@ import {
   Attestation,
   buildIssuer,
   CREDIT_SCORE_MANIFEST_ID,
-  KYCAML_MANIFEST_ID,
   buildProcessApprovalAttestation,
   buildSampleCreditScoreAttestation,
-  KYCAML_CREDENTIAL_TYPE_NAME,
   decodeCredentialApplication,
   attestationToVCSchema,
-  CredentialSchema,
-  AttestationTypes,
   manifestIdToAttestationType,
   attestationToCredentialType
 } from "verite"

@@ -28,7 +28,7 @@ export function buildCredentialApplication(
     .verifiableCredential(verifiableCredential)
     .build()
 
-  // TODO: call this embed?
+  // TOFIX: call this embed?
   const payload = Object.assign({
     vp: wrapper
   })
