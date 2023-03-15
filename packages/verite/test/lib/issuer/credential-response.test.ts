@@ -4,7 +4,7 @@ import {
   buildHybridManifest,
   buildSampleProcessApprovalManifest
 } from "../../../lib"
-import { composeCredentialFulfillment } from "../../../lib/issuer"
+import { composeCredentialResponse } from "../../../lib/issuer"
 import {
   buildCreditScoreVC,
   buildProcessApprovalVC
@@ -34,7 +34,7 @@ beforeEach(() => {
   credentialIssuer = { id: issuer.did, name: "Verite" }
 })
 
-describe("composeCredentialFulfillment", () => {
+describe("composeCredentialResponse", () => {
   it("works", async () => {
     const manifest = buildSampleProcessApprovalManifest(
       AttestationTypes.KYCAMLAttestation,
@@ -47,7 +47,7 @@ describe("composeCredentialFulfillment", () => {
       subjectDidKey.subject,
       revocationListFixture
     )
-    const encodedFulfillment = await composeCredentialFulfillment(
+    const encodedResponse = await composeCredentialResponse(
       issuer,
       manifest,
       vc
@@ -55,23 +55,25 @@ describe("composeCredentialFulfillment", () => {
 
     // The subject can then decode the presentation
     // TODFIX: Consider if caller needs wrapper api
-    const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
+    const response = await verifyVerifiablePresentation(encodedResponse)
 
-    // The fulfillment looks like this:
-    expect(fulfillment).toMatchObject({
+    // The response looks like this:
+    expect(response).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation", "CredentialResponse"],
       holder: issuer.did,
       credential_response: {
         // id: "5f22f1ea-0441-4041-916b-2504a2a4075c",
         manifest_id: "KYCAMLManifest",
-        descriptor_map: [
-          {
-            id: "KYCAMLCredential",
-            format: "jwt_vc",
-            path: "$.verifiableCredential[0]"
-          }
-        ]
+        fulfillment: {
+          descriptor_map: [
+            {
+              id: "KYCAMLCredential",
+              format: "jwt_vc",
+              path: "$.verifiableCredential[0]"
+            }
+          ]
+        }
       },
       verifiableCredential: [
         {
@@ -106,7 +108,7 @@ describe("composeCredentialFulfillment", () => {
     })
   })
 
-  it("builds and signs fulfillment with multiple VCs", async () => {
+  it("builds and signs response with multiple VCs", async () => {
     const manifest = buildHybridManifest(
       [
         AttestationTypes.KYCAMLAttestation,
@@ -130,34 +132,35 @@ describe("composeCredentialFulfillment", () => {
 
     const creds = [vc1, vc2]
 
-    const encodedFulfillment = await composeCredentialFulfillment(
+    const encodedResponse = await composeCredentialResponse(
       issuer,
       manifest,
       creds
     )
 
-    // TOFIX: same as above
     // The client can then decode the presentation
-    const fulfillment = await verifyVerifiablePresentation(encodedFulfillment)
+    const response = await verifyVerifiablePresentation(encodedResponse)
 
-    expect(fulfillment).toMatchObject({
+    expect(response).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiablePresentation", "CredentialResponse"],
       holder: issuer.did,
       credential_response: {
         manifest_id: "Verite Hybrid Manifest",
-        descriptor_map: [
-          {
-            id: "KYCAMLCredential",
-            format: "jwt_vc",
-            path: "$.verifiableCredential[0]"
-          },
-          {
-            id: "CreditScoreCredential",
-            format: "jwt_vc",
-            path: "$.verifiableCredential[1]"
-          }
-        ]
+        fulfillment: {
+          descriptor_map: [
+            {
+              id: "KYCAMLCredential",
+              format: "jwt_vc",
+              path: "$.verifiableCredential[0]"
+            },
+            {
+              id: "CreditScoreCredential",
+              format: "jwt_vc",
+              path: "$.verifiableCredential[1]"
+            }
+          ]
+        }
       },
       verifiableCredential: [
         {

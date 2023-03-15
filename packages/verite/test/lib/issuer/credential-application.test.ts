@@ -84,7 +84,7 @@ describe("decodeCredentialApplication", () => {
           descriptor_map: [
             {
               id: "proofOfIdentifierControlVP",
-              format: ClaimFormat.JwtVp,
+              format: "jwt_vp",
               path: "$.holder"
             }
           ]

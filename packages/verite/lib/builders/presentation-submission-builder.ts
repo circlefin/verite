@@ -11,7 +11,7 @@ export class PresentationSubmissionBuilder {
   _builder: Partial<PresentationSubmission>
   constructor(id?: string) {
     this._builder = {
-      id: id ? id : uuidv4()
+      id: id ?? uuidv4()
     }
   }
 
@@ -38,7 +38,7 @@ export class PresentationSubmissionBuilder {
       presentationDefinition.input_descriptors.map<DescriptorMap>((d, i) => {
         return {
           id: d.id,
-          format: ClaimFormat.JwtVc,
+          format: "jwt_vc",
           path: `$.verifiableCredential[${i}]`
         }
       }) ?? []

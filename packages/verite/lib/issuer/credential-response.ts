@@ -7,14 +7,14 @@ import {
   Attestation,
   CredentialPayload,
   DidKey,
-  EncodedCredentialFulfillment,
+  EncodedCredentialResponseWrapper,
   Issuer
 } from "../../types"
 import { CredentialResponseWrapperBuilder } from "../builders/credential-response-wrapper-builder"
 import { signVerifiablePresentation } from "../utils"
 import { composeVerifiableCredential } from "./credential"
 
-export function buildCredentialFulfillment(
+export function buildCredentialResponse(
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[]
 ): JwtPresentationPayload {
@@ -31,11 +31,11 @@ export function buildCredentialFulfillment(
 }
 
 /**
- * Builds and signs a Credential Fulfillment from attestation(s).
+ * Builds and signs a Credential Response from attestation(s).
  * This includes the intermediate step of building and signing a Verifiable
  * Credential.
  */
-export async function composeFulfillmentFromAttestation(
+export async function composeCredentialResponseFromAttestation(
   issuer: Issuer,
   subject: string | DidKey,
   manifest: CredentialManifest,
@@ -44,7 +44,7 @@ export async function composeFulfillmentFromAttestation(
   payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions,
   presentationOptions?: CreatePresentationOptions
-): Promise<EncodedCredentialFulfillment> {
+): Promise<EncodedCredentialResponseWrapper> {
   const encodedCredentials = await composeVerifiableCredential(
     issuer,
     subject,
@@ -54,7 +54,7 @@ export async function composeFulfillmentFromAttestation(
     options
   )
 
-  return composeCredentialFulfillment(
+  return composeCredentialResponse(
     issuer,
     manifest,
     encodedCredentials,
@@ -71,18 +71,18 @@ export async function composeFulfillmentFromAttestation(
  * Signing is forwarded to the did-jwt-vc library.
  *
  */
-export async function composeCredentialFulfillment(
+export async function composeCredentialResponse(
   issuer: Issuer,
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[],
   options?: CreatePresentationOptions
-): Promise<EncodedCredentialFulfillment> {
-  const fulfillment = buildCredentialFulfillment(manifest, encodedCredentials)
+): Promise<EncodedCredentialResponseWrapper> {
+  const fulfillment = buildCredentialResponse(manifest, encodedCredentials)
   const signedPresentation = await signVerifiablePresentation(
     fulfillment,
     issuer,
     options
   )
 
-  return signedPresentation as unknown as EncodedCredentialFulfillment
+  return signedPresentation as unknown as EncodedCredentialResponseWrapper
 }

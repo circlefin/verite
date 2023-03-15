@@ -1,9 +1,9 @@
 import {
   attestationToCredentialType,
-  composeFulfillmentFromAttestation,
+  composeCredentialResponseFromAttestation,
   CredentialManifest,
   validateCredentialApplication,
-  EncodedCredentialFulfillment,
+  EncodedCredentialResponseWrapper,
   isRevocable,
   RevocableCredential,
   StatusList2021Entry,
@@ -41,59 +41,61 @@ const twoMonths = 2 * 30 * 24 * 60 * 60 * 1000
  * Presentation, and issues a separate Verifiable Presentation containing
  * the Verifiable Credentials for this given user.
  */
-export default apiHandler<EncodedCredentialFulfillment>(async (req, res) => {
-  requireMethod(req, "POST")
+export default apiHandler<EncodedCredentialResponseWrapper>(
+  async (req, res) => {
+    requireMethod(req, "POST")
 
-  // Find the user record from a temporary auth token
-  // We need to use a temporary auth token because this submission endpoint
-  // may not be called directly from the user's browser (e.g. via mobile wallet)
-  const user = await findUserFromTemporaryAuthToken(req.query.token as string)
-  if (!user) {
-    throw new NotFoundError()
-  }
-
-  // Decode the Credential Application and check the signature
-  const credentialApplication = await decodeCredentialApplication(req.body)
-
-  // Validate the format of the Verifiable Presentation.
-  const manifestId = getManifestIdFromCredentialApplication(
-    credentialApplication
-  )
-  const manifest = await findManifestById(manifestId)
-  await validateCredentialApplication(credentialApplication, manifest)
-
-  // Build a revocation list and index if needed. We currently only need
-  // a revocable credential for KYC/AML credentials.
-  const revocationList = await handleRevocationIfNecessary(user, manifest)
-
-  // If this is a Credit Score attestation, set the expiration to be
-  // one minute for the sake of a demo
-  const expirationDate =
-    manifest.id === CREDIT_SCORE_MANIFEST_ID
-      ? new Date(Date.now() + oneMinute)
-      : new Date(Date.now() + twoMonths)
-
-  const attestationType = manifestIdToAttestationType(manifest.id)
-  const userAttestation = buildAttestationForUser(user, attestationType)
-
-  // TOFIX: come back to this
-  // Generate new credentials for the user
-  const fulfillment = await composeFulfillmentFromAttestation(
-    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    credentialApplication.holder,
-    manifest,
-    userAttestation,
-    attestationToCredentialType(attestationType),
-    {
-      credentialSchema: attestationToVCSchema(attestationType),
-      credentialStatus: revocationList,
-      expirationDate
+    // Find the user record from a temporary auth token
+    // We need to use a temporary auth token because this submission endpoint
+    // may not be called directly from the user's browser (e.g. via mobile wallet)
+    const user = await findUserFromTemporaryAuthToken(req.query.token as string)
+    if (!user) {
+      throw new NotFoundError()
     }
-  )
-  res.send(fulfillment)
-  // Save the credentials to the database
-  await persistGeneratedCredentials(user, fulfillment)
-})
+
+    // Decode the Credential Application and check the signature
+    const credentialApplication = await decodeCredentialApplication(req.body)
+
+    // Validate the format of the Verifiable Presentation.
+    const manifestId = getManifestIdFromCredentialApplication(
+      credentialApplication
+    )
+    const manifest = await findManifestById(manifestId)
+    await validateCredentialApplication(credentialApplication, manifest)
+
+    // Build a revocation list and index if needed. We currently only need
+    // a revocable credential for KYC/AML credentials.
+    const revocationList = await handleRevocationIfNecessary(user, manifest)
+
+    // If this is a Credit Score attestation, set the expiration to be
+    // one minute for the sake of a demo
+    const expirationDate =
+      manifest.id === CREDIT_SCORE_MANIFEST_ID
+        ? new Date(Date.now() + oneMinute)
+        : new Date(Date.now() + twoMonths)
+
+    const attestationType = manifestIdToAttestationType(manifest.id)
+    const userAttestation = buildAttestationForUser(user, attestationType)
+
+    // TOFIX: come back to this
+    // Generate new credentials for the user
+    const fulfillment = await composeCredentialResponseFromAttestation(
+      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
+      credentialApplication.holder,
+      manifest,
+      userAttestation,
+      attestationToCredentialType(attestationType),
+      {
+        credentialSchema: attestationToVCSchema(attestationType),
+        credentialStatus: revocationList,
+        expirationDate
+      }
+    )
+    res.send(fulfillment)
+    // Save the credentials to the database
+    await persistGeneratedCredentials(user, fulfillment)
+  }
+)
 
 /**
  * If we are using revocable credentials (e.g. KYC), then we should revoke
@@ -148,7 +150,7 @@ async function revokeUserCredentials(user: User, type: string) {
  */
 async function persistGeneratedCredentials(
   user: User,
-  fulfillment: EncodedCredentialFulfillment
+  fulfillment: EncodedCredentialResponseWrapper
 ): Promise<void> {
   const decodedPresentation = await verifyVerifiablePresentation(fulfillment)
 

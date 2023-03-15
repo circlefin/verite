@@ -2,7 +2,7 @@ import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
-  composeFulfillmentFromAttestation,
+  composeCredentialResponseFromAttestation,
   composePresentationSubmission,
   verifyVerifiablePresentation,
   randomDidKey,
@@ -165,7 +165,7 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
     user,
     AttestationTypes.KYCAMLAttestation
   )
-  const fulfillment = await composeFulfillmentFromAttestation(
+  const fulfillment = await composeCredentialResponseFromAttestation(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     clientDidKey.subject,
     manifest,

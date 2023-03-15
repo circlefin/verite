@@ -3,7 +3,7 @@ import nock from "nock"
 
 import {
   composeCredentialApplication,
-  composeCredentialFulfillment,
+  composeCredentialResponse,
   composeVerifiableCredential,
   evaluateCredentialApplication
 } from "../../lib/issuer"
@@ -94,18 +94,18 @@ describe("E2E issuance", () => {
       }
     )
     /**
-     * The issuer wraps the signed VC in a Credential Fulfillment, which
+     * The issuer wraps the signed VC in a Credential Response, which
      * is a signed VP
      */
-    const fulfillment = await composeCredentialFulfillment(issuer, manifest, vc)
+    const response = await composeCredentialResponse(issuer, manifest, vc)
 
     /**
-     * The issuer sends the Credential Fulfillment to the subject. The subject's
+     * The issuer sends the Credential Response to the subject. The subject's
      * wallet can then verify the VP and store it.
      */
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
-      fulfillment
+      response
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(
@@ -207,12 +207,12 @@ describe("E2E issuance", () => {
     )
 
     /**
-     * The issuer builds and signs a fulfillment
+     * The issuer builds and signs a response
      */
-    const fulfillment = await composeCredentialFulfillment(issuer, manifest, vc)
+    const response = await composeCredentialResponse(issuer, manifest, vc)
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
-      fulfillment
+      response
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(

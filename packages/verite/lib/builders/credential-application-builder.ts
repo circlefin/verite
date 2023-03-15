@@ -9,15 +9,19 @@ import {
   PresentationSubmission
 } from "../../types"
 
-import { HOLDER_PROPERTY_NAME, PresentationSubmissionBuilder } from "."
+import {
+  CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
+  HOLDER_PROPERTY_NAME,
+  PresentationSubmissionBuilder
+} from "."
 
 export class CredentialApplicationBuilder {
   _builder: Partial<CredentialApplication>
-  // TOFIX: specversion
 
   constructor(id?: string) {
     this._builder = {
-      id: id ? id : uuidv4()
+      id: id ?? uuidv4(),
+      spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0
     }
   }
 
@@ -58,7 +62,7 @@ export class CredentialApplicationBuilder {
               (d) => {
                 return {
                   id: d.id,
-                  format: ClaimFormat.JwtVp,
+                  format: "jwt_vp",
                   path: `$.${HOLDER_PROPERTY_NAME}` // TOFIX: how to generalize?
                 }
               }
