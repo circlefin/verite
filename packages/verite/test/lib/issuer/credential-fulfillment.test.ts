@@ -65,13 +65,15 @@ describe("composeCredentialFulfillment", () => {
       credential_response: {
         // id: "5f22f1ea-0441-4041-916b-2504a2a4075c",
         manifest_id: "KYCAMLManifest",
-        descriptor_map: [
-          {
-            id: "KYCAMLCredential",
-            format: "jwt_vc",
-            path: "$.verifiableCredential[0]"
-          }
-        ]
+        fulfillment: {
+          descriptor_map: [
+            {
+              id: "KYCAMLCredential",
+              format: "jwt_vc",
+              path: "$.verifiableCredential[0]"
+            }
+          ]
+        }
       },
       verifiableCredential: [
         {
@@ -146,18 +148,20 @@ describe("composeCredentialFulfillment", () => {
       holder: issuer.did,
       credential_response: {
         manifest_id: "Verite Hybrid Manifest",
-        descriptor_map: [
-          {
-            id: "KYCAMLCredential",
-            format: "jwt_vc",
-            path: "$.verifiableCredential[0]"
-          },
-          {
-            id: "CreditScoreCredential",
-            format: "jwt_vc",
-            path: "$.verifiableCredential[1]"
-          }
-        ]
+        fulfillment: {
+          descriptor_map: [
+            {
+              id: "KYCAMLCredential",
+              format: "jwt_vc",
+              path: "$.verifiableCredential[0]"
+            },
+            {
+              id: "CreditScoreCredential",
+              format: "jwt_vc",
+              path: "$.verifiableCredential[1]"
+            }
+          ]
+        }
       },
       verifiableCredential: [
         {

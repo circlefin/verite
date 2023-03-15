@@ -4,8 +4,16 @@ import type { JWT } from "./Jwt"
 
 export type CredentialResponse = {
   id: string
+  spec_version: string
   manifest_id: string
-  descriptor_map: DescriptorMap[]
+  application_id?: string
+  fulfillment?: {
+    descriptor_map: DescriptorMap[]
+  }
+  denial?: {
+    reason: string
+    input_descriptors: string[]
+  }
 }
 
 export type CredentialResponseWrapper = {
@@ -15,6 +23,7 @@ export type CredentialResponseWrapper = {
   credential_response: CredentialResponse
 }
 
+// TOFIX: consider renaming fulfillment here to avoid confusion
 type NarrowCredentialFulfillment = {
   credential_response: CredentialResponse
 }

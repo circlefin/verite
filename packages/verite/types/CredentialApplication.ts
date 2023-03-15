@@ -8,8 +8,8 @@ type NarrowCredentialApplication = {
 }
 
 export type CredentialApplication = {
-  // TODFIX: specversion
   id: string
+  spec_version: string
   manifest_id: string
   format: ClaimFormatDesignation
   presentation_submission?: PresentationSubmission
