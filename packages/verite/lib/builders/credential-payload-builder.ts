@@ -1,6 +1,5 @@
 import {
   Attestation,
-  CredentialPayload,
   CredentialSchema,
   DidKey,
   LatestCredentialPayload,

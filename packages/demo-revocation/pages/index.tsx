@@ -17,7 +17,8 @@ import {
   unrevokeCredential,
   AttestationTypes,
   CredentialPayloadBuilder,
-  signVerifiableCredential
+  signVerifiableCredential,
+  StatusList2021Entry
 } from "verite"
 
 import type {
@@ -26,7 +27,6 @@ import type {
   W3CCredential,
   Issuer
 } from "verite"
-import { StatusList2021Entry } from "verite"
 
 // In a production environment, these values would be secured by the issuer
 const issuer = buildIssuer(

@@ -1,5 +1,4 @@
 import { CredentialApplicationBuilder } from "../../../lib"
-import { ClaimFormat } from "../../../types"
 
 describe("CredentialApplicationBuilder", () => {
   it("works", async () => {

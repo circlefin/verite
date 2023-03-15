@@ -10,7 +10,6 @@ import { buildSampleProcessApprovalManifest } from "../../../lib/sample-data/man
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
 import {
   AttestationTypes,
-  ClaimFormat,
   CredentialIssuer,
   DidKey,
   Issuer

@@ -307,7 +307,6 @@ describe("Presentation Submission validator", () => {
   })
 
   it("returns an error if the credential schema doesn't match the expected value", async () => {
-    const signer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
     const sampleAttestation = buildProcessApprovalAttestation(
       AttestationTypes.KYCAMLAttestation
     )

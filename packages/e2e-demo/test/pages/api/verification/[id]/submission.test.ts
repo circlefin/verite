@@ -56,7 +56,6 @@ describe("POST /verification/[id]/submission", () => {
     await handler(req, res)
 
     const response = res._getJSONData()
-    console.log(JSON.stringify(response, null, 2))
     expect(res.statusCode).toBe(200)
     expect(response).toEqual({ status: "approved" })
 
