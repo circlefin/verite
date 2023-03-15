@@ -1,11 +1,10 @@
-export enum ClaimFormat {
-  Jwt = "jwt",
-  JwtVc = "jwt_vc",
-  JwtVp = "jwt_vp",
-  LdpVc = "ldp_vc",
-  LdpVp = "ldp_vp",
-  Ldp = "ldp"
-}
+export type ClaimFormat =
+  | "jwt"
+  | "jwt_vc"
+  | "jwt_vp"
+  | "ldp_vc"
+  | "ldp_vp"
+  | "ldp"
 
 export type DescriptorMap = {
   id: string

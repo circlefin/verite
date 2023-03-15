@@ -13,7 +13,7 @@ export class CredentialResponseBuilder {
 
   constructor(id?: string) {
     this._builder = {
-      id: id ? id : uuidv4(),
+      id: id ?? uuidv4(),
       spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0
     }
   }
@@ -48,7 +48,7 @@ export class CredentialResponseBuilder {
         manifest.output_descriptors.map<DescriptorMap>((d, i) => {
           return {
             id: d.id,
-            format: ClaimFormat.JwtVc,
+            format: "jwt_vc",
             path: `$.verifiableCredential[${i}]`
           }
         }) ?? []

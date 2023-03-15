@@ -20,7 +20,7 @@ export class CredentialApplicationBuilder {
 
   constructor(id?: string) {
     this._builder = {
-      id: id ? id : uuidv4(),
+      id: id ?? uuidv4(),
       spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0
     }
   }
@@ -62,7 +62,7 @@ export class CredentialApplicationBuilder {
               (d) => {
                 return {
                   id: d.id,
-                  format: ClaimFormat.JwtVp,
+                  format: "jwt_vp",
                   path: `$.${HOLDER_PROPERTY_NAME}` // TOFIX: how to generalize?
                 }
               }

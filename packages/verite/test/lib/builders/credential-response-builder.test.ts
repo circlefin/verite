@@ -9,7 +9,7 @@ describe("CredentialResepnseBuilder", () => {
       .fulfillment([
         {
           id: "eoc_output",
-          format: ClaimFormat.JwtVp, // "jwt_vp", // TOFIX:why doesn't constant work?
+          format: "jwt_vp",
           path: "$.verifiableCredential"
         }
       ])
@@ -95,7 +95,7 @@ describe("CredentialResepnseBuilder", () => {
       .fulfillment([
         {
           id: "eoc_output",
-          format: ClaimFormat.JwtVp, // "jwt_vp", // TOFIX:why doesn't constant work?
+          format: "jwt_vp",
           path: "$.verifiableCredential"
         }
       ])
@@ -111,7 +111,7 @@ describe("CredentialResepnseBuilder", () => {
       .fulfillment([
         {
           id: "eoc_output",
-          format: ClaimFormat.JwtVp, // "jwt_vp", // TOFIX:why doesn't constant work?
+          format: "jwt_vp",
           path: "$.verifiableCredential"
         }
       ])
