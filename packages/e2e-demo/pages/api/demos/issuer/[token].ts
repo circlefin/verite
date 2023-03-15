@@ -1,6 +1,5 @@
 import {
   attestationToCredentialType,
-  composeCredentialResponseFromAttestation,
   CredentialManifest,
   validateCredentialApplication,
   EncodedCredentialResponseWrapper,
@@ -15,7 +14,10 @@ import {
   CREDIT_SCORE_MANIFEST_ID,
   decodeCredentialApplication,
   attestationToVCSchema,
-  manifestIdToAttestationType
+  manifestIdToAttestationType,
+  CredentialPayloadBuilder,
+  composeCredentialResponse,
+  signVerifiableCredential
 } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
@@ -77,20 +79,28 @@ export default apiHandler<EncodedCredentialResponseWrapper>(
     const attestationType = manifestIdToAttestationType(manifest.id)
     const userAttestation = buildAttestationForUser(user, attestationType)
 
-    // TOFIX: come back to this
-    // Generate new credentials for the user
-    const fulfillment = await composeCredentialResponseFromAttestation(
-      buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-      credentialApplication.holder,
-      manifest,
-      userAttestation,
-      attestationToCredentialType(attestationType),
-      {
-        credentialSchema: attestationToVCSchema(attestationType),
-        credentialStatus: revocationList,
-        expirationDate
-      }
+    const issuer = buildIssuer(
+      process.env.ISSUER_DID,
+      process.env.ISSUER_SECRET
     )
+
+    // Generate new credentials for the user
+    const vcs = new CredentialPayloadBuilder()
+      .issuer(issuer.did)
+      .type(attestationToCredentialType(attestationType))
+      .attestations(credentialApplication.holder, userAttestation)
+      .credentialSchema(attestationToVCSchema(attestationType))
+      .credentialStatus(revocationList)
+      .expirationDate(expirationDate)
+      .build()
+
+    const signedCredentials = await signVerifiableCredential(vcs, issuer)
+    const fulfillment = await composeCredentialResponse(
+      issuer,
+      manifest,
+      signedCredentials
+    )
+
     res.send(fulfillment)
     // Save the credentials to the database
     await persistGeneratedCredentials(user, fulfillment)

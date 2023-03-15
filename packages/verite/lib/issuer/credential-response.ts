@@ -1,17 +1,14 @@
-import { CreateCredentialOptions, CreatePresentationOptions } from "did-jwt-vc"
+import { CreatePresentationOptions } from "did-jwt-vc"
 
 import {
   CredentialManifest,
   JWT,
   JwtPresentationPayload,
-  Attestation,
-  DidKey,
   EncodedCredentialResponseWrapper,
   Issuer
 } from "../../types"
 import { CredentialResponseWrapperBuilder } from "../builders/credential-response-wrapper-builder"
 import { signVerifiablePresentation } from "../utils"
-import { composeVerifiableCredential } from "./credential"
 
 export function buildCredentialResponse(
   manifest: CredentialManifest,
@@ -27,36 +24,6 @@ export function buildCredentialResponse(
   })
 
   return payload
-}
-
-/**
- * Builds and signs a Credential Response from attestation(s).
- * This includes the intermediate step of building and signing a Verifiable
- * Credential.
- */
-export async function composeCredentialResponseFromAttestation(
-  issuer: Issuer,
-  subject: string | DidKey,
-  manifest: CredentialManifest,
-  attestation: Attestation | Attestation[],
-  credentialType: string | string[],
-  options?: CreateCredentialOptions,
-  presentationOptions?: CreatePresentationOptions
-): Promise<EncodedCredentialResponseWrapper> {
-  const encodedCredentials = await composeVerifiableCredential(
-    issuer,
-    subject,
-    attestation,
-    credentialType,
-    options
-  )
-
-  return composeCredentialResponse(
-    issuer,
-    manifest,
-    encodedCredentials,
-    presentationOptions
-  )
 }
 
 /**

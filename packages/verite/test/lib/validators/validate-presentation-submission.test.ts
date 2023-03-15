@@ -104,14 +104,6 @@ describe("Presentation Submission validator", () => {
     )
 
     const decodedSubmission = await decodePresentationSubmission(submission)
-    try {
-      await validatePresentationSubmission(
-        decodedSubmission,
-        verificationRequest.body.presentation_definition
-      )
-    } catch (e) {
-      console.log(e)
-    }
 
     await expect(
       validatePresentationSubmission(

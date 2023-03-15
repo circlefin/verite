@@ -4,7 +4,6 @@ import { useState } from "react"
 import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 import {
-  composeVerifiableCredential,
   buildIssuer,
   verifyVerifiableCredential,
   generateRevocationList,
@@ -16,7 +15,9 @@ import {
   StatusList2021Credential,
   revokeCredential,
   unrevokeCredential,
-  AttestationTypes
+  AttestationTypes,
+  CredentialPayloadBuilder,
+  signVerifiableCredential
 } from "verite"
 
 import type {
@@ -25,6 +26,7 @@ import type {
   W3CCredential,
   Issuer
 } from "verite"
+import { StatusList2021Entry } from "verite"
 
 // In a production environment, these values would be secured by the issuer
 const issuer = buildIssuer(
@@ -71,7 +73,7 @@ const issueCredential = async (
    * Note that the `statusListCredential` should be a URL that resolves to the
    * Revocation List Credential.
    */
-  const credentialStatus = {
+  const credentialStatus: StatusList2021Entry = {
     id: `${revocationList.id}#0`,
     type: "StatusList2021Entry",
     statusPurpose: "revocation",
@@ -79,16 +81,16 @@ const issueCredential = async (
     statusListCredential: `http://localhost:3000/${revocationList.id}`
   }
 
-  // Generate the signed, encoded credential
-  const encoded = await composeVerifiableCredential(
-    issuer,
-    subject,
-    attestation,
-    credentialType,
-    { credentialStatus }
-  )
+  const vc = new CredentialPayloadBuilder()
+    .issuer(issuer.did)
+    .attestations(subject.subject, attestation)
+    .type(credentialType)
+    .credentialStatus(credentialStatus)
+    .build()
 
-  const decoded = await verifyVerifiableCredential(encoded)
+  const signedVc = await signVerifiableCredential(vc, issuer)
+
+  const decoded = await verifyVerifiableCredential(signedVc)
 
   return decoded as RevocableCredential
 }

@@ -2,6 +2,7 @@ import {
   Attestation,
   CredentialPayload,
   CredentialSchema,
+  DidKey,
   LatestCredentialPayload,
   RefreshService,
   StatusList2021Entry
@@ -32,14 +33,19 @@ export class CredentialPayloadBuilder {
     return this
   }
 
-  attestations(subjectDid: string, attestation: Attestation | Attestation[]) {
+  attestations(
+    subjectDid: string | DidKey,
+    attestation: Attestation | Attestation[]
+  ) {
+    const subjectDidString =
+      typeof subjectDid === "string" ? subjectDid : subjectDid.subject
     // For attestations, preserve the array or object structure
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let attsns: any[] | any
     if (Array.isArray(attestation)) {
       attsns = attestation.map((att) => {
         return {
-          id: subjectDid,
+          id: subjectDidString,
           [att["type"].toString()]: att
         }
       })
@@ -58,7 +64,7 @@ export class CredentialPayloadBuilder {
     return this
   }
 
-  credentialSchema(credentialSchema: CredentialSchema) {
+  credentialSchema(credentialSchema?: CredentialSchema) {
     this._builder.credentialSchema = credentialSchema
     return this
   }
@@ -82,6 +88,11 @@ export class CredentialPayloadBuilder {
 
   issuanceDate(issuanceDate: Date | string) {
     this._builder.issuanceDate = issuanceDate
+    return this
+  }
+
+  expirationDate(expirationDate: Date | string) {
+    this._builder.expirationDate = expirationDate
     return this
   }
 

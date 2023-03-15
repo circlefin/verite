@@ -1,7 +1,6 @@
 import { randomBytes } from "crypto"
-import { CredentialPayloadBuilder } from "../../../lib"
 
-import { composeVerifiableCredential } from "../../../lib/issuer"
+import { CredentialPayloadBuilder } from "../../../lib"
 import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/sample-data"
 import {
   buildIssuer,
@@ -16,6 +15,7 @@ import {
 } from "../../fixtures/attestations"
 import { KYC_VC_SCHEMA } from "../../fixtures/credentials"
 
+// TODO: move away
 describe("composeVerifiableCredential", () => {
   it("builds and signs a verifiable credential", async () => {
     // Map Issuer DID to Issuer for signing
@@ -104,13 +104,15 @@ describe("composeVerifiableCredential", () => {
       creditScoreAttestationFixture
     ]
 
-    const encodedVC = await composeVerifiableCredential(
-      issuer,
-      subjectDid,
-      attestations,
-      "HybridCredential"
-    )
-    const result = await verifyVerifiableCredential(encodedVC)
+    const vc = new CredentialPayloadBuilder()
+      .issuer(issuer.did)
+      .attestations(subjectDid.subject, attestations)
+      .type("HybridCredential")
+      .build()
+
+    const signedVc = await signVerifiableCredential(vc, issuer)
+
+    const result = await verifyVerifiableCredential(signedVc)
 
     expect(result).toMatchObject({
       credentialSubject: [

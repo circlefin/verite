@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 import {
-  composeCredentialResponseFromAttestation,
   validateCredentialApplication,
   Attestation,
   buildIssuer,
@@ -11,7 +10,10 @@ import {
   decodeCredentialApplication,
   attestationToVCSchema,
   manifestIdToAttestationType,
-  attestationToCredentialType
+  attestationToCredentialType,
+  CredentialPayloadBuilder,
+  composeCredentialResponse,
+  signVerifiableCredential
 } from "verite"
 
 import { ManifestMap } from "../manifests"
@@ -73,16 +75,20 @@ export default async function credentials(
     }
   }
 
-  // Generate the Verifiable Presentation
-  const presentation = await composeCredentialResponseFromAttestation(
+  // Generate the Credential Response
+  const vcs = new CredentialPayloadBuilder()
+    .issuer(issuer.did)
+    .type(credentialType)
+    .attestations(application.holder, attestation)
+    .credentialSchema(credentialSchema)
+    .build()
+
+  // TODO: make function of below??
+  const signedCredentials = await signVerifiableCredential(vcs, issuer)
+  const presentation = await composeCredentialResponse(
     issuer,
-    application.holder,
     manifest,
-    attestation,
-    credentialType,
-    {
-      credentialSchema: credentialSchema
-    }
+    signedCredentials
   )
 
   // Response

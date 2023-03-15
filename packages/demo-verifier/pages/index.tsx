@@ -7,7 +7,6 @@ import { useState } from "react"
 import useSWRImmutable from "swr/immutable"
 import {
   randomDidKey,
-  composeVerifiableCredential,
   KYCAMLAttestation,
   buildIssuer,
   verifyVerifiableCredential,
@@ -17,7 +16,9 @@ import {
   ChallengeTokenUrlWrapper,
   KYCAML_CREDENTIAL_TYPE_NAME,
   buildProcessApprovalAttestation,
-  AttestationTypes
+  AttestationTypes,
+  CredentialPayloadBuilder,
+  signVerifiableCredential
 } from "verite"
 
 import type { Verifiable } from "verite"
@@ -47,14 +48,16 @@ const issueCredential = async () => {
   const credentialType = KYCAML_CREDENTIAL_TYPE_NAME
 
   // Generate the signed, encoded credential
-  const encoded = await composeVerifiableCredential(
-    issuer,
-    subject,
-    attestation,
-    credentialType
-  )
 
-  const decoded = await verifyVerifiableCredential(encoded)
+  const vc = new CredentialPayloadBuilder()
+    .issuer(issuer.did)
+    .attestations(subject.subject, attestation)
+    .type(credentialType)
+    .build()
+
+  const signedVc = await signVerifiableCredential(vc, issuer)
+
+  const decoded = await verifyVerifiableCredential(signedVc)
 
   return decoded
 }

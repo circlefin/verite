@@ -2,14 +2,16 @@ import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
-  composeCredentialResponseFromAttestation,
   composePresentationSubmission,
   verifyVerifiablePresentation,
   randomDidKey,
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer,
   attestationToCredentialType,
-  AttestationTypes
+  AttestationTypes,
+  composeCredentialResponse,
+  CredentialPayloadBuilder,
+  signVerifiableCredential
 } from "verite"
 
 import {
@@ -54,6 +56,7 @@ describe("POST /verification/[id]/submission", () => {
     await handler(req, res)
 
     const response = res._getJSONData()
+    console.log(JSON.stringify(response, null, 2))
     expect(res.statusCode).toBe(200)
     expect(response).toEqual({ status: "approved" })
 
@@ -165,13 +168,22 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
     user,
     AttestationTypes.KYCAMLAttestation
   )
-  const fulfillment = await composeCredentialResponseFromAttestation(
-    buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
-    clientDidKey.subject,
+
+  const issuer = buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET)
+
+  // Generate new credentials for the user
+  const vcs = new CredentialPayloadBuilder()
+    .issuer(issuer.did)
+    .type(attestationToCredentialType(AttestationTypes.KYCAMLAttestation))
+    .attestations(clientDidKey.subject, userAttestation)
+    .credentialSchema(kycAttestationSchema)
+    .build()
+
+  const signedCredentials = await signVerifiableCredential(vcs, issuer)
+  const fulfillment = await composeCredentialResponse(
+    issuer,
     manifest,
-    userAttestation,
-    attestationToCredentialType(AttestationTypes.KYCAMLAttestation),
-    { credentialSchema: kycAttestationSchema }
+    signedCredentials
   )
 
   const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
