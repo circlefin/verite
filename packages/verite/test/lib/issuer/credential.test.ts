@@ -114,9 +114,9 @@ describe("composeVerifiableCredential", () => {
       attestations,
       "HybridCredential"
     )
-    const fulfillment = await verifyVerifiableCredential(encodedVC)
+    const result = await verifyVerifiableCredential(encodedVC)
 
-    expect(fulfillment).toMatchObject({
+    expect(result).toMatchObject({
       credentialSubject: [
         {
           id: subjectDid.subject,

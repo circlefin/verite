@@ -23,12 +23,12 @@ export type CredentialResponseWrapper = {
   credential_response: CredentialResponse
 }
 
-// TOFIX: consider renaming fulfillment here to avoid confusion
-type NarrowCredentialFulfillment = {
+// TOFIX: are we using this and below?
+type NarrowCredentialResponseWrapper = {
   credential_response: CredentialResponse
 }
 
-export type EncodedCredentialFulfillment = JWT
+export type EncodedCredentialResponseWrapper = JWT
 
-export type DecodedCredentialFulfillment = NarrowCredentialFulfillment &
+export type DecodedCredentialResponseWrapper = NarrowCredentialResponseWrapper &
   Verifiable<W3CPresentation>

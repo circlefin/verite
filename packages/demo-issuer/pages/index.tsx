@@ -10,7 +10,7 @@ import {
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
   CredentialOffer,
-  DecodedCredentialFulfillment,
+  DecodedCredentialResponseWrapper,
   DecodedCredentialApplication,
   evaluateCredentialApplication
 } from "verite"
@@ -75,7 +75,7 @@ export default function Home({
 
   // Credential Response
   const [credentialResponse, setCredentialResponse] =
-    useState<DecodedCredentialFulfillment>()
+    useState<DecodedCredentialResponseWrapper>()
   // Decoded Presentation from the credential response
   const [presentation, setPresentation] = useState<Presentation>()
 
@@ -114,7 +114,7 @@ export default function Home({
       const text = await response.text()
       const presentation = (await verifyVerifiablePresentation(
         text
-      )) as DecodedCredentialFulfillment
+      )) as DecodedCredentialResponseWrapper
       const decodedApplication = await evaluateCredentialApplication(
         application,
         manifest

@@ -13,7 +13,7 @@ describe("CredentialApplicationBuilder", () => {
         descriptor_map: [
           {
             id: "eoc_output",
-            format: "jwt_vp", // "jwt_vp", // TOFIX:why doesn't constant work?
+            format: "jwt_vp",
             path: "$.verifiableCredential"
           }
         ]
