@@ -5,7 +5,6 @@ import {
   JWT,
   JwtPresentationPayload,
   Attestation,
-  CredentialPayload,
   DidKey,
   EncodedCredentialResponseWrapper,
   Issuer
@@ -41,7 +40,6 @@ export async function composeCredentialResponseFromAttestation(
   manifest: CredentialManifest,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
-  payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions,
   presentationOptions?: CreatePresentationOptions
 ): Promise<EncodedCredentialResponseWrapper> {
@@ -50,7 +48,6 @@ export async function composeCredentialResponseFromAttestation(
     subject,
     attestation,
     credentialType,
-    payload,
     options
   )
 

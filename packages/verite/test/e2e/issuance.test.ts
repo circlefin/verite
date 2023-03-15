@@ -1,17 +1,20 @@
 import { randomBytes } from "crypto"
 import nock from "nock"
 
+import { CredentialPayloadBuilder } from "../../lib"
 import {
   composeCredentialApplication,
   composeCredentialResponse,
-  composeVerifiableCredential,
   evaluateCredentialApplication
 } from "../../lib/issuer"
 import {
   buildSampleProcessApprovalManifest,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
+import {
+  signVerifiableCredential,
+  verifyVerifiablePresentation
+} from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import {
@@ -83,21 +86,19 @@ describe("E2E issuance", () => {
      * Verite libraries allow high- and low-level methods. Compose
      * methods call build* and sign* methods.
      */
-    const vc = await composeVerifiableCredential(
-      issuer,
-      subjectDidKey.subject,
-      kycAmlAttestationFixture,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      {
-        credentialSchema: KYC_VC_SCHEMA,
-        credentialStatus: revocationListFixture
-      }
-    )
+    const vc = new CredentialPayloadBuilder()
+      .issuer(issuer.did)
+      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
+      .type(KYCAML_CREDENTIAL_TYPE_NAME)
+      .credentialSchema(KYC_VC_SCHEMA)
+      .credentialStatus(revocationListFixture)
+      .build()
+    const signedVc = await signVerifiableCredential(vc, issuer)
     /**
      * The issuer wraps the signed VC in a Credential Response, which
      * is a signed VP
      */
-    const response = await composeCredentialResponse(issuer, manifest, vc)
+    const response = await composeCredentialResponse(issuer, manifest, signedVc)
 
     /**
      * The issuer sends the Credential Response to the subject. The subject's
@@ -142,7 +143,7 @@ describe("E2E issuance", () => {
     const issuer = buildIssuer("did:web:example.com", issuerDidKey.privateKey)
     const publicKey = Buffer.from(issuerDidKey.publicKey).toString("base64")
 
-    const clientDidKey = randomDidKey(randomBytes)
+    const subjectDidKey = randomDidKey(randomBytes)
 
     const didDocument = {
       "@context": [
@@ -180,7 +181,7 @@ describe("E2E issuance", () => {
      * The client scans the QR code and generates a credential application
      */
     const encodedApplication = await composeCredentialApplication(
-      clientDidKey,
+      subjectDidKey,
       manifest
     )
 
@@ -195,21 +196,21 @@ describe("E2E issuance", () => {
     /**
      * The issuer builds and signs a verifiable credential
      */
-    const vc = await composeVerifiableCredential(
-      issuer,
-      clientDidKey.subject,
-      kycAmlAttestationFixture,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      {
-        credentialSchema: KYC_VC_SCHEMA,
-        credentialStatus: revocationListFixture
-      }
-    )
+
+    const vc = new CredentialPayloadBuilder()
+      .issuer(issuer.did)
+      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
+      .type(KYCAML_CREDENTIAL_TYPE_NAME)
+      .credentialSchema(KYC_VC_SCHEMA)
+      .credentialStatus(revocationListFixture)
+      .build()
+
+    const signedVc = await signVerifiableCredential(vc, issuer)
 
     /**
      * The issuer builds and signs a response
      */
-    const response = await composeCredentialResponse(issuer, manifest, vc)
+    const response = await composeCredentialResponse(issuer, manifest, signedVc)
 
     const verifiablePresentation = (await verifyVerifiablePresentation(
       response
@@ -224,7 +225,7 @@ describe("E2E issuance", () => {
         expect(verifiableCredential.proof).toBeDefined()
 
         const credentialSubject = verifiableCredential.credentialSubject
-        expect(credentialSubject.id).toEqual(clientDidKey.subject)
+        expect(credentialSubject.id).toEqual(subjectDidKey.subject)
 
         const credentialStatus = verifiableCredential.credentialStatus
         expect(credentialStatus.id).toEqual(

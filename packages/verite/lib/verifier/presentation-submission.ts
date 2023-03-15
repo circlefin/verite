@@ -52,8 +52,6 @@ export async function composePresentationSubmission(
   verifiableCredential:
     | Verifiable<W3CCredential>
     | Verifiable<W3CCredential>[]
-    | Verifiable<W3CCredential>
-    | Verifiable<W3CCredential>[]
     | JWT
     | JWT[],
   options?: VerifyPresentationOptions

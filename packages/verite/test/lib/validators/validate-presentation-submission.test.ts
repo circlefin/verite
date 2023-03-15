@@ -2,7 +2,10 @@ import { randomBytes } from "crypto"
 import nock from "nock"
 import { v4 as uuidv4 } from "uuid"
 
-import { composeVerifiableCredential } from "../../../lib"
+import {
+  CredentialPayloadBuilder,
+  signVerifiableCredential
+} from "../../../lib"
 import { ValidationError } from "../../../lib/errors"
 import {
   attestationToCredentialType,
@@ -317,15 +320,14 @@ describe("Presentation Submission validator", () => {
       AttestationTypes.KYCAMLAttestation
     )
 
-    const clientVC = await composeVerifiableCredential(
-      signer,
-      subjectDidKey.subject,
-      sampleAttestation,
-      attestationToCredentialType(AttestationTypes.KYCAMLAttestation),
-      {
-        credentialSchema: unrecognizedAttestationSchema
-      }
-    )
+    const vc = new CredentialPayloadBuilder()
+      .issuer(issuer.did)
+      .attestations(subjectDidKey.subject, sampleAttestation)
+      .type(attestationToCredentialType(AttestationTypes.KYCAMLAttestation))
+      .credentialSchema(unrecognizedAttestationSchema)
+      .build()
+
+    const signedVc = await signVerifiableCredential(vc, issuer)
 
     const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
@@ -338,7 +340,7 @@ describe("Presentation Submission validator", () => {
     const submission = await composePresentationSubmission(
       subjectDidKey,
       verificationRequest.body.presentation_definition,
-      clientVC
+      signedVc
     )
 
     // Change the Schema URL, and return a 404

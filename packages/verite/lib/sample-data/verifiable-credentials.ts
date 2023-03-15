@@ -1,12 +1,10 @@
+import { AttestationTypes, DidKey, JWT, StatusList2021Entry } from "../../types"
+import { CredentialPayloadBuilder } from "../builders"
 import {
-  AttestationTypes,
-  CredentialPayload,
-  DidKey,
-  JWT,
-  StatusList2021Entry
-} from "../../types"
-import { composeVerifiableCredential } from "../issuer"
-import { buildIssuer, attestationToVCSchema } from "../utils"
+  buildIssuer,
+  attestationToVCSchema,
+  signVerifiableCredential
+} from "../utils"
 import {
   buildProcessApprovalAttestation,
   buildSampleCreditScoreAttestation
@@ -17,51 +15,43 @@ export async function buildProcessApprovalVC(
   attestationType: AttestationTypes,
   issuerKey: DidKey,
   subjectDid: string,
-  credentialStatus?: StatusList2021Entry | null
+  credentialStatus?: StatusList2021Entry
 ): Promise<JWT> {
   const signer = buildIssuer(issuerKey.subject, issuerKey.privateKey)
   const sampleAttestation = buildProcessApprovalAttestation(attestationType)
 
-  const additionalPayload: Partial<CredentialPayload> = {
-    credentialSchema: attestationToVCSchema(attestationType)
-  }
-  if (credentialStatus) {
-    additionalPayload["credentialStatus"] = credentialStatus
-  }
+  const vc = new CredentialPayloadBuilder()
+    .issuer(signer.did)
+    .type(attestationToCredentialType(attestationType))
+    .attestations(subjectDid, sampleAttestation)
+    .credentialSchema(attestationToVCSchema(attestationType))
+    .credentialStatus(credentialStatus)
+    .build()
 
-  const vc = await composeVerifiableCredential(
-    signer,
-    subjectDid,
-    sampleAttestation,
-    attestationToCredentialType(attestationType),
-    additionalPayload
-  )
-  return vc
+  const signedVc = signVerifiableCredential(vc, signer)
+
+  return signedVc
 }
 
 export async function buildCreditScoreVC(
   issuerKey: DidKey,
   subjectDid: string,
   creditScore: number,
-  credentialStatus?: StatusList2021Entry | null
+  credentialStatus?: StatusList2021Entry
 ): Promise<JWT> {
   const signer = buildIssuer(issuerKey.subject, issuerKey.privateKey)
   const sampleAttestation = buildSampleCreditScoreAttestation(creditScore)
-  const additionalPayload: Partial<CredentialPayload> = {
-    credentialSchema: attestationToVCSchema(
-      AttestationTypes.CreditScoreAttestation
-    )
-  }
-  if (credentialStatus) {
-    additionalPayload["credentialStatus"] = credentialStatus
-  }
 
-  const vc = await composeVerifiableCredential(
-    signer,
-    subjectDid,
-    sampleAttestation,
-    attestationToCredentialType(AttestationTypes.CreditScoreAttestation),
-    additionalPayload
-  )
-  return vc
+  const vc = new CredentialPayloadBuilder()
+    .issuer(signer.did)
+    .type(attestationToCredentialType(AttestationTypes.CreditScoreAttestation))
+    .attestations(subjectDid, sampleAttestation)
+    .credentialSchema(
+      attestationToVCSchema(AttestationTypes.CreditScoreAttestation)
+    )
+    .credentialStatus(credentialStatus)
+    .build()
+
+  const signedVc = signVerifiableCredential(vc, signer)
+  return signedVc
 }

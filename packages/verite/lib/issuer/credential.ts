@@ -19,14 +19,12 @@ export async function buildVerifiableCredential(
   issuerDid: string,
   subjectDid: string,
   attestation: Attestation | Attestation[],
-  credentialType: string | string[],
-  additionalPayload: Partial<CredentialPayload> = {}
+  credentialType: string | string[]
 ): Promise<CredentialPayload> {
   return new CredentialPayloadBuilder()
     .issuer(issuerDid)
     .type(credentialType)
     .attestations(subjectDid, attestation)
-    .additionalPayload(additionalPayload)
     .build()
 }
 
@@ -48,15 +46,13 @@ export async function composeVerifiableCredential(
   subject: string | DidKey,
   attestation: Attestation | Attestation[],
   credentialType: string | string[],
-  payload: Partial<CredentialPayload> = {},
   options?: CreateCredentialOptions
 ): Promise<JWT> {
   const credentialPayload = await buildVerifiableCredential(
     issuer.did,
     parseSubjectId(subject),
     attestation,
-    credentialType,
-    payload
+    credentialType
   )
   return signVerifiableCredential(credentialPayload, issuer, options)
 }

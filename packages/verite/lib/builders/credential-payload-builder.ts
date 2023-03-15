@@ -1,10 +1,16 @@
-import { Attestation, CredentialPayload } from "../../types"
+import {
+  Attestation,
+  CredentialPayload,
+  CredentialSchema,
+  LatestCredentialPayload,
+  RefreshService,
+  StatusList2021Entry
+} from "../../types"
 import { VERIFIABLE_CREDENTIAL_TYPE_NAME } from "../utils"
 import { DEFAULT_CONTEXT } from "./common"
 
 export class CredentialPayloadBuilder {
-  _builder: Partial<CredentialPayload>
-  _additionalPayload: Partial<CredentialPayload> = {}
+  _builder: Partial<LatestCredentialPayload> // TODO: type????
 
   constructor() {
     this._builder = Object.assign({
@@ -52,14 +58,37 @@ export class CredentialPayloadBuilder {
     return this
   }
 
-  additionalPayload(additionalPayload: Partial<CredentialPayload>) {
-    this._additionalPayload = additionalPayload
+  credentialSchema(credentialSchema: CredentialSchema) {
+    this._builder.credentialSchema = credentialSchema
     return this
   }
 
-  build(): CredentialPayload {
-    this._builder.issuanceDate = new Date()
-    this._builder = Object.assign(this._builder, this._additionalPayload)
-    return this._builder as CredentialPayload
+  // TOFIX: optional param??
+  credentialStatus(credentialStatus?: StatusList2021Entry) {
+    this._builder.credentialStatus = credentialStatus
+    return this
+  }
+
+  refreshService(refreshService: RefreshService) {
+    this._builder.refreshService = refreshService
+    return this
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  evidence(evidence: any[]) {
+    this._builder.evidence = evidence
+    return this
+  }
+
+  issuanceDate(issuanceDate: Date | string) {
+    this._builder.issuanceDate = issuanceDate
+    return this
+  }
+
+  build(): LatestCredentialPayload {
+    if (!this._builder.issuanceDate) {
+      this._builder.issuanceDate = new Date()
+    }
+    return this._builder as LatestCredentialPayload
   }
 }
