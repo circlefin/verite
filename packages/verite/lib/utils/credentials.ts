@@ -2,6 +2,7 @@ import { BitBuffer } from "bit-buffers"
 import {
   createVerifiableCredentialJwt,
   createVerifiablePresentationJwt,
+  PresentationPayload,
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
@@ -229,7 +230,7 @@ export async function verifyVerifiableCredential(
  * Signs a JWT with the Verifiable Presentation payload.
  */
 export async function signVerifiablePresentation(
-  vpPayload: JwtPresentationPayload,
+  vpPayload: PresentationPayload | JwtPresentationPayload,
   issuer: Issuer,
   options: CreatePresentationOptions = {}
 ): Promise<JWT> {

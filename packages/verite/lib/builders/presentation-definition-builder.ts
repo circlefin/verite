@@ -23,7 +23,9 @@ export class PresentationDefinitionBuilder {
     return this
   }
 
-  input_descriptors(input_descriptors: InputDescriptor[]) {
+  input_descriptors(
+    input_descriptors: InputDescriptor[]
+  ): PresentationDefinitionBuilder {
     this._builder.input_descriptors = input_descriptors
     return this
   }

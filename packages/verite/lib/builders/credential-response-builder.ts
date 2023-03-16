@@ -18,29 +18,32 @@ export class CredentialResponseBuilder {
   }
 
   // TOFIX: make casing consistent where possible (i.e. for types need to ensure serialization from direct json)
-  manifestId(manifestId: string) {
+  manifestId(manifestId: string): CredentialResponseBuilder {
     this._builder.manifest_id = manifestId
     return this
   }
 
   // TOFIX: accept object?
-  fulfillment(descriptorMap: DescriptorMap[]) {
+  fulfillment(descriptorMap: DescriptorMap[]): CredentialResponseBuilder {
     this._builder.fulfillment = { descriptor_map: descriptorMap }
     return this
   }
 
   // TOFIX: accept object?
-  denial(reason: string, inputDescriptors: string[]) {
+  denial(
+    reason: string,
+    inputDescriptors: string[]
+  ): CredentialResponseBuilder {
     this._builder.denial = { reason, input_descriptors: inputDescriptors }
     return this
   }
 
-  application_id(application_id: string) {
+  application_id(application_id: string): CredentialResponseBuilder {
     this._builder.application_id = application_id
     return this
   }
 
-  initFromManifest(manifest: CredentialManifest) {
+  initFromManifest(manifest: CredentialManifest): CredentialResponseBuilder {
     this._builder.manifest_id = manifest.id
     this._builder.fulfillment = {
       descriptor_map:
@@ -55,7 +58,7 @@ export class CredentialResponseBuilder {
     return this
   }
 
-  build() {
+  build(): CredentialResponse {
     if (!this._builder.manifest_id) throw new Error("manifest_id is required")
     if (!this._builder.fulfillment && !this._builder.denial)
       throw new Error("fulfillment or denial is required")

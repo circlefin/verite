@@ -46,7 +46,7 @@ export class CredentialApplicationBuilder {
     return this
   }
 
-  initFromManifest(manifest: CredentialManifest) {
+  initFromManifest(manifest: CredentialManifest): CredentialApplicationBuilder {
     this._builder.manifest_id = manifest.id
     this._builder.format = {
       jwt_vp: manifest.presentation_definition?.format?.jwt_vp

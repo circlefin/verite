@@ -24,14 +24,16 @@ export class PresentationSubmissionBuilder {
     return this
   }
 
-  descriptor_map(descriptor_map: DescriptorMap[]) {
+  descriptor_map(
+    descriptor_map: DescriptorMap[]
+  ): PresentationSubmissionBuilder {
     this._builder.descriptor_map = descriptor_map
     return this
   }
 
   initFromPresentationDefinition(
     presentationDefinition: PresentationDefinition
-  ) {
+  ): PresentationSubmissionBuilder {
     this._builder.definition_id = presentationDefinition.id
     this._builder.descriptor_map =
       presentationDefinition.input_descriptors.map<DescriptorMap>((d, i) => {

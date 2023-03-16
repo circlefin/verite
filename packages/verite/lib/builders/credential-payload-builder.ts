@@ -19,7 +19,7 @@ export class CredentialPayloadBuilder {
     }
   }
 
-  type(type: string | string[]) {
+  type(type: string | string[]): CredentialPayloadBuilder {
     // append all types other than "Verifiable Credential", which we always include
     const credentialTypeArray = Array.isArray(type) ? type : [type]
     const filteredCredentialTypes = credentialTypeArray.filter(
@@ -35,7 +35,7 @@ export class CredentialPayloadBuilder {
   attestations(
     subjectDid: string | DidKey,
     attestation: Attestation | Attestation[]
-  ) {
+  ): CredentialPayloadBuilder {
     const subjectDidString =
       typeof subjectDid === "string" ? subjectDid : subjectDid.subject
     // For attestations, preserve the array or object structure
@@ -58,39 +58,43 @@ export class CredentialPayloadBuilder {
     return this
   }
 
-  issuer(issuerDid: string) {
+  issuer(issuerDid: string): CredentialPayloadBuilder {
     this._builder.issuer = { id: issuerDid }
     return this
   }
 
-  credentialSchema(credentialSchema?: CredentialSchema) {
+  credentialSchema(
+    credentialSchema?: CredentialSchema
+  ): CredentialPayloadBuilder {
     this._builder.credentialSchema = credentialSchema
     return this
   }
 
   // TOFIX: optional param??
-  credentialStatus(credentialStatus?: StatusList2021Entry) {
+  credentialStatus(
+    credentialStatus?: StatusList2021Entry
+  ): CredentialPayloadBuilder {
     this._builder.credentialStatus = credentialStatus
     return this
   }
 
-  refreshService(refreshService: RefreshService) {
+  refreshService(refreshService: RefreshService): CredentialPayloadBuilder {
     this._builder.refreshService = refreshService
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  evidence(evidence: any[]) {
+  evidence(evidence: any[]): CredentialPayloadBuilder {
     this._builder.evidence = evidence
     return this
   }
 
-  issuanceDate(issuanceDate: Date | string) {
+  issuanceDate(issuanceDate: Date | string): CredentialPayloadBuilder {
     this._builder.issuanceDate = issuanceDate
     return this
   }
 
-  expirationDate(expirationDate: Date | string) {
+  expirationDate(expirationDate: Date | string): CredentialPayloadBuilder {
     this._builder.expirationDate = expirationDate
     return this
   }

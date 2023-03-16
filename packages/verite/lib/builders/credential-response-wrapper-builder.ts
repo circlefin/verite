@@ -19,19 +19,23 @@ export class CredentialResponseWrapperBuilder {
 
   withCredentialResponse(
     credentialResponseBuilder: Action<CredentialResponseBuilder>
-  ) {
+  ): CredentialResponseWrapperBuilder {
     const b = new CredentialResponseBuilder()
     credentialResponseBuilder(b)
     this._builder.credential_response = b.build()
     return this
   }
 
-  credentialResponse(credentialResponse: CredentialResponse) {
+  credentialResponse(
+    credentialResponse: CredentialResponse
+  ): CredentialResponseWrapperBuilder {
     this._builder.credential_response = credentialResponse
     return this
   }
 
-  verifiableCredential(verifiableCredential: JWT | JWT[]) {
+  verifiableCredential(
+    verifiableCredential: JWT | JWT[]
+  ): CredentialResponseWrapperBuilder {
     const vcJwtPayload = Array.isArray(verifiableCredential)
       ? verifiableCredential
       : [verifiableCredential]
@@ -40,7 +44,7 @@ export class CredentialResponseWrapperBuilder {
     return this
   }
 
-  build() {
+  build(): CredentialResponseWrapper {
     return this._builder as CredentialResponseWrapper
   }
 }
