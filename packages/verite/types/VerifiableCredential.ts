@@ -13,7 +13,7 @@ export type CredentialSchema = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ContextType = string | string[] | any[]
 
-// TODO: name
+// TOFIX: what to name this?
 export type LatestCredentialPayload = CredentialPayload & {
   "@context": ContextType
   credentialSchema?: CredentialSchema
@@ -24,7 +24,7 @@ export type LatestCredentialPayload = CredentialPayload & {
   evidence: any[]
 }
 
-// TODO: name
+// TOFIX: probably don't even need this if CM no longer needs CA/CR to sign as VP...
 export type LatestPresentationPayload = Omit<PresentationPayload, "holder"> & {
   holder?: string
 }

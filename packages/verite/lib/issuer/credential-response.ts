@@ -3,7 +3,6 @@ import { CreatePresentationOptions } from "did-jwt-vc"
 import {
   CredentialManifest,
   JWT,
-  JwtPresentationPayload,
   EncodedCredentialResponseWrapper,
   Issuer,
   LatestPresentationPayload
@@ -39,6 +38,7 @@ export async function composeCredentialResponse(
   options?: CreatePresentationOptions
 ): Promise<EncodedCredentialResponseWrapper> {
   const fulfillment = buildCredentialResponse(manifest, encodedCredentials)
+  // TOFIX: per latest CM draft, this should be sign with did-jwt, not sign with did-jwt-vc (VP); confirming
   const signedPresentation = await signVerifiablePresentation(
     fulfillment,
     issuer,
