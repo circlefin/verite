@@ -94,6 +94,7 @@ export default apiHandler<EncodedCredentialResponseWrapper>(
       .expirationDate(expirationDate)
       .build()
 
+    // TODO: comgbine the following???
     const signedCredentials = await signVerifiableCredential(vcs, issuer)
     const fulfillment = await composeCredentialResponse(
       issuer,

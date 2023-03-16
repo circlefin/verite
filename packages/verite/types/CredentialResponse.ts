@@ -1,3 +1,5 @@
+import { ContextType } from "."
+
 import type { DescriptorMap } from "./DescriptorMap"
 import type { Verifiable, W3CPresentation } from "./DidJwt"
 import type { JWT } from "./Jwt"
@@ -17,7 +19,7 @@ export type CredentialResponse = {
 }
 
 export type CredentialResponseWrapper = {
-  "@context": string | string[]
+  "@context": ContextType
   type: string | string[]
   verifiableCredential: JWT | JWT[]
   credential_response: CredentialResponse

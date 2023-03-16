@@ -16,7 +16,11 @@ export const HOLDER_PROPERTY_NAME = "holder"
 export const ID_PROPERTY_NAME = "id"
 export const EDDSA = "EdDSA"
 
-export const DEFAULT_CONTEXT = [VC_CONTEXT_URI, { "@vocab": VERITE_VOCAB_URI }]
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const DEFAULT_CONTEXT: any[] = [
+  VC_CONTEXT_URI,
+  { "@vocab": VERITE_VOCAB_URI }
+]
 
 // TOFIX: update with outcome of https://github.com/decentralized-identity/credential-manifest/issues/148
 export const CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0 =

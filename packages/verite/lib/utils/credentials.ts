@@ -160,17 +160,12 @@ export const isRevocable = (
  * Signs a Verifiable Credential as a JWT from passed payload object & issuer.
  */
 export async function signVerifiableCredential(
-  vcPayload: CredentialPayload | JwtCredentialPayload,
+  payload: CredentialPayload,
   issuer: Issuer,
   options: CreateCredentialOptions = {}
 ): Promise<JWT> {
-  let payload = vcPayload
-  // eslint-disable-next-line no-prototype-builtins
-  if (!vcPayload.hasOwnProperty("vc")) {
-    payload = asJwtCredentialPayload(vcPayload as CredentialPayload)
-  }
-
-  return createVerifiableCredentialJwt(payload, issuer, options)
+  const vcPayload = asJwtCredentialPayload(payload)
+  return createVerifiableCredentialJwt(vcPayload, issuer, options)
 }
 
 /**

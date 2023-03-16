@@ -1,15 +1,20 @@
 import { CredentialPayload, StatusList2021Entry } from "."
 
-export type IdType = {
+export type RefreshService = {
   id: string
   type: string
 }
 
-export type RefreshService = IdType
+export type CredentialSchema = {
+  id: string
+  type: string
+}
 
-export type CredentialSchema = IdType
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ContextType = string | string[] | any[]
 
 export type LatestCredentialPayload = CredentialPayload & {
+  "@context": ContextType
   credentialSchema?: CredentialSchema
   refreshService?: RefreshService
   credentialStatus?: StatusList2021Entry

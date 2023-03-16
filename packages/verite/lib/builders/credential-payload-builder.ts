@@ -13,10 +13,10 @@ export class CredentialPayloadBuilder {
   _builder: Partial<LatestCredentialPayload> // TODO: type????
 
   constructor() {
-    this._builder = Object.assign({
+    this._builder = {
       "@context": DEFAULT_CONTEXT,
       type: VERIFIABLE_CREDENTIAL_TYPE_NAME
-    })
+    }
   }
 
   type(type: string | string[]) {

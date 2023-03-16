@@ -1,3 +1,5 @@
+import { ContextType } from "./VerifiableCredential"
+
 import type { ClaimFormatDesignation } from "./ClaimFormatDesignation"
 import type { Verifiable, W3CPresentation } from "./DidJwt"
 import type { JWT } from "./Jwt"
@@ -16,7 +18,7 @@ export type CredentialApplication = {
 }
 
 export type CredentialApplicationWrapper = {
-  "@context": string | string[]
+  "@context": ContextType
   type: string | string[]
   credential_application: CredentialApplication
   verifiableCredential: JWT | JWT[]
