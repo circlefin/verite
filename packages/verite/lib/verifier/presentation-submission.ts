@@ -2,7 +2,7 @@ import {
   DecodedPresentationSubmission,
   DidKey,
   EncodedPresentationSubmission,
-  JwtPresentationPayload,
+  LatestPresentationPayload,
   PresentationDefinition,
   Verifiable,
   W3CCredential
@@ -29,7 +29,7 @@ export function buildPresentationSubmission(
     | Verifiable<W3CCredential>[]
     | JWT
     | JWT[]
-): JwtPresentationPayload {
+): LatestPresentationPayload {
   const presentationPayload = new PresentationPayloadBuilder()
     .verifiableCredential(verifiableCredential)
     .withPresentationSubmission((b) =>
@@ -37,13 +37,7 @@ export function buildPresentationSubmission(
     )
     .build()
 
-  const payload = Object.assign({
-    vp: {
-      ...presentationPayload
-    }
-  })
-
-  return payload
+  return presentationPayload
 }
 
 export async function composePresentationSubmission(

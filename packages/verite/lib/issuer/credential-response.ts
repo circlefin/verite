@@ -5,7 +5,8 @@ import {
   JWT,
   JwtPresentationPayload,
   EncodedCredentialResponseWrapper,
-  Issuer
+  Issuer,
+  LatestPresentationPayload
 } from "../../types"
 import { CredentialResponseWrapperBuilder } from "../builders/credential-response-wrapper-builder"
 import { signVerifiablePresentation } from "../utils"
@@ -13,17 +14,13 @@ import { signVerifiablePresentation } from "../utils"
 export function buildCredentialResponse(
   manifest: CredentialManifest,
   encodedCredentials: JWT | JWT[]
-): JwtPresentationPayload {
+): LatestPresentationPayload {
   const wrapper = new CredentialResponseWrapperBuilder()
     .withCredentialResponse((r) => r.initFromManifest(manifest))
     .verifiableCredential(encodedCredentials)
     .build()
 
-  const payload = Object.assign({
-    vp: wrapper
-  })
-
-  return payload
+  return wrapper
 }
 
 /**

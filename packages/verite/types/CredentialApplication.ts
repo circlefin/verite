@@ -17,6 +17,7 @@ export type CredentialApplication = {
   presentation_submission?: PresentationSubmission
 }
 
+// TODO: clarify how this is related to PresentationPayload
 export type CredentialApplicationWrapper = {
   "@context": ContextType
   type: string | string[]

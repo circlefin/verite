@@ -2,7 +2,6 @@ import { BitBuffer } from "bit-buffers"
 import {
   createVerifiableCredentialJwt,
   createVerifiablePresentationJwt,
-  PresentationPayload,
   verifyCredential,
   verifyPresentation
 } from "did-jwt-vc"
@@ -22,7 +21,8 @@ import type {
   W3CCredential,
   W3CPresentation,
   RevocablePresentation,
-  MaybeRevocableCredential
+  MaybeRevocableCredential,
+  LatestPresentationPayload
 } from "../../types"
 import type {
   CreateCredentialOptions,
@@ -230,11 +230,12 @@ export async function verifyVerifiableCredential(
  * Signs a JWT with the Verifiable Presentation payload.
  */
 export async function signVerifiablePresentation(
-  vpPayload: PresentationPayload | JwtPresentationPayload,
+  vpPayload: LatestPresentationPayload,
   issuer: Issuer,
   options: CreatePresentationOptions = {}
 ): Promise<JWT> {
-  return createVerifiablePresentationJwt(vpPayload, issuer, options)
+  const vpPayloadWithJwt = asJwtPresentationPayload(vpPayload)
+  return createVerifiablePresentationJwt(vpPayloadWithJwt, issuer, options)
 }
 
 /**
@@ -279,4 +280,13 @@ export async function verifyVerifiablePresentation(
       err as Error
     )
   }
+}
+function asJwtPresentationPayload(
+  vpPayload: LatestPresentationPayload
+): JwtPresentationPayload {
+  return Object.assign({
+    vp: {
+      ...vpPayload
+    }
+  })
 }

@@ -4,12 +4,12 @@ import {
 } from "did-jwt-vc/src/types"
 
 import {
+  CredentialApplicationWrapper,
   CredentialManifest,
   DecodedCredentialApplication,
   DidKey,
   EncodedCredentialApplication,
-  JWT,
-  JwtPresentationPayload
+  JWT
 } from "../../types"
 import { CredentialApplicationWrapperBuilder } from "../builders/credential-application-wrapper-builder"
 import {
@@ -22,18 +22,13 @@ import { validateCredentialApplication } from "../validators"
 export function buildCredentialApplication(
   manifest: CredentialManifest,
   verifiableCredential?: JWT | JWT[]
-): JwtPresentationPayload {
+): CredentialApplicationWrapper {
   const wrapper = new CredentialApplicationWrapperBuilder()
     .withCredentialApplication((a) => a.initFromManifest(manifest))
     .verifiableCredential(verifiableCredential)
     .build()
 
-  // TOFIX: call this embed?
-  const payload = Object.assign({
-    vp: wrapper
-  })
-
-  return payload
+  return wrapper
 }
 
 /**
