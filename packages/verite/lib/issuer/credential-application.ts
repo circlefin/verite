@@ -1,75 +1,67 @@
-import {
-  CreatePresentationOptions,
-  VerifyPresentationOptions
-} from "did-jwt-vc/src/types"
+import { JWTHeader, JWTOptions, JWTPayload } from "did-jwt"
 
 import {
   CredentialApplicationWrapper,
   CredentialManifest,
-  DecodedCredentialApplication,
-  DidKey,
-  EncodedCredentialApplication,
+  DecodedCredentialApplicationWrapper,
+  EncodedCredentialApplicationWrapper,
+  Issuer,
   JWT
 } from "../../types"
-import { CredentialApplicationWrapperBuilder } from "../builders/credential-application-wrapper-builder"
 import {
-  buildIssuer,
-  verifyVerifiablePresentation,
-  signVerifiablePresentation
+  signJWT,
+  decodeJWT2,
+  verifyJWT2,
+  verifyVerifiableCredential
 } from "../utils"
 import { validateCredentialApplication } from "../validators"
 
-export function buildCredentialApplication(
-  manifest: CredentialManifest,
-  verifiableCredential?: JWT | JWT[]
-): CredentialApplicationWrapper {
-  const wrapper = new CredentialApplicationWrapperBuilder()
-    .withCredentialApplication((a) => a.initFromManifest(manifest))
-    .verifiableCredential(verifiableCredential)
-    .build()
+// TOFIX: where should this live?
+export async function signVeriteJwt(
+  payload: Partial<JWTPayload>, // TOFIX: export JWTPayload from did-jwt
+  issuer: Issuer,
+  options?: JWTOptions, // TOFIX: here and below: figure out how far out to plumb options and header
+  header?: Partial<JWTHeader>
+): Promise<JWT> {
+  // TOFIX: dbl-check order
+  const options2 = {
+    issuer: issuer.did,
+    signer: issuer.signer,
+    ...options
+  }
 
-  return wrapper
-}
+  const jwt = await signJWT(payload, options2, header)
 
-/**
- * Generates a Credential Application as response to a Credential Manifest
- *
- * @returns an encoded & signed application that can be submitted to the issuer
- */
-export async function composeCredentialApplication(
-  didKey: DidKey,
-  manifest: CredentialManifest,
-  verifiableCredential?: JWT | JWT[],
-  options?: CreatePresentationOptions
-): Promise<EncodedCredentialApplication> {
-  const application = buildCredentialApplication(manifest, verifiableCredential)
-  const client = buildIssuer(didKey.subject, didKey.privateKey)
-  const vp = await signVerifiablePresentation(application, client, options)
-
-  return vp
+  return jwt
 }
 
 /**
  * Decode an encoded Credential Application.
  *
- * A Credential Application is a Verifiable Presentation. This method decodes
- * the submitted Credential Application, verifies it as a Verifiable
+ * This method decodes the submitted Credential Application, verifies it as a Verifiable
  * Presentation, and returns the decoded Credential Application.
  *
  * @returns the decoded Credential Application
- * @throws VerificationException if the Credential Application is not a valid
- *  Verifiable Presentation
+ * @throws VerificationException if the Credential Application is not valid
  */
-export async function decodeCredentialApplication(
-  encodedApplication: EncodedCredentialApplication,
-  options?: VerifyPresentationOptions
-): Promise<DecodedCredentialApplication> {
-  const decodedPresentation = await verifyVerifiablePresentation(
-    encodedApplication,
-    options
-  )
+export async function decodeAndVerifyCredentialApplicationJwt(
+  encodedApplication: EncodedCredentialApplicationWrapper
+): Promise<DecodedCredentialApplicationWrapper> {
+  const result = await decodeJWT2(encodedApplication)
+  const valid = await verifyJWT2(encodedApplication) // TOFIX: options
+  const caw = result.payload as CredentialApplicationWrapper
+  let decodedArray
+  if (caw.verifiableCredential) {
+    decodedArray = await Promise.all(
+      caw.verifiableCredential.map((vc) => verifyVerifiableCredential(vc))
+    )
+  }
+  const decoded = {
+    credential_application: caw.credential_application,
+    ...(decodedArray !== undefined && { verifiableCredential: decodedArray })
+  }
 
-  return decodedPresentation as DecodedCredentialApplication
+  return decoded
 }
 
 /**
@@ -83,14 +75,15 @@ export async function decodeCredentialApplication(
  *  Verifiable Presentation
  */
 export async function evaluateCredentialApplication(
-  encodedApplication: EncodedCredentialApplication,
+  encodedApplication: EncodedCredentialApplicationWrapper,
   manifest: CredentialManifest,
-  options?: VerifyPresentationOptions
-): Promise<DecodedCredentialApplication> {
-  const application = await decodeCredentialApplication(
-    encodedApplication,
-    options
+  options?: JWTOptions
+): Promise<DecodedCredentialApplicationWrapper> {
+  // TOFIX: so many verifies
+  const application = await decodeAndVerifyCredentialApplicationJwt(
+    encodedApplication
   )
+
   await validateCredentialApplication(application, manifest)
   return application
 }

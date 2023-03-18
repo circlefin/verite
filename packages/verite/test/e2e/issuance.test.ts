@@ -5,40 +5,46 @@ import { CredentialPayloadBuilder } from "../../lib"
 import {
   composeCredentialApplication,
   composeCredentialResponse,
+  decodeAndVerifyCredentialResponseJwt,
   evaluateCredentialApplication
 } from "../../lib/issuer"
 import {
   buildSampleProcessApprovalManifest,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import {
-  signVerifiableCredential,
-  verifyVerifiablePresentation
-} from "../../lib/utils/credentials"
+import { signVerifiableCredential } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
-import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
 import {
   AttestationTypes,
-  DecodedCredentialApplication,
-  RevocableCredential,
-  RevocablePresentation
+  DidKey,
+  Issuer,
+  RevocableCredential
 } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { KYC_VC_SCHEMA } from "../fixtures/credentials"
 import { revocationListFixture } from "../fixtures/revocation-list"
 
+let subjectDidKey: DidKey
+let issuerDidKey: DidKey
+let issuer: Issuer
+let subjectIssuer: Issuer
+
+beforeEach(() => {
+  /**
+   * Create a DID for both the issuer and the subject for this test. In the
+   * real world, this would be done separately on the issuer side and the
+   * subject side. For example, the subject's identity wallet could generate
+   * the DID for them.
+   */
+  subjectDidKey = randomDidKey(randomBytes)
+  issuerDidKey = randomDidKey(randomBytes)
+  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
+  // TOFIX
+  subjectIssuer = buildIssuer(subjectDidKey.subject, subjectDidKey.privateKey)
+})
+
 describe("E2E issuance", () => {
   it("issues verified credentails", async () => {
-    /**
-     * Create a DID for both the issuer and the subject for this test. In the
-     * real world, this would be done separately on the issuer side and the
-     * subject side. For example, the subject's identity wallet could generate
-     * the DID for them.
-     */
-    const issuerDidKey = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-    const subjectDidKey = randomDidKey(randomBytes)
-
     /**
      * The issuer generates a QR code for the subject to scan, depending on
      * the type of credential they are issuing. In this case, it's a KYC/AML
@@ -65,8 +71,8 @@ describe("E2E issuance", () => {
      * sign Credential Application.
      */
     const encodedApplication = await composeCredentialApplication(
-      subjectDidKey,
-      manifest
+      manifest,
+      subjectIssuer
     )
 
     /**
@@ -95,55 +101,51 @@ describe("E2E issuance", () => {
       .build()
     const signedVc = await signVerifiableCredential(vc, issuer)
     /**
-     * The issuer wraps the signed VC in a Credential Response, which
-     * is a signed VP
+     * The issuer wraps the signed VC in a Credential Response, and signs as a JWT
      */
-    const response = await composeCredentialResponse(issuer, manifest, signedVc)
+
+    const encodedResponse = await composeCredentialResponse(
+      manifest,
+      issuer,
+      signedVc
+    )
 
     /**
      * The issuer sends the Credential Response to the subject. The subject's
-     * wallet can then verify the VP and store it.
+     * wallet can then decode and store it.
      */
+    const result = await decodeAndVerifyCredentialResponseJwt(encodedResponse)
+    result.verifiableCredential?.forEach((vc) => {
+      const verifiableCredential = vc as RevocableCredential
+      expect(verifiableCredential.type).toEqual([
+        "VerifiableCredential",
+        "KYCAMLCredential"
+      ])
+      expect(verifiableCredential.proof).toBeDefined()
 
-    const verifiablePresentation = (await verifyVerifiablePresentation(
-      response
-    )) as RevocablePresentation
+      const credentialSubject = verifiableCredential.credentialSubject
+      expect(credentialSubject.id).toEqual(subjectDidKey.subject)
 
-    verifiablePresentation.verifiableCredential!.forEach(
-      (verifiableCredential: RevocableCredential) => {
-        expect(verifiableCredential.type).toEqual([
-          "VerifiableCredential",
-          "KYCAMLCredential"
-        ])
-        expect(verifiableCredential.proof).toBeDefined()
-
-        const credentialSubject = verifiableCredential.credentialSubject
-        expect(credentialSubject.id).toEqual(subjectDidKey.subject)
-
-        const credentialStatus = verifiableCredential.credentialStatus
-        expect(credentialStatus.id).toEqual(
-          "http://example.com/revocation-list#42"
-        )
-        expect(credentialStatus.type).toEqual("StatusList2021Entry")
-        expect(credentialStatus.statusPurpose).toEqual("revocation")
-        expect(credentialStatus.statusListIndex).toEqual("42")
-        expect(credentialStatus.statusListCredential).toEqual(
-          "http://example.com/revocation-list"
-        )
-      }
-    )
+      const credentialStatus = verifiableCredential.credentialStatus!
+      expect(credentialStatus.id).toEqual(
+        "http://example.com/revocation-list#42"
+      )
+      expect(credentialStatus.type).toEqual("StatusList2021Entry")
+      expect(credentialStatus.statusPurpose).toEqual("revocation")
+      expect(credentialStatus.statusListIndex).toEqual("42")
+      expect(credentialStatus.statusListCredential).toEqual(
+        "http://example.com/revocation-list"
+      )
+    })
   })
 
   it("issues credentials using did:web", async () => {
     /**
      * The issuer and the client get a DID
      */
-    const issuerDidKey = randomDidKey(randomBytes)
     const didWeb = "did:web:example.com"
     const issuer = buildIssuer("did:web:example.com", issuerDidKey.privateKey)
     const publicKey = Buffer.from(issuerDidKey.publicKey).toString("base64")
-
-    const subjectDidKey = randomDidKey(randomBytes)
 
     const didDocument = {
       "@context": [
@@ -181,17 +183,17 @@ describe("E2E issuance", () => {
      * The client scans the QR code and generates a credential application
      */
     const encodedApplication = await composeCredentialApplication(
-      subjectDidKey,
-      manifest
+      manifest,
+      subjectIssuer
     )
 
     /**
      * The issuer validates the credential application
      */
-    const credentialApplication = (await verifyVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-    await validateCredentialApplication(credentialApplication, manifest)
+    const credentialApplication = await evaluateCredentialApplication(
+      encodedApplication,
+      manifest
+    )
 
     /**
      * The issuer builds and signs a verifiable credential
@@ -210,34 +212,35 @@ describe("E2E issuance", () => {
     /**
      * The issuer builds and signs a response
      */
-    const response = await composeCredentialResponse(issuer, manifest, signedVc)
-
-    const verifiablePresentation = (await verifyVerifiablePresentation(
-      response
-    )) as RevocablePresentation
-
-    verifiablePresentation.verifiableCredential!.forEach(
-      (verifiableCredential: RevocableCredential) => {
-        expect(verifiableCredential.type).toEqual([
-          "VerifiableCredential",
-          "KYCAMLCredential"
-        ])
-        expect(verifiableCredential.proof).toBeDefined()
-
-        const credentialSubject = verifiableCredential.credentialSubject
-        expect(credentialSubject.id).toEqual(subjectDidKey.subject)
-
-        const credentialStatus = verifiableCredential.credentialStatus
-        expect(credentialStatus.id).toEqual(
-          "http://example.com/revocation-list#42"
-        )
-        expect(credentialStatus.type).toEqual("StatusList2021Entry")
-        expect(credentialStatus.statusPurpose).toEqual("revocation")
-        expect(credentialStatus.statusListIndex).toEqual("42")
-        expect(credentialStatus.statusListCredential).toEqual(
-          "http://example.com/revocation-list"
-        )
-      }
+    const encodedResponse = await composeCredentialResponse(
+      manifest,
+      issuer,
+      signedVc
     )
+
+    const result = await decodeAndVerifyCredentialResponseJwt(encodedResponse)
+
+    result.verifiableCredential!.forEach((vc) => {
+      const verifiableCredential = vc as RevocableCredential
+      expect(verifiableCredential.type).toEqual([
+        "VerifiableCredential",
+        "KYCAMLCredential"
+      ])
+      expect(verifiableCredential.proof).toBeDefined()
+
+      const credentialSubject = verifiableCredential.credentialSubject
+      expect(credentialSubject.id).toEqual(subjectDidKey.subject)
+
+      const credentialStatus = verifiableCredential.credentialStatus
+      expect(credentialStatus.id).toEqual(
+        "http://example.com/revocation-list#42"
+      )
+      expect(credentialStatus.type).toEqual("StatusList2021Entry")
+      expect(credentialStatus.statusPurpose).toEqual("revocation")
+      expect(credentialStatus.statusListIndex).toEqual("42")
+      expect(credentialStatus.statusListCredential).toEqual(
+        "http://example.com/revocation-list"
+      )
+    })
   })
 })

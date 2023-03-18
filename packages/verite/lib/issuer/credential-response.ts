@@ -1,49 +1,71 @@
-import { CreatePresentationOptions } from "did-jwt-vc"
+import { JWTOptions } from "did-jwt"
 
 import {
   CredentialManifest,
-  JWT,
-  EncodedCredentialResponseWrapper,
+  CredentialResponseWrapper,
+  DecodedCredentialResponseWrapper,
   Issuer,
-  LatestPresentationPayload
+  JWT
 } from "../../types"
+import { CredentialApplicationWrapperBuilder } from "../builders"
 import { CredentialResponseWrapperBuilder } from "../builders/credential-response-wrapper-builder"
-import { signVerifiablePresentation } from "../utils"
+import { decodeJWT2, verifyJWT2, verifyVerifiableCredential } from "../utils"
 
-export function buildCredentialResponse(
+import { signVeriteJwt } from "."
+
+// TOFIX: where does this live and is it useful? Does it neeed more params?
+export async function composeCredentialResponse(
   manifest: CredentialManifest,
-  encodedCredentials: JWT | JWT[]
-): LatestPresentationPayload {
-  const wrapper = new CredentialResponseWrapperBuilder()
+  issuer: Issuer,
+  vc: JWT | JWT[]
+): Promise<JWT> {
+  const credentialResponse = new CredentialResponseWrapperBuilder()
     .withCredentialResponse((r) => r.initFromManifest(manifest))
-    .verifiableCredential(encodedCredentials)
+    .verifiableCredential(vc)
     .build()
 
-  return wrapper
+  const responseJwt = await signVeriteJwt(credentialResponse, issuer)
+  return responseJwt
 }
 
-/**
- * Compose a Credential Fulfillment (which is a VerifiablePresentation) from a list of signed Verifiable Credentials.
- *
- * "Compose" overloads provide convenience wrappers for 2 steps: building and signing.
- * You can call the wrapped functions separately for more fine-grained control.
- *
- * Signing is forwarded to the did-jwt-vc library.
- *
- */
-export async function composeCredentialResponse(
-  issuer: Issuer,
+// TOFIX: ditto above?
+export async function composeCredentialApplication(
   manifest: CredentialManifest,
-  encodedCredentials: JWT | JWT[],
-  options?: CreatePresentationOptions
-): Promise<EncodedCredentialResponseWrapper> {
-  const fulfillment = buildCredentialResponse(manifest, encodedCredentials)
-  // TOFIX: per latest CM draft, this should be sign with did-jwt, not sign with did-jwt-vc (VP); confirming
-  const signedPresentation = await signVerifiablePresentation(
-    fulfillment,
-    issuer,
-    options
-  )
+  issuer: Issuer,
+  verifiableCredential?: JWT | JWT[]
+): Promise<JWT> {
+  const application = new CredentialApplicationWrapperBuilder()
+    .withCredentialApplication((a) => a.initFromManifest(manifest))
+    .verifiableCredential(verifiableCredential)
+    .build()
 
-  return signedPresentation as unknown as EncodedCredentialResponseWrapper
+  const responseJwt = await signVeriteJwt(application, issuer)
+  return responseJwt
+}
+
+export async function decodeAndVerifyCredentialResponseJwt(
+  credentialResponseJwt: JWT,
+  options?: JWTOptions
+): Promise<DecodedCredentialResponseWrapper> {
+  // TOFIX: does verify do both???
+  const result = await decodeJWT2(credentialResponseJwt)
+  const result2 = await verifyJWT2(credentialResponseJwt, options)
+  const credentialResponse = result.payload as CredentialResponseWrapper
+  let decodedArray
+  if (credentialResponse.verifiableCredential) {
+    decodedArray = await Promise.all(
+      credentialResponse.verifiableCredential.map((vc) =>
+        verifyVerifiableCredential(vc)
+      )
+    )
+  }
+  //
+  // TOdo: options?
+
+  const decodedCredentialResponse = {
+    credential_response: credentialResponse.credential_response,
+    ...(decodedArray !== undefined && { verifiableCredential: decodedArray })
+  }
+
+  return decodedCredentialResponse
 }

@@ -1,5 +1,13 @@
 import { BitBuffer } from "bit-buffers"
 import {
+  createJWT,
+  decodeJWT,
+  verifyJWT,
+  JWTHeader,
+  JWTOptions,
+  JWTPayload
+} from "did-jwt"
+import {
   createVerifiableCredentialJwt,
   createVerifiablePresentationJwt,
   verifyCredential,
@@ -166,7 +174,10 @@ export async function signVerifiableCredential(
   options: CreateCredentialOptions = {}
 ): Promise<JWT> {
   const vcPayload = asJwtCredentialPayload(payload)
-  return createVerifiableCredentialJwt(vcPayload, issuer, options)
+  return createVerifiableCredentialJwt(vcPayload, issuer, {
+    ...options,
+    kid: issuer.did
+  })
 }
 
 /**
@@ -235,7 +246,10 @@ export async function signVerifiablePresentation(
   options: CreatePresentationOptions = {}
 ): Promise<JWT> {
   const vpPayloadWithJwt = asJwtPresentationPayload(vpPayload)
-  return createVerifiablePresentationJwt(vpPayloadWithJwt, issuer, options)
+  return createVerifiablePresentationJwt(vpPayloadWithJwt, issuer, {
+    ...options,
+    kid: issuer.did
+  })
 }
 
 /**
@@ -289,4 +303,40 @@ function asJwtPresentationPayload(
       ...vpPayload
     }
   })
+}
+
+// TOFIX: clean up this whole file
+// TOFIX: correct below
+export async function signJWT(
+  payload: Partial<JWTPayload>,
+  jwtOptions: JWTOptions,
+  header: Partial<JWTHeader> = { alg: "EdDSA" }
+): Promise<JWT> {
+  const { issuer, signer } = jwtOptions
+  const jwt = await createJWT(
+    payload,
+    {
+      issuer: issuer,
+      signer: signer
+    },
+    {
+      ...header,
+      kid: issuer
+    }
+  )
+  return jwt
+}
+
+export async function verifyJWT2(
+  jwt: JWT,
+  jwtOptions?: JWTOptions
+): Promise<JWTPayload> {
+  const resolver = didResolver
+  const payload = await verifyJWT(jwt, { ...jwtOptions, resolver } as any) // TODO: wtf
+  return payload
+}
+
+export async function decodeJWT2(jwt: JWT): Promise<JWTPayload> {
+  const payload = decodeJWT(jwt)
+  return payload
 }

@@ -1,9 +1,12 @@
 import { randomBytes } from "crypto"
 
-import { validateCredentialApplication, VerificationError } from "../../../lib"
 import {
   composeCredentialApplication,
-  decodeCredentialApplication,
+  validateCredentialApplication,
+  VerificationError
+} from "../../../lib"
+import {
+  decodeAndVerifyCredentialApplicationJwt,
   evaluateCredentialApplication
 } from "../../../lib/issuer/credential-application"
 import { buildSampleProcessApprovalManifest } from "../../../lib/sample-data/manifests"
@@ -18,6 +21,7 @@ import {
 let subjectDidKey: DidKey
 let issuerDidKey: DidKey
 let issuer: Issuer
+let subjectIssuer: Issuer
 let credentialIssuer: CredentialIssuer
 
 beforeEach(() => {
@@ -25,6 +29,8 @@ beforeEach(() => {
   issuerDidKey = randomDidKey(randomBytes)
   issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
   credentialIssuer = { id: issuer.did, name: "Verite" }
+  // TOFIX
+  subjectIssuer = buildIssuer(subjectDidKey.subject, subjectDidKey.privateKey)
 })
 
 describe("composeCredentialApplication", () => {
@@ -35,8 +41,8 @@ describe("composeCredentialApplication", () => {
     )
 
     const credentialApplication = await composeCredentialApplication(
-      subjectDidKey,
-      kycManifest
+      kycManifest,
+      subjectIssuer
     )
 
     const application = await evaluateCredentialApplication(
@@ -65,14 +71,15 @@ describe("decodeCredentialApplication", () => {
     )
 
     const application = await composeCredentialApplication(
-      subjectDidKey,
-      kycManifest
+      kycManifest,
+      subjectIssuer
     )
-    const decodedApplication = await decodeCredentialApplication(application)
+    const decodedApplication = await decodeAndVerifyCredentialApplicationJwt(
+      application
+    )
     await validateCredentialApplication(decodedApplication, kycManifest)
 
     expect(decodedApplication).toMatchObject({
-      "@context": ["https://www.w3.org/2018/credentials/v1"],
       credential_application: {
         // id: 'f584577a-607f-43d9-a128-39b21f126f96', client-generated unique identifier
         manifest_id: "KYCAMLManifest",
@@ -88,10 +95,7 @@ describe("decodeCredentialApplication", () => {
             }
           ]
         }
-      },
-      verifiableCredential: [],
-      holder: subjectDidKey.subject,
-      type: ["VerifiablePresentation", "CredentialApplication"]
+      }
     })
   })
 
@@ -105,8 +109,8 @@ describe("decodeCredentialApplication", () => {
       "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMDgzNTIsInZjIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiXSwiY3JlZGVudGlhbFN1YmplY3QiOnsiZGVncmVlIjp7InR5cGUiOiJCYWNoZWxvckRlZ3JlZSIsIm5hbWUiOiJCYWNjYWxhdXLDqWF0IGVuIG11c2lxdWVzIG51bcOpcmlxdWVzIn19fSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjA4MzQyLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.n0Cko-LZtZjrVHMjzlMUUxB6GGkx9MlNy68nALEeh_Doj42UDZkCwF872N4pVzyqKEexAX8PxAgtqote2rHMAA"
 
     const application = await composeCredentialApplication(
-      subjectDidKey,
       kycManifest,
+      subjectIssuer,
       expiredVc
     )
 

@@ -22,7 +22,6 @@ export const DEFAULT_CONTEXT: any[] = [
   { "@vocab": VERITE_VOCAB_URI }
 ]
 
-// TOFIX: update with outcome of https://github.com/decentralized-identity/credential-manifest/issues/148
 export const CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0 =
   "https://identity.foundation/credential-manifest/spec/v1.0.0/"
 

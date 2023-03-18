@@ -29,6 +29,11 @@ export class CredentialApplicationBuilder {
     return this
   }
 
+  applicant(applicant: string): CredentialApplicationBuilder {
+    this._builder.applicant = applicant
+    return this
+  }
+
   manifest_id(manifest_id: string): CredentialApplicationBuilder {
     this._builder.manifest_id = manifest_id
     return this

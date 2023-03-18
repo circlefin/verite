@@ -4,7 +4,7 @@ describe("CredentialResepnseBuilder", () => {
   it("works", async () => {
     const credentialResponse = new CredentialResponseBuilder()
       .application_id("application_id_123")
-      .manifestId("manifest123")
+      .manifest_id("manifest123")
       .fulfillment([
         {
           id: "eoc_output",
@@ -35,7 +35,7 @@ describe("CredentialResepnseBuilder", () => {
     // TODFIX: correct the autocomplete
     const credentialResponse = new CredentialResponseBuilder()
       .application_id("application_id_123")
-      .manifestId("manifest123")
+      .manifest_id("manifest123")
       .denial("denial_reason", ["input_descriptor_1", "input_descriptor_2"])
       .build()
 
@@ -90,7 +90,7 @@ describe("CredentialResepnseBuilder", () => {
   it("uses id if provided", async () => {
     const credentialResponse = new CredentialResponseBuilder("myid123")
       .application_id("application_id_123")
-      .manifestId("manifest123")
+      .manifest_id("manifest123")
       .fulfillment([
         {
           id: "eoc_output",
@@ -106,7 +106,7 @@ describe("CredentialResepnseBuilder", () => {
   it("generates id if not provided", async () => {
     const credentialResponse = new CredentialResponseBuilder()
       .application_id("application_id_123")
-      .manifestId("manifest123")
+      .manifest_id("manifest123")
       .fulfillment([
         {
           id: "eoc_output",

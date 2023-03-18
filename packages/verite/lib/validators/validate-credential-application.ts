@@ -1,4 +1,7 @@
-import { CredentialManifest, DecodedCredentialApplication } from "../../types"
+import {
+  CredentialManifest,
+  DecodedCredentialApplicationWrapper
+} from "../../types"
 import { ValidationError } from "../errors"
 import { hasPaths } from "../utils/has-paths"
 
@@ -6,7 +9,7 @@ import { hasPaths } from "../utils/has-paths"
  * Fetches the manifest id from a credential application
  */
 export function getManifestIdFromCredentialApplication(
-  application: DecodedCredentialApplication
+  application: DecodedCredentialApplicationWrapper
 ): string {
   return application.credential_application.manifest_id
 }
@@ -18,7 +21,7 @@ export function getManifestIdFromCredentialApplication(
  * @throws {ValidationError} If the credential application is invalid.
  */
 export async function validateCredentialApplication(
-  application: DecodedCredentialApplication,
+  application: DecodedCredentialApplicationWrapper,
   manifest: CredentialManifest
 ): Promise<void> {
   if (getManifestIdFromCredentialApplication(application) !== manifest.id) {

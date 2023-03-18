@@ -17,6 +17,7 @@ export async function buildProcessApprovalVC(
   subjectDid: string,
   credentialStatus?: StatusList2021Entry
 ): Promise<JWT> {
+  // TOFIX: note buildIssuer is duplicated here. Audit for other occurrences
   const signer = buildIssuer(issuerKey.subject, issuerKey.privateKey)
   const sampleAttestation = buildProcessApprovalAttestation(attestationType)
 

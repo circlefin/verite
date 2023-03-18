@@ -1,3 +1,4 @@
+// TOFIX: figure out which of these are unused
 // Common CM/PE
 export const CREDENTIAL_APPLICATION_TYPE_NAME = "CredentialApplication"
 export const CREDENTIAL_RESPONSE_TYPE_NAME = "CredentialResponse"

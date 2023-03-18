@@ -1,7 +1,6 @@
-import { ContextType } from "."
+import { MaybeRevocableCredential } from "./StatusList2021"
 
 import type { DescriptorMap } from "./DescriptorMap"
-import type { Verifiable, W3CPresentation } from "./DidJwt"
 import type { JWT } from "./Jwt"
 
 export type CredentialResponse = {
@@ -9,6 +8,7 @@ export type CredentialResponse = {
   spec_version: string
   manifest_id: string
   application_id?: string
+  applicant?: string // TOFIX: make required and populate from holder when we finish CM / VP fixes
   fulfillment?: {
     descriptor_map: DescriptorMap[]
   }
@@ -19,10 +19,8 @@ export type CredentialResponse = {
 }
 
 export type CredentialResponseWrapper = {
-  "@context": ContextType
-  type: string | string[]
-  verifiableCredential: JWT | JWT[]
   credential_response: CredentialResponse
+  verifiableCredential?: JWT[]
 }
 
 // TOFIX: are we using this and below?
@@ -32,5 +30,7 @@ type NarrowCredentialResponseWrapper = {
 
 export type EncodedCredentialResponseWrapper = JWT
 
-export type DecodedCredentialResponseWrapper = NarrowCredentialResponseWrapper &
-  Verifiable<W3CPresentation>
+export type DecodedCredentialResponseWrapper =
+  NarrowCredentialResponseWrapper & {
+    verifiableCredential?: MaybeRevocableCredential[] // TOFIX: union with other types?
+  }

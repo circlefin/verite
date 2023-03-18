@@ -1,7 +1,6 @@
-import { ContextType, LatestPresentationPayload } from "./VerifiableCredential"
+import { MaybeRevocableCredential } from "./StatusList2021"
 
 import type { ClaimFormatDesignation } from "./ClaimFormatDesignation"
-import type { Verifiable, W3CPresentation } from "./DidJwt"
 import type { JWT } from "./Jwt"
 import type { PresentationSubmission } from "./PresentationSubmission"
 
@@ -18,22 +17,18 @@ export type CredentialApplication = {
   presentation_submission?: PresentationSubmission
 }
 
-// TOFIX (response to next line): per latest CM spec, this is no longer a VP
-// This means we should remove relationship to PresentationPayload and add back any needed fiends
-// TOFIX: clarify how this is related to PresentationPayload
-// this is a CredentialApplication VP embed!!!!
-export type CredentialApplicationWrapper = LatestPresentationPayload & {
-  "@context": ContextType
-  //type: string | string[]
+export type CredentialApplicationWrapper = {
   credential_application: CredentialApplication
-  //verifiableCredential: JWT | JWT[]
+  verifiableCredential?: JWT[]
 }
 
-export type GenericCredentialApplication =
-  | EncodedCredentialApplication
-  | DecodedCredentialApplication
+export type GenericCredentialApplicationWrapper =
+  | EncodedCredentialApplicationWrapper
+  | DecodedCredentialApplicationWrapper
 
-export type EncodedCredentialApplication = JWT
+export type EncodedCredentialApplicationWrapper = JWT
 
-export type DecodedCredentialApplication = NarrowCredentialApplication &
-  Verifiable<W3CPresentation>
+export type DecodedCredentialApplicationWrapper =
+  NarrowCredentialApplication & {
+    verifiableCredential?: MaybeRevocableCredential[] // TOFIX: Verifiable interface?
+  }
