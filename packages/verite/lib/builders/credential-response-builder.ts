@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 
 import {
+  CredentialApplication,
   CredentialManifest,
   CredentialResponse,
   DescriptorMap
@@ -57,6 +58,15 @@ export class CredentialResponseBuilder {
           }
         }) ?? []
     }
+    return this
+  }
+
+  initFromApplication(
+    application: Partial<CredentialApplication>
+  ): CredentialResponseBuilder {
+    this._builder.manifest_id = application.manifest_id // TOFIX: ensure it's the same value if already set?
+    this._builder.applicant = application.applicant
+    this._builder.application_id = application.id
     return this
   }
 

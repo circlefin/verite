@@ -49,6 +49,10 @@ describe("composeCredentialResponse", () => {
     )
 
     const encodedResponse = await composeCredentialResponse(
+      {
+        applicant: subjectDidKey.subject,
+        id: "5f22f1ea-0441-4041-916b-2504a2a4075c"
+      },
       manifest,
       issuer,
       vc
@@ -127,6 +131,10 @@ describe("composeCredentialResponse", () => {
     const creds = [vc1, vc2]
 
     const encodedResponse = await composeCredentialResponse(
+      {
+        applicant: subjectDidKey.subject,
+        id: "5f22f1ea-0441-4041-916b-2504a2a4075c"
+      },
       manifest,
       issuer,
       creds

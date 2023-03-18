@@ -13,7 +13,7 @@ export type CredentialApplication = {
   spec_version: string
   manifest_id: string
   format: ClaimFormatDesignation
-  applicant?: string // TOFIX: make required and populate from holder when we finish CM / VP fixes
+  applicant: string
   presentation_submission?: PresentationSubmission
 }
 
@@ -22,13 +22,13 @@ export type CredentialApplicationWrapper = {
   verifiableCredential?: JWT[]
 }
 
-export type GenericCredentialApplicationWrapper =
-  | EncodedCredentialApplicationWrapper
-  | DecodedCredentialApplicationWrapper
-
 export type EncodedCredentialApplicationWrapper = JWT
 
 export type DecodedCredentialApplicationWrapper =
   NarrowCredentialApplication & {
     verifiableCredential?: MaybeRevocableCredential[] // TOFIX: Verifiable interface?
   }
+
+export type GenericCredentialApplicationWrapper =
+  | EncodedCredentialApplicationWrapper
+  | DecodedCredentialApplicationWrapper

@@ -8,7 +8,7 @@ export type CredentialResponse = {
   spec_version: string
   manifest_id: string
   application_id?: string
-  applicant?: string // TOFIX: make required and populate from holder when we finish CM / VP fixes
+  applicant: string
   fulfillment?: {
     descriptor_map: DescriptorMap[]
   }

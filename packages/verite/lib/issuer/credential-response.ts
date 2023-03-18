@@ -1,6 +1,7 @@
 import { JWTOptions } from "did-jwt"
 
 import {
+  CredentialApplication,
   CredentialManifest,
   CredentialResponseWrapper,
   DecodedCredentialResponseWrapper,
@@ -15,12 +16,16 @@ import { signVeriteJwt } from "."
 
 // TOFIX: where does this live and is it useful? Does it neeed more params?
 export async function composeCredentialResponse(
+  application: Partial<CredentialApplication>,
   manifest: CredentialManifest,
   issuer: Issuer,
   vc: JWT | JWT[]
 ): Promise<JWT> {
   const credentialResponse = new CredentialResponseWrapperBuilder()
-    .withCredentialResponse((r) => r.initFromManifest(manifest))
+    .withCredentialResponse((r) => {
+      r.initFromApplication(application)
+      r.initFromManifest(manifest)
+    })
     .verifiableCredential(vc)
     .build()
 
@@ -35,7 +40,10 @@ export async function composeCredentialApplication(
   verifiableCredential?: JWT | JWT[]
 ): Promise<JWT> {
   const application = new CredentialApplicationWrapperBuilder()
-    .withCredentialApplication((a) => a.initFromManifest(manifest))
+    .withCredentialApplication((a) => {
+      a.initFromManifest(manifest)
+      a.applicant(issuer.did)
+    })
     .verifiableCredential(verifiableCredential)
     .build()
 

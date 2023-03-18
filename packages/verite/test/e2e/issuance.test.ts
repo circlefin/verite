@@ -24,9 +24,9 @@ import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { KYC_VC_SCHEMA } from "../fixtures/credentials"
 import { revocationListFixture } from "../fixtures/revocation-list"
 
-let subjectDidKey: DidKey
 let issuerDidKey: DidKey
 let issuer: Issuer
+let subjectDidKey: DidKey
 let subjectIssuer: Issuer
 
 beforeEach(() => {
@@ -36,10 +36,10 @@ beforeEach(() => {
    * subject side. For example, the subject's identity wallet could generate
    * the DID for them.
    */
-  subjectDidKey = randomDidKey(randomBytes)
   issuerDidKey = randomDidKey(randomBytes)
   issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-  // TOFIX
+  // TOFIX: rename
+  subjectDidKey = randomDidKey(randomBytes)
   subjectIssuer = buildIssuer(subjectDidKey.subject, subjectDidKey.privateKey)
 })
 
@@ -80,21 +80,31 @@ describe("E2E issuance", () => {
      */
 
     /**
-     * The issuer evaluates the Credential Application
+     * The issuer evaluates and decodes the Credential Application.
+     * Note that the issuer may not know the manifest before decoding it,
+     * in which case the issuer can call the functions wrapped by
+     * evaluateCredentialApplication:
+     * 1. decodeAndVerifyCredentialApplicationJwt
+     * 2. validateCredentialApplication
      */
-    await evaluateCredentialApplication(encodedApplication, manifest)
+    const decodedApplication = await evaluateCredentialApplication(
+      encodedApplication,
+      manifest
+    )
 
     /**
-     * In general, the issuer would extract data from the Credential
-     * Application. If the Credential Application is valid, then the
-     * issuer would issue a credential to the subject.
-     *
+     * If the Credential Application is valid, then the issuer would issue a
+     * credential to the subject. The issuer extracts the necessary information
+     * from the Credential Application before issuing the credential.
+     */
+    const subjectDid = decodedApplication?.credential_application.applicant
+    /**
      * Verite libraries allow high- and low-level methods. Compose
      * methods call build* and sign* methods.
      */
     const vc = new CredentialPayloadBuilder()
       .issuer(issuer.did)
-      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
+      .attestations(subjectDid, kycAmlAttestationFixture)
       .type(KYCAML_CREDENTIAL_TYPE_NAME)
       .credentialSchema(KYC_VC_SCHEMA)
       .credentialStatus(revocationListFixture)
@@ -105,6 +115,7 @@ describe("E2E issuance", () => {
      */
 
     const encodedResponse = await composeCredentialResponse(
+      decodedApplication.credential_application,
       manifest,
       issuer,
       signedVc
@@ -124,7 +135,7 @@ describe("E2E issuance", () => {
       expect(verifiableCredential.proof).toBeDefined()
 
       const credentialSubject = verifiableCredential.credentialSubject
-      expect(credentialSubject.id).toEqual(subjectDidKey.subject)
+      expect(credentialSubject.id).toEqual(subjectIssuer.did)
 
       const credentialStatus = verifiableCredential.credentialStatus!
       expect(credentialStatus.id).toEqual(
@@ -190,10 +201,11 @@ describe("E2E issuance", () => {
     /**
      * The issuer validates the credential application
      */
-    const credentialApplication = await evaluateCredentialApplication(
+    const decodedApplication = await evaluateCredentialApplication(
       encodedApplication,
       manifest
     )
+    const subjectDid = decodedApplication?.credential_application.applicant
 
     /**
      * The issuer builds and signs a verifiable credential
@@ -201,7 +213,7 @@ describe("E2E issuance", () => {
 
     const vc = new CredentialPayloadBuilder()
       .issuer(issuer.did)
-      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
+      .attestations(subjectDid, kycAmlAttestationFixture)
       .type(KYCAML_CREDENTIAL_TYPE_NAME)
       .credentialSchema(KYC_VC_SCHEMA)
       .credentialStatus(revocationListFixture)
@@ -213,6 +225,7 @@ describe("E2E issuance", () => {
      * The issuer builds and signs a response
      */
     const encodedResponse = await composeCredentialResponse(
+      decodedApplication.credential_application,
       manifest,
       issuer,
       signedVc
@@ -229,7 +242,7 @@ describe("E2E issuance", () => {
       expect(verifiableCredential.proof).toBeDefined()
 
       const credentialSubject = verifiableCredential.credentialSubject
-      expect(credentialSubject.id).toEqual(subjectDidKey.subject)
+      expect(credentialSubject.id).toEqual(subjectIssuer.did)
 
       const credentialStatus = verifiableCredential.credentialStatus
       expect(credentialStatus.id).toEqual(
