@@ -24,18 +24,33 @@ export async function validateCredentialApplication(
   application: DecodedCredentialApplicationWrapper,
   manifest: CredentialManifest
 ): Promise<void> {
-  if (getManifestIdFromCredentialApplication(application) !== manifest.id) {
-    throw new ValidationError(
-      "Invalid Manifest ID",
-      "This application does not include a valid manifest id"
-    )
-  }
-
   // Ensure the application has the correct paths
   if (!hasPaths(application, ["credential_application"])) {
     throw new ValidationError(
       "Missing required paths in Credential Application",
       "Input doesn't have the required format for a Credential Application"
+    )
+  }
+
+  if (
+    !hasPaths(application.credential_application, [
+      "id",
+      "spec_version",
+      "manifest_id",
+      "format",
+      "applicant"
+    ])
+  ) {
+    throw new ValidationError(
+      "Missing required paths in Credential Application",
+      "Input doesn't have the required format for a Credential Application"
+    )
+  }
+
+  if (getManifestIdFromCredentialApplication(application) !== manifest.id) {
+    throw new ValidationError(
+      "Invalid Manifest ID",
+      "This application does not match the expected manifest id"
     )
   }
 }

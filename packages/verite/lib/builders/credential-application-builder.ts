@@ -4,13 +4,12 @@ import {
   ClaimFormatDesignation,
   CredentialApplication,
   CredentialManifest,
-  DescriptorMap,
   PresentationSubmission
 } from "../../types"
 
 import {
   CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
-  HOLDER_PROPERTY_NAME,
+  JWT_VC_CLAIM_FORMAT_DESIGNATION,
   PresentationSubmissionBuilder
 } from "."
 
@@ -20,7 +19,8 @@ export class CredentialApplicationBuilder {
   constructor(id?: string) {
     this._builder = {
       id: id ?? uuidv4(),
-      spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0
+      spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
+      format: JWT_VC_CLAIM_FORMAT_DESIGNATION
     }
   }
 
@@ -53,25 +53,14 @@ export class CredentialApplicationBuilder {
 
   initFromManifest(manifest: CredentialManifest): CredentialApplicationBuilder {
     this._builder.manifest_id = manifest.id
-    this._builder.format = {
-      jwt_vp: manifest.presentation_definition?.format?.jwt_vp
+    if (manifest.format) {
+      this._builder.format = manifest.format
     }
 
     if (manifest.presentation_definition) {
       this._builder.presentation_submission =
         new PresentationSubmissionBuilder()
-          .definition_id(manifest.presentation_definition.id)
-          .descriptor_map(
-            manifest.presentation_definition?.input_descriptors?.map<DescriptorMap>(
-              (d) => {
-                return {
-                  id: d.id,
-                  format: "jwt_vp",
-                  path: `$.${HOLDER_PROPERTY_NAME}` // TOFIX: how to generalize?
-                }
-              }
-            )
-          )
+          .initFromPresentationDefinition(manifest.presentation_definition)
           .build()
     }
 

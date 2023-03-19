@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from "uuid"
 
 import { getAttestionDefinition } from "../../../lib"
 import { buildCredentialOffer } from "../../../lib/issuer/credential-offer"
-import { proofOfControlPresentationDefinition } from "../../../lib/sample-data/manifests"
 import { AttestationTypes, CredentialManifest } from "../../../types"
 import { didFixture } from "../../fixtures"
 
@@ -53,8 +52,7 @@ export const manifestFixture = (value = 0): CredentialManifest => {
         },
         styles: {}
       }
-    ],
-    presentation_definition: proofOfControlPresentationDefinition()
+    ]
   }
 }
 
@@ -122,8 +120,7 @@ describe("buildCredentialOffer", () => {
               },
               styles: {}
             }
-          ],
-          presentation_definition: proofOfControlPresentationDefinition()
+          ]
         }
       }
     }

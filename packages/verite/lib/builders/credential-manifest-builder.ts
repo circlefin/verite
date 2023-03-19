@@ -11,7 +11,7 @@ import {
 import {
   Action,
   CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
-  JWT_CLAIM_FORMAT_DESIGNATION
+  JWT_VC_CLAIM_FORMAT_DESIGNATION
 } from "./common"
 import { OutputDescriptorBuilder } from "./output-descriptors"
 import { PresentationDefinitionBuilder } from "./presentation-definition-builder"
@@ -22,7 +22,8 @@ export class CredentialManifestBuilder {
     this._builder = {
       id: id,
       spec_version: CREDENTIAL_MANIFEST_SPEC_VERSION_1_0_0,
-      output_descriptors: []
+      output_descriptors: [],
+      format: JWT_VC_CLAIM_FORMAT_DESIGNATION
     }
   }
 
@@ -65,9 +66,11 @@ export class CredentialManifestBuilder {
   }
 
   presentation_definition(
-    presentation_definition: PresentationDefinition
+    presentation_definition?: PresentationDefinition
   ): CredentialManifestBuilder {
-    this._builder.presentation_definition = presentation_definition
+    if (presentation_definition) {
+      this._builder.presentation_definition = presentation_definition
+    }
     return this
   }
 
@@ -96,8 +99,8 @@ export function buildManifest(
   manifestId: string,
   issuer: CredentialIssuer,
   outputDescriptors: OutputDescriptor[],
-  presentationDefinition: PresentationDefinition,
-  format: ClaimFormatDesignation = JWT_CLAIM_FORMAT_DESIGNATION
+  presentationDefinition?: PresentationDefinition,
+  format: ClaimFormatDesignation = JWT_VC_CLAIM_FORMAT_DESIGNATION
 ): CredentialManifest {
   const manifest = new CredentialManifestBuilder(manifestId)
     .issuer(issuer)

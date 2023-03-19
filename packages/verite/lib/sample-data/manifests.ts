@@ -1,79 +1,41 @@
 import {
-  PresentationDefinition,
   CredentialIssuer,
   CredentialManifest,
   EntityStyle,
   AttestationTypes,
-  OutputDescriptor
+  OutputDescriptor,
+  PresentationDefinition
 } from "../../types"
-import {
-  buildManifest,
-  HOLDER_PROPERTY_NAME,
-  JWT_VP_CLAIM_FORMAT_DESIGNATION,
-  OutputDescriptorBuilder,
-  PresentationDefinitionBuilder
-} from "../builders"
+import { buildManifest, OutputDescriptorBuilder } from "../builders"
 import { getAttestionDefinition } from "../utils"
-import {
-  PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME,
-  CREDIT_SCORE_CREDENTIAL_TYPE_NAME,
-  KYCAML_MANIFEST_ID
-} from "./constants"
+import { CREDIT_SCORE_CREDENTIAL_TYPE_NAME } from "./constants"
 import {
   attestationToCredentialType,
   attestationToManifestId
 } from "./constants-maps"
-
-export function proofOfControlPresentationDefinition(): PresentationDefinition {
-  const p = new PresentationDefinitionBuilder({
-    id: PROOF_OF_CONTROL_PRESENTATION_DEF_ID_TYPE_NAME
-  })
-    .format(JWT_VP_CLAIM_FORMAT_DESIGNATION)
-    .addInputDescriptor("proofOfIdentifierControlVP", (b) => {
-      b.name("Proof of Control Verifiable Presentation")
-        .purpose("A VP establishing proof of identifier control over the DID.")
-        .format(JWT_VP_CLAIM_FORMAT_DESIGNATION)
-        .withConstraints((c) => {
-          c.addField((f) => {
-            f.id(HOLDER_PROPERTY_NAME)
-            f.path([`$.${HOLDER_PROPERTY_NAME}`]).purpose(
-              "The VP should contain a DID in the holder, which is the same DID that signs the VP. This DID will be used as the subject of the issued VC"
-            )
-          })
-        })
-    })
-    .build()
-
-  return p
-}
-
-/**
- * Whether or not a manifest requires revocable credentials.
- */
-export function requiresRevocableCredentials(
-  manifest: CredentialManifest
-): boolean {
-  // TOFIX: generalize this
-  return manifest.id === KYCAML_MANIFEST_ID
-}
 
 /**
  * Generate a Credential Manifest for the specified attestation.
  *
  * @param attestationType The type of attestation to generate a manifest for
  * @param issuer The issuer for the credential
+ * @param presentation_definition An optional presentation definition describing
+ * the requirements for the credential. This is used if issuers require callers/
+ * wallets to submit credentials that meet certain requirements before issuing
+ * the credential.
  * @param styles An optional list of styles to use for the credential
  *
  * @returns a Credential Manifest
  */
 export function buildSampleProcessApprovalManifest(
   attestationType: AttestationTypes,
-  issuer: CredentialIssuer,
+  issuer: CredentialIssuer, // TOFIX: rename
+  presentation_definition?: PresentationDefinition, // TOFIX: ensure we have test coverage for this path
   styles: EntityStyle = {}
 ): CredentialManifest {
   const outputDescriptor = buildProcessApprovalOutputDescriptor(
     attestationType,
-    issuer.name ? issuer.name : "Unknown Issuer",
+    issuer.name ?? issuer.id,
     styles
   )
 
@@ -81,7 +43,7 @@ export function buildSampleProcessApprovalManifest(
     attestationToManifestId(attestationType),
     issuer,
     [outputDescriptor],
-    proofOfControlPresentationDefinition()
+    presentation_definition
   )
 }
 
@@ -94,7 +56,7 @@ export function buildCreditScoreManifest(
   )
 
   const outputDescriptor = buildCreditScoreOutputDescriptor(
-    issuer.name ? issuer.name : "Unknown Issuer",
+    issuer.name ?? issuer.id,
     attestationInfo.schema,
     styles
   )
@@ -102,8 +64,7 @@ export function buildCreditScoreManifest(
   return buildManifest(
     attestationToManifestId(AttestationTypes.CreditScoreAttestation),
     issuer,
-    [outputDescriptor],
-    proofOfControlPresentationDefinition()
+    [outputDescriptor]
   )
 }
 
@@ -116,14 +77,14 @@ export function buildHybridManifest(
   const outputDescriptors = attestationType.map((a) => {
     if (a === AttestationTypes.CreditScoreAttestation) {
       return buildCreditScoreOutputDescriptor(
-        issuer.name ? issuer.name : "Unknown Issuer",
+        issuer.name ?? issuer.id,
         getAttestionDefinition(a).schema,
         styles
       )
     } else {
       return buildProcessApprovalOutputDescriptor(
         a,
-        issuer.name ? issuer.name : "Unknown Issuer",
+        issuer.name ?? issuer.id,
         styles
       )
     }
@@ -137,13 +98,24 @@ export function buildHybridManifestWithOutputDescriptors(
   outputDescriptors: OutputDescriptor[]
 ): CredentialManifest {
   return buildManifest(
-    `${issuer.name} Hybrid Manifest`, // TOFIX: consider renaming from ODs
+    `${issuer.name ?? issuer.id} Hybrid Manifest`, // TOFIX: consider renaming from ODs
     issuer,
-    outputDescriptors,
-    proofOfControlPresentationDefinition()
+    outputDescriptors
   )
 }
 
+/**
+ * Demonstrates how to build a sample OutputDescriptor for a Credential
+ * Manifest with a Credit Score credential output descriptor.
+ *
+ * This is an example only; not normative.
+ * @param issuerName The issuer name, which will be used in output
+ * descriptor fields below. These might then be used by a wallet
+ * consuming the manifest for display purposes.
+ * @param schema The schema for the credential
+ * @param styles An optional list of styles for the wallet to use
+ * @returns an OutputDescriptor
+ */
 export function buildCreditScoreOutputDescriptor(
   issuerName: string,
   schema: string,
@@ -179,6 +151,22 @@ export function buildCreditScoreOutputDescriptor(
   return outputDescriptor
 }
 
+/**
+ * Demonstrates how to build a sample OutputDescriptor for a Credential
+ * Manifest with a Process Approval credential output descriptor.
+ *
+ * Examples of process approvals include:
+ * - KYC / KYBP
+ * - Accredited Investor / Accredited Entity
+ *
+ * This is an example only; not normative.
+ * @param issuerName The issuer name, which will be used in output
+ * descriptor fields below. These might then be used by a wallet
+ * consuming the manifest for display purposes.
+ * @param schema The schema for the credential
+ * @param styles An optional list of styles for the wallet to use
+ * @returns an OutputDescriptor
+ */
 export function buildProcessApprovalOutputDescriptor(
   attestationType: AttestationTypes,
   issuerName: string,

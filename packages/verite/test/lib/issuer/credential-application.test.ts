@@ -54,12 +54,6 @@ describe("composeCredentialApplication", () => {
     expect(application.credential_application.manifest_id).toEqual(
       "KYCAMLManifest"
     )
-    expect(
-      application.credential_application.presentation_submission
-    ).toBeDefined()
-    expect(
-      application.credential_application.presentation_submission?.definition_id
-    ).toEqual(kycManifest.presentation_definition?.id)
   })
 })
 
@@ -83,18 +77,7 @@ describe("decodeCredentialApplication", () => {
       credential_application: {
         // id: 'f584577a-607f-43d9-a128-39b21f126f96', client-generated unique identifier
         manifest_id: "KYCAMLManifest",
-        format: { jwt_vp: { alg: ["EdDSA"] } },
-        presentation_submission: {
-          // id: '0a97ed30-a4a9-43fb-9564-4d65db62d4bc', client-generated unique identifier
-          definition_id: "ProofOfControlPresentationDefinition",
-          descriptor_map: [
-            {
-              id: "proofOfIdentifierControlVP",
-              format: "jwt_vp",
-              path: "$.holder"
-            }
-          ]
-        }
+        format: { jwt_vc: { alg: ["EdDSA"] } }
       }
     })
   })

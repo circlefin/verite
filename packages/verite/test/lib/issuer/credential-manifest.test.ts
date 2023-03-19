@@ -4,9 +4,7 @@ import { omit } from "lodash"
 import { hasPaths } from "../../../lib"
 import {
   buildCreditScoreManifest,
-  buildSampleProcessApprovalManifest,
-  proofOfControlPresentationDefinition,
-  requiresRevocableCredentials
+  buildSampleProcessApprovalManifest
 } from "../../../lib/sample-data/manifests"
 import { randomDidKey } from "../../../lib/utils"
 import { AttestationTypes, CredentialManifest } from "../../../types"
@@ -57,7 +55,7 @@ describe("buildKycAmlManifest", () => {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."
       },
-      format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
+      format: { jwt_vc: { alg: ["EdDSA"] } },
       output_descriptors: [
         {
           id: "KYCAMLCredential",
@@ -92,8 +90,7 @@ describe("buildKycAmlManifest", () => {
           },
           styles: {}
         }
-      ],
-      presentation_definition: proofOfControlPresentationDefinition()
+      ]
     }
 
     expect(manifest).toEqual(expected)
@@ -124,7 +121,7 @@ describe("buildCreditScoreManifest", () => {
         id: "did:key:z6MkiTBz1ymuepAQ4HEHYSF1H8quG5GLVVQR3djdX3mDooWp",
         name: "Issuer Inc."
       },
-      format: { jwt_vc: { alg: ["EdDSA"] }, jwt_vp: { alg: ["EdDSA"] } },
+      format: { jwt_vc: { alg: ["EdDSA"] } },
       output_descriptors: [
         {
           id: "CreditScoreCredential",
@@ -162,30 +159,10 @@ describe("buildCreditScoreManifest", () => {
           },
           styles: {}
         }
-      ],
-      presentation_definition: proofOfControlPresentationDefinition()
+      ]
     }
 
     expect(manifest).toEqual(expected)
-  })
-})
-
-describe("requiresRevocableCredentials", () => {
-  it("is true for KYCAMLAttestations", () => {
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = { id: issuerDid.subject }
-    const manifest = buildSampleProcessApprovalManifest(
-      AttestationTypes.KYCAMLAttestation,
-      issuer
-    )
-    expect(requiresRevocableCredentials(manifest)).toBeTruthy()
-  })
-
-  it("is false for CreditScoreAttestations", () => {
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = { id: issuerDid.subject }
-    const manifest = buildCreditScoreManifest(issuer)
-    expect(requiresRevocableCredentials(manifest)).toBeFalsy()
   })
 })
 
@@ -212,7 +189,7 @@ describe("validateManifestFormat", () => {
       credentialIssuer
     )
 
-    expect(hasPaths(manifest, ["presentation_definition", "format"])).toBe(true)
+    expect(hasPaths(manifest, ["presentation_definition"])).toBe(false)
     expect(validateManifestFormat(manifest)).toBe(true)
   })
 
