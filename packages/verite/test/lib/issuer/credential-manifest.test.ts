@@ -194,7 +194,7 @@ describe("validateManifestFormat", () => {
   })
 
   it("returns false if any of the fields are missing", async () => {
-    const issuerDid = await randomDidKey(randomBytes)
+    const issuerDid = randomDidKey(randomBytes)
     const credentialIssuer = { id: issuerDid.subject, name: "Verite" }
     const manifest = buildSampleProcessApprovalManifest(
       AttestationTypes.KYCAMLAttestation,

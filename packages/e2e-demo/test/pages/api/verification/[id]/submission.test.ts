@@ -37,7 +37,7 @@ describe("POST /verification/[id]/submission", () => {
       fullURL("/api/demos/verifier/callback")
     )
     await saveVerificationOffer(verificationRequest)
-    const clientDidKey = await randomDidKey(randomBytes)
+    const clientDidKey = randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
     const submission = await composePresentationSubmission(
@@ -75,7 +75,7 @@ describe("POST /verification/[id]/submission", () => {
       fullURL("/api/demos/verifier/callback")
     )
     await saveVerificationOffer(verificationRequest)
-    const clientDidKey = await randomDidKey(randomBytes)
+    const clientDidKey = randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
     const submission = await composePresentationSubmission(
@@ -122,7 +122,7 @@ describe("POST /verification/[id]/submission", () => {
       700
     )
     await saveVerificationOffer(verificationRequest)
-    const clientDidKey = await randomDidKey(randomBytes)
+    const clientDidKey = randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
     const submission = await composePresentationSubmission(
@@ -180,8 +180,9 @@ async function generateKycAmlVc(clientDidKey: DidKey) {
 
   const signedCredentials = await signVerifiableCredential(vcs, issuer)
   const fulfillment = await composeCredentialResponse(
-    issuer,
+    { applicant: clientDidKey.subject, id: uuidv4() },
     manifest,
+    issuer,
     signedCredentials
   )
 

@@ -30,8 +30,8 @@ import {
 export function buildSampleProcessApprovalManifest(
   attestationType: AttestationTypes,
   issuer: CredentialIssuer, // TOFIX: rename
-  presentation_definition?: PresentationDefinition, // TOFIX: ensure we have test coverage for this path
-  styles: EntityStyle = {}
+  styles: EntityStyle = {},
+  presentation_definition?: PresentationDefinition // TOFIX: ensure we have test coverage for this path
 ): CredentialManifest {
   const outputDescriptor = buildProcessApprovalOutputDescriptor(
     attestationType,

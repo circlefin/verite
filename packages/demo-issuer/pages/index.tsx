@@ -6,13 +6,14 @@ import { useState } from "react"
 import {
   randomDidKey,
   composeCredentialApplication,
-  verifyVerifiablePresentation,
   challengeTokenUrlWrapper,
   ChallengeTokenUrlWrapper,
   CredentialOffer,
   DecodedCredentialResponseWrapper,
-  DecodedCredentialApplication,
-  evaluateCredentialApplication
+  evaluateCredentialApplication,
+  DecodedCredentialApplicationWrapper,
+  buildIssuer,
+  decodeAndVerifyCredentialResponseJwt
 } from "verite"
 
 import type { RevocablePresentation, Verifiable, W3CPresentation } from "verite"
@@ -65,13 +66,14 @@ export default function Home({
 }): JSX.Element {
   // To simulate a mobile wallet, we generate a random keypair.
   const subject = randomDidKey(randomBytes)
+  const signer = buildIssuer(subject.subject, subject.privateKey)
 
   // Challenge Response
   const [challengeResponse, setChallengeResponse] = useState()
 
   // Credential Application
   const [credentialApplication, setCredentialApplication] =
-    useState<DecodedCredentialApplication>()
+    useState<DecodedCredentialApplicationWrapper>()
 
   // Credential Response
   const [credentialResponse, setCredentialResponse] =
@@ -103,7 +105,7 @@ export default function Home({
   // API call to apply for a credential
   const applyForCredential = async (offer: CredentialOffer) => {
     const manifest = offer.body.manifest
-    const application = await composeCredentialApplication(subject, manifest)
+    const application = await composeCredentialApplication(manifest, signer)
 
     const response = await fetch(offer.reply_url, {
       method: "POST",
@@ -112,15 +114,13 @@ export default function Home({
 
     if (response.ok) {
       const text = await response.text()
-      const presentation = (await verifyVerifiablePresentation(
-        text
-      )) as DecodedCredentialResponseWrapper
+      const decodedResponse = await decodeAndVerifyCredentialResponseJwt(text)
       const decodedApplication = await evaluateCredentialApplication(
         application,
         manifest
       )
       setCredentialApplication(decodedApplication)
-      setCredentialResponse(presentation)
+      setCredentialResponse(decodedResponse)
       setPresentation(presentation)
     }
   }
@@ -209,7 +209,7 @@ export default function Home({
     credentialApplication,
     presentation
   }: {
-    credentialApplication: DecodedCredentialApplication
+    credentialApplication: DecodedCredentialApplicationWrapper
     presentation: Presentation
   }) => {
     return (

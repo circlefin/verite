@@ -7,13 +7,13 @@ import {
   CREDIT_SCORE_MANIFEST_ID,
   buildProcessApprovalAttestation,
   buildSampleCreditScoreAttestation,
-  decodeCredentialApplication,
   attestationToVCSchema,
   manifestIdToAttestationType,
   attestationToCredentialType,
   CredentialPayloadBuilder,
   composeCredentialResponse,
-  signVerifiableCredential
+  signVerifiableCredential,
+  decodeAndVerifyCredentialApplicationJwt
 } from "verite"
 
 import { ManifestMap } from "../manifests"
@@ -40,7 +40,7 @@ export default async function credentials(
    * application. Since we are using JWTs to format the data, we first must
    * decode it.
    */
-  const application = await decodeCredentialApplication(req.body)
+  const application = await decodeAndVerifyCredentialApplicationJwt(req.body)
 
   /**
    * The user id has been passed along with the JWT as the subject. In a
@@ -79,15 +79,16 @@ export default async function credentials(
   const vcs = new CredentialPayloadBuilder()
     .issuer(issuer.did)
     .type(credentialType)
-    .attestations(application.holder, attestation)
+    .attestations(application.credential_application.applicant, attestation)
     .credentialSchema(credentialSchema)
     .build()
 
   // TODO: make function of below??
   const signedCredentials = await signVerifiableCredential(vcs, issuer)
   const presentation = await composeCredentialResponse(
-    issuer,
+    application.credential_application, // TOFIX: do we like this?
     manifest,
+    issuer,
     signedCredentials
   )
 

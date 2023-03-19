@@ -2,10 +2,11 @@ import {
   DidKey,
   CredentialManifest,
   composeCredentialApplication,
-  verifyVerifiablePresentation,
   Verifiable,
   W3CCredential,
-  VerificationError
+  VerificationError,
+  buildIssuer,
+  decodeAndVerifyCredentialResponseJwt
 } from "verite"
 
 import { saveDescriptor } from "./schemaRegistry"
@@ -17,7 +18,8 @@ export const requestIssuance = async (
   did: DidKey,
   manifest: CredentialManifest
 ): Promise<Verifiable<W3CCredential>[] | undefined> => {
-  const body = await composeCredentialApplication(did, manifest)
+  const signer = buildIssuer(did.subject, did.privateKey)
+  const body = await composeCredentialApplication(manifest, signer)
 
   const response = await fetch(url, {
     method: "POST",
@@ -29,11 +31,13 @@ export const requestIssuance = async (
     const text = await response.text()
 
     try {
-      // Decode the VP
-      const verifiablePresentation = await verifyVerifiablePresentation(text)
+      // Decode the credential response JWT
+      const credentialResponse = await decodeAndVerifyCredentialResponseJwt(
+        text
+      )
 
       // Extract the issued VC
-      const credentials = verifiablePresentation.verifiableCredential ?? []
+      const credentials = credentialResponse.verifiableCredential ?? []
 
       // Persist the credential and descriptor
       for (const [index, credential] of credentials.entries()) {

@@ -10,11 +10,11 @@ export enum AttestationTypes {
   CounterpartyAccountHolder = "CounterpartyAccountHolder"
 }
 
-type AttestationType = {
+export type AttestationType = {
   type: string
 }
 
-type AttestationProcessStatic = AttestationType & {
+export type ProcessAttestationType = AttestationType & {
   process: string
 }
 /**
@@ -29,7 +29,7 @@ export type Attestation =
   | AddressOwner
   | CounterpartyAccountHolder
 
-export type ProcessApprovalAttestation = AttestationProcessStatic & {
+export type ProcessApprovalAttestation = ProcessAttestationType & {
   approvalDate: string
 }
 
@@ -62,6 +62,8 @@ export type CounterpartyAccountHolder = AttestationType & {
 }
 
 export type AttestationDefinition = {
-  attestation: AttestationType | AttestationProcessStatic
+  attestation: AttestationType | ProcessAttestationType
+  revocable: boolean
   schema: string
+  expirationTerm?: number
 }

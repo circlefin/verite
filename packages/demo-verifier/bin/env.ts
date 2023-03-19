@@ -4,8 +4,8 @@ import internalIP from "internal-ip"
 import { randomDidKey } from "verite"
 
 async function setup(): Promise<void> {
-  const issuerDidKey = await randomDidKey(randomBytes)
-  const verifierDidKey = await randomDidKey(randomBytes)
+  const issuerDidKey = randomDidKey(randomBytes)
+  const verifierDidKey = randomDidKey(randomBytes)
   const jwtSecret = randomBytes(256).toString("base64")
 
   console.log(`NEXT_PUBLIC_ISSUER_DID=${issuerDidKey.subject}`)

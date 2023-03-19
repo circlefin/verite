@@ -2,22 +2,21 @@ import {
   attestationToCredentialType,
   CredentialManifest,
   validateCredentialApplication,
+  decodeAndVerifyCredentialResponseJwt,
   EncodedCredentialResponseWrapper,
   isRevocable,
   RevocableCredential,
   StatusList2021Entry,
   buildIssuer,
   revokeCredential,
-  verifyVerifiablePresentation,
   getManifestIdFromCredentialApplication,
-  requiresRevocableCredentials,
-  CREDIT_SCORE_MANIFEST_ID,
-  decodeCredentialApplication,
   attestationToVCSchema,
   manifestIdToAttestationType,
   CredentialPayloadBuilder,
   composeCredentialResponse,
-  signVerifiableCredential
+  signVerifiableCredential,
+  decodeAndVerifyCredentialApplicationJwt,
+  getAttestionDefinition
 } from "verite"
 
 import { apiHandler, requireMethod } from "../../../../lib/api-fns"
@@ -33,9 +32,6 @@ import {
 import { NotFoundError } from "../../../../lib/errors"
 import { buildAttestationForUser } from "../../../../lib/issuance/fulfillment"
 import { findManifestById } from "../../../../lib/manifest"
-
-const oneMinute = 60 * 1000
-const twoMonths = 2 * 30 * 24 * 60 * 60 * 1000
 
 /**
  * Handle a POST request to containing an empty Verifiable Presentation proving
@@ -56,7 +52,9 @@ export default apiHandler<EncodedCredentialResponseWrapper>(
     }
 
     // Decode the Credential Application and check the signature
-    const credentialApplication = await decodeCredentialApplication(req.body)
+    const credentialApplication = await decodeAndVerifyCredentialApplicationJwt(
+      req.body
+    )
 
     // Validate the format of the Verifiable Presentation.
     const manifestId = getManifestIdFromCredentialApplication(
@@ -65,18 +63,23 @@ export default apiHandler<EncodedCredentialResponseWrapper>(
     const manifest = await findManifestById(manifestId)
     await validateCredentialApplication(credentialApplication, manifest)
 
+    const attestationType = manifestIdToAttestationType(manifest.id)
+    const attestationDefinition = getAttestionDefinition(attestationType)
+
     // Build a revocation list and index if needed. We currently only need
     // a revocable credential for KYC/AML credentials.
-    const revocationList = await handleRevocationIfNecessary(user, manifest)
+    let revocationList: StatusList2021Entry
+    if (attestationDefinition.revocable) {
+      revocationList = await handleRevocation(user, manifest)
+    }
 
-    // If this is a Credit Score attestation, set the expiration to be
-    // one minute for the sake of a demo
-    const expirationDate =
-      manifest.id === CREDIT_SCORE_MANIFEST_ID
-        ? new Date(Date.now() + oneMinute)
-        : new Date(Date.now() + twoMonths)
+    // Set the expiration date if it's expirable. In the Verite implementation,
+    // we introduced a notion of an AttestationDefinition, which stores
+    // metadata such as expiration and revocability.
+    const expirationDate = new Date(
+      Date.now() + attestationDefinition.expirationTerm
+    )
 
-    const attestationType = manifestIdToAttestationType(manifest.id)
     const userAttestation = buildAttestationForUser(user, attestationType)
 
     const issuer = buildIssuer(
@@ -88,7 +91,10 @@ export default apiHandler<EncodedCredentialResponseWrapper>(
     const vcs = new CredentialPayloadBuilder()
       .issuer(issuer.did)
       .type(attestationToCredentialType(attestationType))
-      .attestations(credentialApplication.holder, userAttestation)
+      .attestations(
+        credentialApplication.credential_application.applicant,
+        userAttestation
+      )
       .credentialSchema(attestationToVCSchema(attestationType))
       .credentialStatus(revocationList)
       .expirationDate(expirationDate)
@@ -97,8 +103,9 @@ export default apiHandler<EncodedCredentialResponseWrapper>(
     // TODO: comgbine the following???
     const signedCredentials = await signVerifiableCredential(vcs, issuer)
     const fulfillment = await composeCredentialResponse(
-      issuer,
+      credentialApplication.credential_application,
       manifest,
+      issuer,
       signedCredentials
     )
 
@@ -113,16 +120,12 @@ export default apiHandler<EncodedCredentialResponseWrapper>(
  * existing credentials (optional) and generate a revocation list and index
  * for this credential
  */
-async function handleRevocationIfNecessary(
+async function handleRevocation(
   user: User,
   manifest: CredentialManifest
 ): Promise<StatusList2021Entry | undefined> {
-  if (requiresRevocableCredentials(manifest)) {
-    // Before we issue a new credential of this type to a user, revoke all their
-    // previous credentials of the same type.
-    await revokeUserCredentials(user, manifest.id)
-    return generateRevocationListStatus()
-  }
+  await revokeUserCredentials(user, manifest.id)
+  return generateRevocationListStatus()
 }
 
 /**
@@ -163,7 +166,9 @@ async function persistGeneratedCredentials(
   user: User,
   fulfillment: EncodedCredentialResponseWrapper
 ): Promise<void> {
-  const decodedPresentation = await verifyVerifiablePresentation(fulfillment)
+  const decodedResponse = await decodeAndVerifyCredentialResponseJwt(
+    fulfillment
+  )
 
-  await storeCredentials(decodedPresentation.verifiableCredential, user.id)
+  await storeCredentials(decodedResponse.verifiableCredential, user.id)
 }

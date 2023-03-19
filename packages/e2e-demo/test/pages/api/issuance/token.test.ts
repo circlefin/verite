@@ -2,7 +2,9 @@ import { randomBytes } from "crypto"
 import {
   composeCredentialApplication,
   verifyVerifiablePresentation,
-  randomDidKey
+  randomDidKey,
+  decodeAndVerifyCredentialResponseJwt,
+  buildIssuer
 } from "verite"
 
 import { temporaryAuthToken } from "../../../../lib/database"
@@ -11,8 +13,6 @@ import handler from "../../../../pages/api/demos/issuer/[token]"
 import { userFactory } from "../../../factories"
 import { createMocks } from "../../../support/mocks"
 
-import type { DecodedCredentialResponseWrapper } from "verite"
-
 const expiredPresentation =
   "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
 
@@ -20,11 +20,15 @@ describe("POST /issuance/[token]", () => {
   it("returns a KYC credential", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = randomDidKey(randomBytes)
+    const clientDidKey = randomDidKey(randomBytes)
+    const clientSigner = buildIssuer(
+      clientDidKey.subject,
+      clientDidKey.privateKey
+    )
     const manifest = await findManifestById("KYCAMLManifest")
     const credentialApplication = await composeCredentialApplication(
-      clientDid,
-      manifest
+      manifest,
+      clientSigner
     )
 
     const { req, res } = createMocks({
@@ -39,11 +43,9 @@ describe("POST /issuance/[token]", () => {
 
     const response = res._getData()
 
-    const presentation = (await verifyVerifiablePresentation(
-      response
-    )) as DecodedCredentialResponseWrapper
+    const decodedResponse = await decodeAndVerifyCredentialResponseJwt(response)
 
-    expect(presentation.credential_response.manifest_id).toEqual(
+    expect(decodedResponse.credential_response.manifest_id).toEqual(
       "KYCAMLManifest"
     )
   })
@@ -51,11 +53,12 @@ describe("POST /issuance/[token]", () => {
   it("returns a Credit Score credential", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = await randomDidKey(randomBytes)
+    const clientDid = randomDidKey(randomBytes)
+    const clientIssuer = buildIssuer(clientDid.subject, clientDid.privateKey)
     const manifest = await findManifestById("CreditScoreManifest")
     const credentialApplication = await composeCredentialApplication(
-      clientDid,
-      manifest
+      manifest,
+      clientIssuer
     )
 
     const { req, res } = createMocks({
@@ -70,9 +73,7 @@ describe("POST /issuance/[token]", () => {
 
     const response = res._getData()
 
-    const presentation = (await verifyVerifiablePresentation(
-      response
-    )) as DecodedCredentialResponseWrapper
+    const presentation = await decodeAndVerifyCredentialResponseJwt(response)
 
     expect(presentation.credential_response.manifest_id).toEqual(
       "CreditScoreManifest"
@@ -155,11 +156,12 @@ describe("POST /issuance/[token]", () => {
   it("returns a KYC credential with known input/output", async () => {
     const user = await userFactory()
     const token = await temporaryAuthToken(user)
-    const clientDid = await randomDidKey(randomBytes)
+    const clientDid = randomDidKey(randomBytes)
+    const clientIssuer = buildIssuer(clientDid.subject, clientDid.privateKey)
     const manifest = await findManifestById("KYCAMLManifest")
     const credentialApplication = await composeCredentialApplication(
-      clientDid,
-      manifest
+      manifest,
+      clientIssuer
     )
 
     const { req, res } = createMocks({
