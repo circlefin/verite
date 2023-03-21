@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid"
 
 import { buildKycVerificationOffer } from "../../lib/sample-data"
 import { buildProcessApprovalVC } from "../../lib/sample-data/verifiable-credentials"
-import { randomDidKey } from "../../lib/utils/did-fns"
+import { buildSignerFromDidKey, randomDidKey } from "../../lib/utils/did-fns"
 import { validatePresentationSubmission } from "../../lib/validators"
 import {
   composePresentationSubmission,
@@ -18,10 +18,12 @@ describe("E2E verification", () => {
     const issuerDidKey = randomDidKey(randomBytes)
     const subjectDidKey = randomDidKey(randomBytes)
     const verifierDidKey = randomDidKey(randomBytes)
+    const issuerSigner = buildSignerFromDidKey(issuerDidKey)
+    const subjectSigner = buildSignerFromDidKey(subjectDidKey)
 
     const jwtVc = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
+      issuerSigner,
       subjectDidKey.subject,
       revocationListFixture
     )
@@ -35,7 +37,7 @@ describe("E2E verification", () => {
 
     // 3. CLIENT: Create verification submission (wraps a presentation submission)
     const encodedSubmission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       kycRequest.body.presentation_definition,
       jwtVc
     )

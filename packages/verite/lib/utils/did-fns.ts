@@ -7,7 +7,7 @@ import Multibase from "multibase"
 import Multicodec from "multicodec"
 import { getResolver as getWebResolver } from "web-did-resolver"
 
-import type { DidKey, Issuer } from "../../types"
+import type { Signer, DidJwtIssuer, DidKey } from "../../types"
 
 type RandomBytesMethod = (size: number) => Uint8Array
 
@@ -20,9 +20,9 @@ const base58Matcher = /^([1-9A-HJ-NP-Za-km-z]{44}|[1-9A-HJ-NP-Za-km-z]{88})$/
 const base64Matcher = /^([0-9a-zA-Z=\-_+/]{43}|[0-9a-zA-Z=\-_+/]{86})(={0,2})$/
 
 /**
- * Generate a `DidKey` for a given a seed function.
+ * Generate a `Signer` for a given a seed function.
  *
- * @returns a `DidKey` object containing public and private keys.
+ * @returns a `Signer` object containing public and private keys.
  */
 export function generateDidKey({ secureRandom }: GenerateDidKeyParams): DidKey {
   const key = ed25519.generateKeyPair({
@@ -30,16 +30,10 @@ export function generateDidKey({ secureRandom }: GenerateDidKeyParams): DidKey {
     randomBytes: secureRandom
   })
 
-  const methodSpecificId = Buffer.from(
-    Multibase.encode(
-      "base58btc",
-      Multicodec.addPrefix("ed25519-pub", Buffer.from(key.publicKey))
-    )
-  ).toString()
+  const methodSpecificId = toMethodSpecificId(key)
 
   const controller = `did:key:${methodSpecificId}`
   const id = `${controller}#${methodSpecificId}`
-
   return {
     id: id,
     subject: `did:key:${methodSpecificId}`,
@@ -82,15 +76,48 @@ export function parseKey(input: string | Uint8Array): Uint8Array {
 /**
  * Build an issuer from a did and private key
  */
-export function buildIssuer(
+function buildDidJwtIssuer(
   did: string,
   privateKey: string | Uint8Array
-): Issuer {
+): DidJwtIssuer {
   return {
     did,
     signer: EdDSASigner(parseKey(privateKey)),
     alg: "EdDSA"
   }
+}
+
+/**
+ * Build a signer from a did and private key
+ */
+export function buildSigner(
+  did: string,
+  privateKey: string | Uint8Array
+): Signer {
+  const secretKey = parseKey(privateKey)
+  const publicKey = ed25519.extractPublicKeyFromSecretKey(secretKey)
+
+  return {
+    did,
+    signerImpl: buildDidJwtIssuer(did, privateKey),
+    keyId: toMethodSpecificId({ publicKey, secretKey })
+  }
+}
+
+/**
+ * Build a signer from a Signer
+ */
+export function buildSignerFromDidKey(didKey: DidKey): Signer {
+  return buildSigner(didKey.controller, didKey.privateKey)
+}
+
+function toMethodSpecificId(key: ed25519.KeyPair) {
+  return Buffer.from(
+    Multibase.encode(
+      "base58btc",
+      Multicodec.addPrefix("ed25519-pub", Buffer.from(key.publicKey))
+    )
+  ).toString()
 }
 
 const didWebResolver = getWebResolver()

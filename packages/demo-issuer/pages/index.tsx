@@ -13,7 +13,8 @@ import {
   evaluateCredentialApplication,
   DecodedCredentialApplicationWrapper,
   buildIssuer,
-  decodeAndVerifyCredentialResponseJwt
+  decodeAndVerifyCredentialResponseJwt,
+  decodeAndVerifyCredentialApplicationJwt
 } from "verite"
 
 import type { RevocablePresentation, Verifiable, W3CPresentation } from "verite"
@@ -114,7 +115,9 @@ export default function Home({
 
     if (response.ok) {
       const text = await response.text()
-      const decodedResponse = await decodeAndVerifyCredentialResponseJwt(text)
+      const decodedResponse = await decodeAndVerifyCredentialApplicationJwt(
+        text
+      )
       const decodedApplication = await evaluateCredentialApplication(
         application,
         manifest

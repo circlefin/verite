@@ -10,7 +10,7 @@ import {
 import type {
   CredentialPayload,
   EncodedStatusListCredential,
-  Issuer,
+  Signer,
   RevocableCredential,
   StatusList,
   StatusList2021Credential
@@ -32,7 +32,7 @@ type GenerateRevocationListOptions = {
   /**
    * The credential signer
    */
-  signer: Issuer
+  signer: Signer
   /**
    * The creation date of this revocation list. Defaults to now
    */
@@ -97,7 +97,7 @@ export const generateRevocationList = async (
 export const revokeCredential = async (
   credential: RevocableCredential,
   revocationList: StatusList2021Credential,
-  signer: Issuer
+  signer: Signer
 ): Promise<StatusList2021Credential> => {
   /**
    * If the credential is not revocable, it can not be revoked
@@ -117,7 +117,7 @@ export const revokeCredential = async (
     statusList: indexArray,
     url: revocationList.id,
     issuer: signer.did,
-    signer
+    signer: signer
   })
 }
 
@@ -132,7 +132,7 @@ export const revokeCredential = async (
 export const unrevokeCredential = async (
   credential: RevocableCredential,
   revocationList: StatusList2021Credential,
-  signer: Issuer
+  signer: Signer
 ): Promise<StatusList2021Credential> => {
   /**
    * If the credential is not revocable, it can not be revoked
@@ -157,6 +157,6 @@ export const unrevokeCredential = async (
     statusList: indexArray,
     url: revocationList.id,
     issuer: signer.did,
-    signer
+    signer: signer
   })
 }

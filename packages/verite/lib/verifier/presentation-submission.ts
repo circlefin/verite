@@ -1,6 +1,6 @@
 import {
   DecodedPresentationSubmission,
-  DidKey,
+  Signer,
   EncodedPresentationSubmission,
   LatestPresentationPayload,
   PresentationDefinition,
@@ -9,7 +9,6 @@ import {
 } from "../../types"
 import { PresentationPayloadBuilder } from "../builders"
 import {
-  buildIssuer,
   signVerifiablePresentation,
   verifyVerifiablePresentation
 } from "../utils"
@@ -41,7 +40,7 @@ export function buildPresentationSubmission(
 }
 
 export async function composePresentationSubmission(
-  didKey: DidKey,
+  signer: Signer,
   presentationDefinition: PresentationDefinition,
   verifiableCredential:
     | Verifiable<W3CCredential>
@@ -55,9 +54,7 @@ export async function composePresentationSubmission(
     verifiableCredential
   )
 
-  // TOFIX: does this need to be exposed as alias too?
-  const client = buildIssuer(didKey.subject, didKey.privateKey)
-  const vp = await signVerifiablePresentation(submission, client, options)
+  const vp = await signVerifiablePresentation(submission, signer, options)
 
   return vp
 }

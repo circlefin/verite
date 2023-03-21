@@ -5,7 +5,7 @@ import {
   CredentialManifest,
   CredentialResponseWrapper,
   DecodedCredentialResponseWrapper,
-  Issuer,
+  Signer,
   JWT
 } from "../../types"
 import { CredentialApplicationWrapperBuilder } from "../builders"
@@ -18,7 +18,7 @@ import { signVeriteJwt } from "."
 export async function composeCredentialResponse(
   application: Partial<CredentialApplication>,
   manifest: CredentialManifest,
-  issuer: Issuer,
+  signer: Signer,
   vc: JWT | JWT[]
 ): Promise<JWT> {
   const credentialResponse = new CredentialResponseWrapperBuilder()
@@ -29,25 +29,25 @@ export async function composeCredentialResponse(
     .verifiableCredential(vc)
     .build()
 
-  const responseJwt = await signVeriteJwt(credentialResponse, issuer)
+  const responseJwt = await signVeriteJwt(credentialResponse, signer)
   return responseJwt
 }
 
 // TOFIX: ditto above?
 export async function composeCredentialApplication(
   manifest: CredentialManifest,
-  issuer: Issuer,
+  signer: Signer,
   verifiableCredential?: JWT | JWT[]
 ): Promise<JWT> {
   const application = new CredentialApplicationWrapperBuilder()
     .withCredentialApplication((a) => {
       a.initFromManifest(manifest)
-      a.applicant(issuer.did)
+      a.applicant(signer.did)
     })
     .verifiableCredential(verifiableCredential)
     .build()
 
-  const responseJwt = await signVeriteJwt(application, issuer)
+  const responseJwt = await signVeriteJwt(application, signer)
   return responseJwt
 }
 

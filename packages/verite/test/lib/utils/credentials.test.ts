@@ -1,9 +1,9 @@
 import { VerificationError } from "../../../lib/errors"
 import {
-  buildIssuer,
   verifyVerifiableCredential,
   verifyVerifiablePresentation,
-  signVerifiableCredential
+  signVerifiableCredential,
+  buildSigner
 } from "../../../lib/utils"
 
 import type { CredentialPayload } from "../../../types"
@@ -43,16 +43,15 @@ describe("VC decoding", () => {
 
 describe("VC signing", () => {
   it("signs a VC", async () => {
-    const signer = buildIssuer(
-      "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
+    const issuerDid = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+    const privateKey =
       "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
-    )
-    const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+    const signer = buildSigner(issuerDid, privateKey)
     const issuanceDate = new Date()
     const vcPayload: CredentialPayload = {
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       type: ["VerifiableCredential"],
-      issuer: issuer,
+      issuer: issuerDid,
       issuanceDate: issuanceDate,
       credentialSubject: {
         degree: {

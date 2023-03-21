@@ -20,7 +20,7 @@ import {
   buildCreditScoreVC,
   buildProcessApprovalVC
 } from "../../../lib/sample-data/verifiable-credentials"
-import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { buildSignerFromDidKey, randomDidKey } from "../../../lib/utils/did-fns"
 import { validatePresentationSubmission } from "../../../lib/validators"
 import {
   composePresentationSubmission,
@@ -30,11 +30,11 @@ import {
   AttestationTypes,
   CredentialSchema,
   DecodedPresentationSubmission,
-  DidKey,
+  Signer,
   EncodedPresentationSubmission,
-  Issuer,
   PresentationDefinition,
-  VerificationOffer
+  VerificationOffer,
+  DidKey
 } from "../../../types"
 import {
   creditScoreAttestationFixture,
@@ -46,18 +46,19 @@ const unrecognizedAttestationSchema: CredentialSchema = {
   type: "SomeUnknownAttestation"
 }
 
-let subjectDidKey: DidKey
-let issuerDidKey: DidKey
+let subjectDid: string
+let issuerDid: string
 let verifierDidKey: DidKey
-let issuer: Issuer
+let subjectSigner: Signer
+let issuerSigner: Signer
 let presentationDefinition: PresentationDefinition
 let decodedSubmission: DecodedPresentationSubmission
 
 async function prepare(attestationType: AttestationTypes): Promise<void> {
   const preparedVC = await buildProcessApprovalVC(
     attestationType,
-    issuerDidKey,
-    subjectDidKey.subject,
+    issuerSigner,
+    subjectDid,
     revocationListFixture
   )
 
@@ -65,7 +66,7 @@ async function prepare(attestationType: AttestationTypes): Promise<void> {
     buildProcessApprovalPresentationDefinition(attestationType)
 
   const encodedSubmission = await composePresentationSubmission(
-    subjectDidKey,
+    subjectSigner,
     presentationDefinition,
     preparedVC
   )
@@ -74,18 +75,22 @@ async function prepare(attestationType: AttestationTypes): Promise<void> {
 }
 
 beforeEach(() => {
-  subjectDidKey = randomDidKey(randomBytes)
-  issuerDidKey = randomDidKey(randomBytes)
+  const subjectDidKey = randomDidKey(randomBytes)
+  const issuerDidKey = randomDidKey(randomBytes)
   verifierDidKey = randomDidKey(randomBytes)
-  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
+  issuerSigner = buildSignerFromDidKey(issuerDidKey)
+  subjectSigner = buildSignerFromDidKey(subjectDidKey)
+
+  subjectDid = subjectSigner.did
+  issuerDid = issuerSigner.did
 })
 
 describe("Presentation Submission validator", () => {
   it("validates a KYC Presentation Submission", async () => {
     const clientVC = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject
+      issuerSigner,
+      subjectDid
     )
 
     const verificationRequest = buildVerificationOffer(
@@ -94,11 +99,11 @@ describe("Presentation Submission validator", () => {
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuerDidKey.subject]
+      [issuerDid]
     )
 
     const submission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       verificationRequest.body.presentation_definition,
       clientVC
     )
@@ -114,23 +119,19 @@ describe("Presentation Submission validator", () => {
   })
 
   it("validates a Credit Score Presentation Submission", async () => {
-    const clientVC = await buildCreditScoreVC(
-      issuerDidKey,
-      subjectDidKey.subject,
-      700
-    )
+    const clientVC = await buildCreditScoreVC(issuerSigner, subjectDid, 700)
 
     const verificationRequest = buildCreditScoreVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuer.did],
+      [issuerDid],
       creditScoreAttestationFixture.score
     )
 
     const submission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       verificationRequest.body.presentation_definition,
       clientVC
     )
@@ -147,13 +148,13 @@ describe("Presentation Submission validator", () => {
   it("validates a Hybrid Presentation Submission", async () => {
     const vc1 = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject,
+      issuerSigner,
+      subjectDid,
       revocationListFixture
     )
     const vc2 = await buildCreditScoreVC(
-      issuerDidKey,
-      subjectDidKey.subject,
+      issuerSigner,
+      subjectDid,
       700,
       revocationListFixture
     )
@@ -166,7 +167,7 @@ describe("Presentation Submission validator", () => {
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuer.did]
+      [issuerDid]
     )
 
     const creditScorePres = creditScorePresentationDefinition()
@@ -175,7 +176,7 @@ describe("Presentation Submission validator", () => {
         creditScorePres.input_descriptors
       )
     const submission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       verificationRequest.body.presentation_definition,
       creds
     )
@@ -192,8 +193,8 @@ describe("Presentation Submission validator", () => {
   it("rejects if the issuer is not trusted", async () => {
     const clientVC = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject
+      issuerSigner,
+      subjectDid
     )
 
     const verificationRequest = buildKycVerificationOffer(
@@ -205,7 +206,7 @@ describe("Presentation Submission validator", () => {
     )
 
     const submission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       verificationRequest.body.presentation_definition,
       clientVC
     )
@@ -218,11 +219,7 @@ describe("Presentation Submission validator", () => {
   })
 
   it("rejects if the credit score is too low", async () => {
-    const clientVC = await buildCreditScoreVC(
-      issuerDidKey,
-      subjectDidKey.subject,
-      200
-    )
+    const clientVC = await buildCreditScoreVC(issuerSigner, subjectDid, 200)
     const minimumCreditScore = 600
 
     const verificationRequest = buildCreditScoreVerificationOffer(
@@ -230,12 +227,12 @@ describe("Presentation Submission validator", () => {
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuer.did],
+      [issuerDid],
       minimumCreditScore
     )
 
     const submission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       verificationRequest.body.presentation_definition,
       clientVC
     )
@@ -250,8 +247,8 @@ describe("Presentation Submission validator", () => {
   it("rejects if the submission includes a KYC credential when a Credit Score is required", async () => {
     const clientVC = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject
+      issuerSigner,
+      subjectDid
     )
 
     // Generate Credit Score Request, even though we have a KYC credential
@@ -260,12 +257,12 @@ describe("Presentation Submission validator", () => {
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuer.did],
+      [issuerDid],
       800
     )
 
     const submission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       verificationRequest.body.presentation_definition,
       clientVC
     )
@@ -280,8 +277,8 @@ describe("Presentation Submission validator", () => {
   it("rejects if the submission is not signed by the subject", async () => {
     const clientVC = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject
+      issuerSigner,
+      subjectDid
     )
 
     const verificationRequest = buildKycVerificationOffer(
@@ -289,12 +286,15 @@ describe("Presentation Submission validator", () => {
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuer.did]
+      [issuerDid]
     )
 
     const differentHolderThanSubject = randomDidKey(randomBytes)
+    const differentHolderSigner = buildSignerFromDidKey(
+      differentHolderThanSubject
+    )
     const submission = await composePresentationSubmission(
-      differentHolderThanSubject,
+      differentHolderSigner,
       verificationRequest.body.presentation_definition,
       clientVC
     )
@@ -312,24 +312,24 @@ describe("Presentation Submission validator", () => {
     )
 
     const vc = new CredentialPayloadBuilder()
-      .issuer(issuer.did)
-      .attestations(subjectDidKey.subject, sampleAttestation)
+      .issuer(issuerSigner.did)
+      .attestations(subjectDid, sampleAttestation)
       .type(attestationToCredentialType(AttestationTypes.KYCAMLAttestation))
       .credentialSchema(unrecognizedAttestationSchema)
       .build()
 
-    const signedVc = await signVerifiableCredential(vc, issuer)
+    const signedVc = await signVerifiableCredential(vc, issuerSigner)
 
     const verificationRequest = buildKycVerificationOffer(
       uuidv4(),
       verifierDidKey.subject,
       "https://test.host/verify",
       "https://other.host/callback",
-      [issuer.did]
+      [issuerDid]
     )
 
     const submission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       verificationRequest.body.presentation_definition,
       signedVc
     )

@@ -8,15 +8,16 @@ import {
   verifyVerifiableCredential,
   signVerifiableCredential,
   generateBitstring,
-  buildIssuer,
-  isRevoked
+  isRevoked,
+  buildSigner
 } from "../../../lib/utils"
 
 import type {
   CredentialPayload,
-  Issuer,
+  Signer,
   Revocable,
-  RevocableCredential
+  RevocableCredential,
+  DidKey
 } from "../../../types"
 
 const vectors = [
@@ -42,13 +43,13 @@ const vectors = [
 
 const credentialFactory = async (
   index: number,
-  signer: Issuer
+  issuerSigner: Signer
 ): Promise<RevocableCredential> => {
   const vcPayload: Revocable<CredentialPayload> = {
     "@context": ["https://www.w3.org/2018/credentials/v1"],
     sub: "did:web:example.com",
     type: ["VerifiableCredential"],
-    issuer: signer.did,
+    issuer: issuerSigner.did,
     issuanceDate: new Date(),
     credentialSubject: {
       id: "did:web:example.com",
@@ -62,37 +63,40 @@ const credentialFactory = async (
       statusListCredential: "http://example.com/revocation"
     }
   }
-  const vcJwt = await signVerifiableCredential(vcPayload, signer)
+  const vcJwt = await signVerifiableCredential(vcPayload, issuerSigner)
   return verifyVerifiableCredential(vcJwt) as Promise<RevocableCredential>
 }
 
 const statusListFactory = async (statusList: number[]) => {
   const url = "https://example.com/credentials/status/3" // Need to create a list
-  const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-  const signer = buildIssuer(
-    "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
-    "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
-  )
   const issuanceDate = new Date()
 
   return generateRevocationList({
     statusList,
     url,
-    issuer,
-    signer,
+    issuer: issuerDid,
+    signer: issuerSigner,
     issuanceDate
   })
 }
+
+const privateKey =
+  "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
+const issuerDid = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
+let issuerSigner: Signer
+
+beforeEach(() => {
+  issuerSigner = buildSigner(issuerDid, privateKey)
+})
 
 describe("Status List 2021", () => {
   it("generateRevocationList", async () => {
     const statusList = [3]
     const url = "https://example.com/credentials/status/3" // Need to create a list
-    const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
 
     const vc = await statusListFactory(statusList)
     expect(vc.id).toBe(`${url}`)
-    expect(vc.issuer.id).toBe(issuer)
+    expect(vc.issuer.id).toBe(issuerDid)
     expect(vc.credentialSubject.type).toBe("StatusList2021")
     expect(vc.credentialSubject.statusPurpose).toBe("revocation")
     expect(vc.credentialSubject.encodedList).toBe(
@@ -103,33 +107,28 @@ describe("Status List 2021", () => {
   describe("#isRevoked", () => {
     it("returns false if the given credential has no credentialStatus", async () => {
       const statusList = [3]
-      const url = "https://example.com/credentials/status/3" // Need to create a list
-      const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-      const signer = buildIssuer(
-        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
-        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
-      )
+      const url = "https://example.com/credentials/status/3" // Need to create a lis
       const issuanceDate = new Date()
 
       const revocationList = await generateRevocationList({
         statusList,
         url,
-        issuer,
-        signer,
+        issuer: issuerDid,
+        signer: issuerSigner,
         issuanceDate
       })
 
       const vcPayload: CredentialPayload = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
         type: ["VerifiableCredential"],
-        issuer,
+        issuer: issuerDid,
         issuanceDate,
         credentialSubject: {
           id: "did:web:example.com",
           foo: "bar"
         }
       }
-      const vcJwt = await signVerifiableCredential(vcPayload, signer)
+      const vcJwt = await signVerifiableCredential(vcPayload, issuerSigner)
       const credential = await verifyVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
@@ -139,18 +138,14 @@ describe("Status List 2021", () => {
     it("returns false if the given credential has a credentialSubject that is not revoked", async () => {
       const statusList: number[] = []
       const url = "https://example.com/credentials/status/3" // Need to create a list
-      const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-      const signer = buildIssuer(
-        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
-        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
-      )
+
       const issuanceDate = new Date()
 
       const revocationList = await generateRevocationList({
         statusList,
         url,
-        issuer,
-        signer,
+        issuer: issuerDid,
+        signer: issuerSigner,
         issuanceDate
       })
       const index = 3
@@ -158,7 +153,7 @@ describe("Status List 2021", () => {
       const vcPayload: Revocable<CredentialPayload> = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
         type: ["VerifiableCredential"],
-        issuer,
+        issuer: issuerDid,
         issuanceDate,
         credentialSubject: {
           id: "did:web:example.com",
@@ -172,7 +167,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await signVerifiableCredential(vcPayload, signer)
+      const vcJwt = await signVerifiableCredential(vcPayload, issuerSigner)
       const credential = await verifyVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
@@ -182,18 +177,13 @@ describe("Status List 2021", () => {
     it("returns true if the given credential has a revoked", async () => {
       const statusList = [3]
       const url = "https://example.com/credentials/status/3" // Need to create a list
-      const issuer = "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m"
-      const signer = buildIssuer(
-        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
-        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
-      )
       const issuanceDate = new Date()
 
       const revocationList = await generateRevocationList({
         statusList,
         url,
-        issuer,
-        signer,
+        issuer: issuerDid,
+        signer: issuerSigner,
         issuanceDate
       })
       const index = 3
@@ -201,7 +191,7 @@ describe("Status List 2021", () => {
       const vcPayload: Revocable<CredentialPayload> = {
         "@context": ["https://www.w3.org/2018/credentials/v1"],
         type: ["VerifiableCredential"],
-        issuer,
+        issuer: issuerDid,
         issuanceDate,
         credentialSubject: {
           id: "did:web:example.com",
@@ -215,7 +205,7 @@ describe("Status List 2021", () => {
           statusListCredential: url
         }
       }
-      const vcJwt = await signVerifiableCredential(vcPayload, signer)
+      const vcJwt = await signVerifiableCredential(vcPayload, issuerSigner)
       const credential = await verifyVerifiableCredential(vcJwt)
 
       const revoked = await isRevoked(credential, revocationList)
@@ -225,19 +215,18 @@ describe("Status List 2021", () => {
 
   describe("revokeCredential", () => {
     it("updates the status list credential", async () => {
-      const signer = buildIssuer(
-        "did:key:z6MksGKh23mHZz2FpeND6WxJttd8TWhkTga7mtbM1x1zM65m",
-        "1f0465e2546027554c41584ca53971dfc3bf44f9b287cb15b5732ad84adb4e63be5aa9b3df96e696f4eaa500ec0b58bf5dfde59200571b44288cc9981279a238"
-      )
-
-      const credential = await credentialFactory(3, signer)
+      const credential = await credentialFactory(3, issuerSigner)
       let statusList = await statusListFactory([])
       expect(await isRevoked(credential, statusList)).toBe(false)
 
-      statusList = await revokeCredential(credential, statusList, signer)
+      statusList = await revokeCredential(credential, statusList, issuerSigner)
       expect(await isRevoked(credential, statusList)).toBe(true)
 
-      statusList = await unrevokeCredential(credential, statusList, signer)
+      statusList = await unrevokeCredential(
+        credential,
+        statusList,
+        issuerSigner
+      )
       expect(await isRevoked(credential, statusList)).toBe(false)
     })
   })

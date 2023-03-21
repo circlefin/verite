@@ -11,29 +11,31 @@ import {
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../../lib/sample-data"
 import { buildProcessApprovalVC } from "../../../lib/sample-data/verifiable-credentials"
-import { randomDidKey } from "../../../lib/utils"
+import { buildSignerFromDidKey, randomDidKey } from "../../../lib/utils"
 import {
   composePresentationSubmission,
   decodePresentationSubmission
 } from "../../../lib/verifier/presentation-submission"
 import {
   AttestationTypes,
-  DidKey,
+  Signer,
   JWT,
   PresentationDefinition
 } from "../../../types"
 import { revocationListFixture } from "../../fixtures"
 
-let subjectDidKey: DidKey
-let issuerDidKey: DidKey
+let issuerDid: string
+let subjectDid: string
+let subjectSigner: Signer
+let issuerSigner: Signer
 let preparedVC: JWT
 let preparedPresentationDefinition: PresentationDefinition
 
 async function prepare(attestationType: AttestationTypes): Promise<void> {
   preparedVC = await buildProcessApprovalVC(
     attestationType,
-    issuerDidKey,
-    subjectDidKey.subject,
+    issuerSigner,
+    subjectDid,
     revocationListFixture
   )
 
@@ -42,15 +44,19 @@ async function prepare(attestationType: AttestationTypes): Promise<void> {
 }
 
 beforeEach(() => {
-  subjectDidKey = randomDidKey(randomBytes)
-  issuerDidKey = randomDidKey(randomBytes)
+  const subjectDidKey = randomDidKey(randomBytes)
+  const issuerDidKey = randomDidKey(randomBytes)
+  subjectSigner = buildSignerFromDidKey(subjectDidKey)
+  issuerSigner = buildSignerFromDidKey(issuerDidKey)
+  subjectDid = subjectDidKey.controller
+  issuerDid = issuerDidKey.controller
 })
 describe("composePresentationSubmission", () => {
   it("composes a KYCAML Presentation Submission", async () => {
     const sample = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject,
+      issuerSigner,
+      subjectDid,
       revocationListFixture
     )
 
@@ -62,7 +68,7 @@ describe("composePresentationSubmission", () => {
 
     // Compose Presentation Submission
     const encodedSubmission = await composePresentationSubmission(
-      subjectDidKey,
+      subjectSigner,
       presentationDefinition,
       sample
     )
@@ -88,7 +94,7 @@ describe("composePresentationSubmission", () => {
         {
           type: ["VerifiableCredential", "KYCAMLCredential"],
           credentialSubject: {
-            id: subjectDidKey.subject,
+            id: subjectDid,
             KYCAMLAttestation: {
               type: "KYCAMLAttestation",
               process:
@@ -96,7 +102,7 @@ describe("composePresentationSubmission", () => {
               // approvalDate: attestation.approvalDate,
             }
           },
-          issuer: { id: issuerDidKey.subject }
+          issuer: { id: issuerDid }
         }
       ]
     })
@@ -125,14 +131,14 @@ describe("composePresentationSubmission", () => {
     expect(query[0]).toMatchObject({
       type: ["VerifiableCredential", "KYCAMLCredential"],
       credentialSubject: {
-        id: subjectDidKey.subject,
+        id: subjectDid,
         KYCAMLAttestation: {
           type: "KYCAMLAttestation",
           process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
           // approvalDate: attestation.approvalDate,
         }
       },
-      issuer: { id: issuerDidKey.subject }
+      issuer: { id: issuerDid }
     })
   })
 
@@ -168,7 +174,7 @@ describe("composePresentationSubmission", () => {
 
       // Compose Presentation Submission
       const encodedSubmission = await composePresentationSubmission(
-        subjectDidKey,
+        subjectSigner,
         preparedPresentationDefinition,
         preparedVC
       )

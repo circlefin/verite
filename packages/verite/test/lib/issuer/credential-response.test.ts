@@ -12,25 +12,22 @@ import {
   buildCreditScoreVC,
   buildProcessApprovalVC
 } from "../../../lib/sample-data/verifiable-credentials"
-import { buildIssuer, randomDidKey } from "../../../lib/utils"
-import {
-  AttestationTypes,
-  CredentialIssuer,
-  DidKey,
-  Issuer
-} from "../../../types"
+import { buildSignerFromDidKey, randomDidKey } from "../../../lib/utils"
+import { AttestationTypes, CredentialIssuer, Signer } from "../../../types"
 import { revocationListFixture } from "../../fixtures/revocation-list"
 
-let subjectDidKey: DidKey
-let issuerDidKey: DidKey
-let issuer: Issuer
+let subjectDid: string
+let issuerDid: string
 let credentialIssuer: CredentialIssuer
+let issuerSigner: Signer
 
 beforeEach(() => {
-  subjectDidKey = randomDidKey(randomBytes)
-  issuerDidKey = randomDidKey(randomBytes)
-  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-  credentialIssuer = { id: issuer.did, name: "Verite" }
+  const subjectDidKey = randomDidKey(randomBytes)
+  const issuerDidKey = randomDidKey(randomBytes)
+  issuerSigner = buildSignerFromDidKey(issuerDidKey)
+  credentialIssuer = { id: issuerDid, name: "Verite" }
+  subjectDid = subjectDidKey.subject
+  issuerDid = issuerDidKey.subject
 })
 
 describe("composeCredentialResponse", () => {
@@ -43,18 +40,18 @@ describe("composeCredentialResponse", () => {
     // TOFIX: confusing name
     const vc = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject,
+      issuerSigner,
+      subjectDid,
       revocationListFixture
     )
 
     const encodedResponse = await composeCredentialResponse(
       {
-        applicant: subjectDidKey.subject,
+        applicant: subjectDid,
         id: "5f22f1ea-0441-4041-916b-2504a2a4075c"
       },
       manifest,
-      issuer,
+      issuerSigner,
       vc
     )
 
@@ -86,10 +83,10 @@ describe("composeCredentialResponse", () => {
                 "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
               // approvalDate: "2021-11-12T18:56:16.508Z",
             },
-            id: subjectDidKey.subject
+            id: subjectDid
           },
           issuer: {
-            id: issuer.did
+            id: issuerDid
           },
           type: ["VerifiableCredential", "KYCAMLCredential"],
           "@context": [
@@ -117,13 +114,13 @@ describe("composeCredentialResponse", () => {
 
     const vc1 = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
-      issuerDidKey,
-      subjectDidKey.subject,
+      issuerSigner,
+      subjectDid,
       revocationListFixture
     )
     const vc2 = await buildCreditScoreVC(
-      issuerDidKey,
-      subjectDidKey.subject,
+      issuerSigner,
+      subjectDid,
       700,
       revocationListFixture
     )
@@ -132,11 +129,11 @@ describe("composeCredentialResponse", () => {
 
     const encodedResponse = await composeCredentialResponse(
       {
-        applicant: subjectDidKey.subject,
+        applicant: subjectDid,
         id: "5f22f1ea-0441-4041-916b-2504a2a4075c"
       },
       manifest,
-      issuer,
+      issuerSigner,
       creds
     )
 
@@ -166,7 +163,7 @@ describe("composeCredentialResponse", () => {
       verifiableCredential: [
         {
           credentialSubject: {
-            id: subjectDidKey.subject,
+            id: subjectDid,
             KYCAMLAttestation: {
               type: "KYCAMLAttestation",
               process:
@@ -174,7 +171,7 @@ describe("composeCredentialResponse", () => {
             }
           },
           issuer: {
-            id: issuer.did
+            id: issuerDid
           },
           type: ["VerifiableCredential", "KYCAMLCredential"],
           "@context": [
@@ -186,7 +183,7 @@ describe("composeCredentialResponse", () => {
         },
         {
           credentialSubject: {
-            id: subjectDidKey.subject,
+            id: subjectDid,
             CreditScoreAttestation: {
               type: "CreditScoreAttestation",
               score: 700,
@@ -195,7 +192,7 @@ describe("composeCredentialResponse", () => {
             }
           },
           issuer: {
-            id: issuer.did
+            id: issuerDid
           },
           type: ["VerifiableCredential", "CreditScoreCredential"],
           "@context": [

@@ -5,26 +5,26 @@ import {
   evaluateCredentialApplication
 } from "../../../lib"
 import { buildSampleProcessApprovalManifest } from "../../../lib/sample-data"
-import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { buildSignerFromDidKey, randomDidKey } from "../../../lib/utils/did-fns"
 import {
   AttestationTypes,
   CredentialIssuer,
   DidKey,
-  Issuer
+  Signer
 } from "../../../types"
 
 let subjectDidKey: DidKey
 let issuerDidKey: DidKey
-let issuer: Issuer
-let subjectIssuer: Issuer
+let subjectSigner: Signer
+let issuerSigner: Signer
 let credentialIssuer: CredentialIssuer
 
 beforeEach(() => {
   subjectDidKey = randomDidKey(randomBytes)
   issuerDidKey = randomDidKey(randomBytes)
-  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-  subjectIssuer = buildIssuer(subjectDidKey.subject, subjectDidKey.privateKey)
-  credentialIssuer = { id: issuer.did, name: "Verite" }
+  subjectSigner = buildSignerFromDidKey(subjectDidKey)
+  issuerSigner = buildSignerFromDidKey(issuerDidKey)
+  credentialIssuer = { id: issuerSigner.did, name: "Verite" }
 })
 
 describe("Credential Application validator", () => {
@@ -36,7 +36,7 @@ describe("Credential Application validator", () => {
 
     const credentialApplication = await composeCredentialApplication(
       kycManifest,
-      subjectIssuer
+      subjectSigner
     )
 
     evaluateCredentialApplication(credentialApplication, kycManifest)
@@ -54,7 +54,7 @@ describe("Credential Application validator", () => {
 
     const credentialApplication = await composeCredentialApplication(
       kycManifest,
-      subjectIssuer
+      subjectSigner
     )
 
     const application = await evaluateCredentialApplication(
@@ -62,6 +62,19 @@ describe("Credential Application validator", () => {
       kycManifest
     )
 
-    console.log(JSON.stringify(application, null, 2))
+    expect(application).toMatchObject({
+      credential_application: {
+        // "id": "ec2ab55f-de4a-4586-8b6c-be816978b23a",
+        spec_version:
+          "https://identity.foundation/credential-manifest/spec/v1.0.0/",
+        format: {
+          jwt_vc: {
+            alg: ["EdDSA"]
+          }
+        },
+        manifest_id: "KYCAMLManifest",
+        applicant: subjectSigner.did
+      }
+    })
   })
 })

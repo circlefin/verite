@@ -1,10 +1,6 @@
-import { AttestationTypes, DidKey, JWT, StatusList2021Entry } from "../../types"
+import { AttestationTypes, Signer, JWT, StatusList2021Entry } from "../../types"
 import { CredentialPayloadBuilder } from "../builders"
-import {
-  buildIssuer,
-  attestationToVCSchema,
-  signVerifiableCredential
-} from "../utils"
+import { attestationToVCSchema, signVerifiableCredential } from "../utils"
 import {
   buildProcessApprovalAttestation,
   buildSampleCreditScoreAttestation
@@ -13,12 +9,10 @@ import { attestationToCredentialType } from "./constants-maps"
 
 export async function buildProcessApprovalVC(
   attestationType: AttestationTypes,
-  issuerKey: DidKey,
+  signer: Signer,
   subjectDid: string,
   credentialStatus?: StatusList2021Entry
 ): Promise<JWT> {
-  // TOFIX: note buildIssuer is duplicated here. Audit for other occurrences
-  const signer = buildIssuer(issuerKey.subject, issuerKey.privateKey)
   const sampleAttestation = buildProcessApprovalAttestation(attestationType)
 
   const vc = new CredentialPayloadBuilder()
@@ -35,12 +29,11 @@ export async function buildProcessApprovalVC(
 }
 
 export async function buildCreditScoreVC(
-  issuerKey: DidKey,
+  signer: Signer,
   subjectDid: string,
   creditScore: number,
   credentialStatus?: StatusList2021Entry
 ): Promise<JWT> {
-  const signer = buildIssuer(issuerKey.subject, issuerKey.privateKey)
   const sampleAttestation = buildSampleCreditScoreAttestation(creditScore)
 
   const vc = new CredentialPayloadBuilder()

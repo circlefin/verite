@@ -3,10 +3,10 @@ import { randomBytes } from "crypto"
 import { CredentialPayloadBuilder } from "../../../lib"
 import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/sample-data"
 import {
-  buildIssuer,
   verifyVerifiableCredential,
   randomDidKey,
-  signVerifiableCredential
+  signVerifiableCredential,
+  buildSignerFromDidKey
 } from "../../../lib/utils"
 import { StatusList2021Entry } from "../../../types"
 import {
@@ -18,23 +18,23 @@ import { KYC_VC_SCHEMA } from "../../fixtures/credentials"
 // TODO: move away
 describe("composeVerifiableCredential", () => {
   it("builds and signs a verifiable credential", async () => {
-    // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
+    // Issuer DID and signer
+    const issuerDidKey = randomDidKey(randomBytes)
+    const issuerSigner = buildSignerFromDidKey(issuerDidKey)
 
     // Subject DID
-    const subjectDid = randomDidKey(randomBytes)
+    const subjectDidKey = randomDidKey(randomBytes)
 
     // Constructs and signs a Verifiable Credential
     const vc = new CredentialPayloadBuilder()
-      .issuer(issuer.did)
-      .attestations(subjectDid.subject, kycAmlAttestationFixture)
+      .issuer(issuerSigner.did)
+      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
       .type(KYCAML_CREDENTIAL_TYPE_NAME)
       .credentialSchema(KYC_VC_SCHEMA)
       .issuanceDate("2021-10-26T16:17:13.000Z")
       .build()
 
-    const signedVc = await signVerifiableCredential(vc, issuer)
+    const signedVc = await signVerifiableCredential(vc, issuerSigner)
 
     const decoded = await verifyVerifiableCredential(signedVc)
     expect(decoded).toMatchObject({
@@ -44,9 +44,9 @@ describe("composeVerifiableCredential", () => {
           process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
           approvalDate: kycAmlAttestationFixture.approvalDate
         },
-        id: subjectDid.subject
+        id: subjectDidKey.subject
       },
-      issuer: { id: issuerDid.subject },
+      issuer: { id: issuerDidKey.subject },
       type: ["VerifiableCredential", "KYCAMLCredential"],
       issuanceDate: "2021-10-26T16:17:13.000Z",
       "@context": [
@@ -57,12 +57,12 @@ describe("composeVerifiableCredential", () => {
   })
 
   it("can optionally support a credentialStatus", async () => {
-    // Map Issuer DID to Issuer for signing
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
+    // Issuer DID and signer
+    const issuerDidKey = randomDidKey(randomBytes)
+    const issuerSigner = buildSignerFromDidKey(issuerDidKey)
 
     // Subject DID
-    const subjectDid = randomDidKey(randomBytes)
+    const subjectDidKey = randomDidKey(randomBytes)
 
     // Builds a signed Verifiable Credential with a credentialStatus
     const credentialStatus: StatusList2021Entry = {
@@ -75,14 +75,14 @@ describe("composeVerifiableCredential", () => {
 
     // Constructs and signs a Verifiable Credential
     const vc = new CredentialPayloadBuilder()
-      .issuer(issuer.did)
-      .attestations(subjectDid.subject, kycAmlAttestationFixture)
+      .issuer(issuerSigner.did)
+      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
       .type(KYCAML_CREDENTIAL_TYPE_NAME)
       .credentialSchema(KYC_VC_SCHEMA)
       .credentialStatus(credentialStatus)
       .build()
 
-    const signedVc = await signVerifiableCredential(vc, issuer)
+    const signedVc = await signVerifiableCredential(vc, issuerSigner)
 
     const decoded = await verifyVerifiableCredential(signedVc)
 
@@ -96,28 +96,29 @@ describe("composeVerifiableCredential", () => {
   })
 
   it("builds and signs a verifiable credential with multiple attestations", async () => {
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
-    const subjectDid = randomDidKey(randomBytes)
+    const issuerDidKey = randomDidKey(randomBytes)
+    const issuerSigner = buildSignerFromDidKey(issuerDidKey)
+
+    const subjectDidKey = randomDidKey(randomBytes)
     const attestations = [
       kycAmlAttestationFixture,
       creditScoreAttestationFixture
     ]
 
     const vc = new CredentialPayloadBuilder()
-      .issuer(issuer.did)
-      .attestations(subjectDid.subject, attestations)
+      .issuer(issuerSigner.did)
+      .attestations(subjectDidKey.subject, attestations)
       .type("HybridCredential")
       .build()
 
-    const signedVc = await signVerifiableCredential(vc, issuer)
+    const signedVc = await signVerifiableCredential(vc, issuerSigner)
 
     const result = await verifyVerifiableCredential(signedVc)
 
     expect(result).toMatchObject({
       credentialSubject: [
         {
-          id: subjectDid.subject,
+          id: subjectDidKey.subject,
           KYCAMLAttestation: {
             type: "KYCAMLAttestation",
             process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
@@ -125,7 +126,7 @@ describe("composeVerifiableCredential", () => {
           }
         },
         {
-          id: subjectDid.subject,
+          id: subjectDidKey.subject,
           CreditScoreAttestation: {
             type: "CreditScoreAttestation",
             score: 700,
@@ -134,7 +135,7 @@ describe("composeVerifiableCredential", () => {
           }
         }
       ],
-      issuer: { id: issuer.did },
+      issuer: { id: issuerSigner.did },
       type: ["VerifiableCredential", "HybridCredential"],
       "@context": [
         "https://www.w3.org/2018/credentials/v1",

@@ -13,21 +13,20 @@ import {
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
 import { signVerifiableCredential } from "../../lib/utils/credentials"
-import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
+import { buildSignerFromDidKey, randomDidKey } from "../../lib/utils/did-fns"
 import {
   AttestationTypes,
-  DidKey,
-  Issuer,
-  RevocableCredential
+  Signer,
+  RevocableCredential,
+  DidKey
 } from "../../types"
 import { kycAmlAttestationFixture } from "../fixtures/attestations"
 import { KYC_VC_SCHEMA } from "../fixtures/credentials"
 import { revocationListFixture } from "../fixtures/revocation-list"
 
 let issuerDidKey: DidKey
-let issuer: Issuer
-let subjectDidKey: DidKey
-let subjectIssuer: Issuer
+let issuerSigner: Signer
+let subjectSigner: Signer
 
 beforeEach(() => {
   /**
@@ -37,10 +36,9 @@ beforeEach(() => {
    * the DID for them.
    */
   issuerDidKey = randomDidKey(randomBytes)
-  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-  // TOFIX: rename
-  subjectDidKey = randomDidKey(randomBytes)
-  subjectIssuer = buildIssuer(subjectDidKey.subject, subjectDidKey.privateKey)
+  const subjectDidKey = randomDidKey(randomBytes)
+  issuerSigner = buildSignerFromDidKey(issuerDidKey)
+  subjectSigner = buildSignerFromDidKey(subjectDidKey)
 })
 
 describe("E2E issuance", () => {
@@ -53,7 +51,7 @@ describe("E2E issuance", () => {
     const manifest = buildSampleProcessApprovalManifest(
       AttestationTypes.KYCAMLAttestation,
       {
-        id: issuer.did,
+        id: issuerSigner.did,
         name: "Verite"
       }
     )
@@ -72,7 +70,7 @@ describe("E2E issuance", () => {
      */
     const encodedApplication = await composeCredentialApplication(
       manifest,
-      subjectIssuer
+      subjectSigner
     )
 
     /**
@@ -97,19 +95,19 @@ describe("E2E issuance", () => {
      * credential to the subject. The issuer extracts the necessary information
      * from the Credential Application before issuing the credential.
      */
-    const subjectDid = decodedApplication?.credential_application.applicant
+    const applicantDid = decodedApplication?.credential_application.applicant
     /**
      * Verite libraries allow high- and low-level methods. Compose
      * methods call build* and sign* methods.
      */
     const vc = new CredentialPayloadBuilder()
-      .issuer(issuer.did)
-      .attestations(subjectDid, kycAmlAttestationFixture)
+      .issuer(issuerSigner.did)
+      .attestations(applicantDid, kycAmlAttestationFixture)
       .type(KYCAML_CREDENTIAL_TYPE_NAME)
       .credentialSchema(KYC_VC_SCHEMA)
       .credentialStatus(revocationListFixture)
       .build()
-    const signedVc = await signVerifiableCredential(vc, issuer)
+    const signedVc = await signVerifiableCredential(vc, issuerSigner)
     /**
      * The issuer wraps the signed VC in a Credential Response, and signs as a JWT
      */
@@ -117,7 +115,7 @@ describe("E2E issuance", () => {
     const encodedResponse = await composeCredentialResponse(
       decodedApplication.credential_application,
       manifest,
-      issuer,
+      issuerSigner,
       signedVc
     )
 
@@ -135,7 +133,7 @@ describe("E2E issuance", () => {
       expect(verifiableCredential.proof).toBeDefined()
 
       const credentialSubject = verifiableCredential.credentialSubject
-      expect(credentialSubject.id).toEqual(subjectIssuer.did)
+      expect(credentialSubject.id).toEqual(applicantDid)
 
       const credentialStatus = verifiableCredential.credentialStatus!
       expect(credentialStatus.id).toEqual(
@@ -155,7 +153,6 @@ describe("E2E issuance", () => {
      * The issuer and the client get a DID
      */
     const didWeb = "did:web:example.com"
-    const issuer = buildIssuer("did:web:example.com", issuerDidKey.privateKey)
     const publicKey = Buffer.from(issuerDidKey.publicKey).toString("base64")
 
     const didDocument = {
@@ -184,7 +181,10 @@ describe("E2E issuance", () => {
     /**
      * The issuer generates a QR code for the client to scan
      */
-    const credentialIssuer = { id: issuer.did, name: "Example Issuer" }
+    const credentialIssuer = {
+      id: issuerSigner.did,
+      name: "Example Issuer"
+    }
     const manifest = buildSampleProcessApprovalManifest(
       AttestationTypes.KYCAMLAttestation,
       credentialIssuer
@@ -195,7 +195,7 @@ describe("E2E issuance", () => {
      */
     const encodedApplication = await composeCredentialApplication(
       manifest,
-      subjectIssuer
+      subjectSigner
     )
 
     /**
@@ -205,21 +205,21 @@ describe("E2E issuance", () => {
       encodedApplication,
       manifest
     )
-    const subjectDid = decodedApplication?.credential_application.applicant
+    const applicantDid = decodedApplication?.credential_application.applicant
 
     /**
      * The issuer builds and signs a verifiable credential
      */
 
     const vc = new CredentialPayloadBuilder()
-      .issuer(issuer.did)
-      .attestations(subjectDid, kycAmlAttestationFixture)
+      .issuer(issuerSigner.did)
+      .attestations(applicantDid, kycAmlAttestationFixture)
       .type(KYCAML_CREDENTIAL_TYPE_NAME)
       .credentialSchema(KYC_VC_SCHEMA)
       .credentialStatus(revocationListFixture)
       .build()
 
-    const signedVc = await signVerifiableCredential(vc, issuer)
+    const signedVc = await signVerifiableCredential(vc, issuerSigner)
 
     /**
      * The issuer builds and signs a response
@@ -227,7 +227,7 @@ describe("E2E issuance", () => {
     const encodedResponse = await composeCredentialResponse(
       decodedApplication.credential_application,
       manifest,
-      issuer,
+      issuerSigner,
       signedVc
     )
 
@@ -242,7 +242,7 @@ describe("E2E issuance", () => {
       expect(verifiableCredential.proof).toBeDefined()
 
       const credentialSubject = verifiableCredential.credentialSubject
-      expect(credentialSubject.id).toEqual(subjectIssuer.did)
+      expect(credentialSubject.id).toEqual(applicantDid)
 
       const credentialStatus = verifiableCredential.credentialStatus
       expect(credentialStatus.id).toEqual(

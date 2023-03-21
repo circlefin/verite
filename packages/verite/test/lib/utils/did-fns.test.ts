@@ -2,12 +2,13 @@ import { randomBytes } from "crypto"
 import nock from "nock"
 
 import {
-  buildIssuer,
+  buildSignerFromDidKey,
   didResolver,
   generateDidKey,
   randomDidKey
 } from "../../../lib/utils/did-fns"
 
+// TOFIX: update this from DidKey, etc
 describe("generateDidKey()", () => {
   it("generates a DiKey from the given input", async () => {
     const bytes = Buffer.from(
@@ -21,15 +22,15 @@ describe("generateDidKey()", () => {
     expect(didKey.privateKey).toBeDefined()
     expect(didKey.controller.startsWith("did:key")).toBe(true)
     expect(didKey.subject.startsWith("did:key")).toBe(true)
-    expect(didKey.id.startsWith(didKey.subject)).toBe(true)
+    expect(didKey.controller.startsWith(didKey.subject)).toBe(true)
   })
 })
 
-describe("buildIssuer()", () => {
+describe("buildDidJwtIssuer()", () => {
   it("builds an Issuer object", async () => {
-    const didKey = randomDidKey(randomBytes)
-    const issuer = buildIssuer(didKey.subject, didKey.privateKey)
-    expect(issuer.did).toBe(didKey.subject)
+    const issuerDidKey = randomDidKey(randomBytes)
+    const issuer = buildSignerFromDidKey(issuerDidKey)
+    expect(issuer.did).toBe(issuerDidKey.controller)
   })
 })
 

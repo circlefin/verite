@@ -1,7 +1,6 @@
 import {
   Attestation,
   CredentialSchema,
-  DidKey,
   LatestCredentialPayload,
   RefreshService,
   StatusList2021Entry
@@ -33,11 +32,10 @@ export class CredentialPayloadBuilder {
   }
 
   attestations(
-    subjectDid: string | DidKey,
+    subjectDid: string,
     attestation: Attestation | Attestation[]
   ): CredentialPayloadBuilder {
-    const subjectDidString =
-      typeof subjectDid === "string" ? subjectDid : subjectDid.subject
+    const subjectDidString = subjectDid
     // For attestations, preserve the array or object structure
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let attsns: any[] | any

@@ -1,6 +1,6 @@
 export type {
   CredentialPayload,
-  Issuer,
+  Issuer as DidJwtIssuer,
   JwtCredentialPayload,
   JwtPresentationPayload,
   PresentationPayload,

@@ -21,7 +21,6 @@ import { didResolver } from "./did-fns"
 import type {
   CredentialPayload,
   JwtCredentialPayload,
-  Issuer,
   JWT,
   RevocableCredential,
   StatusList2021Credential,
@@ -30,7 +29,8 @@ import type {
   W3CPresentation,
   RevocablePresentation,
   MaybeRevocableCredential,
-  LatestPresentationPayload
+  LatestPresentationPayload,
+  Signer
 } from "../../types"
 import type {
   CreateCredentialOptions,
@@ -170,13 +170,14 @@ export const isRevocable = (
  */
 export async function signVerifiableCredential(
   payload: CredentialPayload,
-  issuer: Issuer,
+  signer: Signer,
   options: CreateCredentialOptions = {}
 ): Promise<JWT> {
+  const issuer = signer.signerImpl
   const vcPayload = asJwtCredentialPayload(payload)
   return createVerifiableCredentialJwt(vcPayload, issuer, {
     ...options,
-    kid: issuer.did
+    kid: signer.keyId
   })
 }
 
@@ -242,13 +243,14 @@ export async function verifyVerifiableCredential(
  */
 export async function signVerifiablePresentation(
   vpPayload: LatestPresentationPayload,
-  issuer: Issuer,
+  signer: Signer,
   options: CreatePresentationOptions = {}
 ): Promise<JWT> {
+  const issuer = signer.signerImpl
   const vpPayloadWithJwt = asJwtPresentationPayload(vpPayload)
   return createVerifiablePresentationJwt(vpPayloadWithJwt, issuer, {
     ...options,
-    kid: issuer.did
+    kid: signer.keyId
   })
 }
 
@@ -309,19 +311,19 @@ function asJwtPresentationPayload(
 // TOFIX: correct below
 export async function signJWT(
   payload: Partial<JWTPayload>,
-  jwtOptions: JWTOptions,
+  signer: Signer,
   header: Partial<JWTHeader> = { alg: "EdDSA" }
 ): Promise<JWT> {
-  const { issuer, signer } = jwtOptions
+  const issuer = signer.signerImpl
   const jwt = await createJWT(
     payload,
     {
-      issuer: issuer,
-      signer: signer
+      issuer: issuer.did,
+      signer: issuer.signer
     },
     {
       ...header,
-      kid: issuer
+      kid: signer.keyId
     }
   )
   return jwt
@@ -332,7 +334,7 @@ export async function verifyJWT2(
   jwtOptions?: JWTOptions
 ): Promise<JWTPayload> {
   const resolver = didResolver
-  const payload = await verifyJWT(jwt, { ...jwtOptions, resolver } as any) // TODO: wtf
+  const payload = await verifyJWT(jwt, { ...jwtOptions, resolver } as any) // TOFIX: wtf
   return payload
 }
 

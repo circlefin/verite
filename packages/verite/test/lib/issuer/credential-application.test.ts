@@ -10,27 +10,24 @@ import {
   evaluateCredentialApplication
 } from "../../../lib/issuer/credential-application"
 import { buildSampleProcessApprovalManifest } from "../../../lib/sample-data/manifests"
-import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
+import { buildSignerFromDidKey, randomDidKey } from "../../../lib/utils/did-fns"
 import {
   AttestationTypes,
   CredentialIssuer,
   DidKey,
-  Issuer
+  Signer
 } from "../../../types"
 
 let subjectDidKey: DidKey
 let issuerDidKey: DidKey
-let issuer: Issuer
-let subjectIssuer: Issuer
 let credentialIssuer: CredentialIssuer
+let subjectSigner: Signer
 
 beforeEach(() => {
   subjectDidKey = randomDidKey(randomBytes)
   issuerDidKey = randomDidKey(randomBytes)
-  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-  credentialIssuer = { id: issuer.did, name: "Verite" }
-  // TOFIX
-  subjectIssuer = buildIssuer(subjectDidKey.subject, subjectDidKey.privateKey)
+  credentialIssuer = { id: issuerDidKey.controller, name: "Verite" }
+  subjectSigner = buildSignerFromDidKey(subjectDidKey)
 })
 
 describe("composeCredentialApplication", () => {
@@ -42,7 +39,7 @@ describe("composeCredentialApplication", () => {
 
     const credentialApplication = await composeCredentialApplication(
       kycManifest,
-      subjectIssuer
+      subjectSigner
     )
 
     const application = await evaluateCredentialApplication(
@@ -66,7 +63,7 @@ describe("decodeCredentialApplication", () => {
 
     const application = await composeCredentialApplication(
       kycManifest,
-      subjectIssuer
+      subjectSigner
     )
     const decodedApplication = await decodeAndVerifyCredentialApplicationJwt(
       application
@@ -93,7 +90,7 @@ describe("decodeCredentialApplication", () => {
 
     const application = await composeCredentialApplication(
       kycManifest,
-      subjectIssuer,
+      subjectSigner,
       expiredVc
     )
 
