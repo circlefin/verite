@@ -1,10 +1,22 @@
+import { randomBytes } from "crypto"
+
+import { CredentialPayloadBuilder } from "../../../lib"
 import { VerificationError } from "../../../lib/errors"
+import { KYCAML_CREDENTIAL_TYPE_NAME } from "../../../lib/sample-data"
 import {
-  verifyVerifiableCredential,
+  verifyVerifiableCredentialJWT,
   verifyVerifiablePresentation,
-  signVerifiableCredential,
-  buildSigner
+  signVerifiableCredentialJWT,
+  buildSigner,
+  randomDidKey,
+  buildSignerFromDidKey
 } from "../../../lib/utils"
+import { StatusList2021Entry } from "../../../types"
+import {
+  creditScoreAttestationFixture,
+  kycAmlAttestationFixture
+} from "../../fixtures/attestations"
+import { KYC_VC_SCHEMA } from "../../fixtures/credentials"
 
 import type { CredentialPayload } from "../../../types"
 
@@ -17,7 +29,7 @@ const expiredVp =
 
 describe("VC decoding", () => {
   it("decodes a VC", async () => {
-    const decoded = await verifyVerifiableCredential(signedVc)
+    const decoded = await verifyVerifiableCredentialJWT(signedVc)
     expect(decoded.type.length).toEqual(1)
     expect(decoded.type[0]).toEqual("VerifiableCredential")
     expect(decoded.credentialSubject.degree.type).toEqual("BachelorDegree")
@@ -28,7 +40,7 @@ describe("VC decoding", () => {
 
   it("rejects an expired VC", async () => {
     expect.assertions(1)
-    await expect(verifyVerifiableCredential(expiredVc)).rejects.toThrowError(
+    await expect(verifyVerifiableCredentialJWT(expiredVc)).rejects.toThrowError(
       VerificationError
     )
   })
@@ -60,13 +72,144 @@ describe("VC signing", () => {
         }
       }
     }
-    const result = await signVerifiableCredential(vcPayload, signer)
-    const decoded = await verifyVerifiableCredential(result)
+    const result = await signVerifiableCredentialJWT(vcPayload, signer)
+    const decoded = await verifyVerifiableCredentialJWT(result)
     expect(decoded.type.length).toEqual(1)
     expect(decoded.type[0]).toEqual("VerifiableCredential")
     expect(decoded.credentialSubject.degree.type).toEqual("BachelorDegree")
     expect(decoded.credentialSubject.degree.name).toEqual(
       "Baccalauréat en musiques numériques"
     )
+  })
+})
+
+describe("Verifiable Credential E2E", () => {
+  it("builds and signs a verifiable credential", async () => {
+    // Issuer DID and signer
+    const issuerDidKey = randomDidKey(randomBytes)
+    const issuerSigner = buildSignerFromDidKey(issuerDidKey)
+
+    // Subject DID
+    const subjectDidKey = randomDidKey(randomBytes)
+
+    // Constructs and signs a Verifiable Credential
+    const vc = new CredentialPayloadBuilder()
+      .issuer(issuerSigner.did)
+      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
+      .type(KYCAML_CREDENTIAL_TYPE_NAME)
+      .credentialSchema(KYC_VC_SCHEMA)
+      .issuanceDate("2021-10-26T16:17:13.000Z")
+      .build()
+
+    const signedVc = await signVerifiableCredentialJWT(vc, issuerSigner)
+
+    const decoded = await verifyVerifiableCredentialJWT(signedVc)
+    expect(decoded).toMatchObject({
+      credentialSubject: {
+        KYCAMLAttestation: {
+          type: "KYCAMLAttestation",
+          process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+          approvalDate: kycAmlAttestationFixture.approvalDate
+        },
+        id: subjectDidKey.subject
+      },
+      issuer: { id: issuerDidKey.subject },
+      type: ["VerifiableCredential", "KYCAMLCredential"],
+      issuanceDate: "2021-10-26T16:17:13.000Z",
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        { "@vocab": "https://verite.id/identity/" }
+      ]
+    })
+  })
+
+  it("can optionally support a credentialStatus", async () => {
+    // Issuer DID and signer
+    const issuerDidKey = randomDidKey(randomBytes)
+    const issuerSigner = buildSignerFromDidKey(issuerDidKey)
+
+    // Subject DID
+    const subjectDidKey = randomDidKey(randomBytes)
+
+    // Builds a signed Verifiable Credential with a credentialStatus
+    const credentialStatus: StatusList2021Entry = {
+      id: "https://dmv.example.gov/credentials/status/3#94567",
+      type: "StatusList2021Entry",
+      statusPurpose: "revocation",
+      statusListIndex: "94567",
+      statusListCredential: "https://example.com/credentials/status/3"
+    }
+
+    // Constructs and signs a Verifiable Credential
+    const vc = new CredentialPayloadBuilder()
+      .issuer(issuerSigner.did)
+      .attestations(subjectDidKey.subject, kycAmlAttestationFixture)
+      .type(KYCAML_CREDENTIAL_TYPE_NAME)
+      .credentialSchema(KYC_VC_SCHEMA)
+      .credentialStatus(credentialStatus)
+      .build()
+
+    const signedVc = await signVerifiableCredentialJWT(vc, issuerSigner)
+
+    const decoded = await verifyVerifiableCredentialJWT(signedVc)
+
+    expect(decoded.credentialStatus).toEqual({
+      id: "https://dmv.example.gov/credentials/status/3#94567",
+      type: "StatusList2021Entry",
+      statusListIndex: "94567",
+      statusPurpose: "revocation",
+      statusListCredential: "https://example.com/credentials/status/3"
+    })
+  })
+
+  it("builds and signs a verifiable credential with multiple attestations", async () => {
+    const issuerDidKey = randomDidKey(randomBytes)
+    const issuerSigner = buildSignerFromDidKey(issuerDidKey)
+
+    const subjectDidKey = randomDidKey(randomBytes)
+    const attestations = [
+      kycAmlAttestationFixture,
+      creditScoreAttestationFixture
+    ]
+
+    const vc = new CredentialPayloadBuilder()
+      .issuer(issuerSigner.did)
+      .attestations(subjectDidKey.subject, attestations)
+      .type("HybridCredential")
+      .build()
+
+    const signedVc = await signVerifiableCredentialJWT(vc, issuerSigner)
+
+    const result = await verifyVerifiableCredentialJWT(signedVc)
+
+    expect(result).toMatchObject({
+      credentialSubject: [
+        {
+          id: subjectDidKey.subject,
+          KYCAMLAttestation: {
+            type: "KYCAMLAttestation",
+            process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa",
+            approvalDate: kycAmlAttestationFixture.approvalDate
+          }
+        },
+        {
+          id: subjectDidKey.subject,
+          CreditScoreAttestation: {
+            type: "CreditScoreAttestation",
+            score: 700,
+            scoreType: "Credit Score",
+            provider: "Experian"
+          }
+        }
+      ],
+      issuer: { id: issuerSigner.did },
+      type: ["VerifiableCredential", "HybridCredential"],
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        {
+          "@vocab": "https://verite.id/identity/"
+        }
+      ]
+    })
   })
 })

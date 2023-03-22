@@ -3,16 +3,16 @@ import nock from "nock"
 
 import { CredentialPayloadBuilder } from "../../lib"
 import {
-  composeCredentialApplication,
-  composeCredentialResponse,
-  decodeAndVerifyCredentialResponseJwt,
-  evaluateCredentialApplication
+  composeCredentialApplicationJWT,
+  composeCredentialResponseJWT,
+  validateCredentialApplicationJWTForManifest,
+  validateCredentialResponseJWT
 } from "../../lib/issuer"
 import {
   buildSampleProcessApprovalManifest,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import { signVerifiableCredential } from "../../lib/utils/credentials"
+import { signVerifiableCredentialJWT } from "../../lib/utils/credentials"
 import { buildSignerFromDidKey, randomDidKey } from "../../lib/utils/did-fns"
 import {
   AttestationTypes,
@@ -68,7 +68,7 @@ describe("E2E issuance", () => {
      * The wallet code calls composeCredentialApplication to build and
      * sign Credential Application.
      */
-    const encodedApplication = await composeCredentialApplication(
+    const encodedApplication = await composeCredentialApplicationJWT(
       manifest,
       subjectSigner
     )
@@ -85,17 +85,19 @@ describe("E2E issuance", () => {
      * 1. decodeAndVerifyCredentialApplicationJwt
      * 2. validateCredentialApplication
      */
-    const decodedApplication = await evaluateCredentialApplication(
-      encodedApplication,
-      manifest
-    )
+    const decodedApplication =
+      await validateCredentialApplicationJWTForManifest(
+        encodedApplication,
+        manifest
+      )
 
     /**
      * If the Credential Application is valid, then the issuer would issue a
      * credential to the subject. The issuer extracts the necessary information
      * from the Credential Application before issuing the credential.
      */
-    const applicantDid = decodedApplication?.credential_application.applicant
+    const applicantDid = decodedApplication.credential_application.applicant
+    const applicationId = decodedApplication.credential_application.id
     /**
      * Verite libraries allow high- and low-level methods. Compose
      * methods call build* and sign* methods.
@@ -107,14 +109,15 @@ describe("E2E issuance", () => {
       .credentialSchema(KYC_VC_SCHEMA)
       .credentialStatus(revocationListFixture)
       .build()
-    const signedVc = await signVerifiableCredential(vc, issuerSigner)
+    const signedVc = await signVerifiableCredentialJWT(vc, issuerSigner)
     /**
      * The issuer wraps the signed VC in a Credential Response, and signs as a JWT
      */
 
-    const encodedResponse = await composeCredentialResponse(
-      decodedApplication.credential_application,
+    const encodedResponse = await composeCredentialResponseJWT(
       manifest,
+      applicantDid,
+      applicationId,
       issuerSigner,
       signedVc
     )
@@ -123,7 +126,7 @@ describe("E2E issuance", () => {
      * The issuer sends the Credential Response to the subject. The subject's
      * wallet can then decode and store it.
      */
-    const result = await decodeAndVerifyCredentialResponseJwt(encodedResponse)
+    const result = await validateCredentialResponseJWT(encodedResponse)
     result.verifiableCredential?.forEach((vc) => {
       const verifiableCredential = vc as RevocableCredential
       expect(verifiableCredential.type).toEqual([
@@ -193,7 +196,7 @@ describe("E2E issuance", () => {
     /**
      * The client scans the QR code and generates a credential application
      */
-    const encodedApplication = await composeCredentialApplication(
+    const encodedApplication = await composeCredentialApplicationJWT(
       manifest,
       subjectSigner
     )
@@ -201,12 +204,13 @@ describe("E2E issuance", () => {
     /**
      * The issuer validates the credential application
      */
-    const decodedApplication = await evaluateCredentialApplication(
-      encodedApplication,
-      manifest
-    )
-    const applicantDid = decodedApplication?.credential_application.applicant
-
+    const decodedApplication =
+      await validateCredentialApplicationJWTForManifest(
+        encodedApplication,
+        manifest
+      )
+    const applicantDid = decodedApplication.credential_application.applicant
+    const applicationId = decodedApplication.credential_application.id
     /**
      * The issuer builds and signs a verifiable credential
      */
@@ -219,19 +223,20 @@ describe("E2E issuance", () => {
       .credentialStatus(revocationListFixture)
       .build()
 
-    const signedVc = await signVerifiableCredential(vc, issuerSigner)
+    const signedVc = await signVerifiableCredentialJWT(vc, issuerSigner)
 
     /**
      * The issuer builds and signs a response
      */
-    const encodedResponse = await composeCredentialResponse(
-      decodedApplication.credential_application,
+    const encodedResponse = await composeCredentialResponseJWT(
       manifest,
+      applicantDid,
+      applicationId,
       issuerSigner,
       signedVc
     )
 
-    const result = await decodeAndVerifyCredentialResponseJwt(encodedResponse)
+    const result = await validateCredentialResponseJWT(encodedResponse)
 
     result.verifiableCredential!.forEach((vc) => {
       const verifiableCredential = vc as RevocableCredential

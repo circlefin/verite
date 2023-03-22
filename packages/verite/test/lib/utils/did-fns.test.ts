@@ -8,7 +8,7 @@ import {
   randomDidKey
 } from "../../../lib/utils/did-fns"
 
-// TOFIX: update this from DidKey, etc
+// FOLLOW_UP: update this from DidKey, etc
 describe("generateDidKey()", () => {
   it("generates a DiKey from the given input", async () => {
     const bytes = Buffer.from(

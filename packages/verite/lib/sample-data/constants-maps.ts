@@ -98,7 +98,7 @@ export function attestationToManifestId(
   return result
 }
 
-// TOFIX: need to handle hybrid manifests
+// FOLLOW_UP: need to handle hybrid manifests
 export function manifestIdToAttestationType(
   manifestId: string
 ): AttestationTypes {

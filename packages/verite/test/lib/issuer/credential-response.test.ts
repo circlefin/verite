@@ -5,8 +5,8 @@ import {
   buildSampleProcessApprovalManifest
 } from "../../../lib"
 import {
-  composeCredentialResponse,
-  decodeAndVerifyCredentialResponseJwt
+  composeCredentialResponseJWT,
+  validateCredentialResponseJWT
 } from "../../../lib/issuer"
 import {
   buildCreditScoreVC,
@@ -37,7 +37,6 @@ describe("composeCredentialResponse", () => {
       credentialIssuer
     )
 
-    // TOFIX: confusing name
     const vc = await buildProcessApprovalVC(
       AttestationTypes.KYCAMLAttestation,
       issuerSigner,
@@ -45,19 +44,16 @@ describe("composeCredentialResponse", () => {
       revocationListFixture
     )
 
-    const encodedResponse = await composeCredentialResponse(
-      {
-        applicant: subjectDid,
-        id: "5f22f1ea-0441-4041-916b-2504a2a4075c"
-      },
+    const encodedResponse = await composeCredentialResponseJWT(
       manifest,
+      subjectDid,
+      "5f22f1ea-0441-4041-916b-2504a2a4075c",
       issuerSigner,
       vc
     )
 
     // The subject can then decode the presentation
-    // TOFix
-    const response = await decodeAndVerifyCredentialResponseJwt(encodedResponse)
+    const response = await validateCredentialResponseJWT(encodedResponse)
 
     // The response looks like this:
     expect(response).toMatchObject({
@@ -127,20 +123,17 @@ describe("composeCredentialResponse", () => {
 
     const creds = [vc1, vc2]
 
-    const encodedResponse = await composeCredentialResponse(
-      {
-        applicant: subjectDid,
-        id: "5f22f1ea-0441-4041-916b-2504a2a4075c"
-      },
+    const encodedResponse = await composeCredentialResponseJWT(
       manifest,
+      subjectDid,
+      "5f22f1ea-0441-4041-916b-2504a2a4075c",
       issuerSigner,
       creds
     )
 
     // The client can then decode the presentation
     // The subject can then decode the presentation
-    // TOFix
-    const response = await decodeAndVerifyCredentialResponseJwt(encodedResponse)
+    const response = await validateCredentialResponseJWT(encodedResponse)
 
     expect(response).toMatchObject({
       credential_response: {

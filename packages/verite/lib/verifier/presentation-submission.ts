@@ -2,7 +2,7 @@ import {
   DecodedPresentationSubmission,
   Signer,
   EncodedPresentationSubmission,
-  LatestPresentationPayload,
+  PresentationPayload,
   PresentationDefinition,
   Verifiable,
   W3CCredential
@@ -20,7 +20,7 @@ type ValidateVerificationSubmissionOptions = VerifyPresentationOptions & {
   knownSchemas?: Record<string, Record<string, unknown>>
 }
 
-// TOFIX: need new type for this union?
+// FOLLOW_UP: need new type for this union?
 export function buildPresentationSubmission(
   presentationDefinition: PresentationDefinition,
   verifiableCredential:
@@ -28,7 +28,7 @@ export function buildPresentationSubmission(
     | Verifiable<W3CCredential>[]
     | JWT
     | JWT[]
-): LatestPresentationPayload {
+): PresentationPayload {
   const presentationPayload = new PresentationPayloadBuilder()
     .verifiableCredential(verifiableCredential)
     .withPresentationSubmission((b) =>

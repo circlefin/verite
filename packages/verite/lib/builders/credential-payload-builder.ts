@@ -1,7 +1,7 @@
 import {
   Attestation,
   CredentialSchema,
-  LatestCredentialPayload,
+  CredentialPayload,
   RefreshService,
   StatusList2021Entry
 } from "../../types"
@@ -9,7 +9,7 @@ import { VERIFIABLE_CREDENTIAL_TYPE_NAME } from "../utils"
 import { DEFAULT_CONTEXT } from "./common"
 
 export class CredentialPayloadBuilder {
-  _builder: Partial<LatestCredentialPayload> // TODO: type????
+  _builder: Partial<CredentialPayload>
 
   constructor() {
     this._builder = {
@@ -62,15 +62,14 @@ export class CredentialPayloadBuilder {
   }
 
   credentialSchema(
-    credentialSchema?: CredentialSchema
+    credentialSchema: CredentialSchema
   ): CredentialPayloadBuilder {
     this._builder.credentialSchema = credentialSchema
     return this
   }
 
-  // TOFIX: optional param??
   credentialStatus(
-    credentialStatus?: StatusList2021Entry
+    credentialStatus: StatusList2021Entry
   ): CredentialPayloadBuilder {
     this._builder.credentialStatus = credentialStatus
     return this
@@ -97,10 +96,10 @@ export class CredentialPayloadBuilder {
     return this
   }
 
-  build(): LatestCredentialPayload {
+  build(): CredentialPayload {
     if (!this._builder.issuanceDate) {
       this._builder.issuanceDate = new Date()
     }
-    return this._builder as LatestCredentialPayload
+    return this._builder as CredentialPayload
   }
 }

@@ -1,32 +1,35 @@
 import {
   CredentialApplication,
-  CredentialApplicationWrapper,
-  JWT
+  CredentialApplicationWrapper
 } from "../../types"
 import { Action } from "./common"
 import { CredentialApplicationBuilder } from "./credential-application-builder"
 
-export class CredentialApplicationWrapperBuilder {
-  _builder: Partial<CredentialApplicationWrapper>
+export class CredentialApplicationWrapperBuilder<T> {
+  _builder: Partial<CredentialApplicationWrapper<T>>
   constructor() {
     this._builder = {}
   }
 
-  credentialApplication(credentialApplication: CredentialApplication) {
+  credentialApplication(
+    credentialApplication: CredentialApplication
+  ): CredentialApplicationWrapperBuilder<T> {
     this._builder.credential_application = credentialApplication
     return this
   }
 
   withCredentialApplication(
     credentialApplicationBuilder: Action<CredentialApplicationBuilder>
-  ) {
+  ): CredentialApplicationWrapperBuilder<T> {
     const b = new CredentialApplicationBuilder()
     credentialApplicationBuilder(b)
     this._builder.credential_application = b.build()
     return this
   }
 
-  verifiableCredential(verifiableCredential?: JWT | JWT[]) {
+  verifiableCredential(
+    verifiableCredential?: T | T[]
+  ): CredentialApplicationWrapperBuilder<T> {
     if (verifiableCredential) {
       if (this._builder.verifiableCredential === undefined) {
         this._builder.verifiableCredential = []
@@ -40,7 +43,7 @@ export class CredentialApplicationWrapperBuilder {
     return this
   }
 
-  build() {
-    return this._builder as CredentialApplicationWrapper
+  build(): CredentialApplicationWrapper<T> {
+    return this._builder as CredentialApplicationWrapper<T>
   }
 }

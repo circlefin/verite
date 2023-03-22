@@ -1,4 +1,10 @@
-import { CredentialPayload, PresentationPayload, StatusList2021Entry } from "."
+import {
+  CredentialPayload,
+  JWT,
+  StatusList2021Entry,
+  Verifiable,
+  W3CCredential
+} from "."
 
 export type RefreshService = {
   id: string
@@ -10,12 +16,9 @@ export type CredentialSchema = {
   type: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ContextType = string | string[] | any[]
-
-// TOFIX: what to name this?
-export type LatestCredentialPayload = CredentialPayload & {
-  "@context": ContextType
+export type CredentialPayload_v1_1 = CredentialPayload & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  "@context": string | string[] | any[]
   credentialSchema?: CredentialSchema
   refreshService?: RefreshService
   credentialStatus?: StatusList2021Entry
@@ -24,7 +27,4 @@ export type LatestCredentialPayload = CredentialPayload & {
   evidence: any[]
 }
 
-// TOFIX: probably don't even need this if CM no longer needs CA/CR to sign as VP...
-export type LatestPresentationPayload = Omit<PresentationPayload, "holder"> & {
-  holder?: string
-}
+export type MaybeCredential = JWT | Verifiable<W3CCredential>

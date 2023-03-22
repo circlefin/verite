@@ -30,7 +30,6 @@ export class PresentationPayloadBuilder {
     return this
   }
 
-  // TOFIX: overwrite or filter?
   type(type: string | string[]): PresentationPayloadBuilder {
     this._builder.type = type
     return this

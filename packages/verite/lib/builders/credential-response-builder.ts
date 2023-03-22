@@ -46,6 +46,7 @@ export class CredentialResponseBuilder {
     return this
   }
 
+  // FOLLOW_UP: consider whether to move this down to descriptor_map buider
   initFromManifest(manifest: CredentialManifest): CredentialResponseBuilder {
     this._builder.manifest_id = manifest.id
     this._builder.fulfillment = {
@@ -58,15 +59,6 @@ export class CredentialResponseBuilder {
           }
         }) ?? []
     }
-    return this
-  }
-
-  initFromApplication(
-    application: Partial<CredentialApplication>
-  ): CredentialResponseBuilder {
-    this._builder.manifest_id = application.manifest_id // TOFIX: ensure it's the same value if already set?
-    this._builder.applicant = application.applicant
-    this._builder.application_id = application.id
     return this
   }
 

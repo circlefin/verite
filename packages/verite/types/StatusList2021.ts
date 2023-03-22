@@ -23,10 +23,6 @@ export type Revocable<T> = T & {
 
 export type RevocableCredential = Revocable<Verifiable<W3CCredential>>
 
-export type MaybeRevocableCredential =
-  | Verifiable<W3CCredential>
-  | RevocableCredential
-
 export type RevocablePresentation = Verifiable<W3CPresentation> & {
   verifiableCredential?: RevocableCredential[]
 }

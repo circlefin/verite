@@ -29,9 +29,9 @@ import {
  */
 export function buildSampleProcessApprovalManifest(
   attestationType: AttestationTypes,
-  issuer: CredentialIssuer, // TOFIX: rename
+  issuer: CredentialIssuer,
   styles: EntityStyle = {},
-  presentation_definition?: PresentationDefinition // TOFIX: ensure we have test coverage for this path
+  presentation_definition?: PresentationDefinition // FOLLOW_UP: ensure we have test coverage for this path
 ): CredentialManifest {
   const outputDescriptor = buildProcessApprovalOutputDescriptor(
     attestationType,
@@ -73,7 +73,7 @@ export function buildHybridManifest(
   issuer: CredentialIssuer,
   styles: EntityStyle = {}
 ): CredentialManifest {
-  // TOFIX: this doesn't handle all types
+  // FOLLOW_UP: this doesn't handle all types
   const outputDescriptors = attestationType.map((a) => {
     if (a === AttestationTypes.CreditScoreAttestation) {
       return buildCreditScoreOutputDescriptor(
@@ -98,7 +98,7 @@ export function buildHybridManifestWithOutputDescriptors(
   outputDescriptors: OutputDescriptor[]
 ): CredentialManifest {
   return buildManifest(
-    `${issuer.name ?? issuer.id} Hybrid Manifest`, // TOFIX: consider renaming from ODs
+    `${issuer.name ?? issuer.id} Hybrid Manifest`, // FOLLOW_UP: consider renaming from ODs
     issuer,
     outputDescriptors
   )

@@ -2,8 +2,8 @@ import { CredentialResponse, CredentialResponseWrapper, JWT } from "../../types"
 import { Action } from "./common"
 import { CredentialResponseBuilder } from "./credential-response-builder"
 
-export class CredentialResponseWrapperBuilder {
-  _builder: Partial<CredentialResponseWrapper>
+export class CredentialResponseWrapperBuilder<T> {
+  _builder: Partial<CredentialResponseWrapper<T>>
 
   constructor() {
     this._builder = {}
@@ -11,7 +11,7 @@ export class CredentialResponseWrapperBuilder {
 
   withCredentialResponse(
     credentialResponseBuilder: Action<CredentialResponseBuilder>
-  ): CredentialResponseWrapperBuilder {
+  ): CredentialResponseWrapperBuilder<T> {
     const b = new CredentialResponseBuilder()
     credentialResponseBuilder(b)
     this._builder.credential_response = b.build()
@@ -20,14 +20,14 @@ export class CredentialResponseWrapperBuilder {
 
   credential_response(
     credential_response: CredentialResponse
-  ): CredentialResponseWrapperBuilder {
+  ): CredentialResponseWrapperBuilder<T> {
     this._builder.credential_response = credential_response
     return this
   }
 
   verifiableCredential(
-    verifiableCredential: JWT | JWT[]
-  ): CredentialResponseWrapperBuilder {
+    verifiableCredential: T | T[]
+  ): CredentialResponseWrapperBuilder<T> {
     if (verifiableCredential) {
       if (this._builder.verifiableCredential === undefined) {
         this._builder.verifiableCredential = []
@@ -41,7 +41,7 @@ export class CredentialResponseWrapperBuilder {
     return this
   }
 
-  build(): CredentialResponseWrapper {
-    return this._builder as CredentialResponseWrapper
+  build(): CredentialResponseWrapper<T> {
+    return this._builder as CredentialResponseWrapper<T>
   }
 }

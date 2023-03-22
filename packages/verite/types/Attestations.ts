@@ -6,7 +6,7 @@ export enum AttestationTypes {
   EntityAccInvAttestation = "EntityAccInvAttestation",
   IndivAccInvAttestation = "IndivAccInvAttestation",
   CreditScoreAttestation = "CreditScoreAttestation",
-  AddressOwner = "AddressOwner", // TOFIX: why is this inconsistent?
+  AddressOwner = "AddressOwner", // FOLLOW_UP: why is this inconsistent?
   CounterpartyAccountHolder = "CounterpartyAccountHolder"
 }
 

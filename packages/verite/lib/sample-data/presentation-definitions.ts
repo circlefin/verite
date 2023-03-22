@@ -20,7 +20,7 @@ import {
   attestationToPresentationDefinitionId
 } from "./constants-maps"
 
-// TOFIX: name
+// FOLLOW_UP: name
 export function kycAmlPresentationDefinition(
   trustedAuthorities: string[] = []
 ) {

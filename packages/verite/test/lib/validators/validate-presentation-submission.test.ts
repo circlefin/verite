@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 
 import {
   CredentialPayloadBuilder,
-  signVerifiableCredential
+  signVerifiableCredentialJWT
 } from "../../../lib"
 import { ValidationError } from "../../../lib/errors"
 import {
@@ -318,7 +318,7 @@ describe("Presentation Submission validator", () => {
       .credentialSchema(unrecognizedAttestationSchema)
       .build()
 
-    const signedVc = await signVerifiableCredential(vc, issuerSigner)
+    const signedVc = await signVerifiableCredentialJWT(vc, issuerSigner)
 
     const verificationRequest = buildKycVerificationOffer(
       uuidv4(),

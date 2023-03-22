@@ -1,7 +1,4 @@
-import { MaybeRevocableCredential } from "./StatusList2021"
-
 import type { DescriptorMap } from "./DescriptorMap"
-import type { JWT } from "./Jwt"
 
 export type CredentialResponse = {
   id: string
@@ -18,19 +15,7 @@ export type CredentialResponse = {
   }
 }
 
-export type CredentialResponseWrapper = {
+export type CredentialResponseWrapper<T> = {
   credential_response: CredentialResponse
-  verifiableCredential?: JWT[]
+  verifiableCredential?: T[]
 }
-
-// TOFIX: are we using this and below?
-type NarrowCredentialResponseWrapper = {
-  credential_response: CredentialResponse
-}
-
-export type EncodedCredentialResponseWrapper = JWT
-
-export type DecodedCredentialResponseWrapper =
-  NarrowCredentialResponseWrapper & {
-    verifiableCredential?: MaybeRevocableCredential[] // TOFIX: union with other types?
-  }

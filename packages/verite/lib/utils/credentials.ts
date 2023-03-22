@@ -1,8 +1,8 @@
 import { BitBuffer } from "bit-buffers"
 import {
   createJWT,
-  decodeJWT,
-  verifyJWT,
+  decodeJWT as _decodeJWT,
+  verifyJWT as _verifyJWT,
   JWTHeader,
   JWTOptions,
   JWTPayload
@@ -28,8 +28,7 @@ import type {
   W3CCredential,
   W3CPresentation,
   RevocablePresentation,
-  MaybeRevocableCredential,
-  LatestPresentationPayload,
+  PresentationPayload,
   Signer
 } from "../../types"
 import type {
@@ -123,13 +122,14 @@ export async function isRevoked(
   return list.test(index)
 }
 
+// FOLLOW_UP: move revocation related items to "status" module
 /**
  * Performs an HTTP request to fetch the revocation status list for a credential.
  *
  * @returns the encoded status list, if present
  */
 export async function fetchStatusList(
-  credential: MaybeRevocableCredential
+  credential: Verifiable<W3CCredential>
 ): Promise<StatusList2021Credential | undefined> {
   /**
    * If the credential is not revocable, it can not be revoked
@@ -147,7 +147,7 @@ export async function fetchStatusList(
     if (response.status === 200) {
       const vcJwt = await response.text()
 
-      return verifyVerifiableCredential(
+      return verifyVerifiableCredentialJWT(
         vcJwt
       ) as Promise<StatusList2021Credential>
     }
@@ -168,7 +168,7 @@ export const isRevocable = (
 /**
  * Signs a Verifiable Credential as a JWT from passed payload object & issuer.
  */
-export async function signVerifiableCredential(
+export async function signVerifiableCredentialJWT(
   payload: CredentialPayload,
   signer: Signer,
   options: CreateCredentialOptions = {}
@@ -181,14 +181,21 @@ export async function signVerifiableCredential(
   })
 }
 
+export async function decodeAndVerifyJwtCredentials(
+  verifiableCredentials: JWT[]
+): Promise<Verifiable<W3CCredential>[]> {
+  const decodedArray = await Promise.all(
+    verifiableCredentials.map((vc) => verifyVerifiableCredentialJWT(vc as JWT))
+  )
+  return decodedArray
+}
+
 /**
  * Verifies a JWT with a Verifiable Credential payload.
  */
-export async function verifyVerifiableCredential(
+export async function verifyVerifiableCredentialJWT(
   vcJwt: JWT
-): Promise<
-  Verifiable<W3CCredential> | RevocableCredential | StatusList2021Credential
-> {
+): Promise<Verifiable<W3CCredential>> {
   try {
     const res = await verifyCredential(vcJwt, didResolver)
 
@@ -242,12 +249,12 @@ export async function verifyVerifiableCredential(
  * Signs a JWT with the Verifiable Presentation payload.
  */
 export async function signVerifiablePresentation(
-  vpPayload: LatestPresentationPayload,
+  vpPayload: PresentationPayload,
   signer: Signer,
   options: CreatePresentationOptions = {}
 ): Promise<JWT> {
   const issuer = signer.signerImpl
-  const vpPayloadWithJwt = asJwtPresentationPayload(vpPayload)
+  const vpPayloadWithJwt = asJWTPresentationPayload(vpPayload)
   return createVerifiablePresentationJwt(vpPayloadWithJwt, issuer, {
     ...options,
     kid: signer.keyId
@@ -269,11 +276,11 @@ export async function verifyVerifiablePresentation(
       if (isArray(vc)) {
         await Promise.all(
           vc.map(async (c) => {
-            await verifyVerifiableCredential(c)
+            await verifyVerifiableCredentialJWT(c)
           })
         )
       } else {
-        await verifyVerifiableCredential(vc)
+        await verifyVerifiableCredentialJWT(vc)
       }
     }
 
@@ -297,8 +304,8 @@ export async function verifyVerifiablePresentation(
     )
   }
 }
-function asJwtPresentationPayload(
-  vpPayload: LatestPresentationPayload
+function asJWTPresentationPayload(
+  vpPayload: PresentationPayload
 ): JwtPresentationPayload {
   return Object.assign({
     vp: {
@@ -307,8 +314,6 @@ function asJwtPresentationPayload(
   })
 }
 
-// TOFIX: clean up this whole file
-// TOFIX: correct below
 export async function signJWT(
   payload: Partial<JWTPayload>,
   signer: Signer,
@@ -329,16 +334,17 @@ export async function signJWT(
   return jwt
 }
 
-export async function verifyJWT2(
+export async function verifyJWT(
   jwt: JWT,
   jwtOptions?: JWTOptions
 ): Promise<JWTPayload> {
   const resolver = didResolver
-  const payload = await verifyJWT(jwt, { ...jwtOptions, resolver } as any) // TOFIX: wtf
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payload = await _verifyJWT(jwt, { ...jwtOptions, resolver } as any)
   return payload
 }
 
-export async function decodeJWT2(jwt: JWT): Promise<JWTPayload> {
-  const payload = decodeJWT(jwt)
+export async function decodeJWT(jwt: JWT): Promise<JWTPayload> {
+  const payload = _decodeJWT(jwt)
   return payload
 }

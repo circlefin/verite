@@ -1,8 +1,8 @@
 import { BitBuffer } from "bit-buffers"
 
 import {
-  signVerifiableCredential,
-  verifyVerifiableCredential,
+  signVerifiableCredentialJWT,
+  verifyVerifiableCredentialJWT,
   generateBitstring,
   isRevocable
 } from "../utils"
@@ -72,7 +72,7 @@ export const generateEncodedRevocationList = async ({
     }
   }
 
-  return signVerifiableCredential(vcPayload, signer)
+  return signVerifiableCredentialJWT(vcPayload, signer)
 }
 
 /**
@@ -86,7 +86,9 @@ export const generateRevocationList = async (
 ): Promise<StatusList2021Credential> => {
   const vcJwt = await generateEncodedRevocationList(opts)
 
-  return verifyVerifiableCredential(vcJwt) as Promise<StatusList2021Credential>
+  return verifyVerifiableCredentialJWT(
+    vcJwt
+  ) as Promise<StatusList2021Credential>
 }
 
 /**

@@ -66,11 +66,9 @@ export class CredentialManifestBuilder {
   }
 
   presentation_definition(
-    presentation_definition?: PresentationDefinition
+    presentation_definition: PresentationDefinition
   ): CredentialManifestBuilder {
-    if (presentation_definition) {
-      this._builder.presentation_definition = presentation_definition
-    }
+    this._builder.presentation_definition = presentation_definition
     return this
   }
 
@@ -102,12 +100,18 @@ export function buildManifest(
   presentationDefinition?: PresentationDefinition,
   format: ClaimFormatDesignation = JWT_VC_CLAIM_FORMAT_DESIGNATION
 ): CredentialManifest {
-  const manifest = new CredentialManifestBuilder(manifestId)
+  let manifestBuilder = new CredentialManifestBuilder(manifestId)
     .issuer(issuer)
     .output_descriptors(outputDescriptors)
-    .presentation_definition(presentationDefinition)
     .format(format)
-    .build()
+
+  if (presentationDefinition) {
+    manifestBuilder = manifestBuilder.presentation_definition(
+      presentationDefinition
+    )
+  }
+
+  const manifest = manifestBuilder.build()
 
   return manifest
 }

@@ -1,79 +1,70 @@
-import { JWTOptions } from "did-jwt"
-
 import {
-  CredentialApplication,
   CredentialManifest,
   CredentialResponseWrapper,
-  DecodedCredentialResponseWrapper,
   Signer,
-  JWT
+  JWT,
+  MaybeCredential,
+  W3CCredential,
+  Verifiable
 } from "../../types"
-import { CredentialApplicationWrapperBuilder } from "../builders"
 import { CredentialResponseWrapperBuilder } from "../builders/credential-response-wrapper-builder"
-import { decodeJWT2, verifyJWT2, verifyVerifiableCredential } from "../utils"
+import { signJWT, verifyJWT } from "../utils"
+import { decodeAndVerifyResponseCredentials } from "../validators/validate-credential-response"
 
-import { signVeriteJwt } from "."
-
-// TOFIX: where does this live and is it useful? Does it neeed more params?
-export async function composeCredentialResponse(
-  application: Partial<CredentialApplication>,
+/***
+ * Convenience method for composing a signed, JWT-encoded Credential Response
+ */
+export async function composeCredentialResponseJWT(
   manifest: CredentialManifest,
+  applicant: string,
+  application_id: string,
   signer: Signer,
   vc: JWT | JWT[]
 ): Promise<JWT> {
-  const credentialResponse = new CredentialResponseWrapperBuilder()
+  const credentialResponse = new CredentialResponseWrapperBuilder<JWT>()
     .withCredentialResponse((r) => {
-      r.initFromApplication(application)
       r.initFromManifest(manifest)
+      r.applicant(applicant)
+      r.application_id(application_id)
     })
     .verifiableCredential(vc)
     .build()
 
-  const responseJwt = await signVeriteJwt(credentialResponse, signer)
+  const responseJwt = await signJWT(credentialResponse, signer)
   return responseJwt
 }
 
-// TOFIX: ditto above?
-export async function composeCredentialApplication(
-  manifest: CredentialManifest,
-  signer: Signer,
-  verifiableCredential?: JWT | JWT[]
-): Promise<JWT> {
-  const application = new CredentialApplicationWrapperBuilder()
-    .withCredentialApplication((a) => {
-      a.initFromManifest(manifest)
-      a.applicant(signer.did)
-    })
-    .verifiableCredential(verifiableCredential)
-    .build()
-
-  const responseJwt = await signVeriteJwt(application, signer)
-  return responseJwt
+/**
+ * Decode a JWT-encoded Credential Response.
+ *
+ * This method decodes and verifies the JWT-encoded Credential Application,
+ * returning the decoded form.
+ *
+ * Note: does not decode the Credential Response's verifiable credentials.
+ *
+ * @returns the decoded Credential Response
+ * @throws VerificationException if the Credential Response is not well-formed
+ */
+export async function decodeCredentialResponseJWT(
+  encodedResponse: JWT
+): Promise<CredentialResponseWrapper<MaybeCredential>> {
+  const result = await verifyJWT(encodedResponse)
+  return result.payload as CredentialResponseWrapper<MaybeCredential>
 }
 
-export async function decodeAndVerifyCredentialResponseJwt(
-  credentialResponseJwt: JWT,
-  options?: JWTOptions
-): Promise<DecodedCredentialResponseWrapper> {
-  // TOFIX: does verify do both???
-  const result = await decodeJWT2(credentialResponseJwt)
-  const result2 = await verifyJWT2(credentialResponseJwt, options)
-  const credentialResponse = result.payload as CredentialResponseWrapper
-  let decodedArray
-  if (credentialResponse.verifiableCredential) {
-    decodedArray = await Promise.all(
-      credentialResponse.verifiableCredential.map((vc) =>
-        verifyVerifiableCredential(vc)
-      )
-    )
-  }
-  //
-  // TOdo: options?
-
-  const decodedCredentialResponse = {
-    credential_response: credentialResponse.credential_response,
-    ...(decodedArray !== undefined && { verifiableCredential: decodedArray })
-  }
-
-  return decodedCredentialResponse
+/**
+ * Decode and validate a JWT-encoded Credential Response.
+ *
+ * This is a convenience wrapper around `decodeCredentialResponseJwt` and `decodeAndVerifyResponseCredentials`,
+ * which can be called separately.
+ *
+ * @returns the decoded Credential Response
+ * @throws VerificationException if the Credential Response is not valid
+ */
+export async function validateCredentialResponseJWT(
+  encodedResponse: JWT
+): Promise<CredentialResponseWrapper<Verifiable<W3CCredential>>> {
+  const response = await decodeCredentialResponseJWT(encodedResponse)
+  const decodedResponse = await decodeAndVerifyResponseCredentials(response)
+  return decodedResponse
 }

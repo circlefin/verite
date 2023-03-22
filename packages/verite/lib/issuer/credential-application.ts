@@ -1,127 +1,76 @@
-import { JWTHeader, JWTOptions, JWTPayload } from "did-jwt"
-
 import {
   CredentialApplicationWrapper,
   CredentialManifest,
-  DecodedCredentialApplicationWrapper,
+  JWT,
+  MaybeCredential,
   Signer,
-  EncodedCredentialApplicationWrapper,
-  JWT
+  Verifiable,
+  W3CCredential
 } from "../../types"
-import {
-  signJWT,
-  decodeJWT2,
-  verifyJWT2,
-  verifyVerifiableCredential
-} from "../utils"
-import { validateCredentialApplication } from "../validators"
+import { CredentialApplicationWrapperBuilder } from "../builders"
+import { signJWT, verifyJWT } from "../utils"
+import { validateCredentialApplicationForManifest } from "../validators"
 
-// TOFIX: where should this live?
-export async function signVeriteJwt(
-  payload: Partial<JWTPayload>, // TOFIX: export JWTPayload from did-jwt
+/**
+ * Convenience method for composing a signed, JWT-encoded Credential Application
+ * @param manifest
+ * @param signer
+ * @param verifiableCredential
+ * @returns
+ */
+export async function composeCredentialApplicationJWT(
+  manifest: CredentialManifest,
   signer: Signer,
-  header?: Partial<JWTHeader>
+  verifiableCredential?: JWT | JWT[]
 ): Promise<JWT> {
-  const jwt = await signJWT(payload, signer, header)
+  // FOLLOW_UP: generalize when we support other formats
+  const application = new CredentialApplicationWrapperBuilder<JWT>()
+    .withCredentialApplication((a) => {
+      a.initFromManifest(manifest)
+      a.applicant(signer.did)
+    })
+    .verifiableCredential(verifiableCredential)
+    .build()
 
-  return jwt
+  const responseJwt = await signJWT(application, signer)
+  return responseJwt
 }
 
 /**
- * Decode an encoded Credential Application.
+ * Decode a JWT-encoded Credential Application.
  *
- * This method decodes the submitted Credential Application, verifies it as a Verifiable
- * Presentation, and returns the decoded Credential Application.
+ * This method decodes and verifies the JWT-encoded Credential Application,
+ * returning the decoded form.
+ *
+ * Note: does not decode the Credential Application's verifiable credentials.
  *
  * @returns the decoded Credential Application
- * @throws VerificationException if the Credential Application is not valid
+ * @throws VerificationException if the Credential Application is not well-formed
  */
-export async function decodeAndVerifyCredentialApplicationJwt(
-  encodedApplication: EncodedCredentialApplicationWrapper
-): Promise<DecodedCredentialApplicationWrapper> {
-  const result = await decodeJWT2(encodedApplication)
-  const valid = await verifyJWT2(encodedApplication) // TOFIX: options
-  const caw = result.payload as CredentialApplicationWrapper
-  let decodedArray
-  if (caw.verifiableCredential) {
-    decodedArray = await Promise.all(
-      caw.verifiableCredential.map((vc) => verifyVerifiableCredential(vc))
-    )
-  }
-  const decoded = {
-    credential_application: caw.credential_application,
-    ...(decodedArray !== undefined && { verifiableCredential: decodedArray })
-  }
-
-  return decoded
+export async function decodeCredentialApplicationJWT(
+  encodedApplication: JWT
+): Promise<CredentialApplicationWrapper<MaybeCredential>> {
+  const result = await verifyJWT(encodedApplication)
+  return result.payload as CredentialApplicationWrapper<MaybeCredential>
 }
 
 /**
- * Decode and validate an encoded Credential Application.
+ * Decode and validate a JWT-encoded Credential Application.
  *
- * This is a convenience wrapper around `decodeCredentialApplication` and `validateCredentialApplication`,
+ * This is a convenience wrapper around `decodeCredentialApplicationJwt` and `validateCredentialApplicationForManifest`,
  * which can be called separately.
  *
- * @returns the decoded Credential Application
- * @throws VerificationException if the Credential Application is not a valid
- *  Verifiable Presentation
+ * @returns the Credential Application with its verifiable credentials decoded and verified
+ * @throws VerificationException if the Credential Application is not valid
  */
-export async function evaluateCredentialApplication(
-  encodedApplication: EncodedCredentialApplicationWrapper,
-  manifest: CredentialManifest,
-  options?: JWTOptions
-): Promise<DecodedCredentialApplicationWrapper> {
-  // TOFIX: so many verifies
-  const application = await decodeAndVerifyCredentialApplicationJwt(
-    encodedApplication
+export async function validateCredentialApplicationJWTForManifest(
+  encodedApplication: JWT,
+  manifest: CredentialManifest
+): Promise<CredentialApplicationWrapper<Verifiable<W3CCredential>>> {
+  const application = await decodeCredentialApplicationJWT(encodedApplication)
+  const finalApp = await validateCredentialApplicationForManifest(
+    application,
+    manifest
   )
-
-  await validateCredentialApplication(application, manifest)
-  return application
+  return finalApp
 }
-
-//////////
-// unwound versions
-//////////////
-export async function decodeCredentialApplicationJwt(
-  encodedApplication: EncodedCredentialApplicationWrapper
-): Promise<DecodedCredentialApplicationWrapper> {
-  // rename this to CredentialApplicationWrapper
-  const result = await decodeJWT2(encodedApplication)
-  return result as DecodedCredentialApplicationWrapper
-}
-
-// TODO: generic version
-// Deep decode
-export async function validateXYZ(
-  application: DecodedCredentialApplicationWrapper, // rename this to CredentialApplicationWrapper
-  manifest: CredentialManifest,
-  options?: JWTOptions
-): Promise<DecodedCredentialApplicationWrapper> {
-  // void / bool
-  // TOFIX: so many verifies
-
-  await validateCredentialApplication(application, manifest)
-  return application
-}
-
-/*
-func prepareCredentialManifest(issuerDID did.DIDKey, licenseSchemaID string) (*manifest.CredentialManifest, error) {
-
-func prepareCredentialApplication(cm manifest.CredentialManifest, vc credential.VerifiableCredential) (*manifest.CredentialApplicationWrapper, error) {
-
-func issueApplicationCredential(id did.DIDKey, s schema.VCJSONSchema) (*credential.VerifiableCredential, error) {
-
-https://github.com/TBD54566975/ssi-sdk/blob/a243dcc2d1d113a6128c8b05ff7929483b4d1b65/example/manifest/manifest.go#L310
-
-	func processCredentialApplication(cm manifest.CredentialManifest, 
-		ca manifest.CredentialApplicationWrapper, 
-		s schema.VCJSONSchema, 
-		issuerDID did.DIDKey) (*manifest.CredentialResponseWrapper, error) {
-
-
-	if _, err = manifest.IsValidCredentialApplicationForManifest(cm, request)
-
-		licenseCredential, err := issueDriversLicenseCredential(issuerDID, applicantCredential.CredentialSubject.GetID(), s, data)
-
-*/

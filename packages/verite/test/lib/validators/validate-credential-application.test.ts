@@ -1,8 +1,8 @@
 import { randomBytes } from "crypto"
 
 import {
-  composeCredentialApplication,
-  evaluateCredentialApplication
+  composeCredentialApplicationJWT,
+  validateCredentialApplicationJWTForManifest
 } from "../../../lib"
 import { buildSampleProcessApprovalManifest } from "../../../lib/sample-data"
 import { buildSignerFromDidKey, randomDidKey } from "../../../lib/utils/did-fns"
@@ -34,15 +34,21 @@ describe("Credential Application validator", () => {
       credentialIssuer
     )
 
-    const credentialApplication = await composeCredentialApplication(
+    const credentialApplication = await composeCredentialApplicationJWT(
       kycManifest,
       subjectSigner
     )
 
-    evaluateCredentialApplication(credentialApplication, kycManifest)
+    validateCredentialApplicationJWTForManifest(
+      credentialApplication,
+      kycManifest
+    )
 
     await expect(
-      evaluateCredentialApplication(credentialApplication, kycManifest)
+      validateCredentialApplicationJWTForManifest(
+        credentialApplication,
+        kycManifest
+      )
     ).resolves.not.toThrowError()
   })
 
@@ -52,12 +58,12 @@ describe("Credential Application validator", () => {
       credentialIssuer
     )
 
-    const credentialApplication = await composeCredentialApplication(
+    const credentialApplication = await composeCredentialApplicationJWT(
       kycManifest,
       subjectSigner
     )
 
-    const application = await evaluateCredentialApplication(
+    const application = await validateCredentialApplicationJWTForManifest(
       credentialApplication,
       kycManifest
     )
