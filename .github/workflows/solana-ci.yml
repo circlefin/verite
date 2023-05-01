@@ -12,7 +12,7 @@ on:
       - .github/workflows/solana-ci.yml
 
 env:
-  SOLANA_VERSION: "1.9.4"
+  SOLANA_VERSION: "1.15.2"
   ANCHOR_VERSION: "0.20.1"
   RUST_TOOLCHAIN: stable
 
