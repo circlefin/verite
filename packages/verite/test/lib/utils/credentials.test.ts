@@ -1,9 +1,9 @@
 import { VerificationError } from "../../../lib/errors"
 import {
   buildIssuer,
-  decodeVerifiableCredential,
-  decodeVerifiablePresentation,
-  encodeVerifiableCredential
+  verifyVerifiableCredential,
+  verifyVerifiablePresentation,
+  signVerifiableCredential
 } from "../../../lib/utils"
 
 import type { CredentialPayload } from "../../../types"
@@ -17,7 +17,7 @@ const expiredVp =
 
 describe("VC decoding", () => {
   it("decodes a VC", async () => {
-    const decoded = await decodeVerifiableCredential(signedVc)
+    const decoded = await verifyVerifiableCredential(signedVc)
     expect(decoded.type.length).toEqual(1)
     expect(decoded.type[0]).toEqual("VerifiableCredential")
     expect(decoded.credentialSubject.degree.type).toEqual("BachelorDegree")
@@ -28,14 +28,14 @@ describe("VC decoding", () => {
 
   it("rejects an expired VC", async () => {
     expect.assertions(1)
-    await expect(decodeVerifiableCredential(expiredVc)).rejects.toThrowError(
+    await expect(verifyVerifiableCredential(expiredVc)).rejects.toThrowError(
       VerificationError
     )
   })
 
   it("rejects an expired VP", async () => {
     expect.assertions(1)
-    await expect(decodeVerifiablePresentation(expiredVp)).rejects.toThrowError(
+    await expect(verifyVerifiablePresentation(expiredVp)).rejects.toThrowError(
       VerificationError
     )
   })
@@ -61,8 +61,8 @@ describe("VC signing", () => {
         }
       }
     }
-    const result = await encodeVerifiableCredential(vcPayload, signer)
-    const decoded = await decodeVerifiableCredential(result)
+    const result = await signVerifiableCredential(vcPayload, signer)
+    const decoded = await verifyVerifiableCredential(result)
     expect(decoded.type.length).toEqual(1)
     expect(decoded.type[0]).toEqual("VerifiableCredential")
     expect(decoded.credentialSubject.degree.type).toEqual("BachelorDegree")

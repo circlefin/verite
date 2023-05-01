@@ -1,7 +1,15 @@
 import { CredentialManifest, DecodedCredentialApplication } from "../../types"
 import { ValidationError } from "../errors"
-import { getManifestIdFromCredentialApplication } from "../issuer/credential-application"
 import { hasPaths } from "../utils/has-paths"
+
+/**
+ * Fetches the manifest id from a credential application
+ */
+export function getManifestIdFromCredentialApplication(
+  application: DecodedCredentialApplication
+): string {
+  return application.credential_application.manifest_id
+}
 
 /**
  * Validate the format and contents of a Credential Application against the
@@ -11,15 +19,8 @@ import { hasPaths } from "../utils/has-paths"
  */
 export async function validateCredentialApplication(
   application: DecodedCredentialApplication,
-  manifest?: CredentialManifest
+  manifest: CredentialManifest
 ): Promise<void> {
-  if (!manifest) {
-    throw new ValidationError(
-      "Invalid Manifest ID",
-      "This issuer doesn't issue credentials for the specified Manifest ID"
-    )
-  }
-
   if (getManifestIdFromCredentialApplication(application) !== manifest.id) {
     throw new ValidationError(
       "Invalid Manifest ID",

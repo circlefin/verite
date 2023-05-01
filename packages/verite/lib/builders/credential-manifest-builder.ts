@@ -54,6 +54,16 @@ export class CredentialManifestBuilder {
     return this
   }
 
+  name(name: string): CredentialManifestBuilder {
+    this._builder.name = name
+    return this
+  }
+
+  description(description: string): CredentialManifestBuilder {
+    this._builder.description = description
+    return this
+  }
+
   presentation_definition(
     presentation_definition: PresentationDefinition
   ): CredentialManifestBuilder {

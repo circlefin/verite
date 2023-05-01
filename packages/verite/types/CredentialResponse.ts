@@ -2,15 +2,33 @@ import type { DescriptorMap } from "./DescriptorMap"
 import type { Verifiable, W3CPresentation } from "./DidJwt"
 import type { JWT } from "./Jwt"
 
-type NarrowCredentialFulfillment = {
-  credential_response: {
-    id: string
-    manifest_id: string
+export type CredentialResponse = {
+  id: string
+  spec_version: string
+  manifest_id: string
+  application_id?: string
+  fulfillment?: {
     descriptor_map: DescriptorMap[]
+  }
+  denial?: {
+    reason: string
+    input_descriptors: string[]
   }
 }
 
-export type EncodedCredentialFulfillment = JWT
+export type CredentialResponseWrapper = {
+  "@context": string | string[]
+  type: string | string[]
+  verifiableCredential: JWT | JWT[]
+  credential_response: CredentialResponse
+}
 
-export type DecodedCredentialFulfillment = NarrowCredentialFulfillment &
+// TOFIX: are we using this and below?
+type NarrowCredentialResponseWrapper = {
+  credential_response: CredentialResponse
+}
+
+export type EncodedCredentialResponseWrapper = JWT
+
+export type DecodedCredentialResponseWrapper = NarrowCredentialResponseWrapper &
   Verifiable<W3CPresentation>

@@ -123,7 +123,7 @@ const CredentialsList: NavigationElement = ({ navigation }) => {
       </TouchableOpacity>
     )
   }
-  
+
   return (
     <View style={styles.container2}>
       <FlatList

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 import {
   buildKycVerificationOffer,
   kycAmlPresentationDefinition,
-  validateVerificationSubmission,
+  evaluatePresentationSubmission,
   verificationResult
 } from "verite"
 
@@ -80,7 +80,7 @@ async function completeVerification(req: NextApiRequest, res: NextApiResponse) {
 
   // Perform verification.
   try {
-    await validateVerificationSubmission(req.body, definition)
+    await evaluatePresentationSubmission(req.body, definition)
   } catch (e) {
     res.status(400).json({
       status: "invalid",

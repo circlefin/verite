@@ -22,10 +22,10 @@ Object {
   },
   "output_descriptors": Array [
     Object {
-      "description": "Attestation that Verite has completed KYC/AML verification for this subject",
+      "description": "Attestation that Verite has completed KYCAMLAttestation verification for this subject",
       "display": Object {
         "description": Object {
-          "text": "The KYC authority processes Know Your Customer and Anti-Money Laundering analysis, potentially employing a number of internal and external vendor providers.",
+          "text": "The issuing authority processes KYCAMLAttestation analysis, potentially employing a number of internal and external vendor providers.",
         },
         "properties": Array [
           Object {
@@ -56,11 +56,11 @@ Object {
           ],
         },
         "title": Object {
-          "text": "Verite KYC Attestation",
+          "text": "Verite KYCAMLAttestation",
         },
       },
       "id": "KYCAMLCredential",
-      "name": "Proof of KYC from Verite",
+      "name": "KYCAMLCredential from Verite",
       "schema": "https://verite.id/definitions/schemas/0.0.1/KYCAMLAttestation",
       "styles": Object {
         "background": Object {

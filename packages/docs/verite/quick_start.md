@@ -27,15 +27,15 @@ or
 import {
   randomDidKey,
   buildIssuer,
-  buildAndSignFulfillment,
+  composeFulfillmentFromAttestation,
   buildKycAmlManifest,
-  decodeCredentialApplication,
-  buildCredentialApplication,
+  validateCredentialApplication,
+  composeCredentialApplication,
   buildKycVerificationOffer,
-  buildPresentationSubmission,
+  composePresentationSubmission,
   validateVerificationSubmission,
-  decodeVerifiableCredential,
-  decodeVerifiablePresentation
+  verifyVerifiableCredential,
+  verifyVerifiablePresentation
 } from "verite"
 import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
@@ -49,9 +49,9 @@ const verifier = randomDidKey(randomBytes)
 //  Issuer builds a manifest representing the type of credential (in this case a KYCAML credential)
 const manifest = buildKycAmlManifest({ id: issuerDidKey.controller })
 //  The credential application is created and returned as a JWT
-const application = await buildCredentialApplication(subject, manifest)
+const application = await composeCredentialApplication(subject, manifest)
 //  The decoded JWT is necessary when it comes time to issue the verifiable presentation which will include this credential
-const decodedApplication = await decodeCredentialApplication(application)
+const decodedApplication = await validateCredentialApplication(application)
 //  The attestation is a standardized representation of the issuer
 const attestation = {
   type: "KYCAMLAttestation",
@@ -62,7 +62,7 @@ const credentialType = "KYCAMLCredential"
 
 //  The issuer is created from the issuer key, and the credential is issued
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-const presentation = await buildAndSignFulfillment(
+const presentation = await composeFulfillmentFromAttestation(
   issuer,
   decodedApplication,
   attestation,
@@ -72,13 +72,13 @@ const presentation = await buildAndSignFulfillment(
 //  As with the application, the verifiable presentation (which contains the credential)
 //  is in JWT form and must be decoded by the subject. This can be done in a mobile app
 //  client or a web browser.
-const decoded = await decodeVerifiablePresentation(presentation)
+const decoded = await verifyVerifiablePresentation(presentation)
 //  The verifiable credential is another JWT within the verifiable presentation and
 //  can be extracted like this:
 const vc = decoded.verifiableCredential[0]
 //  The verifiable credential must then be decoded so that the subject can request
 //  verification
-const decodedVc = await decodeVerifiableCredential(vc.proof.jwt)
+const decodedVc = await verifyVerifiableCredential(vc.proof.jwt)
 
 //  The subject would make a request to the verifier's server to obtain the verification
 //  offer. The code below must be executed by the verifier, using the verifier's key.
@@ -90,7 +90,7 @@ const offer = buildKycVerificationOffer(
 
 //  The subject can then create a submission is the full verification request which would
 //  be sent to the verifier that uses the offer created and supplied by the verifier
-const submission = await buildPresentationSubmission(
+const submission = await composePresentationSubmission(
   subject,
   offer.body.presentation_definition,
   decodedVc

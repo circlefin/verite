@@ -83,7 +83,7 @@ const credentialStatus: {
 When issuing the credential, the issuer would pass `credentialStatus` as follows:
 
 ```ts
-const encoded = await buildAndSignVerifiableCredential(
+const encoded = await composeVerifiableCredential(
   issuer,
   subject.id,
   attestation,
@@ -117,7 +117,7 @@ const credentialStatus = {
 }
 
 // Generate the signed, encoded credential
-const encoded = await buildAndSignVerifiableCredential(
+const encoded = await composeVerifiableCredential(
   issuer,
   subject.id,
   attestation,

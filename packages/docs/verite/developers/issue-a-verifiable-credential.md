@@ -70,12 +70,12 @@ This manifest contains instructions for the subject to use to request a VC.
 The subject uses that manifest to build a “Credential Application”, which serves as a request for a VC. For example, a subject could create the application as such:
 
 ```ts
-import { randomDidKey, buildCredentialApplication } from "verite"
+import { randomDidKey, composeCredentialApplication } from "verite"
 
 // The subject needs a did:key, generate a random one:
 const subjectDidKey = randomDidKey(randomBytes)
 
-const application = await buildCredentialApplication(subject, manifest)
+const application = await composeCredentialApplication(subject, manifest)
 ```
 
 ## Step 3: Issue the Verifiable Credential
@@ -96,13 +96,13 @@ Putting this together, we can do the following:
 
 ```ts
 import {
-  buildAndSignFulfillment,
-  decodeCredentialApplication,
+  composeFulfillmentFromAttestation,
+  validateCredentialApplication,
   buildIssuer,
   KYCAMLAttestation
 } from "verite"
 
-const decodedApplication = await decodeCredentialApplication(application)
+const decodedApplication = await validateCredentialApplication(application)
 
 const attestation: KYCAMLAttestation = {
   type: "KYCAMLAttestation",
@@ -112,7 +112,7 @@ const attestation: KYCAMLAttestation = {
 const credentialType = "KYCAMLCredential"
 const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
 
-const presentation = await buildAndSignFulfillment(
+const presentation = await composeFulfillmentFromAttestation(
   issuer,
   decodedApplication.holder,
   manifest,

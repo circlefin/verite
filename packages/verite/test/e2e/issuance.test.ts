@@ -1,74 +1,111 @@
 import { randomBytes } from "crypto"
 import nock from "nock"
 
-import { buildCredentialApplication } from "../../lib/issuer/credential-application"
-import { buildAndSignFulfillment } from "../../lib/issuer/credential-fulfillment"
 import {
-  buildKycAmlManifest,
+  composeCredentialApplication,
+  composeCredentialResponse,
+  composeVerifiableCredential,
+  evaluateCredentialApplication
+} from "../../lib/issuer"
+import {
+  buildSampleProcessApprovalManifest,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../lib/sample-data"
-import { decodeVerifiablePresentation } from "../../lib/utils/credentials"
+import { verifyVerifiablePresentation } from "../../lib/utils/credentials"
 import { buildIssuer, randomDidKey } from "../../lib/utils/did-fns"
 import { validateCredentialApplication } from "../../lib/validators/validate-credential-application"
-import { kycAmlAttestationFixture } from "../fixtures/attestations"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../fixtures/credentials"
-import { revocationListFixture } from "../fixtures/revocation-list"
-
-import type {
+import {
+  AttestationTypes,
   DecodedCredentialApplication,
   RevocableCredential,
   RevocablePresentation
 } from "../../types"
+import { kycAmlAttestationFixture } from "../fixtures/attestations"
+import { KYC_VC_SCHEMA } from "../fixtures/credentials"
+import { revocationListFixture } from "../fixtures/revocation-list"
 
-describe("issuance", () => {
+describe("E2E issuance", () => {
   it("issues verified credentails", async () => {
     /**
-     * The issuer and the client get a DID
+     * Create a DID for both the issuer and the subject for this test. In the
+     * real world, this would be done separately on the issuer side and the
+     * subject side. For example, the subject's identity wallet could generate
+     * the DID for them.
      */
     const issuerDidKey = randomDidKey(randomBytes)
     const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
-    const clientDidKey = randomDidKey(randomBytes)
+    const subjectDidKey = randomDidKey(randomBytes)
 
     /**
-     * The issuer generates a QR code for the client to scan
+     * The issuer generates a QR code for the subject to scan, depending on
+     * the type of credential they are issuing. In this case, it's a KYC/AML
+     * credential.
      */
-    const credentialIssuer = { id: issuer.did, name: "Verite" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      {
+        id: issuer.did,
+        name: "Verite"
+      }
+    )
 
     /**
-     * The client scans the QR code and generates a credential application
+     * The issuer makes the manifest available to the subject. In this case,
+     * we're assuming the issuer displays a QR code for the subject to scan.
+     *
+     * The subject scans the QR code with their wallet, which retrieves the
+     * manifest.
      */
-    const encodedApplication = await buildCredentialApplication(
-      clientDidKey,
+
+    /**
+     * The wallet code calls composeCredentialApplication to build and
+     * sign Credential Application.
+     */
+    const encodedApplication = await composeCredentialApplication(
+      subjectDidKey,
       manifest
     )
 
     /**
-     * The issuer validates the credential application
+     * The client sends the Credential Application to the issuer.
      */
-    const credentialApplication = (await decodeVerifiablePresentation(
-      encodedApplication
-    )) as DecodedCredentialApplication
-
-    await validateCredentialApplication(credentialApplication, manifest)
 
     /**
-     * The issuer builds and signs a fulfillment
+     * The issuer evaluates the Credential Application
      */
-    const fulfillment = await buildAndSignFulfillment(
+    await evaluateCredentialApplication(encodedApplication, manifest)
+
+    /**
+     * In general, the issuer would extract data from the Credential
+     * Application. If the Credential Application is valid, then the
+     * issuer would issue a credential to the subject.
+     *
+     * Verite libraries allow high- and low-level methods. Compose
+     * methods call build* and sign* methods.
+     */
+    const vc = await composeVerifiableCredential(
       issuer,
-      clientDidKey.subject,
-      manifest,
+      subjectDidKey.subject,
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
       {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialSchema: KYC_VC_SCHEMA,
         credentialStatus: revocationListFixture
       }
     )
+    /**
+     * The issuer wraps the signed VC in a Credential Response, which
+     * is a signed VP
+     */
+    const response = await composeCredentialResponse(issuer, manifest, vc)
 
-    const verifiablePresentation = (await decodeVerifiablePresentation(
-      fulfillment
+    /**
+     * The issuer sends the Credential Response to the subject. The subject's
+     * wallet can then verify the VP and store it.
+     */
+
+    const verifiablePresentation = (await verifyVerifiablePresentation(
+      response
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(
@@ -80,7 +117,7 @@ describe("issuance", () => {
         expect(verifiableCredential.proof).toBeDefined()
 
         const credentialSubject = verifiableCredential.credentialSubject
-        expect(credentialSubject.id).toEqual(clientDidKey.subject)
+        expect(credentialSubject.id).toEqual(subjectDidKey.subject)
 
         const credentialStatus = verifiableCredential.credentialStatus
         expect(credentialStatus.id).toEqual(
@@ -127,19 +164,22 @@ describe("issuance", () => {
     // stub out the https request for a did document
     nock("https://example.com")
       .get("/.well-known/did.json")
-      .times(0)
+      .times(2)
       .reply(200, JSON.stringify(didDocument))
 
     /**
      * The issuer generates a QR code for the client to scan
      */
     const credentialIssuer = { id: issuer.did, name: "Example Issuer" }
-    const manifest = buildKycAmlManifest(credentialIssuer)
+    const manifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
+    )
 
     /**
      * The client scans the QR code and generates a credential application
      */
-    const encodedApplication = await buildCredentialApplication(
+    const encodedApplication = await composeCredentialApplication(
       clientDidKey,
       manifest
     )
@@ -147,28 +187,32 @@ describe("issuance", () => {
     /**
      * The issuer validates the credential application
      */
-    const credentialApplication = (await decodeVerifiablePresentation(
+    const credentialApplication = (await verifyVerifiablePresentation(
       encodedApplication
     )) as DecodedCredentialApplication
     await validateCredentialApplication(credentialApplication, manifest)
 
     /**
-     * The issuer builds and signs a fulfillment
+     * The issuer builds and signs a verifiable credential
      */
-    const fulfillment = await buildAndSignFulfillment(
+    const vc = await composeVerifiableCredential(
       issuer,
       clientDidKey.subject,
-      manifest,
       kycAmlAttestationFixture,
       KYCAML_CREDENTIAL_TYPE_NAME,
       {
-        credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ,
+        credentialSchema: KYC_VC_SCHEMA,
         credentialStatus: revocationListFixture
       }
     )
 
-    const verifiablePresentation = (await decodeVerifiablePresentation(
-      fulfillment
+    /**
+     * The issuer builds and signs a response
+     */
+    const response = await composeCredentialResponse(issuer, manifest, vc)
+
+    const verifiablePresentation = (await verifyVerifiablePresentation(
+      response
     )) as RevocablePresentation
 
     verifiablePresentation.verifiableCredential!.forEach(

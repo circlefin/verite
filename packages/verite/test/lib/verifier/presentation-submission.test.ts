@@ -1,39 +1,58 @@
 import { randomBytes } from "crypto"
 import jsonpath from "jsonpath"
 
-import { buildAndSignVerifiableCredential } from "../../../lib/issuer/credential-fulfillment"
+import { validatePresentationSubmission } from "../../../lib"
 import {
+  buildProcessApprovalPresentationDefinition,
+  ENTITY_ACC_INV_CREDENTIAL_TYPE_NAME,
+  INDIV_ACC_INV_CREDENTIAL_TYPE_NAME,
+  KYBPAML_CREDENTIAL_TYPE_NAME,
   kycAmlPresentationDefinition,
   KYCAML_CREDENTIAL_TYPE_NAME
 } from "../../../lib/sample-data"
+import { buildProcessApprovalVC } from "../../../lib/sample-data/verifiable-credentials"
+import { randomDidKey } from "../../../lib/utils"
 import {
-  buildIssuer,
-  decodeVerifiableCredential,
-  decodeVerifiablePresentation,
-  randomDidKey
-} from "../../../lib/utils"
-import { buildPresentationSubmission } from "../../../lib/verifier/presentation-submission"
-import { kycAmlAttestationFixture } from "../../fixtures/attestations"
-import { KYC_ATTESTATION_SCHEMA_VC_OBJ } from "../../fixtures/credentials"
+  composePresentationSubmission,
+  decodePresentationSubmission
+} from "../../../lib/verifier/presentation-submission"
+import {
+  AttestationTypes,
+  DidKey,
+  JWT,
+  PresentationDefinition
+} from "../../../types"
+import { revocationListFixture } from "../../fixtures"
 
-describe("buildPresentationSubmission", () => {
-  it("builds a Presentation Submission", async () => {
-    // DID of the holder
-    const didKey = randomDidKey(randomBytes)
+let subjectDidKey: DidKey
+let issuerDidKey: DidKey
+let preparedVC: JWT
+let preparedPresentationDefinition: PresentationDefinition
 
-    // DID of the issuer
-    const issuerDid = randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDid.subject, issuerDid.privateKey)
+async function prepare(attestationType: AttestationTypes): Promise<void> {
+  preparedVC = await buildProcessApprovalVC(
+    attestationType,
+    issuerDidKey,
+    subjectDidKey.subject,
+    revocationListFixture
+  )
 
-    // Builds a signed Verifiable Credential
-    const encodedCredential = await buildAndSignVerifiableCredential(
-      issuer,
-      didKey,
-      kycAmlAttestationFixture,
-      KYCAML_CREDENTIAL_TYPE_NAME,
-      { credentialSchema: KYC_ATTESTATION_SCHEMA_VC_OBJ }
+  preparedPresentationDefinition =
+    buildProcessApprovalPresentationDefinition(attestationType)
+}
+
+beforeEach(() => {
+  subjectDidKey = randomDidKey(randomBytes)
+  issuerDidKey = randomDidKey(randomBytes)
+})
+describe("composePresentationSubmission", () => {
+  it("composes a KYCAML Presentation Submission", async () => {
+    const sample = await buildProcessApprovalVC(
+      AttestationTypes.KYCAMLAttestation,
+      issuerDidKey,
+      subjectDidKey.subject,
+      revocationListFixture
     )
-    const credential = await decodeVerifiableCredential(encodedCredential)
 
     // When building a Presentation Submission, we must reference a
     // `definition_id` that identifies the set of definitions we are
@@ -41,14 +60,14 @@ describe("buildPresentationSubmission", () => {
     // with the corresponding JSON path in the submission.
     const presentationDefinition = kycAmlPresentationDefinition()
 
-    // Build Presentation Submission
-    const encodedSubmission = await buildPresentationSubmission(
-      didKey,
+    // Compose Presentation Submission
+    const encodedSubmission = await composePresentationSubmission(
+      subjectDidKey,
       presentationDefinition,
-      credential
+      sample
     )
 
-    const submission = await decodeVerifiablePresentation(encodedSubmission)
+    const submission = await decodePresentationSubmission(encodedSubmission)
 
     // In this example, the Presentation Submission is for a Presentation
     // Request requiring a KYC credential.
@@ -69,7 +88,7 @@ describe("buildPresentationSubmission", () => {
         {
           type: ["VerifiableCredential", "KYCAMLCredential"],
           credentialSubject: {
-            id: didKey.subject,
+            id: subjectDidKey.subject,
             KYCAMLAttestation: {
               type: "KYCAMLAttestation",
               process:
@@ -77,7 +96,7 @@ describe("buildPresentationSubmission", () => {
               // approvalDate: attestation.approvalDate,
             }
           },
-          issuer: { id: issuerDid.subject }
+          issuer: { id: issuerDidKey.subject }
         }
       ]
     })
@@ -93,27 +112,102 @@ describe("buildPresentationSubmission", () => {
     )
 
     // The submission has a matching identifier
-    expect(submission.presentation_submission.descriptor_map[0].id).toEqual(
+    expect(submission.presentation_submission?.descriptor_map[0].id).toEqual(
       "KYCAMLCredential"
     )
     // The submission defines the path to find it
-    const path = submission.presentation_submission.descriptor_map[0].path
+    const path = submission.presentation_submission?.descriptor_map[0].path
 
     // Query the submission with the path
-    const query = jsonpath.query(submission, path)
+    const query = jsonpath.query(submission, path!)
 
     // It will match the KYC credential that is required
     expect(query[0]).toMatchObject({
       type: ["VerifiableCredential", "KYCAMLCredential"],
       credentialSubject: {
-        id: didKey.subject,
+        id: subjectDidKey.subject,
         KYCAMLAttestation: {
           type: "KYCAMLAttestation",
           process: "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
           // approvalDate: attestation.approvalDate,
         }
       },
-      issuer: { id: issuerDid.subject }
+      issuer: { id: issuerDidKey.subject }
     })
   })
+
+  it.each([
+    [
+      AttestationTypes.KYCAMLAttestation,
+      KYCAML_CREDENTIAL_TYPE_NAME,
+      "https://verite.id/definitions/processes/kycaml/0.0.1/usa"
+    ],
+    [
+      AttestationTypes.KYBPAMLAttestation,
+      KYBPAML_CREDENTIAL_TYPE_NAME,
+      "https://verite.id/definitions/processes/kybpaml/0.0.1/usa"
+    ],
+    [
+      AttestationTypes.EntityAccInvAttestation,
+      ENTITY_ACC_INV_CREDENTIAL_TYPE_NAME,
+      "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-entity-accinv-all-checks"
+    ],
+    [
+      AttestationTypes.IndivAccInvAttestation,
+      INDIV_ACC_INV_CREDENTIAL_TYPE_NAME,
+      "https://verite.id/definitions/processes/kycaml/0.0.1/generic--usa-indiv-accinv-all-checks"
+    ]
+  ])(
+    "Composes Presentation Submission with %s expecting VC with type %s and process",
+    async (
+      attestationType: AttestationTypes,
+      expectedCredentialType: string,
+      expectedProcess: string
+    ) => {
+      await prepare(attestationType)
+
+      // Compose Presentation Submission
+      const encodedSubmission = await composePresentationSubmission(
+        subjectDidKey,
+        preparedPresentationDefinition,
+        preparedVC
+      )
+
+      const submission = await decodePresentationSubmission(encodedSubmission)
+
+      // check descriptor map
+      expect(submission.presentation_submission).toBeDefined()
+      expect(submission.presentation_submission!.descriptor_map).toHaveLength(1)
+      const dm = submission.presentation_submission!.descriptor_map![0]
+      expect(dm).toMatchObject({
+        format: "jwt_vc",
+        id: expectedCredentialType,
+        path: "$.verifiableCredential[0]"
+      })
+
+      // check verifiable credential
+      expect(submission.verifiableCredential).toHaveLength(1)
+      const vc = submission.verifiableCredential![0]
+
+      expect(vc.type).toMatchObject([
+        "VerifiableCredential",
+        expectedCredentialType
+      ])
+      expect(vc.credentialSubject[attestationType]).toBeDefined()
+      expect(vc.credentialSubject[attestationType].type).toEqual(
+        attestationType
+      )
+      expect(vc.credentialSubject[attestationType].process).toEqual(
+        expectedProcess
+      )
+
+      // ensure validate does not throw
+      await expect(
+        validatePresentationSubmission(
+          submission,
+          preparedPresentationDefinition
+        )
+      ).resolves.not.toThrow()
+    }
+  )
 })

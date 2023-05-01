@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 import {
-  buildCredentialApplication,
-  decodeVerifiablePresentation,
+  composeCredentialApplication,
+  verifyVerifiablePresentation,
   randomDidKey
 } from "verite"
 
@@ -11,7 +11,7 @@ import handler from "../../../../pages/api/demos/issuer/[token]"
 import { userFactory } from "../../../factories"
 import { createMocks } from "../../../support/mocks"
 
-import type { DecodedCredentialFulfillment } from "verite"
+import type { DecodedCredentialResponseWrapper } from "verite"
 
 const expiredPresentation =
   "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
@@ -22,7 +22,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLManifest")
-    const credentialApplication = await buildCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -39,9 +39,9 @@ describe("POST /issuance/[token]", () => {
 
     const response = res._getData()
 
-    const presentation = (await decodeVerifiablePresentation(
+    const presentation = (await verifyVerifiablePresentation(
       response
-    )) as DecodedCredentialFulfillment
+    )) as DecodedCredentialResponseWrapper
 
     expect(presentation.credential_response.manifest_id).toEqual(
       "KYCAMLManifest"
@@ -53,7 +53,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("CreditScoreManifest")
-    const credentialApplication = await buildCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -70,9 +70,9 @@ describe("POST /issuance/[token]", () => {
 
     const response = res._getData()
 
-    const presentation = (await decodeVerifiablePresentation(
+    const presentation = (await verifyVerifiablePresentation(
       response
-    )) as DecodedCredentialFulfillment
+    )) as DecodedCredentialResponseWrapper
 
     expect(presentation.credential_response.manifest_id).toEqual(
       "CreditScoreManifest"
@@ -157,7 +157,7 @@ describe("POST /issuance/[token]", () => {
     const token = await temporaryAuthToken(user)
     const clientDid = await randomDidKey(randomBytes)
     const manifest = await findManifestById("KYCAMLManifest")
-    const credentialApplication = await buildCredentialApplication(
+    const credentialApplication = await composeCredentialApplication(
       clientDid,
       manifest
     )
@@ -173,7 +173,7 @@ describe("POST /issuance/[token]", () => {
     expect(res.statusCode).toBe(200)
 
     const response = res._getData()
-    const verifiablePresentation = await decodeVerifiablePresentation(response)
+    const verifiablePresentation = await verifyVerifiablePresentation(response)
     const vc = verifiablePresentation.verifiableCredential[0]
     expect(vc.credentialSubject.id).toBe(clientDid.subject)
     expect(vc.credentialSubject.KYCAMLAttestation["type"]).toBe(

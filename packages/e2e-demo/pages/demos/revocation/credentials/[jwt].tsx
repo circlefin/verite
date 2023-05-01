@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useState } from "react"
 import {
   isRevoked,
-  decodeVerifiableCredential,
+  verifyVerifiableCredential,
   fetchStatusList,
   isRevocable,
   MaybeRevocableCredential,
@@ -28,7 +28,7 @@ type Props = {
 
 export const getServerSideProps = requireAuth<Props>(async (context) => {
   const jwt = context.params.jwt as string
-  const credential = (await decodeVerifiableCredential(
+  const credential = (await verifyVerifiableCredential(
     jwt
   )) as MaybeRevocableCredential
 

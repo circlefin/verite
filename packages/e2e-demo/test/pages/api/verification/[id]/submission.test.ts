@@ -2,13 +2,14 @@ import { randomBytes } from "crypto"
 import { v4 as uuidv4 } from "uuid"
 import {
   buildIssuer,
-  buildAndSignFulfillment,
-  buildPresentationSubmission,
-  decodeVerifiablePresentation,
+  composeCredentialResponseFromAttestation,
+  composePresentationSubmission,
+  verifyVerifiablePresentation,
   randomDidKey,
   buildKycVerificationOffer,
   buildCreditScoreVerificationOffer,
-  attestationToCredentialType
+  attestationToCredentialType,
+  AttestationTypes
 } from "verite"
 
 import {
@@ -37,7 +38,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -75,7 +76,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -122,7 +123,7 @@ describe("POST /verification/[id]/submission", () => {
     const clientDidKey = await randomDidKey(randomBytes)
     const clientVC = await generateKycAmlVc(clientDidKey)
 
-    const submission = await buildPresentationSubmission(
+    const submission = await composePresentationSubmission(
       clientDidKey,
       verificationRequest.body.presentation_definition,
       clientVC,
@@ -160,17 +161,20 @@ describe("POST /verification/[id]/submission", () => {
 async function generateKycAmlVc(clientDidKey: DidKey) {
   const manifest = await findManifestById("KYCAMLManifest")
   const user = await userFactory()
-  const userAttestation = buildAttestationForUser(user, manifest)
-  const fulfillment = await buildAndSignFulfillment(
+  const userAttestation = buildAttestationForUser(
+    user,
+    AttestationTypes.KYCAMLAttestation
+  )
+  const fulfillment = await composeCredentialResponseFromAttestation(
     buildIssuer(process.env.ISSUER_DID, process.env.ISSUER_SECRET),
     clientDidKey.subject,
     manifest,
     userAttestation,
-    attestationToCredentialType(userAttestation.type),
+    attestationToCredentialType(AttestationTypes.KYCAMLAttestation),
     { credentialSchema: kycAttestationSchema }
   )
 
-  const fulfillmentVP = await decodeVerifiablePresentation(fulfillment)
+  const fulfillmentVP = await verifyVerifiablePresentation(fulfillment)
 
   return fulfillmentVP.verifiableCredential[0]
 }

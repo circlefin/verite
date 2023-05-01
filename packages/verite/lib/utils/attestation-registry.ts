@@ -1,81 +1,91 @@
+import {
+  AttestationDefinition,
+  AttestationTypes,
+  CredentialSchema
+} from "../../types"
 import { ValidationError } from "../errors"
 
 const VERITE_SCHEMAS_PREFIX_URI = "https://verite.id/definitions/schemas/0.0.1"
 const VERITE_PROCESSES_PREFIX_URI = "https://verite.id/definitions/processes"
-
-// Known Attestations
-export const KYCAML_ATTESTATION = "KYCAMLAttestation"
-export const KYBPAML_ATTESTATION = "KYBPAMLAttestation"
-export const CREDIT_SCORE_ATTESTATION = "CreditScoreAttestation"
-export const ENTITY_ACC_INV_ATTESTATION = "EntityAccInvAttestation"
-export const INDIV_ACC_INV_ATTESTATION = "IndivAccInvAttestation"
-export const ADDRESS_OWNER_ATTESTATION = "AddressOwnerAttestation"
-export const COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION =
-  "CounterpartyAccountHolder"
 
 function instantiate(
   attestationName: string,
   process?: string
 ): AttestationDefinition {
   return {
-    type: `${attestationName}`,
-    schema: `${VERITE_SCHEMAS_PREFIX_URI}/${attestationName}`,
-    ...(process && { process: process })
+    attestation: {
+      type: `${attestationName}`,
+      ...(process && { process: process })
+    },
+    schema: `${VERITE_SCHEMAS_PREFIX_URI}/${attestationName}`
   }
-}
-
-export type AttestationDefinition = {
-  type: string
-  schema: string
-  process?: string
 }
 
 const allAttestations = new Map<string, AttestationDefinition>([
   [
-    KYCAML_ATTESTATION,
+    AttestationTypes.KYCAMLAttestation,
     instantiate(
-      KYCAML_ATTESTATION,
+      AttestationTypes.KYCAMLAttestation,
       `${VERITE_PROCESSES_PREFIX_URI}/kycaml/0.0.1/usa`
     )
   ],
   [
-    KYBPAML_ATTESTATION,
+    AttestationTypes.KYBPAMLAttestation,
     instantiate(
-      KYBPAML_ATTESTATION,
+      AttestationTypes.KYBPAMLAttestation,
       `${VERITE_PROCESSES_PREFIX_URI}/kybpaml/0.0.1/usa`
     )
   ],
   [
-    ENTITY_ACC_INV_ATTESTATION,
+    AttestationTypes.EntityAccInvAttestation,
     instantiate(
-      ENTITY_ACC_INV_ATTESTATION,
+      AttestationTypes.EntityAccInvAttestation,
       `${VERITE_PROCESSES_PREFIX_URI}/kycaml/0.0.1/generic--usa-entity-accinv-all-checks`
     )
   ],
   [
-    INDIV_ACC_INV_ATTESTATION,
+    AttestationTypes.IndivAccInvAttestation,
     instantiate(
-      INDIV_ACC_INV_ATTESTATION,
-      `${VERITE_PROCESSES_PREFIX_URI}}/kycaml/0.0.1/generic--usa-indiv-accinv-all-checks`
+      AttestationTypes.IndivAccInvAttestation,
+      `${VERITE_PROCESSES_PREFIX_URI}/kycaml/0.0.1/generic--usa-indiv-accinv-all-checks`
     )
   ],
-  [CREDIT_SCORE_ATTESTATION, instantiate(CREDIT_SCORE_ATTESTATION)],
-  [ADDRESS_OWNER_ATTESTATION, instantiate(ADDRESS_OWNER_ATTESTATION)],
   [
-    COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION,
-    instantiate(COUNTERPARTY_ACCOUNT_HOLDER_ATTESTATION)
+    AttestationTypes.CreditScoreAttestation,
+    instantiate(AttestationTypes.CreditScoreAttestation)
+  ],
+  [AttestationTypes.AddressOwner, instantiate(AttestationTypes.AddressOwner)],
+  [
+    AttestationTypes.CounterpartyAccountHolder,
+    instantiate(AttestationTypes.CounterpartyAccountHolder)
   ]
 ])
 
 export function getAttestionDefinition(
-  attestationName: string
+  attestationType: AttestationTypes
 ): AttestationDefinition {
-  const attestationInfo = allAttestations.get(attestationName)
+  const attestationInfo = allAttestations.get(attestationType)
   if (!attestationInfo) {
     throw new ValidationError(
       "Unknown Attestation Name",
-      `Unknown Attestation Name: ${attestationName}`
+      `Unknown Attestation Name: ${attestationType}`
     )
   }
   return attestationInfo
+}
+
+export function getCredentialSchemaAsVCObject(
+  attestationDefinition: AttestationDefinition
+): CredentialSchema {
+  return {
+    id: attestationDefinition.schema,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    type: attestationDefinition.attestation.type!
+  }
+}
+
+export function attestationToVCSchema(
+  attestationType: AttestationTypes
+): CredentialSchema {
+  return getCredentialSchemaAsVCObject(getAttestionDefinition(attestationType))
 }

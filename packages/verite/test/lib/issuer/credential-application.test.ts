@@ -1,31 +1,50 @@
 import { randomBytes } from "crypto"
 
-import { VerificationError } from "../../../lib/errors"
+import { validateCredentialApplication, VerificationError } from "../../../lib"
 import {
-  buildCredentialApplication,
-  decodeCredentialApplication
+  composeCredentialApplication,
+  decodeCredentialApplication,
+  evaluateCredentialApplication
 } from "../../../lib/issuer/credential-application"
-import { buildKycAmlManifest } from "../../../lib/sample-data/manifests"
+import { buildSampleProcessApprovalManifest } from "../../../lib/sample-data/manifests"
 import { buildIssuer, randomDidKey } from "../../../lib/utils/did-fns"
-import { ClaimFormat } from "../../../types"
-import { generateManifestAndIssuer } from "../../support/manifest-fns"
+import {
+  AttestationTypes,
+  ClaimFormat,
+  CredentialIssuer,
+  DidKey,
+  Issuer
+} from "../../../types"
 
-describe("buildCredentialApplication", () => {
-  it("builds a valid credential application", async () => {
-    const issuerDidKey = await randomDidKey(randomBytes)
-    const issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
+let subjectDidKey: DidKey
+let issuerDidKey: DidKey
+let issuer: Issuer
+let credentialIssuer: CredentialIssuer
 
-    // 1. CLIENT: The client gets a DID
-    const clientDidKey = await randomDidKey(randomBytes)
-    const credentialIssuer = { id: issuer.did, name: "Verite" }
-    const kycManifest = buildKycAmlManifest(credentialIssuer)
+beforeEach(() => {
+  subjectDidKey = randomDidKey(randomBytes)
+  issuerDidKey = randomDidKey(randomBytes)
+  issuer = buildIssuer(issuerDidKey.subject, issuerDidKey.privateKey)
+  credentialIssuer = { id: issuer.did, name: "Verite" }
+})
 
-    const credentialApplication = await buildCredentialApplication(
-      clientDidKey,
+describe("composeCredentialApplication", () => {
+  it("builds a valid KYCAML credential application", async () => {
+    const kycManifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
+    )
+
+    const credentialApplication = await composeCredentialApplication(
+      subjectDidKey,
       kycManifest
     )
 
-    const application = await decodeCredentialApplication(credentialApplication)
+    const application = await evaluateCredentialApplication(
+      credentialApplication,
+      kycManifest
+    )
+    expect(application).toBeDefined()
 
     expect(application.credential_application.manifest_id).toEqual(
       "KYCAMLManifest"
@@ -41,13 +60,19 @@ describe("buildCredentialApplication", () => {
 
 describe("decodeCredentialApplication", () => {
   it("decodes the Credential Application", async () => {
-    const clientDidKey = randomDidKey(randomBytes)
-    const { manifest } = await generateManifestAndIssuer()
-    const application = await buildCredentialApplication(clientDidKey, manifest)
+    const kycManifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
+    )
 
-    const decoded = await decodeCredentialApplication(application)
+    const application = await composeCredentialApplication(
+      subjectDidKey,
+      kycManifest
+    )
+    const decodedApplication = await decodeCredentialApplication(application)
+    await validateCredentialApplication(decodedApplication, kycManifest)
 
-    expect(decoded).toMatchObject({
+    expect(decodedApplication).toMatchObject({
       "@context": ["https://www.w3.org/2018/credentials/v1"],
       credential_application: {
         // id: 'f584577a-607f-43d9-a128-39b21f126f96', client-generated unique identifier
@@ -59,26 +84,36 @@ describe("decodeCredentialApplication", () => {
           descriptor_map: [
             {
               id: "proofOfIdentifierControlVP",
-              format: ClaimFormat.JwtVp,
+              format: "jwt_vp",
               path: "$.holder"
             }
           ]
         }
       },
       verifiableCredential: [],
-      holder: clientDidKey.subject,
+      holder: subjectDidKey.subject,
       type: ["VerifiablePresentation", "CredentialApplication"]
     })
   })
 
-  it("rejects an expired input", async () => {
+  it("rejects a credential application with expired input", async () => {
+    const kycManifest = buildSampleProcessApprovalManifest(
+      AttestationTypes.KYCAMLAttestation,
+      credentialIssuer
+    )
+
+    const expiredVc =
+      "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMDgzNTIsInZjIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiXSwiY3JlZGVudGlhbFN1YmplY3QiOnsiZGVncmVlIjp7InR5cGUiOiJCYWNoZWxvckRlZ3JlZSIsIm5hbWUiOiJCYWNjYWxhdXLDqWF0IGVuIG11c2lxdWVzIG51bcOpcmlxdWVzIn19fSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjA4MzQyLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.n0Cko-LZtZjrVHMjzlMUUxB6GGkx9MlNy68nALEeh_Doj42UDZkCwF872N4pVzyqKEexAX8PxAgtqote2rHMAA"
+
+    const application = await composeCredentialApplication(
+      subjectDidKey,
+      kycManifest,
+      expiredVc
+    )
+
     expect.assertions(1)
-
-    const expiredPresentation =
-      "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjYyMTU0MTEsInZwIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZVByZXNlbnRhdGlvbiJdfSwic3ViIjoiZGlkOmV0aHI6MHg0MzVkZjNlZGE1NzE1NGNmOGNmNzkyNjA3OTg4MWYyOTEyZjU0ZGI0IiwibmJmIjoxNjI2MjE1NDAxLCJpc3MiOiJkaWQ6a2V5Ono2TWtzR0toMjNtSFp6MkZwZU5ENld4SnR0ZDhUV2hrVGdhN210Yk0xeDF6TTY1bSJ9.UjdICQPEQOXk52Riq4t88Yol8T_gdmNag3G_ohzMTYDZRZNok7n-R4WynPrFyGASEMqDfi6ZGanSOlcFm2W6DQ"
-
     await expect(
-      decodeCredentialApplication(expiredPresentation)
+      evaluateCredentialApplication(application, kycManifest)
     ).rejects.toThrowError(VerificationError)
   })
 })
