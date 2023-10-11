@@ -112,10 +112,6 @@ Take a minute to ask yourself some difficult strategic questions:
   your support to wallets with built-in per-transaction or per-session
   biometrics, etc.
 
-Over time, we will be updating and detailing this guidance, but in the meantime,
-feel free to reach out to [the Verite team at
-Centre.io](mailto:verite@centre.io) for guidance on where to start and which
-wallets are already supporting these interfaces.
 
 ## Architectural options
 
@@ -147,7 +143,4 @@ Once you have clear your use-cases and your high-level architecture, you arrive
 at the build-or-buy decision. If you want to issue the credentials you will be
 responsible for yourself, there are tutorials and documents to guide you through
 the process in the ["For Developers" section of this
-site](https://verite.id/verite/developers/getting-started). If you are curious
-about credential Issuance-as-a-Service, reach out to [the Verite team at
-Centre.io](mailto:verite@centre.io) and we can refer you to colleagues in the
-space operating on this kind of model.
+site](https://verite.id/verite/developers/getting-started).

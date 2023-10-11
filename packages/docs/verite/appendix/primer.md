@@ -89,7 +89,7 @@ Verite's demo wallet generates and manages DIDs and associated key pairs on beha
 
 In a typical decentralized identity case, a verifier would request a Verifiable Credential from an identity holder. That requires discovery or knowledge of the holder first _(simple analogy: someone asks you to prove you are vaccinated)_.
 
-But Centre’s use cases can also involve no knowledge of a holder endpoint at first, in which verifiers query the peer network to find one or more DIDs that can satisfy the claim in the query using a particular Verifiable Credential _(simple analogy: someone posts a notice in a public place asking to be privately and anonymously messaged by anyone who chooses to prove they are vaccinated)_.
+But Circle's use cases can also involve no knowledge of a holder endpoint at first, in which verifiers query the peer network to find one or more DIDs that can satisfy the claim in the query using a particular Verifiable Credential _(simple analogy: someone posts a notice in a public place asking to be privately and anonymously messaged by anyone who chooses to prove they are vaccinated)_.
 
 **VC Structure**
 
