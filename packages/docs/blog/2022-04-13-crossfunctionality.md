@@ -4,7 +4,7 @@ description: A business developer's guide to Semantics, and an engineer's guide 
 slug: crossfunctionationality
 authors:
   - name: Juan Caballero
-    title: Standards Coordinator, Centre.io (Verite)
+    title: Standards Coordinator, Verite
     url: https://github.com/bumblefudge
     image_url: https://avatars.githubusercontent.com/u/37127325?v=4
 tags: [updates]

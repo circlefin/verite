@@ -17,7 +17,7 @@ In a network with multiple issuers, every VC issued should be on equal footing. 
 
 ## Current State: Boot-strapping an Ecosystem
 
-Verite is currently orchestrated by Centre in close collaboration with its initial implementers, and grounded in feedback from early evaluators who commit seriously to considering our work to date.  This is “strategically centralized,” in the sense that Centre is currently the hub at the center of major technical and business planning with implementers, but the multi-lateral collaboration has already started in Working Groups, bound by multi-lateral IP/NDA agreements.  One such working group is actually focused on roadmapping and elaborating everything that follows; to get involved, reach out to Centre.
+Verite is currently orchestrated by Circle in close collaboration with its initial implementers, and grounded in feedback from early evaluators who commit seriously to considering our work to date.  This is “strategically centralized,” in the sense that Circle is currently the hub at the center of major technical and business planning with implementers, but the multi-lateral collaboration has already started in Working Groups, bound by multi-lateral IP/NDA agreements.  One such working group is actually focused on roadmapping and elaborating everything that follows; to get involved, reach out to Circle.
 
 ## Target-State: Three Interlocking Governance Mechanisms
 
@@ -56,11 +56,11 @@ The governance framework will define (not exhaustive):
 
 The “**Network Utilities**” that power Verite provide common services to all participants and end-users in the Verite ecosystem. 
 
-The first and most structural network utility is the **Trusted Identity Registry**. The Trusted Identity Registry defines which Issuers and Verifiers can be trusted to adhere to Centre Verite Standards.  It functions as an “key directory” providing authoritative key material to prevent phishing or impersonation within the system. As Verite scales up, it will also include up-to-date information on conformance testing, to facilitate real-time decision making about the trustworthiness and roadworthiness of each actor’s implementation and credentials.  Centre reserves the right to remove actors from the Registry if they have not signed the Rulebook or have been judged by the community not to be honoring it.
+The first and most structural network utility is the **Trusted Identity Registry**. The Trusted Identity Registry defines which Issuers and Verifiers can be trusted to adhere to Circle Verite Standards.  It functions as an “key directory” providing authoritative key material to prevent phishing or impersonation within the system. As Verite scales up, it will also include up-to-date information on conformance testing, to facilitate real-time decision making about the trustworthiness and roadworthiness of each actor’s implementation and credentials.  Circle reserves the right to remove actors from the Registry if they have not signed the Rulebook or have been judged by the community not to be honoring it.
 
 #### Detailed Remit: Trusted Identity Registry  
 
-Centre will build, maintain, and publish the Trusted Identity Registry that includes Issuers and Verifiers which have applied for and been approved by the Verite Governance Board to join the registry. 
+Circle will build, maintain, and publish the Trusted Identity Registry that includes Issuers and Verifiers which have applied for and been approved by the Verite Governance Board to join the registry. 
 Entities in the registry adhere to technical, operational, legal, regulatory, and compliance standards defined by Verite Governance Board. 
 Verifiers and Issuers in the registry must sign a Verite Rulebook which defines the rights, obligations, standards, reps & warranties, etc that they must adhere to. 
 The rulebook dictates the conditions under which a VC can be issued, verified, and or/revoked
@@ -91,6 +91,3 @@ The Verite Rulebook will cover a number of different topics, including but not l
 * Financial requirements of the issuers/verifiers 
 * SLAs for the network utilities (e.g. uptime, resiliency, latency, etc)
 
-## Roadmap
-
-We are in the early stages of defining the "minimum viable governance" with key stakeholders as we establish the ecosystem. If you’re interested in participating, please contact us at verite@centre.io 

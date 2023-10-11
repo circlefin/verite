@@ -8,7 +8,7 @@ The issuer registry pre-viable governance (PVG) is a simple demonstration issuer
 
 ## Usage/Intent of the PVG Verite Issuer Registry
 
-The PVG Verite Issuer Registry focuses exclusively on Issuer ID and authorization and leaves out of scope governance considerations. As such, this should be viewed as an experimental implementation for the initial Verite issuers as the governance structure is being developed, with only manual and Centre-governed additions and removals until such a time as Verite issuance can be communally self-governing.
+The PVG Verite Issuer Registry focuses exclusively on Issuer ID and authorization and leaves out of scope governance considerations. As such, this should be viewed as an experimental implementation for the initial Verite issuers as the governance structure is being developed, with only manual and Circle-governed additions and removals until such a time as Verite issuance can be communally self-governing.
 
 The PVG Verite Issuer Registry identifies entities authorized to issue Verite credentials (segmented by different credential definitions); for each, it provides the exact issuer-service identifier (usually a DID) included in their Verite credentials, along with associated metadata. 
 
@@ -39,7 +39,7 @@ All is to be interpreted as experimental for PVG and subject to revision.
 
 The following roles are referred to below
 - Verite owners/administrators: 
-    - Initially Verite github repo (centrehq) administrators.
+    - Initially Verite github repo administrators.
     - Sole technical/logistic ability to approval and merge PRs 
     - Later to be replaced with real governance/membership scheme
 - Verite participants:
@@ -56,6 +56,6 @@ The following roles are referred to below
     - Organization must sign Verite CLA
     - No substantive objections from WG members, as determined by WG chair
 - Process for updates to issuer registry:
-    - Any individual by any organization covered by Verite CLA may open PR against Centre Verite github org 
+    - Any individual by any organization covered by Verite CLA may open PR against the Verite github org 
     - Verite repo owners/administrators must review, approve, and merge
     - Github signed commits are required (they are enabled repo-wide on Verite github repo)
