@@ -83,7 +83,7 @@ So let's take a little tour of the properties encoded in the "schemas"
 and manages over time. Each schema is something like a recipe for data points,
 what engineers call the "data shape" of each credential or token. Take, for
 example, the [v0.0.1 schema for a
-KYCAMLAttestation](https://github.com/centrehq/verite/blob/main/packages/docs/static/definitions/schemas/0.0.1/KYCAMLAttestation)
+KYCAMLAttestation](https://github.com/circlefin/verite/blob/main/packages/docs/static/definitions/schemas/0.0.1/KYCAMLAttestation)
 credential: what you see, in machine-readable script, is a list of the mandatory
 and optional properties that each credential needs to have, and the "type" of
 each (string, integer, etc.). Let's walk through some specific properties to
@@ -106,7 +106,7 @@ like the others. It is a string, but that string actually contains a link to a
 second schema; in the example above, taken from the tutorials and examples of
 the current sample implementation, all the KYCAML credentials point to [this
 process
-definition](https://github.com/centrehq/verite/blob/main/packages/docs/static/definitions/processes/kycaml/0.0.1/usa).
+definition](https://github.com/circlefin/verite/blob/main/packages/docs/static/definitions/processes/kycaml/0.0.1/usa).
 As you can see, this second schema outlines at a high level the real-world
 process used to arrive at the first schema's data points (in machine-readable
 format, which can include links to additional machine-readable documents and/or

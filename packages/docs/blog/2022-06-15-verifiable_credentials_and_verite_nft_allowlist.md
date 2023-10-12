@@ -86,7 +86,7 @@ Let's get started. You'll need Node.js version 12 or above for this. You'll also
 From your command line, change into the directory where you keep all your fancy NFT projects. Then, let's clone the example app I built ahead of this tutorial to make our lives easier.
 
 ```
-git clone https://github.com/centrehq/verite-minter-allowlist
+git clone https://github.com/circlefin/verite-minter-allowlist
 ```
 
 This is a repository that uses SIWE's base example app and extends it. So what you'll have is a folder for your frontend application, a folder for your backend express server, and a folder for your smart contract-related goodies.
