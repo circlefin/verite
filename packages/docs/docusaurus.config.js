@@ -61,7 +61,7 @@ module.exports = {
           ]
         }
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Centre Consortium, LLC. Built with Docusaurus.`
+      copyright: `Copyright © ${new Date().getFullYear()} Circle Internet Financial Limited. Built with Docusaurus.`
     },
     prism: {
       theme: lightCodeTheme,
