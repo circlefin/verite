@@ -113,7 +113,7 @@ const KycAmlPage: NextPage<Props> = ({
           </Link>{" "}
           defining the credentials that the issuer can issue and how a wallet
           can request them. Credential Manifests are a developing standard by
-          the Decentralized Identity Foundation (of which Centre is a member).
+          the Decentralized Identity Foundation.
         </p>
 
         <pre>{JSON.stringify(qrCodeData, null, 4)}</pre>

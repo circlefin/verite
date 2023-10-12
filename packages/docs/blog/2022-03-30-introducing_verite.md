@@ -20,9 +20,9 @@ The answer is Verifiable Credentials (VCs). VCs are on a web standards track and
 
 ## What Is Verite?
 
-Verite is a collaborative and open source initiative spearheaded by the [Centre Consortium](https://www.centre.io/). Centre's focus is to "provide the governance and standards for the future digital financial ecosystem." Verite is one output of the collaborative effort of Centre.
+Verite is a collaborative and open source initiative spearheaded by the Circle, and its focus is to "provide the governance and standards for the future digital financial ecosystem." Verite is one output of the collaborative effort.
 
-While contributions to the VCs standards themselves is important, and Centre is an active participant alongside the W3C, tools that make it easy to implement and leverage VCs are just as important. As such, Centre began work last year on Verite, an open source library designed to make managing VCs easier.
+While contributions to the VCs standards themselves is important, and Circle is an active participant alongside the W3C, tools that make it easy to implement and leverage VCs are just as important. As such, Circle began work last year on Verite, an open source library designed to make managing VCs easier.
 
 Currently available in TypeScript and [published through NPM](https://www.npmjs.com/package/verite), the Verite library seeks to make it easier to implement VCs in a variety of forms. The library is early and an additional goal of the library is to collect community feedback.
 

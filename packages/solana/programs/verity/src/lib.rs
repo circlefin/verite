@@ -70,7 +70,7 @@ pub mod verity {
 
         // Require that the schema is KYC
         msg!("Schema: {}", verification_result.schema);
-        require!(verification_result.schema == "centre.io/credentials/kyc", ErrorCode::InvalidSchema);
+        require!(verification_result.schema == "", ErrorCode::InvalidSchema);
 
         // Recover the address that signed the signature
         let mut message = Vec::new();
