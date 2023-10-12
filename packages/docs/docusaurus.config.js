@@ -26,7 +26,7 @@ module.exports = {
           position: "left"
         },
         {
-          to: "https://github.com/centrehq/verite/tree/main/packages/e2e-demo#readme",
+          to: "https://github.com/circlefin/verite/tree/main/packages/e2e-demo#readme",
           label: "Demos",
           position: "left",
           target: "_self"
@@ -56,7 +56,7 @@ module.exports = {
           items: [
             {
               label: "Github",
-              href: "https://github.com/centrehq/verite"
+              href: "https://github.com/circlefin/verite"
             }
           ]
         }
@@ -79,7 +79,7 @@ module.exports = {
         },
         blog: {
           showReadingTime: true,
-          editUrl: "https://github.com/centrehq/verite-docs"
+          editUrl: "https://github.com/circlefin/verite-docs"
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css")

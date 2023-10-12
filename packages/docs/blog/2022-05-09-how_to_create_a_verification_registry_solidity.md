@@ -60,7 +60,7 @@ import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 
 ### Verite Library
 
-There's one additional library we want to import. This one is an interface library that allows us to more easily map the types necessary in our contract variables and functions. For brevity, we're not going to write the interface itself. We'll just copy it from the existing example from Circle. You can [grab a copy of the interface library contract here](https://github.com/centrehq/verite/blob/main/packages/contract/contracts/IVerificationRegistry.sol).
+There's one additional library we want to import. This one is an interface library that allows us to more easily map the types necessary in our contract variables and functions. For brevity, we're not going to write the interface itself. We'll just copy it from the existing example from Circle. You can [grab a copy of the interface library contract here](https://github.com/circlefin/verite/blob/main/packages/contract/contracts/IVerificationRegistry.sol).
 
 Create a new contract file in your `contracts` folder and call it `IVerificationRegistry.sol`. Paste the contents of the example file linked above into that contract, then return to your `VerificationRegistry.sol` file.
 

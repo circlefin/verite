@@ -34,11 +34,11 @@ Despite the standards track for VCs, tooling around the implementation of VCs ha
 
 We believe that adoption of VCs is not only about creating good standards. It's also about making the experience of implementation a great one. To this end, Verite has tried to abstract as much of the complexity away as possible. Our documentation dives deep into what's happening behind the scenes, but the Verite library itself feels simple. And that's the goal.
 
-In a sense, Verite is also the canary in the coal mine. It's a test. An experiment. As mentioned above, the secondary goal of Verite's library is to collect community feedback on its implementation. Since the library's release, we've been fortunate enough to receive a number of issues and pull requests in the [Github repository](https://github.com/centrehq/verite). We encourage the community to continue provide feedback.
+In a sense, Verite is also the canary in the coal mine. It's a test. An experiment. As mentioned above, the secondary goal of Verite's library is to collect community feedback on its implementation. Since the library's release, we've been fortunate enough to receive a number of issues and pull requests in the [Github repository](https://github.com/circlefin/verite). We encourage the community to continue provide feedback.
 
 ## How Can Verite Be Used?
 
-We have a [number of demos available](https://github.com/centrehq/verite/tree/main/packages/e2e-demo/pages/demos) in the Github repository that can serve both as reference points and as inspiration. Verite can be used for just about any VC need. In our demos, you'll find:
+We have a [number of demos available](https://github.com/circlefin/verite/tree/main/packages/e2e-demo/pages/demos) in the Github repository that can serve both as reference points and as inspiration. Verite can be used for just about any VC need. In our demos, you'll find:
 
 - Basic Credential Issuance
 - Basic Credential Verification
