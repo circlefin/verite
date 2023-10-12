@@ -149,9 +149,9 @@ Now that we've seen the contract properly reject an address that is not listed a
 ```js
 // create a test verifier
 const testVerifierInfo = {
-  name: ethers.utils.formatBytes32String("Centre Consortium"),
-  did: "did:web:centre.io",
-  url: "https://centre.io/about",
+  name: ethers.utils.formatBytes32String("Circle Internet Financial"),
+  did: "did:web:circle.com",
+  url: "https://www.circle.com/en/about-circle",
   signer: signer.address
 }
 
@@ -229,7 +229,7 @@ Verifier information can change, so it's important to be able to update verifier
 
 ```js
 it("Should update an existing verifier", async function () {
-  testVerifierInfo.url = "https://centre.io"
+  testVerifierInfo.url = "https://circle.com"
   const setVerifierTx = await verificationRegistry.updateVerifier(
     contractOwnerAddress,
     testVerifierInfo
@@ -305,7 +305,7 @@ it("Should format a structured verification result", async function () {
     ]
   }
   verificationResult = {
-    schema: "centre.io/credentials/kyc",
+    schema: "circle.com/credentials/kyc",
     subject: subjectAddress,
     expiration: expiration
   }

@@ -76,7 +76,7 @@ describe("verity", () => {
       cluster: "localnet", // 12 bytes
       subject: alice.publicKey, // 32 bytes
       expiration, // 8 bytes
-      schema: "centre.io/credentials/kyc" // 29 bytes
+      schema: "" // 29 bytes
     }
 
     // Allocate buffer for the message and borsh encode the data. Each type has

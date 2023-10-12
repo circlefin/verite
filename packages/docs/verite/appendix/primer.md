@@ -101,8 +101,7 @@ But Circle's use cases can also involve no knowledge of a holder endpoint at fir
 ```json
 {
   "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://centre.io/contexts/identity.jsonld"
+    "https://www.w3.org/2018/credentials/v1"
   ],
   "type": [
     "VerifiableCredential",
