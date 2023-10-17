@@ -43,7 +43,7 @@ The Verite wallet is a sample implementation of core Verite flows, but it makes 
 
 ## Contributors
 
-- [Kim Hamilton Duffy](https://github.com/kimdhamilton) ([Centre Consortium](https://centre.io))
+- [Kim Hamilton Duffy](https://github.com/kimdhamilton) 
 - [Sean Neville](https://github.com/psnevio) ([Xdotzero](http://xdotzero.com))
 - [Brice Stacey](https://github.com/bricestacey) ([M2 Labs](https://m2.xyz))
 - [Matt Venables](https://github.com/venables) ([M2 Labs](https://m2.xyz))

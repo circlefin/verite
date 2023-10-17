@@ -5,8 +5,6 @@ sidebar_position: 9
 
 # Verite Wallet Integration Guide
 
-**Contact**: [verite-dev@centre.io](mailto:verite-dev@centre.io)
-
 This guide is written for developers seeking to integrate the "wallet-bound" Verite flows and data models into custodial or non-custodial wallets.  What follows is best understood as a checklist for adding "identity wallet" capabilities (handling Verifiable Credentials natively and as flexible as built-for-purpose identity wallets do) to an existing mobile wallet, whether non-custodial, custodial, or semi-custodial (MPC, multi-sig, etc). 
 
 ## Minimal Wallet Requirements - Summary
@@ -339,8 +337,7 @@ Note: In the Presentation Object that follows (a signed VP in JWT form), the `ve
   "verifiableCredential": [
     {
       "@context": [
-        "https://www.w3.org/2018/credentials/v1",
-        "https://centre.io/contexts/identity.jsonld"
+        "https://www.w3.org/2018/credentials/v1"
       ],
       "type": ["VerifiableCredential", "KYCAMLCredential"],
       "credentialSubject": {

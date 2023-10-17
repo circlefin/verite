@@ -150,7 +150,7 @@ Upon generating a Verification Record, a contract may follow one of two storage 
 
 In-contract storage involves persisting Verification Records in a manner that associates verifier addresses with all of the Verification Records that a verifier's address has approved, and maps subject addresses to all Verification Records associated with that subject -- exposing no PII or verification result payloads, but providing proof of verification types, timestamps, and expirations that the subject has successfully passed.
 
-An example that executes this pattern is the [VerificationRegistry.sol](https://github.com/centrehq/verite/blob/main/packages/contract/contracts/VerificationRegistry.sol) contract.
+An example that executes this pattern is the [VerificationRegistry.sol](https://github.com/circlefin/verite/blob/main/packages/contract/contracts/VerificationRegistry.sol) contract.
 
 The off-chain storage pattern involves no such on-chain storage. External oracles and chain scanners can observe the Verification Record events emitted by a contract, but there is no persistence of records on-chain.
 
@@ -182,14 +182,14 @@ The source code examples referenced here are also not intended for production us
 
 A reference implementation smart contract that executes Verifier Management, Verification Result validation, and Verification Record persistence is the IVerificationRegistry interface and its VerificationRegistry.sol implementation:
 
-<https://github.com/centrehq/verite/tree/main/packages/contract/contracts>
+<https://github.com/circlefin/verite/tree/main/packages/contract/contracts>
 
 This registry implementation is used by two examples, PermissionedToken.sol (a verifier submission example) and ThresholdToken.sol (a subject submission example).
 
 The test suite leverages hardhat and waffle, and is located in the ‘test’ subdirectory of the above repo:
 
-<https://github.com/centrehq/verite/blob/main/packages/contract/test/VerificationRegistryTests.ts>
+<https://github.com/circlefin/verite/blob/main/packages/contract/test/VerificationRegistryTests.ts>
 
 An example Dapp with MetaMask integration that uses the ThresholdToken is available here:
 
-<https://github.com/centrehq/verite/tree/main/packages/e2e-demo/components/demos/dapp>
+<https://github.com/circlefin/verite/tree/main/packages/e2e-demo/components/demos/dapp>

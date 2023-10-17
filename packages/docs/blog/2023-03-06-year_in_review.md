@@ -4,7 +4,7 @@ description: A Year in Review
 slug: year-in-review-2023
 authors:
   - name: Juan Caballero
-    title: Standards Coordinator, Centre.io (Verite)
+    title: Standards Coordinator, Verite
     url: https://github.com/bumblefudge
     image_url: https://avatars.githubusercontent.com/u/37127325?v=4
 tags: [governance, research, roadmap]
@@ -38,7 +38,7 @@ The role of governance in the system shifted substantially over the past year. W
 
 In particular, we worried that on-chain communication would be the hardest to align on given the business model pressures of this new 4-actor model. While "schema design", as we had been calling it, sounded like a relatively simple technical question of data modeling, it turned out to be a far more complex beast across different chains of reliance and architectural variants.
 
-For this reason, less schema design happened in Centre-hosted working groups than we had expected. As end-to-end products continue to evolve, this kind of alignment could perhaps be premature, and many Verite partners have opted to defer this kind of harmonization until after there is significant adoption and traction. The schemas published so far are adequate to geographically-limited launches of the initial use-case, and as the sphere of supported geographies and use-cases expands, or as more players enter the space and demand grows for federation and interoperability, we look forward to truly viable self-governance. In the meantime, we will continue technical research and design work that falls into four categories:
+For this reason, less schema design happened in Circle-hosted working groups than we had expected. As end-to-end products continue to evolve, this kind of alignment could perhaps be premature, and many Verite partners have opted to defer this kind of harmonization until after there is significant adoption and traction. The schemas published so far are adequate to geographically-limited launches of the initial use-case, and as the sphere of supported geographies and use-cases expands, or as more players enter the space and demand grows for federation and interoperability, we look forward to truly viable self-governance. In the meantime, we will continue technical research and design work that falls into four categories:
 
 1. On-chain Design
 2. Architectural Design & Adoption

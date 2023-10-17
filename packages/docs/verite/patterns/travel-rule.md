@@ -6,7 +6,7 @@ sidebar_position: 7
 
 The Verite open source repo includes some code that provides a cursory demonstration of how exchanging verifiable credentials could be a core component of scalable and open ecosystems for financial institutions to comply with Travel Rule reporting obligations with minimal privacy, data leakage, and security risks.
 
-In addition to this high-level "proof of concept," long-tail research in ongoing into FATF use cases forming a cornerstone of Verite in the latter part of 2023. To get involved with the research team, contact Verite's [Standards team at Centre.io](mailto:verite@centre.io).  
+In addition to this high-level "proof of concept," long-tail research in ongoing into FATF use cases forming a cornerstone of Verite in the latter part of 2023. 
 
 Please note: TRUST, TRISA, and other protocols that currently do not use Verifiable Credentials as an exchange format for FATF counterparty reporting are in no way incompatible with this group's approach; our goal is to focus on the privacy risks and protocols for mutual discovery and interactions, which can bootstrap any protocol between financial institutions once validated.
 
