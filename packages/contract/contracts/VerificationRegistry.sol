@@ -1,8 +1,7 @@
 /**
  * SPDX-License-Identifier: MIT
  *
- * Copyright (c) 2023 Circle Internet Financial Limited
-
+ * Copyright (c) 2018-2022 CENTRE SECZ
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

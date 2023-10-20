@@ -87,9 +87,9 @@ describe("kycAmlPresentationDefinition", () => {
 
   it("allows you to customize the list of trusted issuers", () => {
     // Example where you might only want to accept credentials issued by
-    // did:web:circle.com or did:web:example.com
+    // did:web:centre.io or did:web:example.com
     const definitions = kycAmlPresentationDefinition([
-      "did:web:circle.com",
+      "did:web:centre.io",
       "did:web:example.com"
     ])
 
@@ -147,7 +147,7 @@ describe("kycAmlPresentationDefinition", () => {
               },
               {
                 filter: {
-                  pattern: "^did:web:circle.com$|^did:web:example.com$",
+                  pattern: "^did:web:centre.io$|^did:web:example.com$",
                   type: "string"
                 },
                 path: ["$.issuer.id", "$.issuer", "$.vc.issuer", "$.iss"],

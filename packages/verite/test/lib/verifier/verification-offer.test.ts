@@ -6,7 +6,7 @@ describe("verification offer", () => {
     const from = "did:web:example.com"
     const replyUrl = "https://example.com/123"
     const statusUrl = "https://example.com/status/123"
-    const trustedAuthorities: string[] = ["did:web:circle.com"]
+    const trustedAuthorities: string[] = ["did:web:centre.io"]
 
     const offer = buildKycVerificationOffer(
       id,
@@ -80,7 +80,7 @@ describe("verification offer", () => {
                   },
                   {
                     filter: {
-                      pattern: "^did:web:circle.com$",
+                      pattern: "^did:web:centre.io$",
                       type: "string"
                     },
                     path: ["$.issuer.id", "$.issuer", "$.vc.issuer", "$.iss"],

@@ -33,9 +33,9 @@ describe("VerificationRegistry", function () {
 
   // create a test verifier
   const testVerifierInfo = {
-    name: ethers.utils.formatBytes32String("Circle Internet Financial"),
-    did: "did:web:circle.com",
-    url: "https://www.circle.com/en/about-circle",
+    name: ethers.utils.formatBytes32String("Centre Consortium"),
+    did: "did:web:centre.io",
+    url: "https://centre.io/about",
     signer: signer.address
   }
 
@@ -71,7 +71,7 @@ describe("VerificationRegistry", function () {
   })
 
   it("Should update an existing verifier", async function () {
-    testVerifierInfo.url = "https://circle.com"
+    testVerifierInfo.url = "https://centre.io"
     const setVerifierTx = await verificationRegistry.updateVerifier(
       contractOwnerAddress,
       testVerifierInfo
@@ -137,7 +137,7 @@ describe("VerificationRegistry", function () {
       ]
     }
     verificationResult = {
-      schema: "",
+      schema: "centre.io/credentials/kyc",
       subject: subjectAddress,
       expiration: expiration
     }
@@ -239,7 +239,7 @@ describe("VerificationRegistry", function () {
   // register owner as verified
   it("Should register token owner as verified", async function () {
     verificationResult = {
-      schema: "",
+      schema: "centre.io/credentials/kyc",
       subject: tokenOwner,
       expiration: expiration
     }

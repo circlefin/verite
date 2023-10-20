@@ -9,7 +9,7 @@ import type { VerificationResultResponse } from "../../types"
  * @param contractAddress The VerificationRegistry contract address
  * @param signerPrivateKey The signer's private key
  * @param chainId The chain this verification is intended to be used upon
- * @param schema The schema that this verification result is for, which you can publish at a path such as "<YOUR_URL>/credentials/kyc". Defaults to "".
+ * @param schema The schema that this verification result is for. Defaults to `centre.io/credentials/kyc` for backwards compatability.
  * @returns an object containing a VerificationResult and a signature
  */
 export const verificationResult = async (
@@ -17,7 +17,7 @@ export const verificationResult = async (
   contractAddress: string,
   signerPrivateKey: string,
   chainId: number,
-  schema = ""
+  schema = "centre.io/credentials/kyc"
 ): Promise<VerificationResultResponse> => {
   // A production verifier would integrate with its own persistent wallet, but
   // this example merely regenerates a new signer trusted signer when needed.

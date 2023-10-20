@@ -17,7 +17,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": ""
+      "bundleIdentifier": "io.centre.verity.demo.ios"
     },
     "android": {
       "adaptiveIcon": {
