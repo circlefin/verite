@@ -1,0 +1,14 @@
+name: Scan
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+jobs:
+  scan:
+    if: github.event_name == 'pull_request'
+    uses: circlefin/circle-public-github-workflows/.github/workflows/pr-scan.yaml@v1
+
+  release-sbom:
+    if: github.event_name == 'push'
+    uses: circlefin/circle-public-github-workflows/.github/workflows/attach-release-assets.yaml@v1
