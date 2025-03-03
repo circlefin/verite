@@ -82,7 +82,7 @@ In this example, a user wants to verify address-bound credentials issued to a bl
 2. Relying Party (e.g. Dapp) calls Verifier with wallet address to be verified.
 3. Verifier returns [Presentation Request][] (no additional properties required).
 
-5. Verifier prompts user to connect the wallet controlling the blockcain address that the Verification Record will be bound to.
+5. Verifier prompts user to connect the wallet controlling the blockchain address that the Verification Record will be bound to.
 6. Wallet signs an offchain transaction to authenticate wallet and authorize a web3 session. For interoperability and auditing purposes, we recommend a [EIP-4361][]-conformant "Sign-In With Ethereum" message or a [CAIP-122][]-conformant equivalent.
 7. Verifier sends its [Presentation Request][] to wallet, or equivalent bespoke RPC calls describing the acceptable credentials.
 8. The Wallet checks its storage for one or more matching credentials.  If more than one is present, a user selection step should be triggered; if none, a redirect or informative message displayed.  If exactly one, consent step may be optional, depending on use-case.

@@ -2,7 +2,7 @@
 
 Decentralized Identity for Crypto Finance.
 
-This repository is a monorepo containing the Core Verite Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use-cases of the Verite standard.
+This repository is a monorepo containing the Core Verite Javascript SDK, documentation, as well as several demos to illustrate issuance, verification, revocation, and real-world use cases of the Verite standard.
 
 ## Getting Started
 
@@ -68,7 +68,7 @@ Running an Ethereum node is easily accomplished by using our built-in scripts fo
 npm run hardhat:node
 ```
 
-Now you have a local Ethereum node running. This process is long-lived and should remain open in it's own terminal tab.
+Now you have a local Ethereum node running. This process is long-lived and should remain open in its own terminal tab.
 
 2. Next, you will need to deploy the smart contracts to the local Ethereum network.
 
